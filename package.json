@@ -13,6 +13,7 @@
     "test:phase3": "node --test apps/api/tests/phase3-master-data.test.js",
     "test:phase4": "node --test apps/api/tests/phase4-loads-documents.test.js",
     "test:phase5": "node --test apps/api/tests/phase5-trips-pod.test.js",
+    "test:phase6": "node --test apps/api/tests/phase6-excel-bulk.test.js",
     "test": "node scripts/run-all-tests.js",
     "check:env": "node scripts/health-check.js",
     "start:api": "node apps/api/src/server.js",

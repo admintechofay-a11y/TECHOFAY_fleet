@@ -109,6 +109,18 @@ const loadSchema = new Schema(
       required: [true, 'Consignee is required'],
       index: true
     },
+    originLocationId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Location',
+      default: null,
+      index: true
+    },
+    destinationLocationId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Location',
+      default: null,
+      index: true
+    },
     orderDate: {
       type: Date,
       default: Date.now
@@ -215,6 +227,15 @@ loadSchema.pre('save', function (next) {
     this.stops.forEach((stop) => {
       stop.pendingQuantity = Math.max(0, (stop.allocatedQuantity || 0) - (stop.deliveredQuantity || 0));
     });
+
+    if (!this.originLocationId && this.stops.length > 0) {
+      const orig = this.stops.find(s => s.stopType === StopType.PICKUP) || this.stops[0];
+      if (orig && orig.locationId) this.originLocationId = orig.locationId;
+    }
+    if (!this.destinationLocationId && this.stops.length > 0) {
+      const dest = this.stops.find(s => s.stopType === StopType.DELIVERY) || this.stops[this.stops.length - 1];
+      if (dest && dest.locationId) this.destinationLocationId = dest.locationId;
+    }
   }
 
   next();

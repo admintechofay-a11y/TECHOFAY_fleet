@@ -11,12 +11,15 @@ const { AppError } = require('../middleware/errorHandler');
 
 const UPLOAD_ROOT = path.resolve(process.env.STORAGE_LOCAL_DIR || './uploads');
 
-// Allowed MIME types for vehicle/driver compliance documents & attachments
+// Allowed MIME types for vehicle/driver compliance documents, attachments, and bulk exports
 const ALLOWED_MIME_TYPES = [
   'image/jpeg',
   'image/png',
   'image/webp',
-  'application/pdf'
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-excel',
+  'text/csv'
 ];
 
 // 10 MB file size limit

@@ -17,6 +17,7 @@ export function Sidebar({ currentPath, onNavigate }) {
     { id: 'locations', label: 'Location Master', path: '/app/locations', icon: '📍', module: 'locations' },
     { id: 'deliveries', label: 'Deliveries & POD', path: '/app/deliveries', icon: '✅', module: 'pod' },
     { id: 'billing', label: 'Freight & Billing', path: '/app/billing', icon: '💰', module: 'billing' },
+    { id: 'bulk', label: 'Bulk Data & Excel', path: '/app/bulk-data', icon: '📥', module: 'import_export' },
     { id: 'reports', label: 'Reports & Analytics', path: '/app/reports', icon: '📈', module: 'reports' }
   ];
 
