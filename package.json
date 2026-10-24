@@ -9,10 +9,11 @@
   ],
   "scripts": {
     "test:phase1": "node --test tests/phase1-baseline.test.js",
-    "test": "npm run test:phase1",
+    "test:phase2": "node --test apps/api/tests/phase2-auth-rbac.test.js",
+    "test": "node --test tests/phase1-baseline.test.js && node --test apps/api/tests/phase2-auth-rbac.test.js",
     "check:env": "node scripts/health-check.js",
-    "lint": "echo \"Phase 1 Baseline: No linter errors in specification documents\"",
-    "build": "echo \"Phase 1 Baseline: Architecture and specs verified. Full build starts in Phase 2.\""
+    "start:api": "node apps/api/src/server.js",
+    "build:web": "npm --prefix apps/web run build"
   },
   "keywords": [
     "mern",

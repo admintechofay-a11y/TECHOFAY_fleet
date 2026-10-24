@@ -1,0 +1,12 @@
+{
+  "name": "@fleet/shared",
+  "version": "1.0.0",
+  "description": "Shared contracts, schemas, and enums for Fleet Platform",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "scripts": {
+    "build": "echo \"Shared package ready\""
+  },
+  "dependencies": {},
+  "private": true
+}
