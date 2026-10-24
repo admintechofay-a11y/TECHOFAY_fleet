@@ -14,7 +14,8 @@ const suites = [
   { name: 'Phase 5: Trips, POD, Freight Settlement & Delivery', path: 'apps/api/tests/phase5-trips-pod.test.js' },
   { name: 'Phase 6: Excel, CSV & Bulk Operations', path: 'apps/api/tests/phase6-excel-bulk.test.js' },
   { name: 'Phase 7: WhatsApp Messaging, Queue & Webhooks', path: 'apps/api/tests/phase7-whatsapp.test.js' },
-  { name: 'Phase 8: Operations Dashboard, Reports Engine, Search & Settings', path: 'apps/api/tests/phase8-dashboard-reports.test.js' }
+  { name: 'Phase 8: Operations Dashboard, Reports Engine, Search & Settings', path: 'apps/api/tests/phase8-dashboard-reports.test.js' },
+  { name: 'Phase 9: End-to-End Hardening & Launch Checklist', path: 'apps/api/tests/phase9-e2e-hardening.test.js' }
 ];
 
 console.log('================================================================');
@@ -49,7 +50,7 @@ for (const suite of suites) {
 }
 
 console.log('\n================================================================');
-console.log('  ALL TEST SUITES PASSED CLEANLY ACROSS PHASES 1 THROUGH 8     ');
+console.log('  ALL TEST SUITES PASSED CLEANLY ACROSS PHASES 1 THROUGH 9     ');
 console.log('================================================================');
 results.forEach((r) => {
   console.log(`  ✔ ${r.name.padEnd(52)} [${r.status}] (${r.durationMs}ms)`);

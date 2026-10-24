@@ -16,6 +16,7 @@
     "test:phase6": "node --test apps/api/tests/phase6-excel-bulk.test.js",
     "test:phase7": "node --test apps/api/tests/phase7-whatsapp.test.js",
     "test:phase8": "node --test apps/api/tests/phase8-dashboard-reports.test.js",
+    "test:phase9": "node --test apps/api/tests/phase9-e2e-hardening.test.js",
     "test": "node scripts/run-all-tests.js",
     "check:env": "node scripts/health-check.js",
     "start:api": "node apps/api/src/server.js",

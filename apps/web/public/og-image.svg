@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgGrad)" />
+  <circle cx="1000" cy="150" r="300" fill="#0284c7" opacity="0.15" filter="blur(80px)" />
+  <circle cx="200" cy="500" r="250" fill="#06b6d4" opacity="0.1" filter="blur(70px)" />
+  
+  <!-- Content -->
+  <text x="100" y="220" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="64" fill="#f8fafc">
+    TECHNOFAY FLEET OS
+  </text>
+  <text x="100" y="300" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="36" fill="url(#cyanGrad)">
+    Enterprise Road Transport &amp; Haulage Operations Platform
+  </text>
+  <text x="100" y="380" font-family="system-ui, -apple-system, sans-serif" font-weight="400" font-size="24" fill="#94a3b8">
+    Loads • Lorry Receipts (LR) • Bilties • Trips • GST SAC 9965 • Driver KYC • POD
+  </text>
+
+  <!-- Tagline / Badge -->
+  <rect x="100" y="440" width="280" height="50" rx="8" fill="rgba(56, 189, 248, 0.15)" stroke="#38bdf8" stroke-width="1.5" />
+  <text x="130" y="472" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="20" fill="#38bdf8">
+    🚀 Production Release v1.0
+  </text>
+</svg>

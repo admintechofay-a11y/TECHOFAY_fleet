@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-export function LoginPage() {
+export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: string) => void } = {}) {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -144,6 +144,34 @@ export function LoginPage() {
           <p style={{ fontSize: '0.725rem', color: 'var(--text-muted)' }}>
             Protected enterprise portal. Unauthorized access is strictly logged and audited.
           </p>
+
+          {onNavigatePublic && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.85rem', marginTop: '0.75rem', fontSize: '0.725rem' }}>
+              <button
+                type="button"
+                onClick={() => onNavigatePublic('/privacy')}
+                style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: 0 }}
+              >
+                Privacy Policy
+              </button>
+              <span style={{ color: 'var(--border-medium)' }}>•</span>
+              <button
+                type="button"
+                onClick={() => onNavigatePublic('/terms')}
+                style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: 0 }}
+              >
+                Terms of Service
+              </button>
+              <span style={{ color: 'var(--border-medium)' }}>•</span>
+              <button
+                type="button"
+                onClick={() => onNavigatePublic('/contact')}
+                style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: 0 }}
+              >
+                Contact Operations
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -19,14 +19,24 @@ import { BulkDataPage } from './pages/BulkDataPage';
 import { WhatsAppPage } from './pages/WhatsAppPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { AdminSettingsPage } from './pages/AdminSettingsPage';
+import { PrivacyPage } from './pages/PrivacyPage';
+import { TermsPage } from './pages/TermsPage';
+import { ContactPage } from './pages/ContactPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
+import { analytics } from './lib/analytics';
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
   const [currentPath, setCurrentPath] = useState('/app/dashboard');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Track privacy-aware analytics on path change
+  useEffect(() => {
+    analytics.trackPageView(currentPath);
+  }, [currentPath]);
 
   // Global Ctrl+K / Cmd+K shortcut for quick command palette
   useEffect(() => {
@@ -55,8 +65,19 @@ function AppContent() {
     );
   }
 
+  // Public Routes (Accessible without login)
+  if (currentPath === '/privacy') {
+    return <PrivacyPage onNavigateHome={() => setCurrentPath(isAuthenticated ? '/app/dashboard' : '/login')} />;
+  }
+  if (currentPath === '/terms') {
+    return <TermsPage onNavigateHome={() => setCurrentPath(isAuthenticated ? '/app/dashboard' : '/login')} />;
+  }
+  if (currentPath === '/contact') {
+    return <ContactPage onNavigateHome={() => setCurrentPath(isAuthenticated ? '/app/dashboard' : '/login')} />;
+  }
+
   if (!isAuthenticated) {
-    return <LoginPage />;
+    return <LoginPage onNavigatePublic={(path) => setCurrentPath(path)} />;
   }
 
   const renderCurrentView = () => {
@@ -100,18 +121,10 @@ function AppContent() {
         return <AdminSettingsPage />;
       default:
         return (
-          <div style={{ padding: '3rem', textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🚧</div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f8fafc' }}>
-              Module Planned for Upcoming Phase
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', maxWidth: '500px', margin: '0.5rem auto' }}>
-              This operational module is scheduled in accordance with the SOW phase roadmap.
-            </p>
-            <button onClick={() => setCurrentPath('/app/dashboard')} className="btn btn-primary" style={{ marginTop: '1.5rem' }}>
-              Return to Dashboard
-            </button>
-          </div>
+          <NotFoundPage
+            onNavigateHome={() => setCurrentPath('/app/dashboard')}
+            onNavigateContact={() => setCurrentPath('/contact')}
+          />
         );
     }
   };
@@ -146,4 +159,3 @@ export default function App() {
     </AuthProvider>
   );
 }
-

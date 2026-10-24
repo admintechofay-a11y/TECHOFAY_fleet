@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /privacy
+Allow: /terms
+Allow: /contact
+Disallow: /app/
+Disallow: /api/
+Disallow: /documents/
+Disallow: /storage/
+
+Sitemap: https://transport.technofay.com/sitemap.xml

@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0-jammy
+    container_name: technofay_fleet_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-secure_root_password_change_me}
+      MONGO_INITDB_DATABASE: fleet_transport_prod
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./infra/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - fleet_network
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: technofay_fleet_redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_secure_pass_change_me}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - fleet_network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: technofay_fleet_api
+    restart: always
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME:-admin}:${MONGO_INITDB_ROOT_PASSWORD:-secure_root_password_change_me}@mongodb:27017/fleet_transport_prod?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_secure_pass_change_me}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-prod_access_secret_change_in_env_file}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-prod_refresh_secret_change_in_env_file}
+      COOKIE_SECRET: ${COOKIE_SECRET:-prod_cookie_secret_change_in_env_file}
+      CLIENT_URL: ${CLIENT_URL:-https://transport.technofay.com}
+    ports:
+      - "5000:5000"
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - fleet_network
+
+volumes:
+  mongo_data:
+    driver: local
+  redis_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  fleet_network:
+    driver: bridge
