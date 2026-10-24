@@ -217,15 +217,15 @@ export const MaintenancePage: React.FC = () => {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <Breadcrumbs items={[{ label: 'Fleet & Assets', href: '/app/vehicles' }, { label: 'Maintenance & Service' }]} />
-          <h1 className="text-2xl font-bold text-slate-900 mt-1">Fleet Preventative Maintenance & Service</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="text-2xl font-bold text-white mt-1">Fleet Preventative Maintenance & Service</h1>
+          <p className="text-sm text-slate-400">
             Schedule vehicle overhauls, log garage servicing, and avoid unexpected operational downtime.
           </p>
         </div>
 
         <button
           onClick={() => setShowScheduleModal(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 text-sm"
+          className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2 text-sm"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -236,63 +236,63 @@ export const MaintenancePage: React.FC = () => {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
           <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
             Overdue Services
           </span>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-extrabold text-rose-600">{stats?.overdueCount ?? 0}</span>
-            <span className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
+            <span className="text-2xl font-extrabold text-rose-400">{stats?.overdueCount ?? 0}</span>
+            <span className="w-10 h-10 rounded-xl bg-rose-950/80 border border-rose-800 text-rose-400 flex items-center justify-center font-bold">
               ⚠
             </span>
           </div>
-          <span className="text-xs text-rose-500 mt-2 block font-medium">Requires immediate inspection</span>
+          <span className="text-xs text-rose-400 mt-2 block font-medium">Requires immediate inspection</span>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
           <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
             Currently In Garage
           </span>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-extrabold text-amber-600">{stats?.inProgressCount ?? 0}</span>
-            <span className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+            <span className="text-2xl font-extrabold text-amber-400">{stats?.inProgressCount ?? 0}</span>
+            <span className="w-10 h-10 rounded-xl bg-amber-950/80 border border-amber-800 text-amber-400 flex items-center justify-center font-bold">
               🔧
             </span>
           </div>
-          <span className="text-xs text-amber-600 mt-2 block font-medium">Vehicles marked Under Maintenance</span>
+          <span className="text-xs text-amber-400 mt-2 block font-medium">Vehicles marked Under Maintenance</span>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
           <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
             Scheduled Upcoming
           </span>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-extrabold text-blue-600">{stats?.scheduledCount ?? 0}</span>
-            <span className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+            <span className="text-2xl font-extrabold text-blue-400">{stats?.scheduledCount ?? 0}</span>
+            <span className="w-10 h-10 rounded-xl bg-blue-950/80 border border-blue-800 text-blue-400 flex items-center justify-center font-bold">
               📅
             </span>
           </div>
-          <span className="text-xs text-slate-500 mt-2 block font-medium">Queued preventative overhauls</span>
+          <span className="text-xs text-slate-400 mt-2 block font-medium">Queued preventative overhauls</span>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
           <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
             Completed This Month
           </span>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-extrabold text-emerald-600">₹{(stats?.totalCostThisMonthRupees ?? 0).toLocaleString('en-IN')}</span>
-            <span className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <span className="text-2xl font-extrabold text-emerald-400">₹{(stats?.totalCostThisMonthRupees ?? 0).toLocaleString('en-IN')}</span>
+            <span className="w-10 h-10 rounded-xl bg-emerald-950/80 border border-emerald-800 text-emerald-400 flex items-center justify-center font-bold">
               ✔
             </span>
           </div>
-          <span className="text-xs text-slate-500 mt-2 block font-medium">
+          <span className="text-xs text-slate-400 mt-2 block font-medium">
             {stats?.completedThisMonth ?? 0} assets certified & released
           </span>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 text-sm font-semibold text-slate-600">
+      <div className="flex items-center gap-2 border-b border-slate-800 pb-2 text-sm font-semibold text-slate-400">
         {[
           { label: 'All Maintenance', value: '' },
           { label: 'Scheduled', value: 'SCHEDULED' },
@@ -303,10 +303,10 @@ export const MaintenancePage: React.FC = () => {
           <button
             key={tab.value}
             onClick={() => setSelectedStatus(tab.value)}
-            className={`px-3 py-1.5 rounded-lg transition-colors ${
+            className={`px-3 py-1.5 rounded-lg transition ${
               selectedStatus === tab.value
-                ? 'bg-blue-50 text-blue-700 font-bold'
-                : 'hover:bg-slate-100 hover:text-slate-800'
+                ? 'bg-blue-600 text-white font-bold'
+                : 'hover:bg-slate-800 hover:text-white text-slate-400'
             }`}
           >
             {tab.label}
@@ -315,64 +315,64 @@ export const MaintenancePage: React.FC = () => {
       </div>
 
       {/* Maintenance Table */}
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-sm">
-            <thead className="bg-slate-50">
+          <table className="min-w-full divide-y divide-slate-800 text-sm">
+            <thead className="bg-slate-950/70 border-b border-slate-800">
               <tr>
-                <th className="px-4 py-3 text-left font-semibold text-slate-600">Ref #</th>
-                <th className="px-4 py-3 text-left font-semibold text-slate-600">Vehicle</th>
-                <th className="px-4 py-3 text-left font-semibold text-slate-600">Service Type</th>
-                <th className="px-4 py-3 text-left font-semibold text-slate-600">Priority</th>
-                <th className="px-4 py-3 text-left font-semibold text-slate-600">Scheduled Date</th>
-                <th className="px-4 py-3 text-left font-semibold text-slate-600">Garage / Center</th>
-                <th className="px-4 py-3 text-left font-semibold text-slate-600">Cost (₹)</th>
-                <th className="px-4 py-3 text-left font-semibold text-slate-600">Status</th>
-                <th className="px-4 py-3 text-right font-semibold text-slate-600">Action</th>
+                <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Ref #</th>
+                <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Vehicle</th>
+                <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Service Type</th>
+                <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Priority</th>
+                <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Scheduled Date</th>
+                <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Garage / Center</th>
+                <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Cost (₹)</th>
+                <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Status</th>
+                <th className="px-4 py-3 text-right font-semibold text-slate-400 uppercase text-xs">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 bg-white">
+            <tbody className="divide-y divide-slate-800 bg-slate-900">
               {loading ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-8 text-slate-400">Loading fleet maintenance logs...</td>
+                  <td colSpan={9} className="text-center py-8 text-slate-500">Loading fleet maintenance logs...</td>
                 </tr>
               ) : records.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-8 text-slate-400">No maintenance records found.</td>
+                  <td colSpan={9} className="text-center py-8 text-slate-500">No maintenance records found.</td>
                 </tr>
               ) : (
                 records.map(rec => (
-                  <tr key={rec._id} className="hover:bg-slate-50/50">
-                    <td className="px-4 py-3.5 font-bold text-slate-900">{rec.maintenanceNumber}</td>
+                  <tr key={rec._id} className="hover:bg-slate-800/40 transition">
+                    <td className="px-4 py-3.5 font-bold font-mono text-white">{rec.maintenanceNumber}</td>
                     <td className="px-4 py-3.5">
-                      <span className="font-semibold text-slate-800">{rec.vehicleId?.plateNumber}</span>
-                      <span className="text-xs text-slate-500 block">{rec.vehicleId?.vehicleType}</span>
+                      <span className="font-semibold text-slate-200 font-mono">{rec.vehicleId?.plateNumber}</span>
+                      <span className="text-xs text-slate-400 block">{rec.vehicleId?.vehicleType}</span>
                     </td>
                     <td className="px-4 py-3.5">
-                      <span className="font-medium text-slate-700">{rec.serviceType.replace(/_/g, ' ')}</span>
+                      <span className="font-medium text-slate-300">{rec.serviceType.replace(/_/g, ' ')}</span>
                     </td>
                     <td className="px-4 py-3.5">
                       <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
-                        rec.priority === 'CRITICAL' ? 'bg-rose-100 text-rose-800' :
-                        rec.priority === 'HIGH' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'
+                        rec.priority === 'CRITICAL' ? 'bg-rose-950 text-rose-300 border border-rose-800' :
+                        rec.priority === 'HIGH' ? 'bg-amber-950 text-amber-300 border border-amber-800' : 'bg-slate-800 text-slate-300 border border-slate-700'
                       }`}>
                         {rec.priority}
                       </span>
                     </td>
-                    <td className="px-4 py-3.5 text-slate-600">
+                    <td className="px-4 py-3.5 text-slate-400 font-mono text-xs">
                       {new Date(rec.scheduledDate).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-3.5 text-slate-600">
+                    <td className="px-4 py-3.5 text-slate-300 text-xs">
                       {rec.serviceCenter?.name || 'In-House Depot'}
                     </td>
-                    <td className="px-4 py-3.5 font-medium text-slate-800">
+                    <td className="px-4 py-3.5 font-medium font-mono text-emerald-400">
                       ₹{(rec.costPaise / 100).toLocaleString('en-IN')}
                     </td>
                     <td className="px-4 py-3.5">
                       <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                        rec.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
-                        rec.status === 'IN_PROGRESS' ? 'bg-amber-100 text-amber-800 animate-pulse' :
-                        rec.status === 'CANCELLED' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
+                        rec.status === 'COMPLETED' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' :
+                        rec.status === 'IN_PROGRESS' ? 'bg-amber-950 text-amber-300 border border-amber-800 animate-pulse' :
+                        rec.status === 'CANCELLED' ? 'bg-rose-950 text-rose-300 border border-rose-800' : 'bg-blue-950 text-blue-300 border border-blue-800'
                       }`}>
                         {rec.status}
                       </span>
@@ -381,7 +381,7 @@ export const MaintenancePage: React.FC = () => {
                       {rec.status === 'SCHEDULED' && (
                         <button
                           onClick={() => handleStartService(rec)}
-                          className="bg-amber-500 hover:bg-amber-600 text-white text-xs px-2.5 py-1 rounded font-semibold shadow-xs"
+                          className="bg-amber-600 hover:bg-amber-500 text-white text-xs px-2.5 py-1 rounded font-semibold transition"
                         >
                           Start Service
                         </button>
@@ -396,7 +396,7 @@ export const MaintenancePage: React.FC = () => {
                               technicianRemarks: rec.technicianRemarks || ''
                             });
                           }}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 py-1 rounded font-semibold shadow-xs"
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-2.5 py-1 rounded font-semibold transition"
                         >
                           Certify Complete
                         </button>
@@ -412,13 +412,13 @@ export const MaintenancePage: React.FC = () => {
 
       {/* Schedule Maintenance Modal */}
       {showScheduleModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-lg w-full p-6 animate-scaleUp">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <h3 className="font-bold text-slate-900 text-lg">Schedule Vehicle Service</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 max-w-lg w-full p-6 text-slate-100 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+              <h3 className="font-bold text-white text-lg">Schedule Vehicle Service</h3>
               <button
                 onClick={() => setShowScheduleModal(false)}
-                className="text-slate-400 hover:text-slate-600 text-xl font-bold"
+                className="text-slate-400 hover:text-white text-xl font-bold p-1"
               >
                 ×
               </button>
@@ -426,12 +426,12 @@ export const MaintenancePage: React.FC = () => {
 
             <form onSubmit={handleScheduleSubmit} className="space-y-4 pt-4 text-sm">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Select Fleet Vehicle *</label>
+                <label className="block font-semibold text-slate-300 mb-1">Select Fleet Vehicle *</label>
                 <select
                   required
                   value={formData.vehicleId}
                   onChange={e => setFormData({ ...formData, vehicleId: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                 >
                   <option value="">-- Choose Vehicle --</option>
                   {vehicles.map(v => (
@@ -444,11 +444,11 @@ export const MaintenancePage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Service Type *</label>
+                  <label className="block font-semibold text-slate-300 mb-1">Service Type *</label>
                   <select
                     value={formData.serviceType}
                     onChange={e => setFormData({ ...formData, serviceType: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                   >
                     <option value="GENERAL_SERVICE">General Service</option>
                     <option value="OIL_CHANGE">Oil & Filter Change</option>
@@ -462,11 +462,11 @@ export const MaintenancePage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Priority</label>
+                  <label className="block font-semibold text-slate-300 mb-1">Priority</label>
                   <select
                     value={formData.priority}
                     onChange={e => setFormData({ ...formData, priority: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                   >
                     <option value="LOW">Low</option>
                     <option value="MEDIUM">Medium</option>
@@ -478,72 +478,72 @@ export const MaintenancePage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Scheduled Date *</label>
+                  <label className="block font-semibold text-slate-300 mb-1">Scheduled Date *</label>
                   <input
                     type="date"
                     required
                     value={formData.scheduledDate}
                     onChange={e => setFormData({ ...formData, scheduledDate: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Current Odometer (km)</label>
+                  <label className="block font-semibold text-slate-300 mb-1">Current Odometer (km)</label>
                   <input
                     type="number"
                     value={formData.odometerReadingKm}
                     onChange={e => setFormData({ ...formData, odometerReadingKm: e.target.value })}
                     placeholder="e.g. 45000"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Garage / Service Center</label>
+                  <label className="block font-semibold text-slate-300 mb-1">Garage / Service Center</label>
                   <input
                     type="text"
                     value={formData.serviceCenterName}
                     onChange={e => setFormData({ ...formData, serviceCenterName: e.target.value })}
                     placeholder="e.g. Tata Authorized Service"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Estimated Cost (₹)</label>
+                  <label className="block font-semibold text-slate-300 mb-1">Estimated Cost (₹)</label>
                   <input
                     type="number"
                     value={formData.costRupees}
                     onChange={e => setFormData({ ...formData, costRupees: e.target.value })}
                     placeholder="e.g. 5000"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Technician / Scope Remarks</label>
+                <label className="block font-semibold text-slate-300 mb-1">Technician / Scope Remarks</label>
                 <textarea
                   rows={2}
                   value={formData.technicianRemarks}
                   onChange={e => setFormData({ ...formData, technicianRemarks: e.target.value })}
                   placeholder="Routine 50,000 km major service, brake pad replacement..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowScheduleModal(false)}
-                  className="px-4 py-2 text-slate-600 font-semibold hover:bg-slate-100 rounded-xl"
+                  className="px-4 py-2 text-slate-400 font-semibold hover:bg-slate-800 hover:text-white rounded-xl transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-xl shadow-sm"
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2 rounded-xl shadow-sm transition"
                 >
                   Confirm Schedule
                 </button>
@@ -555,59 +555,59 @@ export const MaintenancePage: React.FC = () => {
 
       {/* Complete Maintenance Modal */}
       {showCompleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-md w-full p-6 animate-scaleUp">
-            <h3 className="font-bold text-slate-900 text-lg mb-2">Certify Service Completion</h3>
-            <p className="text-xs text-slate-500 mb-4">
-              Completing service for vehicle <span className="font-semibold text-slate-800">{showCompleteModal.vehicleId?.plateNumber}</span> releases the vehicle status back to <strong>AVAILABLE</strong> for trip assignments.
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 max-w-md w-full p-6 text-slate-100 max-h-[90vh] overflow-y-auto">
+            <h3 className="font-bold text-white text-lg mb-2">Certify Service Completion</h3>
+            <p className="text-xs text-slate-400 mb-4">
+              Completing service for vehicle <span className="font-semibold text-white font-mono">{showCompleteModal.vehicleId?.plateNumber}</span> releases the vehicle status back to <strong className="text-emerald-400">AVAILABLE</strong> for trip assignments.
             </p>
 
             <form onSubmit={handleCompleteSubmit} className="space-y-4 text-sm">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Final Invoice Amount (₹) *</label>
+                <label className="block font-semibold text-slate-300 mb-1">Final Invoice Amount (₹) *</label>
                 <input
                   type="number"
                   required
                   value={completionData.costRupees}
                   onChange={e => setCompletionData({ ...completionData, costRupees: e.target.value })}
                   placeholder="e.g. 5400"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Garage Invoice / Bill #</label>
+                <label className="block font-semibold text-slate-300 mb-1">Garage Invoice / Bill #</label>
                 <input
                   type="text"
                   value={completionData.invoiceNumber}
                   onChange={e => setCompletionData({ ...completionData, invoiceNumber: e.target.value })}
                   placeholder="e.g. INV-2026-8941"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Work Performed / Certification Notes</label>
+                <label className="block font-semibold text-slate-300 mb-1">Work Performed / Certification Notes</label>
                 <textarea
                   rows={2}
                   value={completionData.technicianRemarks}
                   onChange={e => setCompletionData({ ...completionData, technicianRemarks: e.target.value })}
                   placeholder="Engine oil replaced, brake pads fitted, road tested OK."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowCompleteModal(null)}
-                  className="px-4 py-2 text-slate-600 font-semibold hover:bg-slate-100 rounded-xl"
+                  className="px-4 py-2 text-slate-400 font-semibold hover:bg-slate-800 hover:text-white rounded-xl transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2 rounded-xl shadow-sm"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-5 py-2 rounded-xl shadow-sm transition"
                 >
                   Certify & Release Vehicle
                 </button>
