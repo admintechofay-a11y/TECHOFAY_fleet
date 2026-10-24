@@ -30,6 +30,10 @@ const biltyRoutes = require('./modules/bilties/routes/bilty.routes');
 const tripRoutes = require('./modules/trips/routes/trip.routes');
 const podRoutes = require('./modules/pod/routes/pod.routes');
 const whatsappRoutes = require('./modules/whatsapp/routes/whatsapp.routes');
+const dashboardRoutes = require('./modules/dashboard/routes/dashboard.routes');
+const reportsRoutes = require('./modules/reports/routes/reports.routes');
+const searchRoutes = require('./modules/search/routes/search.routes');
+const settingsRoutes = require('./modules/settings/routes/settings.routes');
 
 const app = express();
 
@@ -145,6 +149,10 @@ app.use('/api/v1/bilties', biltyRoutes);
 app.use('/api/v1/trips', tripRoutes);
 app.use('/api/v1/pod', podRoutes);
 app.use('/api/v1/whatsapp', whatsappRoutes);
+app.use('/api/v1/dashboard', dashboardRoutes);
+app.use('/api/v1/reports', reportsRoutes);
+app.use('/api/v1/search', searchRoutes);
+app.use('/api/v1/admin/settings', settingsRoutes);
 
 // 9. Catch-all 404 for Unmatched Routes
 app.use('*', (req, res, next) => {

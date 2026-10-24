@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -17,12 +17,28 @@ import { TripsPage } from './pages/TripsPage';
 import { DeliveriesPodPage } from './pages/DeliveriesPodPage';
 import { BulkDataPage } from './pages/BulkDataPage';
 import { WhatsAppPage } from './pages/WhatsAppPage';
+import { ReportsPage } from './pages/ReportsPage';
+import { AdminSettingsPage } from './pages/AdminSettingsPage';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
+import { GlobalSearchModal } from './components/GlobalSearchModal';
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
   const [currentPath, setCurrentPath] = useState('/app/dashboard');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Global Ctrl+K / Cmd+K shortcut for quick command palette
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   if (isLoading) {
     return (
@@ -62,6 +78,8 @@ function AppContent() {
       case '/app/whatsapp':
       case '/app/messages':
         return <WhatsAppPage />;
+      case '/app/reports':
+        return <ReportsPage />;
       case '/app/customers':
         return <CustomersPage />;
       case '/app/locations':
@@ -78,6 +96,8 @@ function AppContent() {
         return <RolesAdminPage />;
       case '/app/admin/audit':
         return <AuditLogPage />;
+      case '/app/admin/settings':
+        return <AdminSettingsPage />;
       default:
         return (
           <div style={{ padding: '3rem', textAlign: 'center' }}>
@@ -99,15 +119,22 @@ function AppContent() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--bg-app)' }}>
       {/* Navigation Sidebar */}
-      <Sidebar currentPath={currentPath} onNavigate={(path) => setCurrentPath(path)} />
+      <Sidebar currentPath={currentPath} onNavigate={(path: string) => setCurrentPath(path)} />
 
       {/* Main Content Area */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        <Navbar />
+        <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
         <main style={{ flex: 1, overflowY: 'auto' }}>
           {renderCurrentView()}
         </main>
       </div>
+
+      {/* Global Command Palette Search Modal */}
+      <GlobalSearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onNavigate={(path: string) => setCurrentPath(path)}
+      />
     </div>
   );
 }
@@ -119,3 +146,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+

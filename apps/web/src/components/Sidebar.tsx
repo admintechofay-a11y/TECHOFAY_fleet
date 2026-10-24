@@ -25,7 +25,8 @@ export function Sidebar({ currentPath, onNavigate }) {
   const adminItems = [
     { id: 'users', label: 'User Management', path: '/app/admin/users', icon: '👥', module: 'users' },
     { id: 'roles', label: 'Roles & Matrix', path: '/app/admin/roles', icon: '🛡️', module: 'roles' },
-    { id: 'audit', label: 'Audit Trail', path: '/app/admin/audit', icon: '🔍', module: 'audit' }
+    { id: 'audit', label: 'Audit Trail', path: '/app/admin/audit', icon: '🔍', module: 'audit' },
+    { id: 'settings', label: 'System Settings', path: '/app/admin/settings', icon: '⚙️', module: 'settings' }
   ];
 
   // Filter items by user permissions
