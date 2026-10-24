@@ -5,12 +5,138 @@
 const crypto = require('node:crypto');
 const User = require('../models/User');
 const UserSession = require('../models/UserSession');
+const Company = require('../models/Company');
+const BootstrapService = require('../services/bootstrap.service');
 const TokenService = require('../services/token.service');
 const AuditLogService = require('../../audit/services/auditLog.service');
 const { SystemModule, AuditAction } = require('@fleet/shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class AuthController {
+  /**
+   * POST /api/v1/auth/register
+   * Registers a new tenant organization and super administrator user
+   */
+  static async register(req, res, next) {
+    try {
+      const {
+        companyLegalName,
+        tradeName,
+        companyGstin,
+        adminName,
+        email,
+        password,
+        phone,
+        street,
+        city,
+        state,
+        pincode
+      } = req.body || {};
+
+      if (!companyLegalName || !adminName || !email || !password) {
+        return next(new AppError('Company name, administrator name, email, and password are required', 400));
+      }
+
+      if (typeof password !== 'string' || password.length < 8) {
+        return next(new AppError('Password must be at least 8 characters long', 400));
+      }
+
+      const normalizedEmail = email.toLowerCase().trim();
+
+      // Check if user already exists
+      const existingUser = await User.findOne({ email: normalizedEmail });
+      if (existingUser) {
+        return next(new AppError('An account with this email address already exists. Please log in.', 409));
+      }
+
+      // Format or generate GSTIN if not supplied
+      let gstin = (companyGstin || '').trim().toUpperCase();
+      if (!gstin) {
+        const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
+        gstin = `24TEMP${randomHex}Z1`;
+      }
+
+      // Check if company with this GSTIN already exists
+      const existingCompany = await Company.findOne({ gstin });
+      if (existingCompany) {
+        const randomHex = crypto.randomBytes(2).toString('hex').toUpperCase();
+        gstin = `${gstin.slice(0, 10)}${randomHex}Z1`;
+      }
+
+      // Bootstrap company, system roles, and super admin user
+      const { company, roles, superAdmin } = await BootstrapService.bootstrapSystem({
+        companyLegalName: companyLegalName.trim(),
+        tradeName: tradeName ? tradeName.trim() : companyLegalName.trim(),
+        companyGstin: gstin,
+        adminEmail: normalizedEmail,
+        adminPassword: password,
+        adminName: adminName.trim(),
+        phone: phone ? phone.trim() : '+91 98765 43210',
+        address: {
+          street: street ? street.trim() : 'Transport Hub Complex',
+          city: city ? city.trim() : 'Ahmedabad',
+          state: state ? state.trim() : 'Gujarat',
+          pincode: pincode ? pincode.trim() : '380001',
+          country: 'IN'
+        }
+      });
+
+      // Populate user for token generation
+      const populatedUser = await User.findById(superAdmin._id)
+        .populate('roleId')
+        .populate('companyId');
+
+      // Generate Tokens & Active Session
+      const accessToken = TokenService.generateAccessToken(populatedUser);
+      const rawRefreshToken = TokenService.generateRefreshToken();
+      const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
+
+      const ipAddress = req.ip || req.connection.remoteAddress || '';
+      const userAgent = req.headers['user-agent'] || '';
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+      await UserSession.create({
+        userId: populatedUser._id,
+        companyId: company._id,
+        refreshTokenHash,
+        ipAddress,
+        userAgent,
+        expiresAt
+      });
+
+      // Audit Log
+      await AuditLogService.log({
+        companyId: company._id,
+        actorId: populatedUser._id,
+        module: SystemModule.AUTH,
+        action: AuditAction.CREATE,
+        newValues: {
+          event: 'ORGANIZATION_REGISTERED',
+          company: company.legalName,
+          email: normalizedEmail
+        },
+        ipAddress,
+        userAgent
+      });
+
+      // Set Cookies
+      TokenService.setAuthCookies(res, accessToken, rawRefreshToken);
+
+      res.status(201).json({
+        success: true,
+        statusCode: 201,
+        message: 'Organization and administrator account registered successfully',
+        data: {
+          accessToken,
+          user: populatedUser.toSafeObject(),
+          tenant: company
+        }
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   /**
    * POST /api/v1/auth/login
    */

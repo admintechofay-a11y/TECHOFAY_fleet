@@ -179,27 +179,30 @@ class BootstrapService {
    */
   static async bootstrapSystem({
     companyLegalName = 'Techofay Global Logistics Pvt Ltd',
+    tradeName,
     companyGstin = '24AAACT1234A1Z5',
     adminEmail = 'admin@technofay.com',
     adminPassword = 'change_on_first_login_secure_password',
-    adminName = 'System Super Administrator'
+    adminName = 'System Super Administrator',
+    phone = '+91 98765 43210',
+    address
   } = {}) {
     // 1. Ensure or create Company
     let company = await Company.findOne({ gstin: companyGstin });
     if (!company) {
       company = await Company.create({
         legalName: companyLegalName,
-        tradeName: 'Techofay Transport',
+        tradeName: tradeName || (companyLegalName === 'Techofay Global Logistics Pvt Ltd' ? 'Techofay Transport' : companyLegalName),
         gstin: companyGstin,
-        pan: companyGstin.substring(2, 12),
-        email: 'dispatch@technofay.com',
-        phone: '+91 98765 43210',
+        pan: companyGstin.length >= 12 ? companyGstin.substring(2, 12) : 'AAACT1234A',
+        email: adminEmail || 'dispatch@technofay.com',
+        phone: phone || '+91 98765 43210',
         address: {
-          street: 'Transport Hub Complex, Sarkhej-Bavla Highway',
-          city: 'Ahmedabad',
-          state: 'Gujarat',
-          pincode: '382210',
-          country: 'IN'
+          street: address?.street || 'Transport Hub Complex, Sarkhej-Bavla Highway',
+          city: address?.city || 'Ahmedabad',
+          state: address?.state || 'Gujarat',
+          pincode: address?.pincode || '382210',
+          country: address?.country || 'IN'
         },
         settings: {
           timezone: 'Asia/Kolkata',
@@ -238,7 +241,7 @@ class BootstrapService {
         name: adminName,
         email: adminEmail.toLowerCase(),
         passwordHash: adminPassword, // Pre-save hook will bcrypt hash
-        phone: '+91 98765 43210',
+        phone: phone || '+91 98765 43210',
         roleId: superAdminRole._id,
         isActive: true
       });

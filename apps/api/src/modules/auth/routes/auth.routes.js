@@ -10,6 +10,7 @@ const { authRateLimiter } = require('../../../middleware/rateLimiter');
 const router = express.Router();
 
 // Public auth routes with rate limiting
+router.post('/register', authRateLimiter, AuthController.register);
 router.post('/login', authRateLimiter, AuthController.login);
 router.post('/refresh', AuthController.refresh);
 router.post('/forgot-password', AuthController.forgotPassword);

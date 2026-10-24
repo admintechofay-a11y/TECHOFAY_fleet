@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { UsersAdminPage } from './pages/UsersAdminPage';
 import { RolesAdminPage } from './pages/RolesAdminPage';
@@ -84,6 +85,9 @@ function AppContent() {
   }
   if (currentPath === '/track' || currentPath.startsWith('/track/')) {
     return <PublicTrackingPage />;
+  }
+  if (currentPath === '/register' || currentPath === '/signup') {
+    return <RegisterPage onNavigate={(path) => setCurrentPath(path)} />;
   }
 
   if (!isAuthenticated) {

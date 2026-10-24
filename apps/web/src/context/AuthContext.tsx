@@ -53,6 +53,33 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const register = async (formData) => {
+    setError(null);
+    try {
+      const res = await apiRequest('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(formData)
+      });
+
+      if (res && res.data) {
+        setAccessToken(res.data.accessToken);
+        setUser(res.data.user);
+        if (res.data.tenant) {
+          setTenant(res.data.tenant);
+        } else {
+          const meRes = await apiRequest('/auth/me');
+          if (meRes && meRes.data) {
+            setTenant(meRes.data.tenant);
+          }
+        }
+        return res.data.user;
+      }
+    } catch (err) {
+      setError(err.message || 'Registration failed');
+      throw err;
+    }
+  };
+
   const logout = async () => {
     try {
       await apiRequest('/auth/logout', { method: 'POST' });
@@ -90,6 +117,7 @@ export function AuthProvider({ children }) {
         error,
         isAuthenticated: !!user,
         login,
+        register,
         logout,
         hasPermission,
         isSuperAdmin

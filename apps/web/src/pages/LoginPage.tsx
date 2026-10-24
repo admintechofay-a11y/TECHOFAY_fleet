@@ -140,7 +140,30 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
           </button>
         </form>
 
-        <div style={{ marginTop: '2rem', textAlign: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
+        {/* Registration Prompt */}
+        <div style={{ marginTop: '1.25rem', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', margin: 0 }}>
+            Don't have an account?{' '}
+            <button
+              type="button"
+              onClick={() => onNavigatePublic && onNavigatePublic('/register')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#38bdf8',
+                fontWeight: 600,
+                cursor: 'pointer',
+                padding: 0,
+                fontSize: 'inherit',
+                textDecoration: 'underline'
+              }}
+            >
+              Register Fleet Workspace
+            </button>
+          </p>
+        </div>
+
+        <div style={{ marginTop: '1.5rem', textAlign: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
           <p style={{ fontSize: '0.725rem', color: 'var(--text-muted)' }}>
             Protected enterprise portal. Unauthorized access is strictly logged and audited.
           </p>
