@@ -174,6 +174,33 @@ const NotificationSeverity = Object.freeze({
   CRITICAL: 'CRITICAL'
 });
 
+const BiltyStatus = Object.freeze({
+  DRAFT: 'DRAFT',
+  ISSUED: 'ISSUED',
+  CANCELLED: 'CANCELLED'
+});
+
+const StopType = Object.freeze({
+  PICKUP: 'PICKUP',
+  DELIVERY: 'DELIVERY',
+  WAYPOINT: 'WAYPOINT'
+});
+
+const StopStatus = Object.freeze({
+  PENDING: 'PENDING',
+  ARRIVED: 'ARRIVED',
+  LOADING: 'LOADING',
+  UNLOADING: 'UNLOADING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+});
+
+const PaymentTerms = Object.freeze({
+  TO_PAY: 'TO_PAY',
+  PAID: 'PAID',
+  TO_BE_BILLED: 'TO_BE_BILLED'
+});
+
 module.exports = {
   UserRole,
   SystemModule,
@@ -192,5 +219,9 @@ module.exports = {
   DriverLicenseType,
   DriverDocumentType,
   NotificationCategory,
-  NotificationSeverity
+  NotificationSeverity,
+  BiltyStatus,
+  StopType,
+  StopStatus,
+  PaymentTerms
 };

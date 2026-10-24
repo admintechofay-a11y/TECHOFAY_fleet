@@ -10,6 +10,9 @@ import { LocationsPage } from './pages/LocationsPage';
 import { VehiclesPage } from './pages/VehiclesPage';
 import { DriversPage } from './pages/DriversPage';
 import { CompliancePage } from './pages/CompliancePage';
+import { LoadsPage } from './pages/LoadsPage';
+import { LrPage } from './pages/LrPage';
+import { BiltiesPage } from './pages/BiltiesPage';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 
@@ -40,6 +43,12 @@ function AppContent() {
     switch (currentPath) {
       case '/app/dashboard':
         return <DashboardPage />;
+      case '/app/loads':
+        return <LoadsPage />;
+      case '/app/lr':
+        return <LrPage />;
+      case '/app/bilties':
+        return <BiltiesPage />;
       case '/app/customers':
         return <CustomersPage />;
       case '/app/locations':

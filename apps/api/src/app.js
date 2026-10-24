@@ -24,6 +24,9 @@ const driverRoutes = require('./modules/drivers/routes/driver.routes');
 const documentRoutes = require('./modules/documents/routes/document.routes');
 const complianceRoutes = require('./modules/compliance/routes/compliance.routes');
 const masterRoutes = require('./modules/masterData/routes/masterImportExport.routes');
+const loadRoutes = require('./modules/loads/routes/load.routes');
+const lrRoutes = require('./modules/lr/routes/lr.routes');
+const biltyRoutes = require('./modules/bilties/routes/bilty.routes');
 
 const app = express();
 
@@ -133,6 +136,9 @@ app.use('/api/v1/drivers', driverRoutes);
 app.use('/api/v1/documents', documentRoutes);
 app.use('/api/v1/compliance', complianceRoutes);
 app.use('/api/v1/master', masterRoutes);
+app.use('/api/v1/loads', loadRoutes);
+app.use('/api/v1/lr', lrRoutes);
+app.use('/api/v1/bilties', biltyRoutes);
 
 // 9. Catch-all 404 for Unmatched Routes
 app.use('*', (req, res, next) => {
