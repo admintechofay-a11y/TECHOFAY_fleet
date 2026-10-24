@@ -49,8 +49,8 @@ app.use(helmet({
 // 2. CORS
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, server-to-server) or localhost
-    if (!origin || origin.includes('localhost') || origin === config.clientUrl) {
+    // Allow requests with no origin (mobile apps, curl, server-to-server), localhost, vercel.app domains, or config.clientUrl
+    if (!origin || origin.includes('localhost') || origin.includes('vercel.app') || origin === config.clientUrl) {
       return callback(null, true);
     }
     callback(new Error('Blocked by CORS policy'));

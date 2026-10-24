@@ -12,7 +12,8 @@ export function getAccessToken() {
   return memoryAccessToken;
 }
 
-const API_BASE_URL = '/api/v1';
+const RAW_API_URL = (import.meta.env?.VITE_API_BASE_URL || import.meta.env?.VITE_API_URL || '').trim();
+const API_BASE_URL = RAW_API_URL ? `${RAW_API_URL.replace(/\/+$/, '')}/api/v1` : '/api/v1';
 
 export async function apiRequest(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;

@@ -21,6 +21,7 @@
     "test": "node scripts/run-all-tests.js",
     "check:env": "node scripts/health-check.js",
     "start:api": "node apps/api/src/server.js",
+    "build": "npm --prefix apps/web run build",
     "build:web": "npm --prefix apps/web run build"
   },
   "keywords": [
