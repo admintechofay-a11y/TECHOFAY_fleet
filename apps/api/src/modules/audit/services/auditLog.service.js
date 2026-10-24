@@ -41,6 +41,13 @@ class AuditLogService {
   }
 
   /**
+   * Alias for log()
+   */
+  static async logAction(params) {
+    return this.log(params);
+  }
+
+  /**
    * Retrieve audit logs with filtering and pagination
    */
   static async getLogs(companyId, filter = {}, { page = 1, limit = 50 } = {}) {

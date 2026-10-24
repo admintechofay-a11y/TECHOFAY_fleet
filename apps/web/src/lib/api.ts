@@ -17,9 +17,13 @@ const API_BASE_URL = '/api/v1';
 export async function apiRequest(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
   const headers = {
-    'Content-Type': 'application/json',
     ...(options.headers || {})
   };
+
+  // Only set application/json if body is not FormData
+  if (!(options.body instanceof FormData) && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   if (memoryAccessToken) {
     headers['Authorization'] = `Bearer ${memoryAccessToken}`;
@@ -72,4 +76,34 @@ export async function apiRequest(endpoint, options = {}) {
   }
 
   return data;
+}
+
+export async function apiDownload(endpoint, fallbackFilename = 'download.xlsx') {
+  const url = `${API_BASE_URL}${endpoint}`;
+  const headers = {};
+  if (memoryAccessToken) {
+    headers['Authorization'] = `Bearer ${memoryAccessToken}`;
+  }
+
+  const response = await fetch(url, { headers, credentials: 'include' });
+  if (!response.ok) {
+    throw new Error(`Failed to download file (HTTP ${response.status})`);
+  }
+
+  const blob = await response.blob();
+  const disposition = response.headers.get('content-disposition');
+  let filename = fallbackFilename;
+  if (disposition && disposition.includes('filename=')) {
+    const match = disposition.match(/filename="?([^";]+)"?/);
+    if (match && match[1]) filename = decodeURIComponent(match[1]);
+  }
+
+  const blobUrl = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(blobUrl);
 }

@@ -17,6 +17,13 @@ const authRoutes = require('./modules/auth/routes/auth.routes');
 const userRoutes = require('./modules/users/routes/user.routes');
 const roleRoutes = require('./modules/roles/routes/role.routes');
 const auditRoutes = require('./modules/audit/routes/audit.routes');
+const customerRoutes = require('./modules/customers/routes/customer.routes');
+const locationRoutes = require('./modules/locations/routes/location.routes');
+const vehicleRoutes = require('./modules/vehicles/routes/vehicle.routes');
+const driverRoutes = require('./modules/drivers/routes/driver.routes');
+const documentRoutes = require('./modules/documents/routes/document.routes');
+const complianceRoutes = require('./modules/compliance/routes/compliance.routes');
+const masterRoutes = require('./modules/masterData/routes/masterImportExport.routes');
 
 const app = express();
 
@@ -119,6 +126,13 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/admin/users', userRoutes);
 app.use('/api/v1/admin/roles', roleRoutes);
 app.use('/api/v1/admin/audit-logs', auditRoutes);
+app.use('/api/v1/customers', customerRoutes);
+app.use('/api/v1/locations', locationRoutes);
+app.use('/api/v1/vehicles', vehicleRoutes);
+app.use('/api/v1/drivers', driverRoutes);
+app.use('/api/v1/documents', documentRoutes);
+app.use('/api/v1/compliance', complianceRoutes);
+app.use('/api/v1/master', masterRoutes);
 
 // 9. Catch-all 404 for Unmatched Routes
 app.use('*', (req, res, next) => {

@@ -5,6 +5,11 @@ import { DashboardPage } from './pages/DashboardPage';
 import { UsersAdminPage } from './pages/UsersAdminPage';
 import { RolesAdminPage } from './pages/RolesAdminPage';
 import { AuditLogPage } from './pages/AuditLogPage';
+import { CustomersPage } from './pages/CustomersPage';
+import { LocationsPage } from './pages/LocationsPage';
+import { VehiclesPage } from './pages/VehiclesPage';
+import { DriversPage } from './pages/DriversPage';
+import { CompliancePage } from './pages/CompliancePage';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 
@@ -35,6 +40,16 @@ function AppContent() {
     switch (currentPath) {
       case '/app/dashboard':
         return <DashboardPage />;
+      case '/app/customers':
+        return <CustomersPage />;
+      case '/app/locations':
+        return <LocationsPage />;
+      case '/app/vehicles':
+        return <VehiclesPage />;
+      case '/app/drivers':
+        return <DriversPage />;
+      case '/app/compliance':
+        return <CompliancePage />;
       case '/app/admin/users':
         return <UsersAdminPage />;
       case '/app/admin/roles':

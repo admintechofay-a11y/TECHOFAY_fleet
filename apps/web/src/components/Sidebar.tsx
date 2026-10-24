@@ -12,6 +12,7 @@ export function Sidebar({ currentPath, onNavigate }) {
     { id: 'trips', label: 'Trips & Dispatch', path: '/app/trips', icon: '🚚', module: 'trips' },
     { id: 'vehicles', label: 'Fleet & Vehicles', path: '/app/vehicles', icon: '🚛', module: 'vehicles' },
     { id: 'drivers', label: 'Drivers & Compliance', path: '/app/drivers', icon: '👤', module: 'drivers' },
+    { id: 'compliance', label: 'Expiry & Compliance', path: '/app/compliance', icon: '🛡️', module: 'vehicles' },
     { id: 'customers', label: 'Customers & Parties', path: '/app/customers', icon: '🏢', module: 'customers' },
     { id: 'locations', label: 'Location Master', path: '/app/locations', icon: '📍', module: 'locations' },
     { id: 'deliveries', label: 'Deliveries & POD', path: '/app/deliveries', icon: '✅', module: 'pod' },

@@ -22,11 +22,13 @@ const auditLogSchema = new Schema(
     },
     module: {
       type: String,
+      lowercase: true,
       enum: Object.values(SystemModule),
       required: true
     },
     action: {
       type: String,
+      uppercase: true,
       enum: Object.values(AuditAction),
       required: true
     },

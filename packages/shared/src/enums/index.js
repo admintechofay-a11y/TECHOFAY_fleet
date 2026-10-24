@@ -114,6 +114,66 @@ const ComplianceStatus = Object.freeze({
   MISSING: 'MISSING'
 });
 
+const PartyType = Object.freeze({
+  CUSTOMER: 'CUSTOMER',
+  CONSIGNOR: 'CONSIGNOR',
+  CONSIGNEE: 'CONSIGNEE',
+  TRANSPORTER: 'TRANSPORTER',
+  BOTH: 'BOTH'
+});
+
+const LocationType = Object.freeze({
+  HUB: 'HUB',
+  PICKUP: 'PICKUP',
+  DELIVERY: 'DELIVERY',
+  WAYPOINT: 'WAYPOINT'
+});
+
+const VehicleCategory = Object.freeze({
+  OWNED: 'OWNED',
+  ATTACHED: 'ATTACHED',
+  MARKET: 'MARKET'
+});
+
+const VehicleDocumentType = Object.freeze({
+  RC: 'RC',
+  INSURANCE: 'INSURANCE',
+  PUC: 'PUC',
+  FITNESS: 'FITNESS',
+  NATIONAL_PERMIT: 'NATIONAL_PERMIT',
+  STATE_PERMIT: 'STATE_PERMIT',
+  TAX_RECEIPT: 'TAX_RECEIPT',
+  OTHER: 'OTHER'
+});
+
+const DriverLicenseType = Object.freeze({
+  LMV: 'LMV',
+  HMV: 'HMV',
+  TRANS: 'TRANS',
+  TRAILER: 'TRAILER'
+});
+
+const DriverDocumentType = Object.freeze({
+  DRIVING_LICENCE: 'DRIVING_LICENCE',
+  AADHAAR: 'AADHAAR',
+  PAN: 'PAN',
+  POLICE_VERIFICATION: 'POLICE_VERIFICATION',
+  MEDICAL_FITNESS: 'MEDICAL_FITNESS',
+  OTHER: 'OTHER'
+});
+
+const NotificationCategory = Object.freeze({
+  DOCUMENT_EXPIRY: 'DOCUMENT_EXPIRY',
+  SYSTEM: 'SYSTEM',
+  TRIP_ALERT: 'TRIP_ALERT'
+});
+
+const NotificationSeverity = Object.freeze({
+  INFO: 'INFO',
+  WARNING: 'WARNING',
+  CRITICAL: 'CRITICAL'
+});
+
 module.exports = {
   UserRole,
   SystemModule,
@@ -124,5 +184,13 @@ module.exports = {
   LoadStatus,
   LrStatus,
   TripStatus,
-  ComplianceStatus
+  ComplianceStatus,
+  PartyType,
+  LocationType,
+  VehicleCategory,
+  VehicleDocumentType,
+  DriverLicenseType,
+  DriverDocumentType,
+  NotificationCategory,
+  NotificationSeverity
 };
