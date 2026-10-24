@@ -13,6 +13,8 @@ import { CompliancePage } from './pages/CompliancePage';
 import { LoadsPage } from './pages/LoadsPage';
 import { LrPage } from './pages/LrPage';
 import { BiltiesPage } from './pages/BiltiesPage';
+import { TripsPage } from './pages/TripsPage';
+import { DeliveriesPodPage } from './pages/DeliveriesPodPage';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 
@@ -49,6 +51,10 @@ function AppContent() {
         return <LrPage />;
       case '/app/bilties':
         return <BiltiesPage />;
+      case '/app/trips':
+        return <TripsPage />;
+      case '/app/deliveries':
+        return <DeliveriesPodPage />;
       case '/app/customers':
         return <CustomersPage />;
       case '/app/locations':

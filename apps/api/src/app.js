@@ -27,6 +27,8 @@ const masterRoutes = require('./modules/masterData/routes/masterImportExport.rou
 const loadRoutes = require('./modules/loads/routes/load.routes');
 const lrRoutes = require('./modules/lr/routes/lr.routes');
 const biltyRoutes = require('./modules/bilties/routes/bilty.routes');
+const tripRoutes = require('./modules/trips/routes/trip.routes');
+const podRoutes = require('./modules/pod/routes/pod.routes');
 
 const app = express();
 
@@ -139,6 +141,8 @@ app.use('/api/v1/master', masterRoutes);
 app.use('/api/v1/loads', loadRoutes);
 app.use('/api/v1/lr', lrRoutes);
 app.use('/api/v1/bilties', biltyRoutes);
+app.use('/api/v1/trips', tripRoutes);
+app.use('/api/v1/pod', podRoutes);
 
 // 9. Catch-all 404 for Unmatched Routes
 app.use('*', (req, res, next) => {

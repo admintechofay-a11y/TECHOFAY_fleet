@@ -101,8 +101,12 @@ describe('Phase 3 Integration Test Suite: Core Master Data, Compliance & Excel',
 
   after(async () => {
     if (server) {
+      if (typeof server.closeAllConnections === 'function') {
+        server.closeAllConnections();
+      }
       await new Promise((resolve) => server.close(resolve));
     }
+    await db.disconnectDatabase();
   });
 
   // =========================================================================

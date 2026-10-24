@@ -66,6 +66,9 @@ describe('Phase 2 Integration Test Suite: Auth, IAM, RBAC & Multi-Tenancy', () =
 
   after(async () => {
     if (server) {
+      if (typeof server.closeAllConnections === 'function') {
+        server.closeAllConnections();
+      }
       await new Promise((resolve) => server.close(resolve));
     }
     await db.disconnectDatabase();

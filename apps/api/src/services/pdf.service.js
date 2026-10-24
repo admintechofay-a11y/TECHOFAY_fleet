@@ -319,6 +319,189 @@ class PdfService {
       doc.end();
     });
   }
+
+  /**
+   * 4. Generate Official Trip Sheet / Dispatch Challan PDF
+   */
+  async generateTripSheetPdf(trip, company) {
+    return new Promise((resolve, reject) => {
+      const doc = new PDFDocument({ margin: 40, size: 'A4' });
+      const buffers = [];
+
+      doc.on('data', buffers.push.bind(buffers));
+      doc.on('end', () => resolve(Buffer.concat(buffers)));
+      doc.on('error', reject);
+
+      this._drawHeader(doc, company, 'Official Trip Sheet');
+
+      let y = 90;
+
+      // Trip Dispatch Header Box
+      doc.rect(40, y, 530, 48).fillAndStroke('#f8fafc', '#cbd5e1');
+      doc.fillColor('#0f172a').fontSize(9).font('Helvetica-Bold');
+      doc.text(`Trip Number: ${trip.tripNumber}`, 50, y + 8);
+      doc.text(`Status: ${trip.status}`, 240, y + 8);
+      doc.text(`Date: ${new Date(trip.startDateTime || Date.now()).toLocaleDateString('en-IN')}`, 410, y + 8);
+
+      doc.font('Helvetica').fontSize(8).fillColor('#475569');
+      doc.text(`Vehicle: ${trip.vehicleId?.plateNumber || 'N/A'} (${trip.vehicleId?.make || ''} ${trip.vehicleId?.model || ''})`, 50, y + 24);
+      doc.text(`Driver: ${trip.driverId?.name || 'N/A'} (Phone: ${trip.driverId?.phone || 'N/A'})`, 240, y + 24);
+      doc.text(`DL: ${trip.driverId?.licenseNumber || 'N/A'}`, 410, y + 24);
+
+      y += 60;
+
+      // Underlying Consignment Details
+      doc.rect(40, y, 530, 36).fillAndStroke('#ffffff', '#e2e8f0');
+      doc.fillColor('#0284c7').fontSize(8).font('Helvetica-Bold').text('LINKED CONSIGNMENT LOAD:', 50, y + 6);
+      doc.fillColor('#0f172a').fontSize(8.5).font('Helvetica');
+      doc.text(`Load No: ${trip.loadId?.loadNumber || 'N/A'}`, 50, y + 18);
+      doc.text(`Cargo: ${trip.loadId?.packageType || 'General Cargo'} - ${trip.loadId?.totalWeightMt || 0} MT (${trip.loadId?.totalQuantity || 0} Pkgs)`, 180, y + 18);
+      doc.text(`Customer: ${trip.loadId?.customerId?.name || 'N/A'}`, 400, y + 18);
+
+      y += 46;
+
+      // Ordered Stops Table
+      doc.rect(40, y, 530, 20).fill('#1e293b');
+      doc.fillColor('#ffffff').fontSize(8).font('Helvetica-Bold');
+      doc.text('SEQ', 48, y + 5);
+      doc.text('STOP TYPE', 80, y + 5);
+      doc.text('LOCATION / TERMINAL', 150, y + 5);
+      doc.text('ALLOCATED', 340, y + 5);
+      doc.text('DELIVERED', 420, y + 5);
+      doc.text('STATUS', 490, y + 5);
+
+      y += 22;
+
+      if (trip.stops && trip.stops.length > 0) {
+        trip.stops.forEach((stop, idx) => {
+          doc.rect(40, y, 530, 26).fillAndStroke(idx % 2 === 0 ? '#ffffff' : '#f8fafc', '#e2e8f0');
+          doc.fillColor('#0f172a').fontSize(8).font('Helvetica');
+          doc.text(String(stop.sequence), 52, y + 8);
+          doc.font('Helvetica-Bold').text(stop.stopType, 80, y + 8);
+          doc.font('Helvetica').text(stop.locationId?.name || 'Waypoint', 150, y + 8);
+          doc.text(`${stop.allocatedQuantity || 0} Pkgs`, 340, y + 8);
+          doc.text(`${stop.deliveredQuantity || 0} Pkgs`, 420, y + 8);
+          doc.font('Helvetica-Bold').text(stop.status || 'PENDING', 490, y + 8);
+          y += 28;
+        });
+      }
+
+      y += 15;
+
+      // Advance & Instructions Box
+      doc.rect(40, y, 530, 45).fillAndStroke('#f8fafc', '#cbd5e1');
+      doc.fillColor('#334155').fontSize(8).font('Helvetica-Bold');
+      doc.text('DRIVER DISPATCH INSTRUCTIONS & ADVANCE:', 50, y + 8);
+      doc.font('Helvetica').fontSize(8).fillColor('#64748b');
+      doc.text(`Driver Fuel/Route Advance: ₹${((trip.financials?.driverAdvancePaise || 0) / 100).toFixed(2)}`, 50, y + 24);
+      doc.text(trip.remarks || 'Maintain transit temperature/speed limits. Report breakdowns immediately to transport desk.', 220, y + 24, { width: 330 });
+
+      y += 65;
+      this._drawDivider(doc, y);
+      y += 20;
+
+      doc.fillColor('#334155').fontSize(8).font('Helvetica-Bold');
+      doc.text('Transport Dispatcher', 50, y);
+      doc.text('Driver Acknowledged & Received Advance', 240, y);
+      doc.text('Gate Security Check', 440, y);
+
+      doc.end();
+    });
+  }
+
+  /**
+   * 5. Generate Trip Settlement Statement PDF
+   */
+  async generateSettlementPdf(trip, company) {
+    return new Promise((resolve, reject) => {
+      const doc = new PDFDocument({ margin: 40, size: 'A4' });
+      const buffers = [];
+
+      doc.on('data', buffers.push.bind(buffers));
+      doc.on('end', () => resolve(Buffer.concat(buffers)));
+      doc.on('error', reject);
+
+      this._drawHeader(doc, company, 'Trip Financial Settlement');
+
+      let y = 90;
+
+      // Settlement Header
+      doc.rect(40, y, 530, 42).fillAndStroke('#f8fafc', '#cbd5e1');
+      doc.fillColor('#0f172a').fontSize(9).font('Helvetica-Bold');
+      doc.text(`Trip Ref: ${trip.tripNumber}`, 50, y + 8);
+      doc.text(`Vehicle: ${trip.vehicleId?.plateNumber || 'N/A'}`, 240, y + 8);
+      doc.text(`Settlement Date: ${new Date().toLocaleDateString('en-IN')}`, 400, y + 8);
+
+      doc.font('Helvetica').fontSize(8).fillColor('#475569');
+      doc.text(`Driver: ${trip.driverId?.name || 'N/A'}`, 50, y + 24);
+      doc.text(`Load No: ${trip.loadId?.loadNumber || 'N/A'}`, 240, y + 24);
+      doc.text(`Trip Status: ${trip.status}`, 400, y + 24);
+
+      y += 54;
+
+      // Itemized Route Expenses Table
+      doc.rect(40, y, 530, 20).fill('#1e293b');
+      doc.fillColor('#ffffff').fontSize(8).font('Helvetica-Bold');
+      doc.text('EXPENSE CATEGORY', 50, y + 5);
+      doc.text('DESCRIPTION', 180, y + 5);
+      doc.text('PAID BY', 370, y + 5);
+      doc.text('AMOUNT (INR)', 470, y + 5);
+
+      y += 22;
+
+      if (trip.expenses && trip.expenses.length > 0) {
+        trip.expenses.forEach((exp, idx) => {
+          doc.rect(40, y, 530, 24).fillAndStroke(idx % 2 === 0 ? '#ffffff' : '#f8fafc', '#e2e8f0');
+          doc.fillColor('#0f172a').fontSize(8).font('Helvetica');
+          doc.text(exp.expenseType, 50, y + 6);
+          doc.text(exp.description || 'Route expense', 180, y + 6);
+          doc.text(exp.paidBy || 'DRIVER', 370, y + 6);
+          doc.text(`₹${((exp.amountPaise || 0) / 100).toFixed(2)}`, 470, y + 6);
+          y += 26;
+        });
+      } else {
+        doc.rect(40, y, 530, 24).fillAndStroke('#ffffff', '#e2e8f0');
+        doc.fillColor('#64748b').fontSize(8).font('Helvetica').text('No line-item route expenses recorded.', 50, y + 6);
+        y += 26;
+      }
+
+      y += 15;
+
+      // Settlement Accounting Box
+      doc.rect(40, y, 530, 85).fillAndStroke('#ffffff', '#cbd5e1');
+      doc.fillColor('#1e293b').fontSize(8.5).font('Helvetica-Bold').text('FINAL TRIP RECONCILIATION:', 50, y + 8);
+
+      const grossFreight = ((trip.financials?.grossFreightPaise || 0) / 100).toFixed(2);
+      const totalExp = ((trip.financials?.totalExpensesPaise || 0) / 100).toFixed(2);
+      const adv = ((trip.financials?.driverAdvancePaise || 0) / 100).toFixed(2);
+      const net = ((trip.financials?.netSettlementPaise || 0) / 100).toFixed(2);
+
+      doc.font('Helvetica').fontSize(8).fillColor('#334155');
+      doc.text('Gross Freight Revenue:', 50, y + 26);
+      doc.text(`₹${grossFreight}`, 470, y + 26);
+
+      doc.text('Less: Total Incurred Route Expenses:', 50, y + 42);
+      doc.text(`- ₹${totalExp}`, 470, y + 42);
+
+      doc.text('Less: Advance Disbursed to Driver:', 50, y + 56);
+      doc.text(`- ₹${adv}`, 470, y + 56);
+
+      doc.font('Helvetica-Bold').fontSize(9).fillColor('#0284c7');
+      doc.text('Net Trip Balance / Margin:', 50, y + 72);
+      doc.text(`₹${net}`, 470, y + 72);
+
+      y += 105;
+      this._drawDivider(doc, y);
+      y += 20;
+
+      doc.fillColor('#334155').fontSize(8).font('Helvetica-Bold');
+      doc.text('Driver Settlement Sign', 50, y);
+      doc.text('Accounts Officer', 240, y);
+      doc.text('Transport Manager Approval', 420, y);
+
+      doc.end();
+    });
+  }
 }
 
 module.exports = new PdfService();

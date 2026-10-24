@@ -201,6 +201,22 @@ const PaymentTerms = Object.freeze({
   TO_BE_BILLED: 'TO_BE_BILLED'
 });
 
+const TripExpenseType = Object.freeze({
+  DIESEL: 'DIESEL',
+  TOLL: 'TOLL',
+  DRIVER_BHATTA: 'DRIVER_BHATTA',
+  POLICE_CHALLAN: 'POLICE_CHALLAN',
+  MAINTENANCE: 'MAINTENANCE',
+  LOADING_UNLOADING: 'LOADING_UNLOADING',
+  OTHER: 'OTHER'
+});
+
+const PodStatus = Object.freeze({
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
+});
+
 module.exports = {
   UserRole,
   SystemModule,
@@ -223,5 +239,7 @@ module.exports = {
   BiltyStatus,
   StopType,
   StopStatus,
-  PaymentTerms
+  PaymentTerms,
+  TripExpenseType,
+  PodStatus
 };
