@@ -201,12 +201,13 @@ class BiltyController {
         return next(new AppError('Consignment Bilty not found.', 404));
       }
 
-      const pdfBuffer = await pdfService.generateBiltyPdf(bilty, req.tenant.company);
+      const copy = req.query.copy || 'ORIGINAL';
+      const pdfBuffer = await pdfService.generateBiltyPdf(bilty, req.tenant.company, { copy });
 
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader(
         'Content-Disposition',
-        `inline; filename="Bilty_${bilty.biltyNumber}.pdf"`
+        `inline; filename="Bilty_${bilty.biltyNumber}_${copy}.pdf"`
       );
       res.send(pdfBuffer);
     } catch (err) {

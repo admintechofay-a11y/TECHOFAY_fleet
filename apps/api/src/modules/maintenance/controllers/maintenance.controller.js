@@ -8,6 +8,7 @@ const sequenceService = require('../../sequences/services/sequence.service');
 const auditLogService = require('../../audit/services/auditLog.service');
 const { VehicleStatus, MaintenanceStatus, SystemModule, AuditAction } = require('@fleet/shared');
 const { AppError } = require('../../../middleware/errorHandler');
+const pdfService = require('../../../services/pdf.service');
 
 class MaintenanceController {
   /**
@@ -308,6 +309,34 @@ class MaintenanceController {
           totalCostThisMonthRupees: totalCostPaise / 100
         }
       });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * Stream Maintenance Job Card PDF
+   * GET /api/v1/maintenance/:id/job-card
+   */
+  async getJobCardPdf(req, res, next) {
+    try {
+      const companyId = req.tenant.companyId;
+      const { id } = req.params;
+
+      const maintenance = await VehicleMaintenance.findOne({ _id: id, companyId, isActive: true })
+        .populate('vehicleId');
+
+      if (!maintenance) {
+        throw new AppError('Maintenance record not found', 404);
+      }
+
+      const copy = req.query.copy || 'ORIGINAL';
+      const pdfBuffer = await pdfService.generateMaintenancePdf(maintenance, req.tenant.company || {}, { copy });
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `inline; filename="JobCard-${maintenance.maintenanceNumber}-${copy}.pdf"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
+      res.status(200).send(pdfBuffer);
     } catch (err) {
       next(err);
     }

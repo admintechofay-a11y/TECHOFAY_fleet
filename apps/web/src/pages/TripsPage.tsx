@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest, apiDownload } from '../lib/api';
+import { PdfViewerModal } from '../components/PdfViewerModal';
 
 export const TripsPage: React.FC = () => {
   const [trips, setTrips] = useState<any[]>([]);
@@ -13,6 +14,20 @@ export const TripsPage: React.FC = () => {
 
   // Selected Trip Command Drawer
   const [activeTrip, setActiveTrip] = useState<any | null>(null);
+
+  // PDF Viewer Modal State
+  const [pdfModal, setPdfModal] = useState<{
+    isOpen: boolean;
+    endpoint: string;
+    title: string;
+    documentNumber: string;
+    whatsappPhone?: string;
+  }>({
+    isOpen: false,
+    endpoint: '',
+    title: '',
+    documentNumber: ''
+  });
 
   // Dispatch Modal state
   const [isDispatchOpen, setIsDispatchOpen] = useState(false);
@@ -47,6 +62,27 @@ export const TripsPage: React.FC = () => {
 
   // General Action Feedback
   const [actionMessage, setActionMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  // PDF Preview Handlers
+  const handlePreviewTripSheet = (trip: any) => {
+    setPdfModal({
+      isOpen: true,
+      endpoint: `/trips/${trip._id}/tripsheet`,
+      title: `Official Trip Sheet - ${trip.tripNumber}`,
+      documentNumber: trip.tripNumber,
+      whatsappPhone: trip.driverId?.phone || ''
+    });
+  };
+
+  const handlePreviewSettlement = (trip: any) => {
+    setPdfModal({
+      isOpen: true,
+      endpoint: `/trips/${trip._id}/settlement`,
+      title: `Trip Financial Settlement - ${trip.tripNumber}`,
+      documentNumber: trip.tripNumber,
+      whatsappPhone: trip.driverId?.phone || ''
+    });
+  };
 
   const fetchTrips = async (page = 1) => {
     setLoading(true);
@@ -520,8 +556,8 @@ export const TripsPage: React.FC = () => {
                             🕹️ Manage
                           </button>
                           <button
-                            onClick={() => apiDownload(`/trips/${trip._id}/tripsheet`, `TripSheet-${trip.tripNumber}.pdf`)}
-                            title="Download Trip Sheet PDF"
+                            onClick={() => handlePreviewTripSheet(trip)}
+                            title="Preview & Print Official Trip Sheet"
                             style={{
                               padding: '0.35rem 0.65rem',
                               borderRadius: '6px',
@@ -532,7 +568,7 @@ export const TripsPage: React.FC = () => {
                               cursor: 'pointer'
                             }}
                           >
-                            📄 Sheet
+                            👁️ Trip Sheet
                           </button>
                         </div>
                       </td>
@@ -849,16 +885,16 @@ export const TripsPage: React.FC = () => {
                 </button>
               )}
               <button
-                onClick={() => apiDownload(`/trips/${activeTrip._id}/tripsheet`, `TripSheet-${activeTrip.tripNumber}.pdf`)}
+                onClick={() => handlePreviewTripSheet(activeTrip)}
                 style={{ padding: '0.45rem 0.85rem', borderRadius: '6px', background: '#1e293b', border: '1px solid #334155', color: '#38bdf8', fontWeight: 600, cursor: 'pointer' }}
               >
-                📄 PDF Trip Sheet
+                👁️ Preview Trip Sheet
               </button>
               <button
-                onClick={() => apiDownload(`/trips/${activeTrip._id}/settlement`, `Settlement-${activeTrip.tripNumber}.pdf`)}
+                onClick={() => handlePreviewSettlement(activeTrip)}
                 style={{ padding: '0.45rem 0.85rem', borderRadius: '6px', background: '#1e293b', border: '1px solid #334155', color: '#4ade80', fontWeight: 600, cursor: 'pointer' }}
               >
-                📊 PDF Settlement
+                👁️ Preview Settlement
               </button>
             </div>
 
@@ -1378,6 +1414,16 @@ export const TripsPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* PDF Viewer & Print Modal */}
+      <PdfViewerModal
+        isOpen={pdfModal.isOpen}
+        onClose={() => setPdfModal((prev) => ({ ...prev, isOpen: false }))}
+        title={pdfModal.title}
+        endpoint={pdfModal.endpoint}
+        documentNumber={pdfModal.documentNumber}
+        whatsappPhone={pdfModal.whatsappPhone}
+      />
     </div>
   );
 };

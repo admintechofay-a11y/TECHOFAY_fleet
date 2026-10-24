@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Breadcrumbs } from '../components/Breadcrumbs';
+import { PdfViewerModal } from '../components/PdfViewerModal';
 
 interface MaintenanceRecord {
   _id: string;
@@ -52,6 +53,30 @@ export const MaintenancePage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('');
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState<MaintenanceRecord | null>(null);
+
+  // PDF Viewer Modal State
+  const [pdfModal, setPdfModal] = useState<{
+    isOpen: boolean;
+    endpoint: string;
+    title: string;
+    documentNumber: string;
+    whatsappPhone?: string;
+  }>({
+    isOpen: false,
+    endpoint: '',
+    title: '',
+    documentNumber: ''
+  });
+
+  const handlePreviewJobCard = (rec: MaintenanceRecord) => {
+    setPdfModal({
+      isOpen: true,
+      endpoint: `/maintenance/${rec._id}/job-card`,
+      title: `Maintenance Job Card & Work Order - ${rec.maintenanceNumber}`,
+      documentNumber: rec.maintenanceNumber,
+      whatsappPhone: rec.serviceCenter?.contactPhone || ''
+    });
+  };
 
   // Form State
   const [formData, setFormData] = useState({
@@ -378,6 +403,13 @@ export const MaintenancePage: React.FC = () => {
                       </span>
                     </td>
                     <td className="px-4 py-3.5 text-right space-x-2">
+                      <button
+                        onClick={() => handlePreviewJobCard(rec)}
+                        className="bg-slate-800 hover:bg-slate-700 text-sky-400 border border-slate-700 text-xs px-2.5 py-1 rounded font-semibold transition inline-flex items-center gap-1"
+                        title="Preview & Print Maintenance Job Card"
+                      >
+                        👁️ Job Card
+                      </button>
                       {rec.status === 'SCHEDULED' && (
                         <button
                           onClick={() => handleStartService(rec)}
@@ -616,6 +648,16 @@ export const MaintenancePage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* PDF Viewer & Print Modal */}
+      <PdfViewerModal
+        isOpen={pdfModal.isOpen}
+        onClose={() => setPdfModal((prev) => ({ ...prev, isOpen: false }))}
+        title={pdfModal.title}
+        endpoint={pdfModal.endpoint}
+        documentNumber={pdfModal.documentNumber}
+        whatsappPhone={pdfModal.whatsappPhone}
+      />
     </div>
   );
 };

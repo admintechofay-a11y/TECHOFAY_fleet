@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest, apiDownload } from '../lib/api';
+import { PdfViewerModal } from '../components/PdfViewerModal';
 
 export const LrPage: React.FC = () => {
   const [lrs, setLrs] = useState<any[]>([]);
@@ -15,6 +16,20 @@ export const LrPage: React.FC = () => {
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  // PDF Viewer Modal State
+  const [pdfModal, setPdfModal] = useState<{
+    isOpen: boolean;
+    endpoint: string;
+    title: string;
+    documentNumber: string;
+    whatsappPhone?: string;
+  }>({
+    isOpen: false,
+    endpoint: '',
+    title: '',
+    documentNumber: ''
+  });
 
   // Form State
   const [formData, setFormData] = useState({
@@ -126,7 +141,18 @@ export const LrPage: React.FC = () => {
     }
   };
 
-  // Download LR PDF
+  // Preview & Print LR PDF Modal
+  const handlePreviewPdf = (lr: any) => {
+    setPdfModal({
+      isOpen: true,
+      endpoint: `/lr/${lr._id}/pdf`,
+      title: `Official Lorry Receipt (LR) - ${lr.lrNumber}`,
+      documentNumber: lr.lrNumber,
+      whatsappPhone: lr.consignorId?.phone || lr.consigneeId?.phone || ''
+    });
+  };
+
+  // Direct Download LR PDF fallback
   const handleDownloadPdf = async (lrId: string, lrNumber: string) => {
     try {
       await apiDownload(`/lr/${lrId}/pdf`, `LR_${lrNumber}.pdf`);
@@ -346,12 +372,12 @@ export const LrPage: React.FC = () => {
                     <td style={{ padding: '0.75rem 1rem', textAlign: 'right' }}>
                       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                         <button
-                          onClick={() => handleDownloadPdf(lr._id, lr.lrNumber)}
+                          onClick={() => handlePreviewPdf(lr)}
                           className="btn btn-secondary"
                           style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                          title="Download streamable LR PDF"
+                          title="Preview & Print Official LR with multi-copy selector"
                         >
-                          📄 PDF
+                          👁️ Preview & Print
                         </button>
                         <button
                           onClick={() => {
@@ -577,6 +603,16 @@ export const LrPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* PDF Viewer & Print Modal */}
+      <PdfViewerModal
+        isOpen={pdfModal.isOpen}
+        onClose={() => setPdfModal((prev) => ({ ...prev, isOpen: false }))}
+        title={pdfModal.title}
+        endpoint={pdfModal.endpoint}
+        documentNumber={pdfModal.documentNumber}
+        whatsappPhone={pdfModal.whatsappPhone}
+      />
     </div>
   );
 };

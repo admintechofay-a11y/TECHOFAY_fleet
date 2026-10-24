@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest, apiDownload } from '../lib/api';
+import { PdfViewerModal } from '../components/PdfViewerModal';
 
 export const LoadsPage: React.FC = () => {
   const [loads, setLoads] = useState<any[]>([]);
@@ -19,6 +20,20 @@ export const LoadsPage: React.FC = () => {
   const [isAssignOpen, setIsAssignOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  // PDF Viewer Modal State
+  const [pdfModal, setPdfModal] = useState<{
+    isOpen: boolean;
+    endpoint: string;
+    title: string;
+    documentNumber: string;
+    whatsappPhone?: string;
+  }>({
+    isOpen: false,
+    endpoint: '',
+    title: '',
+    documentNumber: ''
+  });
 
   // New Load Form State
   const [formData, setFormData] = useState({
@@ -219,7 +234,18 @@ export const LoadsPage: React.FC = () => {
     }
   };
 
-  // Loading slip download
+  // Preview & Print Loading Slip PDF Modal
+  const handlePreviewLoadingSlip = (load: any) => {
+    setPdfModal({
+      isOpen: true,
+      endpoint: `/loads/${load._id}/loading-slip`,
+      title: `Loading Slip & Gate Pass - ${load.loadNumber}`,
+      documentNumber: load.loadNumber,
+      whatsappPhone: load.consignorId?.phone || load.consigneeId?.phone || ''
+    });
+  };
+
+  // Loading slip download fallback
   const handleDownloadLoadingSlip = async (loadId: string, loadNum: string) => {
     try {
       await apiDownload(`/loads/${loadId}/loading-slip`, `LoadingSlip_${loadNum}.pdf`);
@@ -467,12 +493,12 @@ export const LoadsPage: React.FC = () => {
                           View Stops
                         </button>
                         <button
-                          onClick={() => handleDownloadLoadingSlip(load._id, load.loadNumber)}
+                          onClick={() => handlePreviewLoadingSlip(load)}
                           className="btn btn-secondary"
                           style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                          title="Download PDF Loading Slip / Gate Pass"
+                          title="Preview & Print Official Loading Slip / Gate Pass"
                         >
-                          📄 Slip
+                          👁️ Gate Pass
                         </button>
                       </div>
                     </td>
@@ -885,11 +911,11 @@ export const LoadsPage: React.FC = () => {
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                 <button
-                  onClick={() => handleDownloadLoadingSlip(selectedLoad._id, selectedLoad.loadNumber)}
+                  onClick={() => handlePreviewLoadingSlip(selectedLoad)}
                   className="btn btn-secondary"
                   style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem' }}
                 >
-                  📄 Loading Slip (PDF)
+                  👁️ Gate Pass (PDF)
                 </button>
                 <button
                   onClick={() => setIsDetailOpen(false)}
@@ -1099,6 +1125,16 @@ export const LoadsPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* PDF Viewer & Print Modal */}
+      <PdfViewerModal
+        isOpen={pdfModal.isOpen}
+        onClose={() => setPdfModal((prev) => ({ ...prev, isOpen: false }))}
+        title={pdfModal.title}
+        endpoint={pdfModal.endpoint}
+        documentNumber={pdfModal.documentNumber}
+        whatsappPhone={pdfModal.whatsappPhone}
+      />
     </div>
   );
 };

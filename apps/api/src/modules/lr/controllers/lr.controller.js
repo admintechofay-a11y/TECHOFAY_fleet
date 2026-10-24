@@ -260,12 +260,13 @@ class LrController {
         return next(new AppError('Lorry Receipt not found.', 404));
       }
 
-      const pdfBuffer = await pdfService.generateLrPdf(lr, req.tenant.company);
+      const copy = req.query.copy || 'ORIGINAL';
+      const pdfBuffer = await pdfService.generateLrPdf(lr, req.tenant.company, { copy });
 
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader(
         'Content-Disposition',
-        `inline; filename="LR_${lr.lrNumber}.pdf"`
+        `inline; filename="LR_${lr.lrNumber}_${copy}.pdf"`
       );
       res.send(pdfBuffer);
     } catch (err) {

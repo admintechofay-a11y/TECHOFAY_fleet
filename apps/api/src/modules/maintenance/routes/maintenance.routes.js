@@ -33,6 +33,13 @@ router.get(
   maintenanceController.getById
 );
 
+// Stream Maintenance Job Card PDF
+router.get(
+  '/:id/job-card',
+  requirePermission(SystemModule.VEHICLES, ActionPermission.VIEW),
+  maintenanceController.getJobCardPdf
+);
+
 // Schedule new maintenance
 router.post(
   '/',

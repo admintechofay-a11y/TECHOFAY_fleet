@@ -689,10 +689,11 @@ class TripController {
         throw new AppError('Trip record not found', 404);
       }
 
-      const pdfBuffer = await pdfService.generateTripSheetPdf(trip, req.tenant.company || {});
+      const copy = req.query.copy || 'ORIGINAL';
+      const pdfBuffer = await pdfService.generateTripSheetPdf(trip, req.tenant.company || {}, { copy });
 
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `inline; filename="TripSheet-${trip.tripNumber}.pdf"`);
+      res.setHeader('Content-Disposition', `inline; filename="TripSheet-${trip.tripNumber}-${copy}.pdf"`);
       res.setHeader('Content-Length', pdfBuffer.length);
       res.status(200).send(pdfBuffer);
     } catch (err) {
@@ -718,10 +719,11 @@ class TripController {
         throw new AppError('Trip record not found', 404);
       }
 
-      const pdfBuffer = await pdfService.generateSettlementPdf(trip, req.tenant.company || {});
+      const copy = req.query.copy || 'ORIGINAL';
+      const pdfBuffer = await pdfService.generateSettlementPdf(trip, req.tenant.company || {}, { copy });
 
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `inline; filename="Settlement-${trip.tripNumber}.pdf"`);
+      res.setHeader('Content-Disposition', `inline; filename="Settlement-${trip.tripNumber}-${copy}.pdf"`);
       res.setHeader('Content-Length', pdfBuffer.length);
       res.status(200).send(pdfBuffer);
     } catch (err) {

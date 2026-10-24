@@ -324,12 +324,13 @@ class LoadController {
         return next(new AppError('Load not found.', 404));
       }
 
-      const pdfBuffer = await pdfService.generateLoadingSlipPdf(load, req.tenant.company);
+      const copy = req.query.copy || 'ORIGINAL';
+      const pdfBuffer = await pdfService.generateLoadingSlipPdf(load, req.tenant.company, { copy });
 
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader(
         'Content-Disposition',
-        `inline; filename="LoadingSlip_${load.loadNumber}.pdf"`
+        `inline; filename="LoadingSlip_${load.loadNumber}_${copy}.pdf"`
       );
       res.send(pdfBuffer);
     } catch (err) {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest, apiDownload } from '../lib/api';
+import { PdfViewerModal } from '../components/PdfViewerModal';
 
 export const BiltiesPage: React.FC = () => {
   const [bilties, setBilties] = useState<any[]>([]);
@@ -13,6 +14,20 @@ export const BiltiesPage: React.FC = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  // PDF Viewer Modal State
+  const [pdfModal, setPdfModal] = useState<{
+    isOpen: boolean;
+    endpoint: string;
+    title: string;
+    documentNumber: string;
+    whatsappPhone?: string;
+  }>({
+    isOpen: false,
+    endpoint: '',
+    title: '',
+    documentNumber: ''
+  });
 
   // Form State
   const [formData, setFormData] = useState({
@@ -116,6 +131,17 @@ export const BiltiesPage: React.FC = () => {
     } finally {
       setFormLoading(false);
     }
+  };
+
+  // Preview & Print Bilty PDF Modal
+  const handlePreviewPdf = (bilty: any) => {
+    setPdfModal({
+      isOpen: true,
+      endpoint: `/bilties/${bilty._id}/pdf`,
+      title: `Consignment Bilty Note - ${bilty.biltyNumber}`,
+      documentNumber: bilty.biltyNumber,
+      whatsappPhone: bilty.consignorId?.phone || bilty.consigneeId?.phone || ''
+    });
   };
 
   // Download Bilty PDF
@@ -306,12 +332,12 @@ export const BiltiesPage: React.FC = () => {
                     </td>
                     <td style={{ padding: '0.75rem 1rem', textAlign: 'right' }}>
                       <button
-                        onClick={() => handleDownloadPdf(b._id, b.biltyNumber)}
+                        onClick={() => handlePreviewPdf(b)}
                         className="btn btn-secondary"
                         style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
-                        title="Download streamable Bilty PDF"
+                        title="Preview & Print Bilty Note"
                       >
-                        📄 PDF
+                        👁️ Preview & Print
                       </button>
                     </td>
                   </tr>
@@ -471,6 +497,16 @@ export const BiltiesPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* PDF Viewer & Print Modal */}
+      <PdfViewerModal
+        isOpen={pdfModal.isOpen}
+        onClose={() => setPdfModal((prev) => ({ ...prev, isOpen: false }))}
+        title={pdfModal.title}
+        endpoint={pdfModal.endpoint}
+        documentNumber={pdfModal.documentNumber}
+        whatsappPhone={pdfModal.whatsappPhone}
+      />
     </div>
   );
 };

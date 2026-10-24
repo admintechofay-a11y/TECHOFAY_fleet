@@ -107,3 +107,26 @@ export async function apiDownload(endpoint, fallbackFilename = 'download.xlsx') 
   document.body.removeChild(a);
   window.URL.revokeObjectURL(blobUrl);
 }
+
+export async function apiFetchBlob(endpoint, fallbackFilename = 'document.pdf') {
+  const url = `${API_BASE_URL}${endpoint}`;
+  const headers = {};
+  if (memoryAccessToken) {
+    headers['Authorization'] = `Bearer ${memoryAccessToken}`;
+  }
+
+  const response = await fetch(url, { headers, credentials: 'include' });
+  if (!response.ok) {
+    throw new Error(`Failed to load document (HTTP ${response.status})`);
+  }
+
+  const blob = await response.blob();
+  const disposition = response.headers.get('content-disposition');
+  let filename = fallbackFilename;
+  if (disposition && disposition.includes('filename=')) {
+    const match = disposition.match(/filename="?([^";]+)"?/);
+    if (match && match[1]) filename = decodeURIComponent(match[1]);
+  }
+
+  return { blob, filename };
+}
