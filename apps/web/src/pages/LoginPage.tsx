@@ -149,6 +149,14 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
             <div style={{ display: 'flex', justifyContent: 'center', gap: '0.85rem', marginTop: '0.75rem', fontSize: '0.725rem' }}>
               <button
                 type="button"
+                onClick={() => onNavigatePublic('/track')}
+                style={{ background: 'none', border: 'none', color: '#10b981', fontWeight: 600, cursor: 'pointer', padding: 0 }}
+              >
+                🔍 Track Consignment
+              </button>
+              <span style={{ color: 'var(--border-medium)' }}>•</span>
+              <button
+                type="button"
                 onClick={() => onNavigatePublic('/privacy')}
                 style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: 0 }}
               >

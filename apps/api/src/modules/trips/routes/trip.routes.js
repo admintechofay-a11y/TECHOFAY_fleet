@@ -61,6 +61,12 @@ router.get(
 );
 
 router.get(
+  '/:id/route-map',
+  requirePermission(SystemModule.TRIPS, ActionPermission.VIEW),
+  require('../../tracking/controllers/publicTracking.controller').getTripRouteMap
+);
+
+router.get(
   '/:id/settlement',
   requirePermission(SystemModule.TRIPS, ActionPermission.VIEW),
   tripController.getSettlementPdf

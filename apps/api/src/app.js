@@ -35,6 +35,8 @@ const reportsRoutes = require('./modules/reports/routes/reports.routes');
 const searchRoutes = require('./modules/search/routes/search.routes');
 const settingsRoutes = require('./modules/settings/routes/settings.routes');
 const contactRoutes = require('./modules/contact/routes/contact.routes');
+const publicTrackingRoutes = require('./modules/tracking/routes/publicTracking.routes');
+const maintenanceRoutes = require('./modules/maintenance/routes/maintenance.routes');
 
 const app = express();
 
@@ -73,6 +75,7 @@ app.get('/robots.txt', (req, res) => {
 `User-agent: *
 Allow: /
 Allow: /login
+Allow: /track
 Allow: /privacy
 Allow: /terms
 Allow: /contact
@@ -101,6 +104,12 @@ app.get('/sitemap.xml', (req, res) => {
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://transport.technofay.com/track</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://transport.technofay.com/contact</loc>
@@ -241,6 +250,8 @@ app.use('/api/v1/reports', reportsRoutes);
 app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/admin/settings', settingsRoutes);
 app.use('/api/v1/contact', contactRoutes);
+app.use('/api/v1/public/track', publicTrackingRoutes);
+app.use('/api/v1/maintenance', maintenanceRoutes);
 
 // 11. Catch-all 404 for Unmatched Routes
 app.use('*', (req, res, next) => {

@@ -17,6 +17,7 @@
     "test:phase7": "node --test apps/api/tests/phase7-whatsapp.test.js",
     "test:phase8": "node --test apps/api/tests/phase8-dashboard-reports.test.js",
     "test:phase9": "node --test apps/api/tests/phase9-e2e-hardening.test.js",
+    "test:phase10": "node --test apps/api/tests/phase10-enhancements.test.js",
     "test": "node scripts/run-all-tests.js",
     "check:env": "node scripts/health-check.js",
     "start:api": "node apps/api/src/server.js",

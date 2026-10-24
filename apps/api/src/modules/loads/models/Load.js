@@ -149,6 +149,11 @@ const loadSchema = new Schema(
       trim: true,
       default: 'Bags' // Bags, Drums, Boxes, Pallets, Loose, Liquid Bulk
     },
+    materialType: {
+      type: String,
+      trim: true,
+      default: 'Industrial Freight'
+    },
     assignedVehicleId: {
       type: Schema.Types.ObjectId,
       ref: 'Vehicle',

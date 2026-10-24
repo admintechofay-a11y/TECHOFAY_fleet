@@ -178,6 +178,40 @@ flowchart TD
 
 ---
 
-### Phase 10: Optional Client-Approved Enhancements
-- **Prerequisite:** Explicit commercial authorization.
-- **Scope Options:** Live GPS telematics API integration, customer self-service tracking portal, automated customer SMS/email alerts, payment gateway integration.
+### Phase 10: Optional Client-Approved Enhancements [COMPLETED]
+- **Prerequisite:** Explicit commercial authorization (granted via user selection).
+- **Status:** **COMPLETED & VERIFIED** (8/8 Phase 10 automated tests passing, 102/102 cumulative master test suite passing across all Phases 1–10, 0 failures; Frontend production bundle built cleanly; 23 MongoDB collections verified).
+- **Core Deliverables:**
+  - **Enhancement 1: Customer Self-Service Tracking Portal**:
+    - Unauthenticated, rate-limited public tracking endpoints at `GET /api/v1/public/track/:identifier` and `GET /api/v1/public/track?q=...`.
+    - Multi-key consignment resolution supporting LR Number (`LR-YYYY-XXXX`), Bilty Number (`BL-YYYY-XXXX`), or Load Number (`LD-YYYY-XXXX`).
+    - Progressive 5-stage consignment milestone state machine (`BOOKED` $\rightarrow$ `DISPATCHED` $\rightarrow$ `IN_TRANSIT` $\rightarrow$ `OUT_FOR_DELIVERY` $\rightarrow$ `DELIVERED`).
+    - Multi-stop offload progression with timestamps, locations, and cargo statuses.
+    - Verified Proof of Delivery (POD) card with high-resolution preview link for delivered consignments.
+    - Strict PII redaction masking vehicle registration (`MH31••••`), driver phone numbers, driver licenses, and omitting all commercial freight rates / charges.
+    - SEO & Discovery integration with public route `/track` added to `robots.txt` and `sitemap.xml`.
+  - **Enhancement 2: Interactive Route & Hub Map Visualization**:
+    - Zero-dependency SVG/Canvas interactive route visualizer (`RouteMap.tsx`) with auto-bounding box coordinate scaling, responsive viewBox, and animated transit pulse.
+    - Canonical Indian logistics coordinate database (`geoCoordinates.js`) covering 36+ major industrial corridors (Delhi, Mumbai, Nagpur, Bengaluru, Chennai, Kolkata, Ahmedabad, Hyderabad, Pune, Surat, Jaipur, Indore, etc.) with fuzzy city normalization and central hub fallback.
+    - Operator trip route mapping endpoint at `GET /api/v1/trips/:id/route-map` with tenant scoping, waypoint sequence extraction, and route segment metadata.
+  - **Enhancement 3: Fleet Maintenance & Servicing Subsystem**:
+    - Data model `VehicleMaintenance.js` with compound unique index `{ companyId, maintenanceNumber }`, atomic numbering (`MNT-YYYY-XXXX`), and integer paise cost precision.
+    - Service types: `PREVENTATIVE`, `BREAKDOWN`, `ACCIDENTAL`, `STATUTORY_FITNESS`, `TIRE_ROTATION`, `ENGINE_OVERHAUL`.
+    - Priority classification: `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`.
+    - Automated vehicle status lifecycle state machine:
+      - `SCHEDULED` $\rightarrow$ vehicle remains in current operational state.
+      - `IN_PROGRESS` $\rightarrow$ automatically transitions vehicle to `UNDER_MAINTENANCE` (preventing double booking or dispatch).
+      - `COMPLETED` $\rightarrow$ automatically restores vehicle to `AVAILABLE` status for new dispatch.
+      - `CANCELLED` $\rightarrow$ releases maintenance reservation.
+    - Maintenance KPI metrics endpoint `GET /api/v1/maintenance/stats` calculating total scheduled, in-progress, completed, total cost in rupees, and high-priority alerts.
+  - **Frontend UI & Experience**:
+    - Dedicated public tracking portal (`PublicTrackingPage.tsx`) accessible at `/track` and `/track/:identifier`.
+    - Comprehensive Fleet Maintenance dashboard (`MaintenancePage.tsx`) mounted at `/app/maintenance` with KPI metrics, filter tabs, "Schedule Service" modal, and "Certify Completion" modal.
+    - Navigation integration in `Sidebar.tsx` under Fleet & Assets.
+    - Quick-tracking link in `LoginPage.tsx` footer.
+- **Verification Gate:**
+  - 8/8 automated tests passing in `apps/api/tests/phase10-enhancements.test.js`.
+  - 102/102 automated tests passing across master regression runner `scripts/run-all-tests.js` (Phases 1 through 10).
+  - 100% clean production bundle build (`npm run build:web`).
+  - Database schema & index verification passing across 23 collections (including `vehiclemaintenances` with 6 indexes).
+

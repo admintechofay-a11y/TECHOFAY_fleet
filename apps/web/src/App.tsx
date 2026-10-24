@@ -23,6 +23,8 @@ import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { ContactPage } from './pages/ContactPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { PublicTrackingPage } from './pages/PublicTrackingPage';
+import { MaintenancePage } from './pages/MaintenancePage';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
@@ -30,7 +32,12 @@ import { analytics } from './lib/analytics';
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
-  const [currentPath, setCurrentPath] = useState('/app/dashboard');
+  const [currentPath, setCurrentPath] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.pathname && window.location.pathname !== '/') {
+      return window.location.pathname;
+    }
+    return '/app/dashboard';
+  });
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Track privacy-aware analytics on path change
@@ -75,6 +82,9 @@ function AppContent() {
   if (currentPath === '/contact') {
     return <ContactPage onNavigateHome={() => setCurrentPath(isAuthenticated ? '/app/dashboard' : '/login')} />;
   }
+  if (currentPath === '/track' || currentPath.startsWith('/track/')) {
+    return <PublicTrackingPage />;
+  }
 
   if (!isAuthenticated) {
     return <LoginPage onNavigatePublic={(path) => setCurrentPath(path)} />;
@@ -111,6 +121,8 @@ function AppContent() {
         return <DriversPage />;
       case '/app/compliance':
         return <CompliancePage />;
+      case '/app/maintenance':
+        return <MaintenancePage />;
       case '/app/admin/users':
         return <UsersAdminPage />;
       case '/app/admin/roles':

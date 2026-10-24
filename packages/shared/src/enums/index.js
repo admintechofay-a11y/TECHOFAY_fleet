@@ -34,7 +34,8 @@ const SystemModule = Object.freeze({
   REPORTS: 'reports',
   IMPORT_EXPORT: 'import_export',
   SETTINGS: 'settings',
-  AUDIT: 'audit'
+  AUDIT: 'audit',
+  MAINTENANCE: 'maintenance'
 });
 
 const ActionPermission = Object.freeze({
@@ -246,6 +247,24 @@ const WhatsAppTemplateType = Object.freeze({
   LR_BILTY_SHARE: 'LR_BILTY_SHARE'
 });
 
+const MaintenanceStatus = Object.freeze({
+  SCHEDULED: 'SCHEDULED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+});
+
+const MaintenanceServiceType = Object.freeze({
+  OIL_CHANGE: 'OIL_CHANGE',
+  TYRE_ROTATION: 'TYRE_ROTATION',
+  BRAKE_OVERHAUL: 'BRAKE_OVERHAUL',
+  FITNESS_TESTING: 'FITNESS_TESTING',
+  GENERAL_SERVICE: 'GENERAL_SERVICE',
+  BATTERY_REPLACEMENT: 'BATTERY_REPLACEMENT',
+  ENGINE_TUNING: 'ENGINE_TUNING',
+  OTHER: 'OTHER'
+});
+
 module.exports = {
   UserRole,
   SystemModule,
@@ -274,5 +293,7 @@ module.exports = {
   WhatsAppProvider,
   WhatsAppMessageType,
   WhatsAppMessageStatus,
-  WhatsAppTemplateType
+  WhatsAppTemplateType,
+  MaintenanceStatus,
+  MaintenanceServiceType
 };

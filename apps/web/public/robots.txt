@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Allow: /login
+Allow: /track
 Allow: /privacy
 Allow: /terms
 Allow: /contact
