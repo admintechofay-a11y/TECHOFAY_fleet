@@ -16,6 +16,7 @@ import { BiltiesPage } from './pages/BiltiesPage';
 import { TripsPage } from './pages/TripsPage';
 import { DeliveriesPodPage } from './pages/DeliveriesPodPage';
 import { BulkDataPage } from './pages/BulkDataPage';
+import { WhatsAppPage } from './pages/WhatsAppPage';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 
@@ -58,6 +59,9 @@ function AppContent() {
         return <DeliveriesPodPage />;
       case '/app/bulk-data':
         return <BulkDataPage />;
+      case '/app/whatsapp':
+      case '/app/messages':
+        return <WhatsAppPage />;
       case '/app/customers':
         return <CustomersPage />;
       case '/app/locations':

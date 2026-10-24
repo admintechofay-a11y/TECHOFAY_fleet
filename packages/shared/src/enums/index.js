@@ -217,6 +217,35 @@ const PodStatus = Object.freeze({
   REJECTED: 'REJECTED'
 });
 
+const WhatsAppProvider = Object.freeze({
+  MOCK: 'MOCK',
+  INTERAKT: 'INTERAKT',
+  TWILIO: 'TWILIO'
+});
+
+const WhatsAppMessageType = Object.freeze({
+  TEMPLATE: 'TEMPLATE',
+  PDF: 'PDF',
+  CUSTOM_TEXT: 'CUSTOM_TEXT'
+});
+
+const WhatsAppMessageStatus = Object.freeze({
+  QUEUED: 'QUEUED',
+  DISPATCHED: 'DISPATCHED',
+  DELIVERED: 'DELIVERED',
+  READ: 'READ',
+  FAILED: 'FAILED',
+  MOCK_DELIVERED: 'MOCK_DELIVERED'
+});
+
+const WhatsAppTemplateType = Object.freeze({
+  LOAD_CREATED: 'LOAD_CREATED',
+  VEHICLE_DISPATCHED: 'VEHICLE_DISPATCHED',
+  IN_TRANSIT: 'IN_TRANSIT',
+  DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
+  LR_BILTY_SHARE: 'LR_BILTY_SHARE'
+});
+
 module.exports = {
   UserRole,
   SystemModule,
@@ -241,5 +270,9 @@ module.exports = {
   StopStatus,
   PaymentTerms,
   TripExpenseType,
-  PodStatus
+  PodStatus,
+  WhatsAppProvider,
+  WhatsAppMessageType,
+  WhatsAppMessageStatus,
+  WhatsAppTemplateType
 };

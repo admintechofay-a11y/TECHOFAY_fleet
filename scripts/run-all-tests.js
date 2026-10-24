@@ -1,5 +1,5 @@
 /**
- * Master Test Suite Runner for All Phases (1 through 6)
+ * Master Test Suite Runner for All Phases (1 through 7)
  * Runs all suites sequentially with clean process exits.
  */
 
@@ -12,7 +12,8 @@ const suites = [
   { name: 'Phase 3: Core Master Data, Compliance & Excel', path: 'apps/api/tests/phase3-master-data.test.js' },
   { name: 'Phase 4: Loads, LR, Bilty & PDF Documents', path: 'apps/api/tests/phase4-loads-documents.test.js' },
   { name: 'Phase 5: Trips, POD, Freight Settlement & Delivery', path: 'apps/api/tests/phase5-trips-pod.test.js' },
-  { name: 'Phase 6: Excel, CSV & Bulk Operations', path: 'apps/api/tests/phase6-excel-bulk.test.js' }
+  { name: 'Phase 6: Excel, CSV & Bulk Operations', path: 'apps/api/tests/phase6-excel-bulk.test.js' },
+  { name: 'Phase 7: WhatsApp Messaging, Queue & Webhooks', path: 'apps/api/tests/phase7-whatsapp.test.js' }
 ];
 
 console.log('================================================================');
@@ -47,7 +48,7 @@ for (const suite of suites) {
 }
 
 console.log('\n================================================================');
-console.log('  ALL TEST SUITES PASSED CLEANLY ACROSS PHASES 1 THROUGH 6     ');
+console.log('  ALL TEST SUITES PASSED CLEANLY ACROSS PHASES 1 THROUGH 7     ');
 console.log('================================================================');
 results.forEach((r) => {
   console.log(`  ✔ ${r.name.padEnd(52)} [${r.status}] (${r.durationMs}ms)`);

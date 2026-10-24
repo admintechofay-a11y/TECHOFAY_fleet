@@ -18,6 +18,7 @@ export function Sidebar({ currentPath, onNavigate }) {
     { id: 'deliveries', label: 'Deliveries & POD', path: '/app/deliveries', icon: '✅', module: 'pod' },
     { id: 'billing', label: 'Freight & Billing', path: '/app/billing', icon: '💰', module: 'billing' },
     { id: 'bulk', label: 'Bulk Data & Excel', path: '/app/bulk-data', icon: '📥', module: 'import_export' },
+    { id: 'whatsapp', label: 'WhatsApp Dispatch', path: '/app/whatsapp', icon: '💬', module: 'whatsapp' },
     { id: 'reports', label: 'Reports & Analytics', path: '/app/reports', icon: '📈', module: 'reports' }
   ];
 
