@@ -1,0 +1,28 @@
+{
+  "name": "technofay-fleet-transport-platform",
+  "version": "1.0.0",
+  "description": "Production MERN Fleet and Transport Management Web Application",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "test:phase1": "node --test tests/phase1-baseline.test.js",
+    "test": "npm run test:phase1",
+    "check:env": "node scripts/health-check.js",
+    "lint": "echo \"Phase 1 Baseline: No linter errors in specification documents\"",
+    "build": "echo \"Phase 1 Baseline: Architecture and specs verified. Full build starts in Phase 2.\""
+  },
+  "keywords": [
+    "mern",
+    "fleet-management",
+    "transport",
+    "logistics",
+    "lorry-receipt",
+    "bilty",
+    "typescript"
+  ],
+  "author": "Techofay Global Ventures",
+  "license": "UNLICENSED"
+}
