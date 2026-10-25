@@ -18,30 +18,29 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({ onNavigateHome, onNa
       }}
     >
       <div
-        className="glass-panel"
         style={{
           maxWidth: '560px',
           padding: '3rem 2.5rem',
           borderRadius: '20px',
-          border: '1px solid var(--border-medium)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+          backgroundColor: '#ffffff',
+          border: '1px solid var(--border-subtle)',
+          boxShadow: 'var(--shadow-xl)'
         }}
       >
         <div
           style={{
             fontSize: '4.5rem',
             fontWeight: 900,
-            color: '#38bdf8',
+            color: '#0284c7',
             letterSpacing: '-0.04em',
             lineHeight: 1,
-            marginBottom: '0.75rem',
-            textShadow: '0 0 30px rgba(56, 189, 248, 0.4)'
+            marginBottom: '0.75rem'
           }}
         >
           404
         </div>
 
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.75rem' }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
           Consignment Route Not Found
         </h1>
 

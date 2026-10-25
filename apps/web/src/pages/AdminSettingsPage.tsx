@@ -188,7 +188,7 @@ export const AdminSettingsPage: React.FC = () => {
       <div style={{ marginBottom: '1.75rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <span style={{ fontSize: '1.75rem' }}>⚙️</span>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.02em', margin: 0 }}>
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: 0 }}>
             System & Organization Settings
           </h1>
         </div>
@@ -207,9 +207,9 @@ export const AdminSettingsPage: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: notification.type === 'success' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-            border: notification.type === 'success' ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
-            color: notification.type === 'success' ? '#4ade80' : '#f87171'
+            backgroundColor: notification.type === 'success' ? '#dcfce7' : '#fee2e2',
+            border: notification.type === 'success' ? '1px solid #86efac' : '1px solid #fca5a5',
+            color: notification.type === 'success' ? '#15803d' : '#b91c1c'
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
@@ -228,8 +228,8 @@ export const AdminSettingsPage: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
           {/* Organization Legal Profile */}
-          <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '14px' }}>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f8fafc', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ padding: '1.5rem', borderRadius: '14px', backgroundColor: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span>🏢</span> Legal Entity Profile
             </h3>
 
@@ -249,8 +249,8 @@ export const AdminSettingsPage: React.FC = () => {
                     padding: '0.65rem 0.85rem',
                     borderRadius: '8px',
                     border: '1px solid var(--border-medium)',
-                    backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                    color: '#f8fafc',
+                    backgroundColor: '#ffffff',
+                    color: 'var(--text-primary)',
                     fontSize: '0.85rem'
                   }}
                 />
@@ -270,8 +270,8 @@ export const AdminSettingsPage: React.FC = () => {
                     padding: '0.65rem 0.85rem',
                     borderRadius: '8px',
                     border: '1px solid var(--border-medium)',
-                    backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                    color: '#f8fafc',
+                    backgroundColor: '#ffffff',
+                    color: 'var(--text-primary)',
                     fontSize: '0.85rem'
                   }}
                 />
@@ -293,8 +293,9 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#38bdf8',
+                      backgroundColor: '#ffffff',
+                      color: '#0284c7',
+                      fontWeight: 600,
                       fontFamily: 'monospace',
                       fontSize: '0.85rem'
                     }}
@@ -315,8 +316,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontFamily: 'monospace',
                       fontSize: '0.85rem'
                     }}
@@ -339,8 +340,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontSize: '0.85rem'
                     }}
                   />
@@ -359,8 +360,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontSize: '0.85rem'
                     }}
                   />
@@ -370,8 +371,8 @@ export const AdminSettingsPage: React.FC = () => {
           </div>
 
           {/* Operational & Compliance Defaults */}
-          <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '14px' }}>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f8fafc', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ padding: '1.5rem', borderRadius: '14px', backgroundColor: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span>⚖️</span> Transport & Compliance Defaults
             </h3>
 
@@ -396,8 +397,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#4ade80',
+                      backgroundColor: '#ffffff',
+                      color: '#16a34a',
                       fontWeight: 700,
                       fontSize: '0.85rem'
                     }}
@@ -423,8 +424,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontSize: '0.85rem'
                     }}
                   />
@@ -450,8 +451,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontSize: '0.85rem'
                     }}
                   >
@@ -476,8 +477,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontSize: '0.85rem'
                     }}
                   >
@@ -505,8 +506,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontSize: '0.85rem'
                     }}
                   >
@@ -531,8 +532,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontSize: '0.85rem'
                     }}
                   >
@@ -548,8 +549,8 @@ export const AdminSettingsPage: React.FC = () => {
         {/* Operating Address & Prefix Configuration */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
           {/* Operating Address */}
-          <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '14px' }}>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f8fafc', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ padding: '1.5rem', borderRadius: '14px', backgroundColor: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span>📍</span> Registered Office Address
             </h3>
 
@@ -573,8 +574,8 @@ export const AdminSettingsPage: React.FC = () => {
                     padding: '0.65rem 0.85rem',
                     borderRadius: '8px',
                     border: '1px solid var(--border-medium)',
-                    backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                    color: '#f8fafc',
+                    backgroundColor: '#ffffff',
+                    color: 'var(--text-primary)',
                     fontSize: '0.85rem'
                   }}
                 />
@@ -600,8 +601,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontSize: '0.85rem'
                     }}
                   />
@@ -625,8 +626,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontSize: '0.85rem'
                     }}
                   />
@@ -654,8 +655,8 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--text-primary)',
                       fontSize: '0.85rem'
                     }}
                   />
@@ -673,7 +674,7 @@ export const AdminSettingsPage: React.FC = () => {
                       padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid var(--border-medium)',
-                      backgroundColor: 'rgba(15, 23, 42, 0.3)',
+                      backgroundColor: '#f1f5f9',
                       color: 'var(--text-muted)',
                       fontSize: '0.85rem'
                     }}
@@ -684,8 +685,8 @@ export const AdminSettingsPage: React.FC = () => {
           </div>
 
           {/* Sequence Prefixes Preview */}
-          <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '14px' }}>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f8fafc', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ padding: '1.5rem', borderRadius: '14px', backgroundColor: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span>🔢</span> Document Numbering Prefixes
             </h3>
 
@@ -697,12 +698,12 @@ export const AdminSettingsPage: React.FC = () => {
                   justifyContent: 'space-between',
                   padding: '0.75rem 1rem',
                   borderRadius: '8px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                  backgroundColor: '#f8fafc',
                   border: '1px solid var(--border-subtle)'
                 }}
               >
                 <div>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#f8fafc' }}>Load Order Series</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>Load Order Series</div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Auto-incremented on order creation</div>
                 </div>
                 <span className="badge badge-cyan" style={{ fontSize: '0.75rem', fontFamily: 'monospace' }}>
@@ -717,15 +718,15 @@ export const AdminSettingsPage: React.FC = () => {
                   justifyContent: 'space-between',
                   padding: '0.75rem 1rem',
                   borderRadius: '8px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                  backgroundColor: '#f8fafc',
                   border: '1px solid var(--border-subtle)'
                 }}
               >
                 <div>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#f8fafc' }}>Lorry Receipt (LR) Series</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>Lorry Receipt (LR) Series</div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Pre-printed and digital consignment pool</div>
                 </div>
-                <span className="badge badge-purple" style={{ fontSize: '0.75rem', fontFamily: 'monospace', backgroundColor: 'rgba(168, 85, 247, 0.15)', color: '#c084fc' }}>
+                <span className="badge badge-purple" style={{ fontSize: '0.75rem', fontFamily: 'monospace', backgroundColor: 'rgba(168, 85, 247, 0.12)', color: '#7c3aed' }}>
                   {formData.settings.prefixes?.lr || 'LR'}-YYYY-XXXX
                 </span>
               </div>
@@ -737,15 +738,15 @@ export const AdminSettingsPage: React.FC = () => {
                   justifyContent: 'space-between',
                   padding: '0.75rem 1rem',
                   borderRadius: '8px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                  backgroundColor: '#f8fafc',
                   border: '1px solid var(--border-subtle)'
                 }}
               >
                 <div>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#f8fafc' }}>Bilty Consignment Series</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>Bilty Consignment Series</div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Mandatory statutory consignment notes</div>
                 </div>
-                <span className="badge badge-pink" style={{ fontSize: '0.75rem', fontFamily: 'monospace', backgroundColor: 'rgba(236, 72, 153, 0.15)', color: '#f472b6' }}>
+                <span className="badge badge-pink" style={{ fontSize: '0.75rem', fontFamily: 'monospace', backgroundColor: 'rgba(236, 72, 153, 0.12)', color: '#db2777' }}>
                   {formData.settings.prefixes?.bilty || 'BL'}-YYYY-XXXX
                 </span>
               </div>
@@ -757,15 +758,15 @@ export const AdminSettingsPage: React.FC = () => {
                   justifyContent: 'space-between',
                   padding: '0.75rem 1rem',
                   borderRadius: '8px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                  backgroundColor: '#f8fafc',
                   border: '1px solid var(--border-subtle)'
                 }}
               >
                 <div>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#f8fafc' }}>Trip Manifest Series</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>Trip Manifest Series</div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Multi-stop journey tracking manifest</div>
                 </div>
-                <span className="badge badge-warning" style={{ fontSize: '0.75rem', fontFamily: 'monospace', backgroundColor: 'rgba(234, 179, 8, 0.15)', color: '#facc15' }}>
+                <span className="badge badge-warning" style={{ fontSize: '0.75rem', fontFamily: 'monospace', backgroundColor: 'rgba(234, 179, 8, 0.15)', color: '#b45309' }}>
                   {formData.settings.prefixes?.trip || 'TR'}-YYYY-XXXX
                 </span>
               </div>

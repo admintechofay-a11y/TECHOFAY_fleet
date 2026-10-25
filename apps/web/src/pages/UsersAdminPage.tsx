@@ -92,7 +92,7 @@ export function UsersAdminPage() {
     <div className="animate-fade-in" style={{ padding: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f8fafc' }}>
+          <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)' }}>
             User Administration
           </h1>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
@@ -183,8 +183,8 @@ export function UsersAdminPage() {
             padding: '1rem'
           }}
         >
-          <div className="glass-panel" style={{ width: '100%', maxWidth: '480px', padding: '2rem', borderRadius: '16px' }}>
-            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f8fafc', marginBottom: '1.25rem' }}>
+          <div style={{ width: '100%', maxWidth: '480px', padding: '2rem', borderRadius: '16px', backgroundColor: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-xl)' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1.25rem' }}>
               Provision New User
             </h2>
 
@@ -253,7 +253,7 @@ export function UsersAdminPage() {
                   value={newRoleId}
                   onChange={(e) => setNewRoleId(e.target.value)}
                   className="input-field"
-                  style={{ backgroundColor: '#0f172a' }}
+                  style={{ backgroundColor: '#ffffff', color: 'var(--text-primary)' }}
                   required
                 >
                   {roles.map((r) => (

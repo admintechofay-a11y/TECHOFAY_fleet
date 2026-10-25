@@ -188,10 +188,10 @@ export const LrPage: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.02em', margin: 0 }}>
+            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: 0 }}>
               Lorry Receipts (LR) Management
             </h1>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '4px', background: 'rgba(37, 99, 235, 0.08)', color: '#2563eb', border: '1px solid rgba(37, 99, 235, 0.2)' }}>
               OFFICIAL GTA DOCUMENT ENGINE
             </span>
           </div>
@@ -216,36 +216,36 @@ export const LrPage: React.FC = () => {
 
       {/* Metric Cards Banner */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Total LRs Issued</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
             {pagination.total}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#38bdf8', marginTop: '0.25rem' }}>Document registry records</div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Document registry records</div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>In Transit</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#a855f7', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#7c3aed', marginTop: '0.25rem' }}>
             {lrs.filter(l => l.status === 'IN_TRANSIT' || l.status === 'LOADED').length}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#c084fc', marginTop: '0.25rem' }}>Vehicles on the road</div>
+          <div style={{ fontSize: '0.7rem', color: '#7c3aed', marginTop: '0.25rem' }}>Vehicles on the road</div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Delivered / POD</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#10b981', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#16a36a', marginTop: '0.25rem' }}>
             {lrs.filter(l => l.status === 'DELIVERED' || l.status === 'POD_CLOSED').length}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#34d399', marginTop: '0.25rem' }}>Consignee acknowledged</div>
+          <div style={{ fontSize: '0.7rem', color: '#16a36a', marginTop: '0.25rem' }}>Consignee acknowledged</div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>E-Way Bills Attached</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#38bdf8', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#2563eb', marginTop: '0.25rem' }}>
             {lrs.filter(l => l.eWayBillNumber).length}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#7dd3fc', marginTop: '0.25rem' }}>GST Compliant consignments</div>
+          <div style={{ fontSize: '0.7rem', color: '#2563eb', marginTop: '0.25rem' }}>GST Compliant consignments</div>
         </div>
       </div>
 
@@ -286,7 +286,7 @@ export const LrPage: React.FC = () => {
         <div style={{ overflowX: 'auto' }}>
           <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
-              <tr style={{ background: 'rgba(15, 23, 42, 0.8)', borderBottom: '1px solid var(--border-subtle)' }}>
+              <tr style={{ background: '#f8fafc', borderBottom: '1px solid var(--border-subtle)' }}>
                 <th style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>LR NUMBER</th>
                 <th style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>DATE</th>
                 <th style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>CONSIGNMENT LOAD</th>
@@ -314,11 +314,11 @@ export const LrPage: React.FC = () => {
                 lrs.map((lr) => (
                   <tr key={lr._id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                     <td style={{ padding: '0.75rem 1rem' }}>
-                      <span style={{ fontWeight: 700, color: '#38bdf8' }}>
+                      <span style={{ fontWeight: 700, color: '#2563eb' }}>
                         {lr.lrNumber}
                       </span>
                       {lr.isManualNumber && (
-                        <span style={{ fontSize: '0.65rem', marginLeft: '0.35rem', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.4)', borderRadius: '3px', padding: '0.1rem 0.3rem' }}>
+                        <span style={{ fontSize: '0.65rem', marginLeft: '0.35rem', color: '#d97706', border: '1px solid rgba(217, 119, 6, 0.3)', borderRadius: '3px', padding: '0.1rem 0.3rem', background: '#fef7ea' }}>
                           Manual
                         </span>
                       )}
@@ -327,7 +327,7 @@ export const LrPage: React.FC = () => {
                       {new Date(lr.issuedDate).toLocaleDateString('en-IN')}
                     </td>
                     <td style={{ padding: '0.75rem 1rem' }}>
-                      <span style={{ fontWeight: 600, color: '#f8fafc', fontSize: '0.85rem' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.85rem' }}>
                         {lr.loadId?.loadNumber || 'N/A'}
                       </span>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -335,7 +335,7 @@ export const LrPage: React.FC = () => {
                       </div>
                     </td>
                     <td style={{ padding: '0.75rem 1rem' }}>
-                      <div style={{ fontWeight: 600, color: '#f1f5f9', fontSize: '0.85rem' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.85rem' }}>
                         {lr.consignorId?.name || 'Consignor'}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -343,7 +343,7 @@ export const LrPage: React.FC = () => {
                       </div>
                     </td>
                     <td style={{ padding: '0.75rem 1rem' }}>
-                      <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '0.85rem' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.85rem' }}>
                         {lr.vehicleId?.plateNumber || 'Unassigned'}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -353,7 +353,7 @@ export const LrPage: React.FC = () => {
                     <td style={{ padding: '0.75rem 1rem' }}>
                       {lr.eWayBillNumber ? (
                         <div>
-                          <span style={{ fontWeight: 600, color: '#10b981', fontSize: '0.8rem' }}>
+                          <span style={{ fontWeight: 600, color: '#16a36a', fontSize: '0.8rem' }}>
                             {lr.eWayBillNumber}
                           </span>
                           {lr.eWayBillExpiry && (
@@ -401,7 +401,7 @@ export const LrPage: React.FC = () => {
         </div>
 
         {/* Pagination Bar */}
-        <div style={{ padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-subtle)', background: 'rgba(15, 23, 42, 0.4)' }}>
+        <div style={{ padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-subtle)', background: '#f8fafc' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
             Showing page {pagination.page} of {pagination.totalPages} ({pagination.total} LRs)
           </div>
@@ -445,7 +445,7 @@ export const LrPage: React.FC = () => {
             </div>
 
             {formError && (
-              <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', color: '#fca5a5', padding: '0.75rem', borderRadius: '4px', marginBottom: '1rem', fontSize: '0.85rem' }}>
+              <div style={{ background: '#fdf2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '0.75rem', borderRadius: '4px', marginBottom: '1rem', fontSize: '0.85rem' }}>
                 ⚠️ {formError}
               </div>
             )}
@@ -470,8 +470,8 @@ export const LrPage: React.FC = () => {
               </div>
 
               {/* Numbering Mode */}
-              <div style={{ marginBottom: '1rem', background: 'rgba(15, 23, 42, 0.5)', padding: '0.75rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem', color: '#f8fafc', fontWeight: 600 }}>
+              <div style={{ marginBottom: '1rem', background: '#f8fafc', padding: '0.75rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 600 }}>
                   <input
                     type="checkbox"
                     checked={formData.isManualNumber}
@@ -496,7 +496,7 @@ export const LrPage: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div style={{ fontSize: '0.75rem', color: '#38bdf8', marginTop: '0.4rem' }}>
+                  <div style={{ fontSize: '0.75rem', color: '#2563eb', marginTop: '0.4rem' }}>
                     Automatic sequential numbering will be generated: <strong>LR-2026-XXXXX</strong>
                   </div>
                 )}

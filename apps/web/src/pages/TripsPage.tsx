@@ -294,12 +294,12 @@ export const TripsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1440px', margin: '0 auto', color: '#f8fafc' }}>
+    <div style={{ padding: '2rem', maxWidth: '1440px', margin: '0 auto', color: 'var(--text-primary)' }}>
       {/* Header Banner */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <h1 style={{ fontSize: '1.875rem', fontWeight: 800, letterSpacing: '-0.025em', color: '#ffffff' }}>
+            <h1 style={{ fontSize: '1.875rem', fontWeight: 800, letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>
               Trip Dispatch & Operations
             </h1>
             <span
@@ -547,9 +547,9 @@ export const TripsPage: React.FC = () => {
                             style={{
                               padding: '0.35rem 0.65rem',
                               borderRadius: '6px',
-                              background: '#334155',
-                              border: '1px solid #475569',
-                              color: '#f8fafc',
+                              background: '#f1f5f9',
+                              border: '1px solid var(--border-medium)',
+                              color: 'var(--text-primary)',
                               fontSize: '0.75rem',
                               cursor: 'pointer'
                             }}

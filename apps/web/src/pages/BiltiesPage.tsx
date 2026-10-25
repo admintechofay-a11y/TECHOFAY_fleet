@@ -172,10 +172,10 @@ export const BiltiesPage: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.02em', margin: 0 }}>
+            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: 0 }}>
               Bilty / Consignment Notes
             </h1>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '4px', background: 'rgba(37, 99, 235, 0.08)', color: '#2563eb', border: '1px solid rgba(37, 99, 235, 0.2)' }}>
               GST GTA SAC 9965 (5%)
             </span>
           </div>
@@ -200,36 +200,36 @@ export const BiltiesPage: React.FC = () => {
 
       {/* Metric Cards Banner */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Total Bilties Issued</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
             {pagination.total}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#38bdf8', marginTop: '0.25rem' }}>Sequential consignment notes</div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Sequential consignment notes</div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Total Freight Value</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#38bdf8', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#2563eb', marginTop: '0.25rem' }}>
             ₹{((bilties.reduce((acc, b) => acc + (b.totalFreightPaise || 0), 0)) / 100).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#7dd3fc', marginTop: '0.25rem' }}>Gross transport revenue</div>
+          <div style={{ fontSize: '0.7rem', color: '#2563eb', marginTop: '0.25rem' }}>Gross transport revenue</div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Outstanding Balance Due</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fbbf24', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#d97706', marginTop: '0.25rem' }}>
             ₹{((bilties.reduce((acc, b) => acc + (b.balancePaise || 0), 0)) / 100).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#fcd34d', marginTop: '0.25rem' }}>Receivable on delivery</div>
+          <div style={{ fontSize: '0.7rem', color: '#d97706', marginTop: '0.25rem' }}>Receivable on delivery</div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Tax Declaration</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#10b981', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#16a36a', marginTop: '0.25rem' }}>
             5% RCM
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#6ee7b7', marginTop: '0.25rem' }}>SAC Code 9965 Applicable</div>
+          <div style={{ fontSize: '0.7rem', color: '#16a36a', marginTop: '0.25rem' }}>SAC Code 9965 Applicable</div>
         </div>
       </div>
 
@@ -266,7 +266,7 @@ export const BiltiesPage: React.FC = () => {
         <div style={{ overflowX: 'auto' }}>
           <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
-              <tr style={{ background: 'rgba(15, 23, 42, 0.8)', borderBottom: '1px solid var(--border-subtle)' }}>
+              <tr style={{ background: '#f8fafc', borderBottom: '1px solid var(--border-subtle)' }}>
                 <th style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>BILTY NUMBER</th>
                 <th style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>DATE</th>
                 <th style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>LINKED LR</th>
@@ -295,7 +295,7 @@ export const BiltiesPage: React.FC = () => {
                 bilties.map((b) => (
                   <tr key={b._id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                     <td style={{ padding: '0.75rem 1rem' }}>
-                      <span style={{ fontWeight: 700, color: '#38bdf8' }}>
+                      <span style={{ fontWeight: 700, color: '#2563eb' }}>
                         {b.biltyNumber}
                       </span>
                     </td>
@@ -303,7 +303,7 @@ export const BiltiesPage: React.FC = () => {
                       {new Date(b.createdAt).toLocaleDateString('en-IN')}
                     </td>
                     <td style={{ padding: '0.75rem 1rem' }}>
-                      <span style={{ fontWeight: 600, color: '#f8fafc', fontSize: '0.85rem' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.85rem' }}>
                         {b.lrId?.lrNumber || 'N/A'}
                       </span>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -311,7 +311,7 @@ export const BiltiesPage: React.FC = () => {
                       </div>
                     </td>
                     <td style={{ padding: '0.75rem 1rem' }}>
-                      <div style={{ fontWeight: 600, color: '#f1f5f9', fontSize: '0.85rem' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.85rem' }}>
                         {b.consignorId?.name || 'Consignor'}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -321,10 +321,10 @@ export const BiltiesPage: React.FC = () => {
                     <td style={{ padding: '0.75rem 1rem' }}>
                       {getTermsBadge(b.paymentTerms)}
                     </td>
-                    <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: '#f8fafc' }}>
+                    <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                       ₹{((b.totalFreightPaise || 0) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </td>
-                    <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: (b.balancePaise || 0) > 0 ? '#fbbf24' : '#10b981' }}>
+                    <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: (b.balancePaise || 0) > 0 ? '#d97706' : '#16a36a' }}>
                       ₹{((b.balancePaise || 0) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </td>
                     <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -348,7 +348,7 @@ export const BiltiesPage: React.FC = () => {
         </div>
 
         {/* Pagination Bar */}
-        <div style={{ padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-subtle)', background: 'rgba(15, 23, 42, 0.4)' }}>
+        <div style={{ padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-subtle)', background: '#f8fafc' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
             Showing page {pagination.page} of {pagination.totalPages} ({pagination.total} Bilties)
           </div>
@@ -392,7 +392,7 @@ export const BiltiesPage: React.FC = () => {
             </div>
 
             {formError && (
-              <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', color: '#fca5a5', padding: '0.75rem', borderRadius: '4px', marginBottom: '1rem', fontSize: '0.85rem' }}>
+              <div style={{ background: '#fdf2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '0.75rem', borderRadius: '4px', marginBottom: '1rem', fontSize: '0.85rem' }}>
                 ⚠️ {formError}
               </div>
             )}
@@ -460,16 +460,16 @@ export const BiltiesPage: React.FC = () => {
               </div>
 
               {/* Calculated Net Balance Notice */}
-              <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '6px', padding: '0.75rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ background: 'rgba(37, 99, 235, 0.06)', border: '1px solid rgba(37, 99, 235, 0.2)', borderRadius: '6px', padding: '0.75rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Net Balance Payable upon Delivery:</div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Net Balance Payable upon Delivery:</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#2563eb' }}>
                     ₹{calcBalance().toFixed(2)}
                   </div>
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8', textAlign: 'right' }}>
-                  GTA GST Rate: <strong>5.0%</strong><br />
-                  SAC Code: <strong>9965 (RCM)</strong>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textAlign: 'right' }}>
+                  GTA GST Rate: <strong style={{ color: 'var(--text-primary)' }}>5.0%</strong><br />
+                  SAC Code: <strong style={{ color: 'var(--text-primary)' }}>9965 (RCM)</strong>
                 </div>
               </div>
 

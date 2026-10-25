@@ -127,6 +127,14 @@ input, select, textarea {
   font-size: 0.8125rem;
   transition: all 0.15s ease;
   outline: none;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.input-field, .input, .select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 input:focus, select:focus, textarea:focus {

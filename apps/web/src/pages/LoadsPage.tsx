@@ -299,10 +299,10 @@ export const LoadsPage: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.02em', margin: 0 }}>
+            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: 0 }}>
               Consignment Loads Management
             </h1>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '4px', background: 'rgba(37, 99, 235, 0.08)', color: '#2563eb', border: '1px solid rgba(37, 99, 235, 0.2)' }}>
               PHASE 4 CONSIGNMENT DISPATCH
             </span>
           </div>
@@ -327,36 +327,36 @@ export const LoadsPage: React.FC = () => {
 
       {/* Metric Cards Banner */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Total Consignments</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
             {pagination.total}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#38bdf8', marginTop: '0.25rem' }}>Active company orders</div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Active company orders</div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>In Transit / Active</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#a855f7', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#7c3aed', marginTop: '0.25rem' }}>
             {loads.filter(l => l.status === 'IN_TRANSIT' || l.status === 'LOADING' || l.status === 'ASSIGNED').length}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#c084fc', marginTop: '0.25rem' }}>On-road consignments</div>
+          <div style={{ fontSize: '0.7rem', color: '#7c3aed', marginTop: '0.25rem' }}>On-road consignments</div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Completed Deliveries</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#10b981', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#16a36a', marginTop: '0.25rem' }}>
             {loads.filter(l => l.status === 'DELIVERED' || l.status === 'CLOSED').length}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#34d399', marginTop: '0.25rem' }}>Delivered successfully</div>
+          <div style={{ fontSize: '0.7rem', color: '#16a36a', marginTop: '0.25rem' }}>Delivered successfully</div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-subtle)' }}>
+        <div className="card" style={{ padding: '1.25rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Page Freight Value</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fbbf24', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#2563eb', marginTop: '0.25rem' }}>
             ₹{((loads.reduce((acc, l) => acc + (l.financials?.totalFreightPaise || 0), 0)) / 100).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#fcd34d', marginTop: '0.25rem' }}>Calculated from Paise totals</div>
+          <div style={{ fontSize: '0.7rem', color: '#2563eb', marginTop: '0.25rem' }}>Calculated from Paise totals</div>
         </div>
       </div>
 
@@ -398,7 +398,7 @@ export const LoadsPage: React.FC = () => {
         <div style={{ overflowX: 'auto' }}>
           <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
-              <tr style={{ background: 'rgba(15, 23, 42, 0.8)', borderBottom: '1px solid var(--border-subtle)' }}>
+              <tr style={{ background: '#f8fafc', borderBottom: '1px solid var(--border-subtle)' }}>
                 <th style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>LOAD #</th>
                 <th style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>CUSTOMER / ROUTE</th>
                 <th style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>CARGO</th>
@@ -430,7 +430,7 @@ export const LoadsPage: React.FC = () => {
                         onClick={() => openDetails(load._id)}
                         style={{
                           fontWeight: 700,
-                          color: '#38bdf8',
+                          color: '#2563eb',
                           cursor: 'pointer',
                           textDecoration: 'underline'
                         }}
@@ -442,7 +442,7 @@ export const LoadsPage: React.FC = () => {
                       </div>
                     </td>
                     <td style={{ padding: '0.75rem 1rem' }}>
-                      <div style={{ fontWeight: 600, color: '#f1f5f9', fontSize: '0.85rem' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.85rem' }}>
                         {load.customerId?.name || 'Unknown Party'}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -450,7 +450,7 @@ export const LoadsPage: React.FC = () => {
                       </div>
                     </td>
                     <td style={{ padding: '0.75rem 1rem' }}>
-                      <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '0.85rem' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.85rem' }}>
                         {load.totalWeightMt} MT
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -460,7 +460,7 @@ export const LoadsPage: React.FC = () => {
                     <td style={{ padding: '0.75rem 1rem' }}>
                       {load.assignedVehicleId ? (
                         <div>
-                          <span style={{ fontWeight: 600, color: '#38bdf8', fontSize: '0.85rem' }}>
+                          <span style={{ fontWeight: 600, color: '#2563eb', fontSize: '0.85rem' }}>
                             🚛 {load.assignedVehicleId.plateNumber}
                           </span>
                           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -473,10 +473,10 @@ export const LoadsPage: React.FC = () => {
                         </span>
                       )}
                     </td>
-                    <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: '#f8fafc' }}>
+                    <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                       ₹{((load.financials?.totalFreightPaise || 0) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </td>
-                    <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: (load.financials?.balancePaise || 0) > 0 ? '#fbbf24' : '#10b981' }}>
+                    <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: (load.financials?.balancePaise || 0) > 0 ? '#d97706' : '#16a36a' }}>
                       ₹{((load.financials?.balancePaise || 0) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </td>
                     <td style={{ padding: '0.75rem 1rem' }}>
@@ -510,7 +510,7 @@ export const LoadsPage: React.FC = () => {
         </div>
 
         {/* Pagination Bar */}
-        <div style={{ padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-subtle)', background: 'rgba(15, 23, 42, 0.4)' }}>
+        <div style={{ padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-subtle)', background: '#f8fafc' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
             Showing page {pagination.page} of {pagination.totalPages} ({pagination.total} consignments)
           </div>
@@ -676,10 +676,10 @@ export const LoadsPage: React.FC = () => {
                   </button>
                 </div>
 
-                <div style={{ background: 'rgba(15, 23, 42, 0.4)', borderRadius: '6px', border: '1px solid var(--border-subtle)', padding: '0.75rem' }}>
+                <div style={{ background: '#f8fafc', borderRadius: '6px', border: '1px solid var(--border-subtle)', padding: '0.75rem' }}>
                   {formData.stops.map((stop, idx) => (
                     <div key={idx} style={{ display: 'grid', gridTemplateColumns: '40px 110px 220px 100px 100px 1fr 35px', gap: '0.5rem', alignItems: 'center', marginBottom: '0.5rem' }}>
-                      <div style={{ fontWeight: 700, color: '#38bdf8', textAlign: 'center' }}>
+                      <div style={{ fontWeight: 700, color: '#2563eb', textAlign: 'center' }}>
                         #{stop.sequence}
                       </div>
 
@@ -849,12 +849,12 @@ export const LoadsPage: React.FC = () => {
                   </div>
 
                   {/* Calculated Balance Box */}
-                  <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '6px', padding: '0.6rem 0.8rem' }}>
-                    <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Total Freight / Balance</div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f8fafc' }}>
+                  <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '6px', padding: '0.6rem 0.8rem' }}>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Total Freight / Balance</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                       ₹{calcTotalFreight().toFixed(2)}
                     </div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#38bdf8' }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#0284c7' }}>
                       Bal: ₹{calcNetBalance().toFixed(2)}
                     </div>
                   </div>
@@ -927,7 +927,7 @@ export const LoadsPage: React.FC = () => {
             </div>
 
             {/* State Machine Transition Bar */}
-            <div style={{ background: 'rgba(15, 23, 42, 0.7)', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem', border: '1px solid var(--border-subtle)' }}>
               <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '0.5rem' }}>
                 Operational State Progression (State Machine Enforced)
               </div>
@@ -963,7 +963,7 @@ export const LoadsPage: React.FC = () => {
                   </button>
                 )}
                 {selectedLoad.status !== 'CLOSED' && selectedLoad.status !== 'CANCELLED' && (
-                  <button onClick={() => handleStatusTransition(selectedLoad._id, 'CANCELLED')} className="btn btn-secondary" style={{ fontSize: '0.8rem', color: '#f87171' }}>
+                  <button onClick={() => handleStatusTransition(selectedLoad._id, 'CANCELLED')} className="btn btn-secondary" style={{ fontSize: '0.8rem', color: '#dc2626' }}>
                     Cancel Consignment
                   </button>
                 )}
@@ -972,17 +972,17 @@ export const LoadsPage: React.FC = () => {
 
             {/* 2-Column Summary */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
-              <div style={{ background: 'rgba(15, 23, 42, 0.4)', padding: '1rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', color: '#38bdf8' }}>Consignment & Parties</h4>
+              <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+                <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', color: '#2563eb' }}>Consignment & Parties</h4>
                 <div style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}><strong>Customer:</strong> {selectedLoad.customerId?.name}</div>
                 <div style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}><strong>Consignor:</strong> {selectedLoad.consignorId?.name}</div>
                 <div style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}><strong>Consignee:</strong> {selectedLoad.consigneeId?.name}</div>
                 <div style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}><strong>Cargo:</strong> {selectedLoad.totalWeightMt} MT ({selectedLoad.totalQuantity} {selectedLoad.packageType})</div>
               </div>
 
-              <div style={{ background: 'rgba(15, 23, 42, 0.4)', padding: '1rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <h4 style={{ margin: 0, fontSize: '0.85rem', color: '#38bdf8' }}>Assigned Fleet Assets</h4>
+                  <h4 style={{ margin: 0, fontSize: '0.85rem', color: '#2563eb' }}>Assigned Fleet Assets</h4>
                   <button onClick={() => setIsAssignOpen(true)} className="btn btn-secondary" style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem' }}>
                     Reassign
                   </button>
@@ -1001,12 +1001,12 @@ export const LoadsPage: React.FC = () => {
 
             {/* Route Stops Table */}
             <div style={{ marginBottom: '1.5rem' }}>
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.5rem' }}>
+              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                 Ordered Stops & Location Waypoints ({selectedLoad.stops?.length || 0})
               </h4>
               <table className="table" style={{ width: '100%', fontSize: '0.85rem' }}>
                 <thead>
-                  <tr style={{ background: 'rgba(15, 23, 42, 0.6)' }}>
+                  <tr style={{ background: '#f8fafc', borderBottom: '1px solid var(--border-subtle)' }}>
                     <th style={{ padding: '0.5rem' }}>SEQ</th>
                     <th style={{ padding: '0.5rem' }}>TYPE</th>
                     <th style={{ padding: '0.5rem' }}>LOCATION</th>
@@ -1018,7 +1018,7 @@ export const LoadsPage: React.FC = () => {
                 <tbody>
                   {selectedLoad.stops?.map((stop: any, idx: number) => (
                     <tr key={idx} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                      <td style={{ padding: '0.5rem', fontWeight: 700, color: '#38bdf8' }}>#{stop.sequence}</td>
+                      <td style={{ padding: '0.5rem', fontWeight: 700, color: '#2563eb' }}>#{stop.sequence}</td>
                       <td style={{ padding: '0.5rem' }}>
                         <span className="badge" style={{ fontSize: '0.7rem' }}>{stop.stopType}</span>
                       </td>
@@ -1026,7 +1026,7 @@ export const LoadsPage: React.FC = () => {
                       <td style={{ padding: '0.5rem' }}>{stop.allocatedQuantity} Pkgs ({stop.allocatedWeightMt} MT)</td>
                       <td style={{ padding: '0.5rem' }}>{stop.deliveredQuantity || 0} Pkgs</td>
                       <td style={{ padding: '0.5rem' }}>
-                        <span className="badge" style={{ background: stop.status === 'COMPLETED' ? '#166534' : '#334155', color: '#f8fafc', fontSize: '0.7rem' }}>
+                        <span className="badge" style={{ background: stop.status === 'COMPLETED' ? '#166534' : '#f1f5f9', color: stop.status === 'COMPLETED' ? '#bbf7d0' : '#475569', fontSize: '0.7rem' }}>
                           {stop.status}
                         </span>
                       </td>
@@ -1037,15 +1037,15 @@ export const LoadsPage: React.FC = () => {
             </div>
 
             {/* Financials Breakdown (Integer Paise formatted) */}
-            <div style={{ background: 'rgba(15, 23, 42, 0.4)', padding: '1rem', borderRadius: '6px', border: '1px solid var(--border-subtle)', marginBottom: '1.5rem' }}>
-              <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', color: '#fbbf24' }}>
+            <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '6px', border: '1px solid var(--border-subtle)', marginBottom: '1.5rem' }}>
+              <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', color: '#d97706' }}>
                 Exact Financial Ledger (Stored in Integer Paise)
               </h4>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', fontSize: '0.85rem' }}>
                 <div>Base Freight: <strong>₹{((selectedLoad.financials?.baseFreightPaise || 0) / 100).toFixed(2)}</strong></div>
                 <div>Toll: <strong>₹{((selectedLoad.financials?.tollPaise || 0) / 100).toFixed(2)}</strong></div>
                 <div>Loading/Unloading: <strong>₹{(((selectedLoad.financials?.loadingPaise || 0) + (selectedLoad.financials?.unloadingPaise || 0)) / 100).toFixed(2)}</strong></div>
-                <div>Total Freight: <strong style={{ color: '#38bdf8' }}>₹{((selectedLoad.financials?.totalFreightPaise || 0) / 100).toFixed(2)}</strong></div>
+                <div>Total Freight: <strong style={{ color: '#2563eb' }}>₹{((selectedLoad.financials?.totalFreightPaise || 0) / 100).toFixed(2)}</strong></div>
                 <div>Advance Paid: <strong>₹{((selectedLoad.financials?.advancePaise || 0) / 100).toFixed(2)}</strong></div>
                 <div>Deductions: <strong>₹{((selectedLoad.financials?.deductionPaise || 0) / 100).toFixed(2)}</strong></div>
                 <div>Balance Due: <strong style={{ color: '#10b981' }}>₹{((selectedLoad.financials?.balancePaise || 0) / 100).toFixed(2)}</strong></div>
@@ -1060,8 +1060,8 @@ export const LoadsPage: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                 {selectedLoad.statusHistory?.map((h: any, i: number) => (
                   <div key={i} style={{ display: 'flex', gap: '0.75rem' }}>
-                    <span style={{ color: '#38bdf8' }}>{new Date(h.timestamp).toLocaleString('en-IN')}</span>
-                    <strong style={{ color: '#f8fafc' }}>{h.status}</strong>
+                    <span style={{ color: '#0284c7' }}>{new Date(h.timestamp).toLocaleString('en-IN')}</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>{h.status}</strong>
                     <span>{h.reason}</span>
                     <span>by {h.changedBy?.name || 'System'}</span>
                   </div>

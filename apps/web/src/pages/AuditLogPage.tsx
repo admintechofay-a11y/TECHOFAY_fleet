@@ -25,7 +25,7 @@ export function AuditLogPage() {
   return (
     <div className="animate-fade-in" style={{ padding: '2rem' }}>
       <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f8fafc' }}>
+        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)' }}>
           Operational Audit Trail
         </h1>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>

@@ -47,7 +47,7 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
         className="glass-panel animate-fade-in"
         style={{
           width: '100%',
-          maxWidth: '420px',
+          maxWidth: '440px',
           padding: '2.5rem',
           borderRadius: '16px',
           background: 'var(--bg-surface)',
@@ -171,35 +171,45 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
           </p>
 
           {onNavigatePublic && (
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.85rem', marginTop: '0.75rem', fontSize: '0.725rem' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '0.4rem 0.65rem',
+                marginTop: '0.85rem',
+                fontSize: '0.725rem'
+              }}
+            >
               <button
                 type="button"
                 onClick={() => onNavigatePublic('/track')}
-                style={{ background: 'none', border: 'none', color: '#16a36a', fontWeight: 600, cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: '#16a36a', fontWeight: 600, cursor: 'pointer', padding: 0, whiteSpace: 'nowrap' }}
               >
                 🔍 Track Consignment
               </button>
-              <span style={{ color: 'var(--border-medium)' }}>•</span>
+              <span style={{ color: 'var(--border-medium)', userSelect: 'none' }}>•</span>
               <button
                 type="button"
                 onClick={() => onNavigatePublic('/privacy')}
-                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', padding: 0, whiteSpace: 'nowrap' }}
               >
                 Privacy Policy
               </button>
-              <span style={{ color: 'var(--border-medium)' }}>•</span>
+              <span style={{ color: 'var(--border-medium)', userSelect: 'none' }}>•</span>
               <button
                 type="button"
                 onClick={() => onNavigatePublic('/terms')}
-                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', padding: 0, whiteSpace: 'nowrap' }}
               >
                 Terms of Service
               </button>
-              <span style={{ color: 'var(--border-medium)' }}>•</span>
+              <span style={{ color: 'var(--border-medium)', userSelect: 'none' }}>•</span>
               <button
                 type="button"
                 onClick={() => onNavigatePublic('/contact')}
-                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', padding: 0, whiteSpace: 'nowrap' }}
               >
                 Contact Operations
               </button>

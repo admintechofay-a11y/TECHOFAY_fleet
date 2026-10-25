@@ -166,7 +166,7 @@ export const ReportsPage: React.FC = () => {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <span style={{ fontSize: '1.75rem' }}>📈</span>
-            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.02em', margin: 0 }}>
+            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: 0 }}>
               Reports & Operational Intelligence Hub
             </h1>
           </div>
@@ -184,9 +184,9 @@ export const ReportsPage: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              backgroundColor: 'rgba(34, 197, 94, 0.12)',
-              borderColor: 'rgba(34, 197, 94, 0.3)',
-              color: '#4ade80'
+              backgroundColor: '#eafaf1',
+              borderColor: '#bbf7d0',
+              color: '#16a36a'
             }}
           >
             <span>📊</span>
@@ -200,9 +200,9 @@ export const ReportsPage: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              backgroundColor: 'rgba(56, 189, 248, 0.12)',
-              borderColor: 'rgba(56, 189, 248, 0.3)',
-              color: '#38bdf8'
+              backgroundColor: '#eff6ff',
+              borderColor: '#bfdbfe',
+              color: '#2563eb'
             }}
           >
             <span>📄</span>
@@ -319,8 +319,8 @@ export const ReportsPage: React.FC = () => {
                 fontSize: '0.75rem',
                 borderRadius: '6px',
                 border: '1px solid var(--border-medium)',
-                backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                color: '#f8fafc'
+                backgroundColor: '#ffffff',
+                color: 'var(--text-primary)'
               }}
             />
           </div>
@@ -338,8 +338,8 @@ export const ReportsPage: React.FC = () => {
                 fontSize: '0.75rem',
                 borderRadius: '6px',
                 border: '1px solid var(--border-medium)',
-                backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                color: '#f8fafc'
+                backgroundColor: '#ffffff',
+                color: 'var(--text-primary)'
               }}
             />
           </div>
@@ -354,8 +354,8 @@ export const ReportsPage: React.FC = () => {
                 fontSize: '0.75rem',
                 borderRadius: '6px',
                 border: '1px solid var(--border-medium)',
-                backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                color: '#f8fafc'
+                backgroundColor: '#ffffff',
+                color: 'var(--text-primary)'
               }}
             >
               <option value="">All Load Statuses</option>
@@ -378,8 +378,8 @@ export const ReportsPage: React.FC = () => {
                 fontSize: '0.75rem',
                 borderRadius: '6px',
                 border: '1px solid var(--border-medium)',
-                backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                color: '#f8fafc'
+                backgroundColor: '#ffffff',
+                color: 'var(--text-primary)'
               }}
             >
               <option value="">All Trip Statuses</option>
@@ -404,8 +404,8 @@ export const ReportsPage: React.FC = () => {
                   fontSize: '0.75rem',
                   borderRadius: '6px',
                   border: '1px solid var(--border-medium)',
-                  backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                  color: '#f8fafc'
+                  backgroundColor: '#ffffff',
+                  color: 'var(--text-primary)'
                 }}
               >
                 <option value="">All Entities</option>
@@ -420,8 +420,8 @@ export const ReportsPage: React.FC = () => {
                   fontSize: '0.75rem',
                   borderRadius: '6px',
                   border: '1px solid var(--border-medium)',
-                  backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                  color: '#f8fafc'
+                  backgroundColor: '#ffffff',
+                  color: 'var(--text-primary)'
                 }}
               >
                 <option value="">All Audit Statuses</option>
@@ -454,33 +454,33 @@ export const ReportsPage: React.FC = () => {
       >
         {activeTab === 'loads' && (
           <>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL LOADS</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
                 {loadsSummary.totalLoads || loadsMeta.total || 0}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL WEIGHT</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#38bdf8', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#2563eb', marginTop: '0.25rem' }}>
                 {(loadsSummary.totalWeightMt || 0).toFixed(2)} MT
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL FREIGHT</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#4ade80', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#16a36a', marginTop: '0.25rem' }}>
                 {formatCurrency(loadsSummary.totalFreight)}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>ADVANCES COLLECTED</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fbbf24', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#d97706', marginTop: '0.25rem' }}>
                 {formatCurrency(loadsSummary.totalAdvance)}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>BALANCE OUTSTANDING</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f87171', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#dc2626', marginTop: '0.25rem' }}>
                 {formatCurrency(loadsSummary.totalBalance)}
               </div>
             </div>
@@ -489,27 +489,27 @@ export const ReportsPage: React.FC = () => {
 
         {activeTab === 'trips' && (
           <>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL TRIPS</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
                 {tripsSummary.totalTrips || tripsMeta.total || 0}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL ROUTE EXPENSES</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f87171', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#dc2626', marginTop: '0.25rem' }}>
                 {formatCurrency(tripsSummary.totalExpenses)}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>DRIVER ADVANCES</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fbbf24', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#d97706', marginTop: '0.25rem' }}>
                 {formatCurrency(tripsSummary.totalAdvance)}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>NET SETTLEMENT DUE</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#38bdf8', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#2563eb', marginTop: '0.25rem' }}>
                 {formatCurrency(tripsSummary.totalBalance)}
               </div>
             </div>
@@ -518,33 +518,33 @@ export const ReportsPage: React.FC = () => {
 
         {activeTab === 'freight' && (
           <>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>CONSIGNMENTS</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
                 {freightSummary.totalRecords || freightData.length || 0}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>TAXABLE FREIGHT</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#4ade80', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#16a36a', marginTop: '0.25rem' }}>
                 {formatCurrency(freightSummary.totalTaxable)}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>GTA GST (5%) SAC 9965</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#a78bfa', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#7c3aed', marginTop: '0.25rem' }}>
                 {formatCurrency(freightSummary.totalGst)}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL INVOICE VALUE</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#38bdf8', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#2563eb', marginTop: '0.25rem' }}>
                 {formatCurrency(freightSummary.totalAmount)}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>OUTSTANDING DUE</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f87171', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#dc2626', marginTop: '0.25rem' }}>
                 {formatCurrency(freightSummary.totalBalance)}
               </div>
             </div>
@@ -553,33 +553,33 @@ export const ReportsPage: React.FC = () => {
 
         {activeTab === 'compliance' && (
           <>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL AUDITED</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
                 {complianceSummary.totalAudited || complianceData.length || 0}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>EXPIRED (ACTION REQ.)</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f87171', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#dc2626', marginTop: '0.25rem' }}>
                 {complianceSummary.expired || 0}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>EXPIRING ≤ 15 DAYS</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fb923c', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#ea580c', marginTop: '0.25rem' }}>
                 {complianceSummary.expiring15 || 0}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>EXPIRING ≤ 30 DAYS</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fbbf24', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#d97706', marginTop: '0.25rem' }}>
                 {complianceSummary.expiring30 || 0}
               </div>
             </div>
-            <div className="glass-panel" style={{ padding: '1rem', borderRadius: '10px' }}>
+            <div className="card" style={{ padding: '1rem', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', borderRadius: '10px' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>COMPLIANT / VALID</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#4ade80', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#16a36a', marginTop: '0.25rem' }}>
                 {complianceSummary.valid || 0}
               </div>
             </div>
@@ -607,7 +607,7 @@ export const ReportsPage: React.FC = () => {
             {activeTab === 'loads' && (
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.825rem' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--border-medium)', backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
+                  <tr style={{ borderBottom: '1px solid var(--border-medium)', backgroundColor: '#f8fafc' }}>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>LOAD #</th>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>DATE</th>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>CUSTOMER / PARTY</th>
@@ -630,13 +630,13 @@ export const ReportsPage: React.FC = () => {
                   ) : (
                     loadsData.map((row) => (
                       <tr key={row._id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                        <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: '#38bdf8' }}>
+                        <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: '#2563eb' }}>
                           {row.loadNumber || row.orderNumber || row._id.slice(-6)}
                         </td>
                         <td style={{ padding: '0.75rem 1rem', color: 'var(--text-secondary)' }}>
                           {formatDate(row.createdAt)}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#f8fafc', fontWeight: 500 }}>
+                        <td style={{ padding: '0.75rem 1rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                           {row.consignorId?.name || row.customer?.name || '—'}
                         </td>
                         <td style={{ padding: '0.75rem 1rem', color: 'var(--text-secondary)' }}>
@@ -645,24 +645,24 @@ export const ReportsPage: React.FC = () => {
                         <td style={{ padding: '0.75rem 1rem', color: 'var(--text-secondary)' }}>
                           {row.assignedDriverId?.name || 'Unassigned'}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#f8fafc' }}>
+                        <td style={{ padding: '0.75rem 1rem', color: 'var(--text-primary)' }}>
                           {row.actualWeightTonnage || row.weight || 0} MT
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#4ade80', fontWeight: 600 }}>
+                        <td style={{ padding: '0.75rem 1rem', color: '#16a36a', fontWeight: 600 }}>
                           {formatCurrency(
                             row.financials?.totalFreightPaise
                               ? row.financials.totalFreightPaise / 100
                               : row.charges?.totalAmount || 0
                           )}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#fbbf24' }}>
+                        <td style={{ padding: '0.75rem 1rem', color: '#d97706' }}>
                           {formatCurrency(
                             row.financials?.advancePaise
                               ? row.financials.advancePaise / 100
                               : row.charges?.advanceAmount || 0
                           )}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#f87171', fontWeight: 600 }}>
+                        <td style={{ padding: '0.75rem 1rem', color: '#dc2626', fontWeight: 600 }}>
                           {formatCurrency(
                             row.financials?.balancePaise
                               ? row.financials.balancePaise / 100
@@ -684,7 +684,7 @@ export const ReportsPage: React.FC = () => {
             {activeTab === 'trips' && (
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.825rem' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--border-medium)', backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
+                  <tr style={{ borderBottom: '1px solid var(--border-medium)', backgroundColor: '#f8fafc' }}>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>TRIP #</th>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>DATE</th>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>VEHICLE</th>
@@ -706,36 +706,36 @@ export const ReportsPage: React.FC = () => {
                   ) : (
                     tripsData.map((row) => (
                       <tr key={row._id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                        <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: '#38bdf8' }}>
+                        <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: '#2563eb' }}>
                           {row.tripNumber || row._id.slice(-6)}
                         </td>
                         <td style={{ padding: '0.75rem 1rem', color: 'var(--text-secondary)' }}>
                           {formatDate(row.createdAt)}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#f8fafc', fontWeight: 500 }}>
+                        <td style={{ padding: '0.75rem 1rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                           {row.vehicleId?.plateNumber || '—'}
                         </td>
                         <td style={{ padding: '0.75rem 1rem', color: 'var(--text-secondary)' }}>
                           {row.driverId?.name || '—'}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#f8fafc' }}>
+                        <td style={{ padding: '0.75rem 1rem', color: 'var(--text-primary)' }}>
                           {row.loadIds?.length || 0}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#f87171', fontWeight: 600 }}>
+                        <td style={{ padding: '0.75rem 1rem', color: '#dc2626', fontWeight: 600 }}>
                           {formatCurrency(
                             row.financials?.totalExpensesPaise
                               ? row.financials.totalExpensesPaise / 100
                               : row.expensesTotal || 0
                           )}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#fbbf24' }}>
+                        <td style={{ padding: '0.75rem 1rem', color: '#d97706' }}>
                           {formatCurrency(
                             row.financials?.driverAdvancePaise
                               ? row.financials.driverAdvancePaise / 100
                               : row.advancePaid || 0
                           )}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#38bdf8' }}>
+                        <td style={{ padding: '0.75rem 1rem', color: '#2563eb' }}>
                           {formatCurrency(
                             row.financials?.settlementBalancePaise
                               ? row.financials.settlementBalancePaise / 100
@@ -757,7 +757,7 @@ export const ReportsPage: React.FC = () => {
             {activeTab === 'freight' && (
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.825rem' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--border-medium)', backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
+                  <tr style={{ borderBottom: '1px solid var(--border-medium)', backgroundColor: '#f8fafc' }}>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>CONSIGNMENT / LR</th>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>DATE</th>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>CUSTOMER</th>
@@ -779,40 +779,40 @@ export const ReportsPage: React.FC = () => {
                   ) : (
                     freightData.map((row) => (
                       <tr key={row._id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                        <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: '#38bdf8' }}>
+                        <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: '#2563eb' }}>
                           {row.loadNumber || row.lrNumber || row._id.slice(-6)}
                         </td>
                         <td style={{ padding: '0.75rem 1rem', color: 'var(--text-secondary)' }}>
                           {formatDate(row.createdAt)}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#f8fafc', fontWeight: 500 }}>
+                        <td style={{ padding: '0.75rem 1rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                           {row.consignorId?.name || row.customer?.name || '—'}
                         </td>
                         <td style={{ padding: '0.75rem 1rem', color: 'var(--text-muted)' }}>
                           {row.consignorId?.gstin || '—'}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#4ade80' }}>
+                        <td style={{ padding: '0.75rem 1rem', color: '#16a36a' }}>
                           {formatCurrency(
                             row.financials?.baseFreightPaise
                               ? row.financials.baseFreightPaise / 100
                               : row.charges?.baseFreight || 0
                           )}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#a78bfa' }}>
+                        <td style={{ padding: '0.75rem 1rem', color: '#7c3aed' }}>
                           {formatCurrency(
                             row.financials?.gstPaise
                               ? row.financials.gstPaise / 100
                               : row.charges?.gstAmount || 0
                           )}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#38bdf8', fontWeight: 600 }}>
+                        <td style={{ padding: '0.75rem 1rem', color: '#2563eb', fontWeight: 600 }}>
                           {formatCurrency(
                             row.financials?.totalFreightPaise
                               ? row.financials.totalFreightPaise / 100
                               : row.charges?.totalAmount || 0
                           )}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', color: '#f87171', fontWeight: 600 }}>
+                        <td style={{ padding: '0.75rem 1rem', color: '#dc2626', fontWeight: 600 }}>
                           {formatCurrency(
                             row.financials?.balancePaise
                               ? row.financials.balancePaise / 100
@@ -834,7 +834,7 @@ export const ReportsPage: React.FC = () => {
             {activeTab === 'compliance' && (
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.825rem' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--border-medium)', backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
+                  <tr style={{ borderBottom: '1px solid var(--border-medium)', backgroundColor: '#f8fafc' }}>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>ENTITY</th>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>REGISTRATION / ID</th>
                     <th style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', fontWeight: 600 }}>DOCUMENT TYPE</th>
@@ -870,7 +870,7 @@ export const ReportsPage: React.FC = () => {
                         );
                       } else if (isWarning) {
                         statusBadge = (
-                          <span className="badge badge-warning" style={{ fontSize: '0.65rem', backgroundColor: 'rgba(249, 115, 22, 0.2)', color: '#fb923c' }}>
+                          <span className="badge badge-warning" style={{ fontSize: '0.65rem', backgroundColor: '#fef7ea', color: '#ea580c', border: '1px solid #fed7aa' }}>
                             CRITICAL (≤15d)
                           </span>
                         );
@@ -889,8 +889,9 @@ export const ReportsPage: React.FC = () => {
                               style={{
                                 fontSize: '0.65rem',
                                 fontWeight: 700,
-                                color: row.entityType === 'VEHICLE' ? '#38bdf8' : '#2dd4bf',
-                                backgroundColor: row.entityType === 'VEHICLE' ? 'rgba(56, 189, 248, 0.15)' : 'rgba(45, 212, 191, 0.15)',
+                                color: row.entityType === 'VEHICLE' ? '#2563eb' : '#0d9488',
+                                backgroundColor: row.entityType === 'VEHICLE' ? '#eff6ff' : '#f0fdfa',
+                                border: row.entityType === 'VEHICLE' ? '1px solid #bfdbfe' : '1px solid #99f6e4',
                                 padding: '0.2rem 0.5rem',
                                 borderRadius: '4px'
                               }}
@@ -898,7 +899,7 @@ export const ReportsPage: React.FC = () => {
                               {row.entityType}
                             </span>
                           </td>
-                          <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: '#f8fafc' }}>
+                          <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                             {row.entityIdentifier}
                           </td>
                           <td style={{ padding: '0.75rem 1rem', color: 'var(--text-secondary)', textTransform: 'capitalize' }}>
@@ -907,10 +908,10 @@ export const ReportsPage: React.FC = () => {
                           <td style={{ padding: '0.75rem 1rem', color: 'var(--text-muted)' }}>
                             {row.documentNumber || '—'}
                           </td>
-                          <td style={{ padding: '0.75rem 1rem', color: isExpired ? '#f87171' : '#f8fafc', fontWeight: isExpired ? 700 : 500 }}>
+                          <td style={{ padding: '0.75rem 1rem', color: isExpired ? '#dc2626' : 'var(--text-primary)', fontWeight: isExpired ? 700 : 500 }}>
                             {formatDate(row.expiryDate)}
                           </td>
-                          <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: isExpired ? '#f87171' : isWarning ? '#fb923c' : '#4ade80' }}>
+                          <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: isExpired ? '#dc2626' : isWarning ? '#ea580c' : '#16a36a' }}>
                             {row.daysRemaining < 0
                               ? `${Math.abs(row.daysRemaining)} days ago`
                               : `${row.daysRemaining} days`}
@@ -934,7 +935,7 @@ export const ReportsPage: React.FC = () => {
             style={{
               padding: '0.85rem 1.25rem',
               borderTop: '1px solid var(--border-subtle)',
-              backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              backgroundColor: '#f8fafc',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -944,11 +945,11 @@ export const ReportsPage: React.FC = () => {
           >
             <div>
               Showing page{' '}
-              <strong style={{ color: '#f8fafc' }}>
+              <strong style={{ color: 'var(--text-primary)' }}>
                 {activeTab === 'loads' ? loadsMeta.page : tripsMeta.page}
               </strong>{' '}
               of{' '}
-              <strong style={{ color: '#f8fafc' }}>
+              <strong style={{ color: 'var(--text-primary)' }}>
                 {activeTab === 'loads' ? loadsMeta.totalPages : tripsMeta.totalPages}
               </strong>{' '}
               ({activeTab === 'loads' ? loadsMeta.total : tripsMeta.total} total records)
@@ -958,6 +959,18 @@ export const ReportsPage: React.FC = () => {
               <button
                 disabled={activeTab === 'loads' ? loadsMeta.page <= 1 : tripsMeta.page <= 1}
                 onClick={() => fetchReport(activeTab === 'loads' ? loadsMeta.page - 1 : tripsMeta.page - 1)}
+                className="btn btn-secondary"
+                style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
+              >
+                Previous
+              </button>
+              <button
+                disabled={
+                  activeTab === 'loads'
+                    ? loadsMeta.page >= loadsMeta.totalPages
+                    : tripsMeta.page >= tripsMeta.totalPages
+                }
+                onClick={() => fetchReport(activeTab === 'loads' ? loadsMeta.page + 1 : tripsMeta.page + 1)}
                 className="btn btn-secondary"
                 style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
               >

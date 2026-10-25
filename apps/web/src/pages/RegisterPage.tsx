@@ -119,7 +119,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
         className="glass-panel animate-fade-in"
         style={{
           width: '100%',
-          maxWidth: '680px',
+          maxWidth: '720px',
           padding: '2.5rem',
           borderRadius: '18px',
           background: 'var(--bg-surface)',
@@ -253,13 +253,14 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
                 <label style={{ display: 'block', fontSize: '0.775rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Operating Hub (City & State)
                 </label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '0.5rem', width: '100%' }}>
                   <input
                     type="text"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="City (e.g. Ahmedabad)"
                     className="input-field"
+                    style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
                   />
                   <input
                     type="text"
@@ -267,6 +268,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
                     onChange={(e) => setState(e.target.value)}
                     placeholder="State (e.g. Gujarat)"
                     className="input-field"
+                    style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
