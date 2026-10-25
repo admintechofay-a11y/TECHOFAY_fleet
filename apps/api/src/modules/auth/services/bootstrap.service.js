@@ -234,18 +234,27 @@ class BootstrapService {
 
     // 3. Ensure or create Super Admin User
     const superAdminRole = roleMap[UserRole.SUPER_ADMIN];
-    let superAdmin = await User.findOne({ companyId: company._id, email: adminEmail.toLowerCase() });
-    if (!superAdmin) {
-      superAdmin = await User.create({
-        companyId: company._id,
-        name: adminName,
-        email: adminEmail.toLowerCase(),
-        passwordHash: adminPassword, // Pre-save hook will bcrypt hash
-        phone: phone || '+91 98765 43210',
-        roleId: superAdminRole._id,
-        isActive: true
-      });
-      console.log(`[BOOTSTRAP] Created Super Administrator: ${superAdmin.email}`);
+    let superAdmin = null;
+    if (adminEmail) {
+      superAdmin = await User.findOne({ companyId: company._id, email: adminEmail.toLowerCase() });
+      if (!superAdmin) {
+        if (!adminPassword) {
+          if (process.env.NODE_ENV === 'production') {
+            throw new Error('[FATAL] Cannot bootstrap Super Administrator in production without BOOTSTRAP_ADMIN_PASSWORD environment variable.');
+          }
+          adminPassword = 'fleet2026_SecureAdmin!';
+        }
+        superAdmin = await User.create({
+          companyId: company._id,
+          name: adminName || 'Lead System Administrator',
+          email: adminEmail.toLowerCase(),
+          passwordHash: adminPassword, // Pre-save hook will bcrypt hash
+          phone: phone || '+91 98765 43210',
+          roleId: superAdminRole._id,
+          isActive: true
+        });
+        console.log(`[BOOTSTRAP] Created Super Administrator: ${superAdmin.email}`);
+      }
     }
 
     return { company, roles: roleMap, superAdmin };

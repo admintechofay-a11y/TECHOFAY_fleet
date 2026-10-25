@@ -26,7 +26,25 @@ const config = {
   rateLimitMaxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100', 10),
   authRateLimitMaxRequests: parseInt(process.env.AUTH_RATE_LIMIT_MAX_REQUESTS || '5', 10),
   defaultTimezone: process.env.DEFAULT_TIMEZONE || 'Asia/Kolkata',
-  defaultCurrency: process.env.DEFAULT_CURRENCY || 'INR'
+  defaultCurrency: process.env.DEFAULT_CURRENCY || 'INR',
+  validateConfig: function (targetEnv = process.env.NODE_ENV) {
+    if (targetEnv === 'production') {
+      const defaultJwt = 'dev_jwt_secret_min_32_characters_for_transport_platform';
+      const defaultRefresh = 'dev_refresh_secret_min_32_characters_transport';
+      const defaultCookie = 'dev_cookie_secret_key_fleet_transport';
+
+      if (!process.env.JWT_SECRET || process.env.JWT_SECRET === defaultJwt || process.env.JWT_SECRET.length < 32) {
+        throw new Error('[FATAL] Production startup rejected: Insecure or missing JWT_SECRET (must be >= 32 characters and not development default).');
+      }
+      if (!process.env.JWT_REFRESH_SECRET || process.env.JWT_REFRESH_SECRET === defaultRefresh || process.env.JWT_REFRESH_SECRET.length < 32) {
+        throw new Error('[FATAL] Production startup rejected: Insecure or missing JWT_REFRESH_SECRET (must be >= 32 characters and not development default).');
+      }
+      if (!process.env.COOKIE_SECRET || process.env.COOKIE_SECRET === defaultCookie || process.env.COOKIE_SECRET.length < 32) {
+        throw new Error('[FATAL] Production startup rejected: Insecure or missing COOKIE_SECRET (must be >= 32 characters and not development default).');
+      }
+    }
+    return true;
+  }
 };
 
 module.exports = config;

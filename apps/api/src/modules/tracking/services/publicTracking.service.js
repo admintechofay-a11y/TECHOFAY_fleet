@@ -16,59 +16,84 @@ const { AppError } = require('../../../middleware/errorHandler');
 
 class PublicTrackingService {
   /**
-   * Track a consignment by LR number, Bilty number, or Load number
-   * @param {string} rawIdentifier Query identifier (e.g. LR-2026-0001, BL-2026-0001, LD-2026-0001)
+   * Track a consignment by unguessable tracking token, LR number, Bilty number, or Load number
+   * @param {string} rawIdentifier Query identifier (e.g. 32-char token, LR-2026-0001, BL-2026-0001, LD-2026-0001)
+   * @param {string|null} companyHint Optional companyId to resolve cross-tenant numbering collisions
+   * @param {string|null} ipAddress Client IP for audit logging
    */
-  async trackConsignment(rawIdentifier) {
+  async trackConsignment(rawIdentifier, companyHint = null, ipAddress = null) {
     if (!rawIdentifier || typeof rawIdentifier !== 'string' || !rawIdentifier.trim()) {
-      throw new AppError('Tracking identifier (LR, Bilty, or Load number) is required.', 400);
+      throw new AppError('Tracking identifier (Tracking Token, LR, Bilty, or Load number) is required.', 400);
     }
 
-    const identifier = rawIdentifier.trim().toUpperCase();
+    const trimmed = rawIdentifier.trim();
+    const identifier = trimmed.toUpperCase();
+    let isTokenLookup = false;
 
-    // 1. Try finding LR Number
-    let lr = await LrNumber.findOne({ lrNumber: identifier, isActive: true })
-      .populate('loadId')
+    // 0. Audit Log the Tracking Access Attempt
+    console.info(`[AUDIT][PUBLIC_TRACKING] ${new Date().toISOString()} | IP: ${ipAddress || 'unknown'} | Query: ${trimmed}`);
+
+    const tenantFilter = companyHint ? { companyId: companyHint } : {};
+
+    // 1. Try finding Load by unguessable tracking token first
+    let load = await Load.findOne({ trackingToken: trimmed, isActive: true })
+      .populate('customerId', 'name companyName')
       .populate('consignorId', 'name companyName')
       .populate('consigneeId', 'name companyName')
-      .populate('fromLocationId')
-      .populate('toLocationId');
+      .populate('assignedVehicleId', 'plateNumber vehicleType make model')
+      .populate('assignedDriverId', 'name')
+      .populate('stops.locationId');
 
-    let loadId = lr?.loadId?._id || lr?.loadId;
+    let lr = null;
     let bilty = null;
+    let loadId = null;
 
-    // 2. If not LR, try finding Bilty
-    if (!lr) {
-      bilty = await Bilty.findOne({ biltyNumber: identifier, isActive: true })
+    if (load) {
+      isTokenLookup = true;
+      loadId = load._id;
+    } else {
+      // 2. Try finding LR Number
+      lr = await LrNumber.findOne({ ...tenantFilter, lrNumber: identifier, isActive: true })
         .populate('loadId')
         .populate('consignorId', 'name companyName')
         .populate('consigneeId', 'name companyName')
         .populate('fromLocationId')
         .populate('toLocationId');
 
-      if (bilty) {
-        loadId = bilty.loadId?._id || bilty.loadId;
-      }
-    }
+      loadId = lr?.loadId?._id || lr?.loadId;
 
-    // 3. If neither, try finding Load directly
-    let load = null;
-    if (loadId) {
-      load = await Load.findById(loadId)
-        .populate('customerId', 'name companyName')
-        .populate('consignorId', 'name companyName')
-        .populate('consigneeId', 'name companyName')
-        .populate('assignedVehicleId', 'plateNumber vehicleType make model')
-        .populate('assignedDriverId', 'name')
-        .populate('stops.locationId');
-    } else {
-      load = await Load.findOne({ loadNumber: identifier, isActive: true })
-        .populate('customerId', 'name companyName')
-        .populate('consignorId', 'name companyName')
-        .populate('consigneeId', 'name companyName')
-        .populate('assignedVehicleId', 'plateNumber vehicleType make model')
-        .populate('assignedDriverId', 'name')
-        .populate('stops.locationId');
+      // 3. If not LR, try finding Bilty
+      if (!lr) {
+        bilty = await Bilty.findOne({ ...tenantFilter, biltyNumber: identifier, isActive: true })
+          .populate('loadId')
+          .populate('consignorId', 'name companyName')
+          .populate('consigneeId', 'name companyName')
+          .populate('fromLocationId')
+          .populate('toLocationId');
+
+        if (bilty) {
+          loadId = bilty.loadId?._id || bilty.loadId;
+        }
+      }
+
+      // 4. If neither, try finding Load directly by loadNumber
+      if (loadId) {
+        load = await Load.findById(loadId)
+          .populate('customerId', 'name companyName')
+          .populate('consignorId', 'name companyName')
+          .populate('consigneeId', 'name companyName')
+          .populate('assignedVehicleId', 'plateNumber vehicleType make model')
+          .populate('assignedDriverId', 'name')
+          .populate('stops.locationId');
+      } else {
+        load = await Load.findOne({ ...tenantFilter, loadNumber: identifier, isActive: true })
+          .populate('customerId', 'name companyName')
+          .populate('consignorId', 'name companyName')
+          .populate('consigneeId', 'name companyName')
+          .populate('assignedVehicleId', 'plateNumber vehicleType make model')
+          .populate('assignedDriverId', 'name')
+          .populate('stops.locationId');
+      }
     }
 
     if (!load) {
@@ -180,6 +205,7 @@ class PublicTrackingService {
 
     return {
       trackingNumber: identifier,
+      trackingToken: load.trackingToken || null,
       lrNumber: lr?.lrNumber || null,
       biltyNumber: bilty?.biltyNumber || null,
       loadNumber: load.loadNumber,

@@ -50,7 +50,8 @@ class MasterImportExportController {
       const result = await masterImportExportService.dryRunValidate(
         entityType,
         req.file.buffer,
-        companyId
+        companyId,
+        req.user?._id
       );
 
       res.status(200).json({
@@ -70,14 +71,15 @@ class MasterImportExportController {
     try {
       const { entityType } = req.params;
       const companyId = req.tenant.companyId;
-      const { validRecords } = req.body;
+      const { batchId, validRecords } = req.body;
 
-      if (!validRecords || !Array.isArray(validRecords) || validRecords.length === 0) {
-        return next(new AppError('No valid records supplied for confirmed import.', 400));
+      if (!batchId && (!validRecords || !Array.isArray(validRecords) || validRecords.length === 0)) {
+        return next(new AppError('No import batchId or valid records supplied for confirmed import.', 400));
       }
 
       const result = await masterImportExportService.confirmImport({
         entityType,
+        batchId,
         validRecords,
         companyId,
         actorId: req.user._id,

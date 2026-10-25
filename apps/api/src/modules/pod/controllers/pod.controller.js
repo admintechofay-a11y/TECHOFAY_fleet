@@ -8,6 +8,7 @@ const fs = require('fs');
 const ProofOfDelivery = require('../models/ProofOfDelivery');
 const Trip = require('../../trips/models/Trip');
 const Load = require('../../loads/models/Load');
+const LrNumber = require('../../lr/models/LrNumber');
 const sequenceService = require('../../sequences/services/sequence.service');
 const storageService = require('../../../services/storage.service');
 const auditLogService = require('../../audit/services/auditLog.service');
@@ -142,6 +143,16 @@ class PodController {
       const trip = await Trip.findOne({ _id: tripId, companyId, isActive: true });
       if (!trip) {
         throw new AppError('Specified Trip does not exist.', 404);
+      }
+
+      // Cross-Tenant Validation on explicit loadId or lrId
+      if (loadId) {
+        const load = await Load.findOne({ _id: loadId, companyId, isActive: true });
+        if (!load) throw new AppError('Specified Load does not exist or access denied.', 404);
+      }
+      if (lrId) {
+        const lr = await LrNumber.findOne({ _id: lrId, companyId, isActive: true });
+        if (!lr) throw new AppError('Specified LR does not exist or access denied.', 404);
       }
 
       // Check linked load

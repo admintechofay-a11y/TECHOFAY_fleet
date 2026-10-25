@@ -14,8 +14,9 @@ class PublicTrackingController {
    */
   async track(req, res, next) {
     try {
-      const identifier = req.params.identifier || req.query.q || req.query.lr || req.query.load;
-      const trackingData = await publicTrackingService.trackConsignment(identifier);
+      const identifier = req.params.identifier || req.query.q || req.query.lr || req.query.load || req.query.token;
+      const companyHint = req.query.companyId || req.query.tenant || null;
+      const trackingData = await publicTrackingService.trackConsignment(identifier, companyHint, req.ip);
 
       res.status(200).json({
         success: true,

@@ -22,6 +22,7 @@ const Bilty = require('../modules/bilties/models/Bilty');
 const Trip = require('../modules/trips/models/Trip');
 const ProofOfDelivery = require('../modules/pod/models/ProofOfDelivery');
 const ExportJob = require('../modules/masterData/models/ExportJob');
+const ImportBatch = require('../modules/masterData/models/ImportBatch');
 const sequenceService = require('../modules/sequences/services/sequence.service');
 const storageService = require('./storage.service');
 const auditLogService = require('../modules/audit/services/auditLog.service');
@@ -253,7 +254,7 @@ class MasterImportExportService {
   /**
    * 2. Dry-Run / Preview & Validation of Uploaded Master Excel Workbook
    */
-  async dryRunValidate(entityType, fileBuffer, companyId) {
+  async dryRunValidate(entityType, fileBuffer, companyId, userId = null) {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(fileBuffer);
 
@@ -591,7 +592,29 @@ class MasterImportExportService {
       }
     }
 
+    let batchId = null;
+    if (userId) {
+      try {
+        const stagedBatch = await ImportBatch.create({
+          companyId,
+          userId,
+          entityType: entityType.toLowerCase(),
+          validRecords,
+          totalRows: rows.length,
+          validCount: validRecords.length,
+          errorCount: errors.length,
+          errors,
+          status: 'STAGED',
+          expiresAt: new Date(Date.now() + 30 * 60 * 1000)
+        });
+        batchId = stagedBatch._id.toString();
+      } catch (batchErr) {
+        console.error('[ImportBatch] Staging error:', batchErr.message);
+      }
+    }
+
     return {
+      batchId,
       entityType,
       totalRows: rows.length,
       validCount: validRecords.length,
@@ -606,13 +629,35 @@ class MasterImportExportService {
   /**
    * 3. Confirmed Import Execution
    */
-  async confirmImport({ entityType, validRecords, companyId, actorId, ipAddress }) {
-    if (!validRecords || !Array.isArray(validRecords) || validRecords.length === 0) {
+  async confirmImport({ entityType, batchId = null, validRecords = null, companyId, actorId, ipAddress }) {
+    let recordsToImport = validRecords;
+
+    if (batchId) {
+      const stagedBatch = await ImportBatch.findOneAndUpdate(
+        {
+          _id: batchId,
+          companyId,
+          entityType: entityType.toLowerCase(),
+          status: 'STAGED',
+          expiresAt: { $gt: new Date() }
+        },
+        { status: 'COMMITTED' },
+        { new: false }
+      );
+
+      if (!stagedBatch) {
+        throw new AppError('Import batch was not found, has expired, or was already committed. Please upload and preview again.', 400);
+      }
+
+      recordsToImport = stagedBatch.validRecords;
+    }
+
+    if (!recordsToImport || !Array.isArray(recordsToImport) || recordsToImport.length === 0) {
       throw new AppError('No valid records provided for confirmed import.', 400);
     }
 
     let inserted = [];
-    const enriched = validRecords.map(r => ({
+    const enriched = recordsToImport.map(r => ({
       ...r,
       companyId,
       createdVia: 'EXCEL_IMPORT'

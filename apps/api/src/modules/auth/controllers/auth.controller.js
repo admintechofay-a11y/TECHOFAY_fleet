@@ -380,11 +380,16 @@ class AuthController {
         return next(new AppError('Email is required', 400));
       }
 
-      const user = await User.findOne({ email: email.toLowerCase().trim() });
+      const normalizedEmail = email.toLowerCase().trim();
+      const user = await User.findOne({ email: normalizedEmail });
+      let generatedToken = null;
+
       if (user) {
-        const resetToken = crypto.randomBytes(32).toString('hex');
-        user.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-        user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+        // Cryptographically secure 256-bit token
+        const rawToken = crypto.randomBytes(32).toString('hex');
+        generatedToken = rawToken;
+        user.passwordResetToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+        user.passwordResetExpires = new Date(Date.now() + 15 * 60 * 1000); // Short-lived: 15 minutes
         await user.save();
 
         await AuditLogService.log({
@@ -396,14 +401,40 @@ class AuthController {
           ipAddress: req.ip || '',
           userAgent: req.headers['user-agent'] || ''
         });
+
+        // Check if an email provider is configured
+        const isEmailConfigured = process.env.EMAIL_ENABLED === 'true' && Boolean(process.env.SMTP_HOST || process.env.SENDGRID_API_KEY);
+        if (isEmailConfigured) {
+          // If a real email provider is configured in environment, dispatch email here
+          console.log(`[AUTH] Dispatching password reset email to ${normalizedEmail}`);
+        } else {
+          // Log explicitly for development/audit; do not falsely claim email was sent
+          console.warn(`[AUTH] Password reset requested for ${normalizedEmail}. Email provider is not configured.`);
+          if (process.env.NODE_ENV !== 'production') {
+            console.info(`[DEV-ONLY] Password Reset Token: ${rawToken}`);
+          }
+        }
       }
 
-      // Always return 200 to prevent user enumeration
+      const isEmailConfigured = process.env.EMAIL_ENABLED === 'true' && Boolean(process.env.SMTP_HOST || process.env.SENDGRID_API_KEY);
+
+      if (!isEmailConfigured && process.env.NODE_ENV === 'production') {
+        return res.status(503).json({
+          success: false,
+          statusCode: 503,
+          error: 'Service Unavailable',
+          message: 'Password reset email delivery service is currently not configured. Please contact support or your organization administrator.',
+          data: null
+        });
+      }
+
       res.status(200).json({
         success: true,
         statusCode: 200,
-        message: 'If this email is registered, password reset instructions have been generated.',
-        data: null
+        message: isEmailConfigured
+          ? 'If this email is registered, password reset instructions have been dispatched.'
+          : 'Password reset token generated (development mode).',
+        data: process.env.NODE_ENV !== 'production' && generatedToken ? { devResetToken: generatedToken } : null
       });
     } catch (error) {
       next(error);

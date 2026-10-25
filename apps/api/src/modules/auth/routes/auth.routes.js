@@ -13,8 +13,8 @@ const router = express.Router();
 router.post('/register', authRateLimiter, AuthController.register);
 router.post('/login', authRateLimiter, AuthController.login);
 router.post('/refresh', AuthController.refresh);
-router.post('/forgot-password', AuthController.forgotPassword);
-router.post('/reset-password', AuthController.resetPassword);
+router.post('/forgot-password', authRateLimiter, AuthController.forgotPassword);
+router.post('/reset-password', authRateLimiter, AuthController.resetPassword);
 
 // Authenticated session routes
 router.post('/logout', authenticate, AuthController.logout);

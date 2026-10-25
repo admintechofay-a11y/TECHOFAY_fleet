@@ -96,7 +96,10 @@ export const BulkDataPage: React.FC = () => {
     try {
       const res = await apiRequest(`/master/confirm/${selectedEntity}`, {
         method: 'POST',
-        body: JSON.stringify({ validRecords: dryRunResult.validRecords })
+        body: JSON.stringify({
+          batchId: dryRunResult.batchId,
+          validRecords: dryRunResult.validRecords
+        })
       });
 
       setFeedback({

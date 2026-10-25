@@ -5,6 +5,10 @@
 
 const LrNumber = require('../models/LrNumber');
 const Load = require('../../loads/models/Load');
+const Vehicle = require('../../vehicles/models/Vehicle');
+const Driver = require('../../drivers/models/Driver');
+const CustomerParty = require('../../customers/models/CustomerParty');
+const Location = require('../../locations/models/Location');
 const sequenceService = require('../../sequences/services/sequence.service');
 const loadStatusService = require('../../loads/services/loadStatus.service');
 const auditLogService = require('../../audit/services/auditLog.service');
@@ -140,6 +144,30 @@ class LrController {
       } else {
         // Allocate collision-safe atomic sequence (e.g. LR-2026-00001)
         assignedLrNumber = await sequenceService.getNextSequence(companyId, 'LR', 'LR');
+      }
+
+      // Cross-Tenant Validation on any override IDs
+      if (consignorId || consigneeId) {
+        const partyIds = [consignorId, consigneeId].filter(Boolean);
+        const count = await CustomerParty.countDocuments({ _id: { $in: partyIds }, companyId, isActive: true });
+        if (count !== partyIds.length) {
+          return next(new AppError('Referenced Consignor or Consignee is invalid or belongs to another organization.', 403));
+        }
+      }
+      if (vehicleId) {
+        const v = await Vehicle.findOne({ _id: vehicleId, companyId, isActive: true });
+        if (!v) return next(new AppError('Referenced vehicle is invalid or belongs to another organization.', 403));
+      }
+      if (driverId) {
+        const d = await Driver.findOne({ _id: driverId, companyId, isActive: true });
+        if (!d) return next(new AppError('Referenced driver is invalid or belongs to another organization.', 403));
+      }
+      if (fromLocationId || toLocationId) {
+        const locIds = [fromLocationId, toLocationId].filter(Boolean);
+        const count = await Location.countDocuments({ _id: { $in: locIds }, companyId, isActive: true });
+        if (count !== locIds.length) {
+          return next(new AppError('Referenced location is invalid or belongs to another organization.', 403));
+        }
       }
 
       const finalConsignorId = consignorId || load.consignorId;

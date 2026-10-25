@@ -25,9 +25,48 @@ const HTTP_STATUS_NAMES = {
 };
 
 function errorHandler(err, req, res, next) {
-  const statusCode = err.statusCode || (res.statusCode >= 400 ? res.statusCode : 500);
+  const statusCode = err.statusCode || (err.status >= 400 ? err.status : (res.statusCode >= 400 ? res.statusCode : 500));
   const errorTitle = HTTP_STATUS_NAMES[statusCode] || 'Error';
   const correlationId = req.id || 'req_unknown';
+
+  // Handle Express Malformed JSON Body
+  if (err instanceof SyntaxError && (err.status === 400 || err.statusCode === 400) && 'body' in err) {
+    return res.status(400).json({
+      success: false,
+      statusCode: 400,
+      error: 'Bad Request',
+      message: 'Malformed JSON payload in request body.',
+      errors: [{ message: 'The request body could not be parsed as valid JSON.', code: 'INVALID_JSON' }],
+      correlationId,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Handle CORS Policy Blocks
+  if (err.message === 'Blocked by CORS policy' || err.message === 'Not allowed by CORS') {
+    return res.status(403).json({
+      success: false,
+      statusCode: 403,
+      error: 'Forbidden',
+      message: 'Cross-Origin Request blocked by security policy.',
+      errors: [],
+      correlationId,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Handle Mongoose CastError (e.g. invalid ObjectId format)
+  if (err.name === 'CastError') {
+    return res.status(400).json({
+      success: false,
+      statusCode: 400,
+      error: 'Bad Request',
+      message: `Invalid format for identifier '${err.path}'.`,
+      errors: [{ field: err.path, message: `Value '${err.value}' is not a valid format.`, code: 'INVALID_ID_FORMAT' }],
+      correlationId,
+      timestamp: new Date().toISOString()
+    });
+  }
 
   // Log error internally with correlation ID (avoid logging secrets or full passwords)
   if (statusCode >= 500) {

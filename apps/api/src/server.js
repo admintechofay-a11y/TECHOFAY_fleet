@@ -11,6 +11,9 @@ async function startServer() {
   try {
     console.log(`[BOOT] Initializing Fleet & Transport API (${config.env})...`);
 
+    // 0. Validate Production Secrets
+    config.validateConfig();
+
     // 1. Connect to Database
     await db.connectDatabase();
 
@@ -18,8 +21,8 @@ async function startServer() {
     await BootstrapService.bootstrapSystem({
       companyLegalName: 'Techofay Global Logistics Pvt Ltd',
       companyGstin: '24AAACT1234A1Z5',
-      adminEmail: process.env.BOOTSTRAP_ADMIN_EMAIL || 'admin@technofay.com',
-      adminPassword: process.env.BOOTSTRAP_ADMIN_PASSWORD || 'fleet2026_SecureAdmin!',
+      adminEmail: process.env.BOOTSTRAP_ADMIN_EMAIL || (config.env === 'production' ? null : 'admin@technofay.com'),
+      adminPassword: process.env.BOOTSTRAP_ADMIN_PASSWORD || (config.env === 'production' ? null : 'fleet2026_SecureAdmin!'),
       adminName: 'Lead System Administrator'
     });
 

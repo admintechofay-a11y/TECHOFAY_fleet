@@ -96,8 +96,28 @@ function authRateLimiter(req, res, next) {
   next();
 }
 
+// 3. Public Tracking Lookup Limiter (30 lookups per minute per IP)
+const trackingLimiterInstance = new SlidingWindowLimiter(60 * 1000, 30, 'track');
+
+function publicTrackingRateLimiter(req, res, next) {
+  const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
+  const result = trackingLimiterInstance.isAllowed(ip);
+
+  res.setHeader('X-Tracking-RateLimit-Limit', trackingLimiterInstance.maxRequests);
+  res.setHeader('X-Tracking-RateLimit-Remaining', result.remaining);
+
+  if (!result.allowed) {
+    res.setHeader('Retry-After', result.resetTime);
+    return next(new AppError(`Too many tracking lookup requests. Please retry in ${result.resetTime} seconds.`, 429));
+  }
+
+  next();
+}
+
 module.exports = {
   generalRateLimiter,
   authRateLimiter,
-  authLimiterInstance
+  authLimiterInstance,
+  publicTrackingRateLimiter,
+  trackingLimiterInstance
 };

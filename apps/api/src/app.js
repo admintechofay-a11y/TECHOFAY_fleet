@@ -40,20 +40,57 @@ const maintenanceRoutes = require('./modules/maintenance/routes/maintenance.rout
 
 const app = express();
 
-// 1. Security Headers
+// Build exact whitelist of allowed CORS origins
+const allowedOrigins = new Set([
+  config.clientUrl,
+  'https://techofay-fleet.vercel.app'
+]);
+
+if (process.env.CORS_ALLOWED_ORIGINS) {
+  process.env.CORS_ALLOWED_ORIGINS.split(',').forEach(o => {
+    const trimmed = o.trim();
+    if (trimmed) allowedOrigins.add(trimmed);
+  });
+}
+
+// 1. Security Headers with Helmet Content Security Policy
 app.use(helmet({
-  contentSecurityPolicy: false, // Allows flexible API usage
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "blob:", "https:"],
+      connectSrc: ["'self'", ...Array.from(allowedOrigins).filter(Boolean)],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: config.env === 'production' ? [] : null
+    }
+  },
   crossOriginEmbedderPolicy: false
 }));
 
-// 2. CORS
+// 2. Exact CORS Whitelist (Eliminating Wildcard vercel.app Subdomain Risk)
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, server-to-server), localhost, vercel.app domains, or config.clientUrl
-    if (!origin || origin.includes('localhost') || origin.includes('vercel.app') || origin === config.clientUrl) {
+    // Allow non-browser requests (mobile apps, server-to-server, curl)
+    if (!origin) {
       return callback(null, true);
     }
-    callback(new Error('Blocked by CORS policy'));
+
+    // In non-production environments, allow localhost / 127.0.0.1 on any port
+    if (config.env !== 'production') {
+      if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+        return callback(null, true);
+      }
+    }
+
+    // Exact origin matching
+    if (allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Blocked by CORS policy'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

@@ -62,8 +62,9 @@ const userSchema = new Schema(
   }
 );
 
-// Unique compound index: Email unique within tenant
-userSchema.index({ companyId: 1, email: 1 }, { unique: true });
+// Unique index: Email globally unique across all accounts for unambiguous login and password reset
+userSchema.index({ email: 1 }, { unique: true });
+userSchema.index({ companyId: 1, roleId: 1 });
 
 // Password hashing pre-save hook
 userSchema.pre('save', async function (next) {

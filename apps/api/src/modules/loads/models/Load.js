@@ -3,6 +3,7 @@
  * Manages Consignment Orders, Multi-Stop Waypoints, Assigned Assets, and Integer Paise Financials.
  */
 
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { LoadStatus, StopType, StopStatus } = require('@fleet/shared');
@@ -90,6 +91,12 @@ const loadSchema = new Schema(
       required: [true, 'Load number is required'],
       trim: true,
       uppercase: true
+    },
+    trackingToken: {
+      type: String,
+      unique: true,
+      sparse: true,
+      index: true
     },
     customerId: {
       type: Schema.Types.ObjectId,
@@ -211,6 +218,10 @@ const loadSchema = new Schema(
 
 // Pre-save hook: server-side recalculation of total and balance financials (Integer Paise)
 loadSchema.pre('save', function (next) {
+  if (!this.trackingToken) {
+    this.trackingToken = crypto.randomBytes(16).toString('hex');
+  }
+
   if (this.financials) {
     const f = this.financials;
     const base = Number(f.baseFreightPaise) || 0;

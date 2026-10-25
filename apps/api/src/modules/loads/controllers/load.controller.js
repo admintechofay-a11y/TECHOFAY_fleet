@@ -6,6 +6,8 @@
 const Load = require('../models/Load');
 const Vehicle = require('../../vehicles/models/Vehicle');
 const Driver = require('../../drivers/models/Driver');
+const CustomerParty = require('../../customers/models/CustomerParty');
+const Location = require('../../locations/models/Location');
 const sequenceService = require('../../sequences/services/sequence.service');
 const loadStatusService = require('../services/loadStatus.service');
 const auditLogService = require('../../audit/services/auditLog.service');
@@ -120,6 +122,32 @@ class LoadController {
 
       if (!customerId || !consignorId || !consigneeId) {
         return next(new AppError('Customer, Consignor, and Consignee are required.', 400));
+      }
+
+      // Cross-Tenant Validation: Ensure Customer, Consignor, and Consignee belong to this company
+      const partyIds = Array.from(new Set([customerId, consignorId, consigneeId].map(id => id.toString())));
+      const validPartiesCount = await CustomerParty.countDocuments({
+        _id: { $in: partyIds },
+        companyId,
+        isActive: true
+      });
+      if (validPartiesCount !== partyIds.length) {
+        return next(new AppError('One or more referenced parties (Customer, Consignor, Consignee) are invalid or belong to another organization.', 403));
+      }
+
+      // Cross-Tenant Validation: Ensure all referenced stop locations belong to this company
+      if (stops && stops.length > 0) {
+        const stopLocationIds = Array.from(new Set(stops.map(s => s.locationId?.toString()).filter(Boolean)));
+        if (stopLocationIds.length > 0) {
+          const validLocationsCount = await Location.countDocuments({
+            _id: { $in: stopLocationIds },
+            companyId,
+            isActive: true
+          });
+          if (validLocationsCount !== stopLocationIds.length) {
+            return next(new AppError('One or more referenced stop locations are invalid or belong to another organization.', 403));
+          }
+        }
       }
 
       if (!totalWeightMt || parseFloat(totalWeightMt) <= 0) {

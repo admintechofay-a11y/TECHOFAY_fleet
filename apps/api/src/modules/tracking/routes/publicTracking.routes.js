@@ -6,6 +6,10 @@
 const express = require('express');
 const router = express.Router();
 const publicTrackingController = require('../controllers/publicTracking.controller');
+const { publicTrackingRateLimiter } = require('../../../middleware/rateLimiter');
+
+// Apply dedicated rate limiter to prevent scraping
+router.use(publicTrackingRateLimiter);
 
 // 1. Root query lookup: GET /api/v1/public/track?q=LR-2026-0001
 router.get('/', publicTrackingController.track);

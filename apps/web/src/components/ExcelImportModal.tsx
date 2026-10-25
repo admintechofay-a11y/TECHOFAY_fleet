@@ -66,7 +66,10 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
     try {
       const res = await apiRequest(`/master/confirm/${entityType}`, {
         method: 'POST',
-        body: JSON.stringify({ validRecords: dryRunResult.validRecords })
+        body: JSON.stringify({
+          batchId: dryRunResult.batchId,
+          validRecords: dryRunResult.validRecords
+        })
       });
 
       setImportSuccessMsg(res.data.message || `Imported ${res.data.importedCount} records successfully.`);

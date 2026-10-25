@@ -116,4 +116,35 @@ describe('Phase 1 Acceptance Gate: Documentation & Foundation Verification', () 
     assert.ok(content.includes('WHATSAPP_PROVIDER=fake'), 'Must default to fake/mock WhatsApp adapter');
   });
 
+  test('Phase 1 Security: validateConfig enforces strong secrets in production', () => {
+    const config = require('../apps/api/src/config/env');
+    assert.equal(typeof config.validateConfig, 'function', 'validateConfig must be exported from env config');
+    
+    // In production without 32+ char secret, it must throw
+    const originalSecret = config.jwtSecret;
+    try {
+      config.jwtSecret = 'short-secret';
+      assert.throws(() => {
+        config.validateConfig('production');
+      }, /Insecure or missing JWT_SECRET/);
+    } finally {
+      config.jwtSecret = originalSecret;
+    }
+  });
+
+  test('Phase 1 Security: ImportBatch model stages ephemeral records with TTL', () => {
+    const ImportBatch = require('../apps/api/src/modules/masterData/models/ImportBatch');
+    assert.ok(ImportBatch.schema.paths.expiresAt, 'ImportBatch must have expiresAt TTL path');
+    assert.ok(ImportBatch.schema.paths.status, 'ImportBatch must have status path');
+    assert.deepEqual(ImportBatch.schema.paths.status.enumValues, ['STAGED', 'COMMITTED', 'EXPIRED']);
+  });
+
+  test('Phase 1 Security: User model defines unique index on email', () => {
+    const User = require('../apps/api/src/modules/auth/models/User');
+    const indexes = User.schema.indexes();
+    const emailIndex = indexes.find(([idx]) => idx.email === 1);
+    assert.ok(emailIndex, 'User schema must have an index on email');
+    assert.equal(emailIndex[1].unique, true, 'Email index must be unique');
+  });
+
 });
