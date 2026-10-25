@@ -285,7 +285,7 @@ export const LoadsPage: React.FC = () => {
       case 'DELIVERED':
         return <span className="badge" style={{ background: '#166534', color: '#bbf7d0' }}>DELIVERED</span>;
       case 'CLOSED':
-        return <span className="badge" style={{ background: '#1e293b', color: '#64748b' }}>CLOSED</span>;
+        return <span className="badge" style={{ background: '#f1f5f9', color: 'var(--text-secondary)' }}>CLOSED</span>;
       case 'CANCELLED':
         return <span className="badge" style={{ background: '#991b1b', color: '#fecaca' }}>CANCELLED</span>;
       default:
@@ -537,18 +537,18 @@ export const LoadsPage: React.FC = () => {
 
       {/* CREATE LOAD MODAL */}
       {isCreateOpen && (
-        <div className="modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div className="card" style={{ width: '1000px', maxHeight: '90vh', overflowY: 'auto', background: '#0b1329', border: '1px solid #1e293b', padding: '2rem' }}>
+        <div className="modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div className="card" style={{ width: '1000px', maxHeight: '90vh', overflowY: 'auto', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)', padding: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem' }}>
               <div>
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                   Create Consignment Order & Multi-Stop Route
                 </h2>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
                   Automatic atomic consignment sequence allocation (LD-YYYY-XXXXX) & integer Paise ledger calculations.
                 </div>
               </div>
-              <button onClick={() => setIsCreateOpen(false)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '1.5rem', cursor: 'pointer' }}>
+              <button onClick={() => setIsCreateOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>
                 ✕
               </button>
             </div>
@@ -899,12 +899,12 @@ export const LoadsPage: React.FC = () => {
 
       {/* LOAD DETAILS & COMMAND CENTER MODAL */}
       {isDetailOpen && selectedLoad && (
-        <div className="modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div className="card" style={{ width: '950px', maxHeight: '92vh', overflowY: 'auto', background: '#0b1329', border: '1px solid #1e293b', padding: '2rem' }}>
+        <div className="modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div className="card" style={{ width: '950px', maxHeight: '92vh', overflowY: 'auto', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)', padding: '2rem' }}>
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#38bdf8' }}>
+                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>
                   {selectedLoad.loadNumber}
                 </div>
                 {getStatusBadge(selectedLoad.status)}
@@ -1074,9 +1074,9 @@ export const LoadsPage: React.FC = () => {
 
       {/* ASSIGN ASSETS MODAL */}
       {isAssignOpen && selectedLoad && (
-        <div className="modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div className="card" style={{ width: '500px', background: '#0b1329', border: '1px solid #1e293b', padding: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', marginBottom: '1rem' }}>
+        <div className="modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.45)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div className="card" style={{ width: '500px', background: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)', padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem' }}>
               Assign Vehicle & Driver to {selectedLoad.loadNumber}
             </h3>
 

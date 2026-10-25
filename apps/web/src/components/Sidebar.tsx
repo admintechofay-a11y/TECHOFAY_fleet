@@ -62,21 +62,21 @@ export function Sidebar({ currentPath, onNavigate }) {
             width: '36px',
             height: '36px',
             borderRadius: '8px',
-            background: 'linear-gradient(135deg, #06b6d4, #0284c7)',
+            background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '1.2rem',
-            boxShadow: 'var(--shadow-glow)'
+            boxShadow: 'var(--shadow-sm)'
           }}
         >
           🚚
         </div>
         <div>
-          <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#f8fafc', letterSpacing: '-0.01em' }}>
+          <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
             {tenant?.tradeName || 'Technofay Fleet'}
           </div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)', fontWeight: 500 }}>
+          <div style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>
             HAULAGE OS v1.0
           </div>
         </div>
@@ -101,8 +101,8 @@ export function Sidebar({ currentPath, onNavigate }) {
                   padding: '0.6rem 0.75rem',
                   borderRadius: 'var(--radius-sm)',
                   backgroundColor: isActive ? 'var(--accent-cyan-subtle)' : 'transparent',
-                  color: isActive ? '#38bdf8' : 'var(--text-secondary)',
-                  border: isActive ? '1px solid rgba(6, 182, 212, 0.3)' : '1px solid transparent',
+                  color: isActive ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                  border: isActive ? '1px solid rgba(37, 99, 235, 0.25)' : '1px solid transparent',
                   fontWeight: isActive ? 600 : 500,
                   fontSize: '0.825rem',
                   cursor: 'pointer',
@@ -136,8 +136,8 @@ export function Sidebar({ currentPath, onNavigate }) {
                       padding: '0.6rem 0.75rem',
                       borderRadius: 'var(--radius-sm)',
                       backgroundColor: isActive ? 'var(--accent-cyan-subtle)' : 'transparent',
-                      color: isActive ? '#38bdf8' : 'var(--text-secondary)',
-                      border: isActive ? '1px solid rgba(6, 182, 212, 0.3)' : '1px solid transparent',
+                      color: isActive ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                      border: isActive ? '1px solid rgba(37, 99, 235, 0.25)' : '1px solid transparent',
                       fontWeight: isActive ? 600 : 500,
                       fontSize: '0.825rem',
                       cursor: 'pointer',
@@ -160,7 +160,7 @@ export function Sidebar({ currentPath, onNavigate }) {
         style={{
           padding: '0.875rem 1rem',
           borderTop: '1px solid var(--border-subtle)',
-          backgroundColor: '#0a0f1d'
+          backgroundColor: 'var(--bg-sidebar)'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -169,20 +169,20 @@ export function Sidebar({ currentPath, onNavigate }) {
               width: '32px',
               height: '32px',
               borderRadius: '50%',
-              backgroundColor: '#1e293b',
+              backgroundColor: '#ffffff',
               border: '1px solid var(--border-medium)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '0.8rem',
               fontWeight: 700,
-              color: '#38bdf8'
+              color: 'var(--accent-cyan)'
             }}
           >
             {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#f8fafc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {user?.name}
             </div>
             <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'capitalize' }}>

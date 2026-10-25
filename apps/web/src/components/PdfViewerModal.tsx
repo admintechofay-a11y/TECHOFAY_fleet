@@ -146,7 +146,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(2, 6, 23, 0.85)',
+        backgroundColor: 'rgba(15, 23, 42, 0.45)',
         backdropFilter: 'blur(8px)',
         zIndex: 9999,
         display: 'flex',
@@ -160,10 +160,10 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
           width: isFullscreen ? '100vw' : '94vw',
           maxWidth: isFullscreen ? '100vw' : '1080px',
           height: isFullscreen ? '100vh' : '90vh',
-          backgroundColor: '#0f172a',
+          backgroundColor: '#ffffff',
           borderRadius: isFullscreen ? '0' : '14px',
-          border: isFullscreen ? 'none' : '1px solid #334155',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.75)',
+          border: isFullscreen ? 'none' : '1px solid var(--border-subtle)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -174,8 +174,8 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
         <div
           style={{
             padding: '0.85rem 1.25rem',
-            backgroundColor: '#1e293b',
-            borderBottom: '1px solid #334155',
+            backgroundColor: '#ffffff',
+            borderBottom: '1px solid var(--border-subtle)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -190,20 +190,20 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
                 width: '36px',
                 height: '36px',
                 borderRadius: '8px',
-                backgroundColor: 'rgba(2, 132, 199, 0.15)',
-                border: '1px solid rgba(2, 132, 199, 0.3)',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                border: '1px solid rgba(37, 99, 235, 0.25)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '18px',
-                color: '#38bdf8'
+                color: 'var(--accent-cyan)'
               }}
             >
               📄
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#f8fafc' }}>
+                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                   {title}
                 </h3>
                 <span
@@ -212,7 +212,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
                     fontWeight: 700,
                     padding: '2px 8px',
                     borderRadius: '4px',
-                    backgroundColor: '#0284c7',
+                    backgroundColor: 'var(--accent-cyan)',
                     color: '#ffffff',
                     letterSpacing: '0.5px'
                   }}
@@ -220,8 +220,8 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
                   GST RCM / 9965
                 </span>
               </div>
-              <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '2px' }}>
-                Doc Ref: <span style={{ color: '#38bdf8', fontWeight: 600 }}>{documentNumber}</span> • Carriage by Road Act 2007 Verified
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                Doc Ref: <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>{documentNumber}</span> • Carriage by Road Act 2007 Verified
               </div>
             </div>
           </div>
@@ -273,7 +273,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
                 padding: '0.45rem 0.85rem',
                 backgroundColor: 'rgba(37, 211, 102, 0.1)',
                 borderColor: '#25d366',
-                color: '#25d366'
+                color: '#16a34a'
               }}
               title="Share document details via WhatsApp"
             >
@@ -292,7 +292,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
             <button
               onClick={onClose}
               className="btn btn-ghost"
-              style={{ padding: '0.45rem 0.75rem', fontSize: '1rem', color: '#94a3b8' }}
+              style={{ padding: '0.45rem 0.75rem', fontSize: '1rem', color: 'var(--text-muted)' }}
               title="Close viewer"
             >
               ✕
@@ -305,8 +305,8 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
           <div
             style={{
               padding: '0.5rem 1.25rem',
-              backgroundColor: '#111827',
-              borderBottom: '1px solid #1e293b',
+              backgroundColor: '#f8fafc',
+              borderBottom: '1px solid var(--border-subtle)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -315,7 +315,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600, marginRight: '4px' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600, marginRight: '4px' }}>
                 COPY TYPE:
               </span>
               {COPY_TYPES.map((copy) => {
@@ -331,10 +331,10 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
                       fontWeight: 600,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
-                      border: isSelected ? `1.5px solid ${copy.badgeColor}` : '1px solid #334155',
-                      backgroundColor: isSelected ? 'rgba(30, 41, 59, 0.95)' : '#0f172a',
-                      color: isSelected ? copy.badgeColor : '#94a3b8',
-                      boxShadow: isSelected ? `0 0 10px ${copy.badgeColor}33` : 'none',
+                      border: isSelected ? `1.5px solid ${copy.badgeColor}` : '1px solid var(--border-subtle)',
+                      backgroundColor: isSelected ? '#ffffff' : '#f1f5f9',
+                      color: isSelected ? copy.badgeColor : 'var(--text-secondary)',
+                      boxShadow: isSelected ? `0 1px 3px rgba(0,0,0,0.08)` : 'none',
                     }}
                   >
                     {copy.label}
@@ -343,8 +343,8 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
               })}
             </div>
 
-            <div style={{ fontSize: '0.72rem', color: '#64748b' }}>
-              Viewing: <span style={{ color: '#cbd5e1', fontWeight: 600 }}>{selectedCopy} COPY</span>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+              Viewing: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{selectedCopy} COPY</span>
             </div>
           </div>
         )}
@@ -354,7 +354,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
           style={{
             flex: 1,
             position: 'relative',
-            backgroundColor: '#020617',
+            backgroundColor: '#f1f5f9',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -369,7 +369,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
                 left: 0,
                 right: 0,
                 bottom: 0,
-                backgroundColor: 'rgba(2, 6, 23, 0.75)',
+                backgroundColor: 'rgba(255, 255, 255, 0.85)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -382,13 +382,13 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
                 style={{
                   width: '36px',
                   height: '36px',
-                  border: '3px solid #334155',
-                  borderTopColor: '#38bdf8',
+                  border: '3px solid #cbd5e1',
+                  borderTopColor: 'var(--accent-cyan)',
                   borderRadius: '50%',
                   animation: 'spin 0.8s linear infinite'
                 }}
               />
-              <span style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                 Rendering official vector PDF ({selectedCopy} COPY)...
               </span>
             </div>
@@ -400,15 +400,15 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
                 padding: '2rem',
                 maxWidth: '480px',
                 textAlign: 'center',
-                backgroundColor: '#1e293b',
+                backgroundColor: '#fef2f2',
                 borderRadius: '10px',
-                border: '1px solid #dc2626',
-                color: '#f8fafc'
+                border: '1px solid #fecaca',
+                color: 'var(--text-primary)'
               }}
             >
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⚠️</div>
-              <h4 style={{ margin: '0 0 0.5rem 0', color: '#f87171' }}>Unable to load PDF document</h4>
-              <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '1.25rem' }}>
+              <h4 style={{ margin: '0 0 0.5rem 0', color: '#dc2626' }}>Unable to load PDF document</h4>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
                 {errorMessage}
               </p>
               <button
@@ -428,7 +428,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
                 width: '100%',
                 height: '100%',
                 border: 'none',
-                backgroundColor: '#334155'
+                backgroundColor: '#e2e8f0'
               }}
             />
           ) : null}
@@ -438,13 +438,13 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
         <div
           style={{
             padding: '0.5rem 1.25rem',
-            backgroundColor: '#1e293b',
-            borderTop: '1px solid #334155',
+            backgroundColor: '#f8fafc',
+            borderTop: '1px solid var(--border-subtle)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             fontSize: '0.72rem',
-            color: '#64748b'
+            color: 'var(--text-secondary)'
           }}
         >
           <div>

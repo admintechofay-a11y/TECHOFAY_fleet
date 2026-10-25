@@ -138,24 +138,24 @@ export const PublicTrackingPage: React.FC = () => {
       </header>
 
       {/* Hero Search Section */}
-      <section className="bg-gradient-to-b from-slate-900 to-slate-800 text-white py-12 px-4 sm:px-6 lg:px-8 shadow-md">
+      <section className="bg-gradient-to-b from-slate-100 to-slate-50 text-slate-900 py-12 px-4 sm:px-6 lg:px-8 border-b border-slate-200 shadow-sm">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-3">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-3 text-slate-900">
             Track Consignment & Freight Waypoints
           </h1>
-          <p className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto mb-8">
+          <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto mb-8">
             Real-time milestone visibility for Consignors and Consignees across Indian logistics corridors. Enter your LR, Bilty, or Load number.
           </p>
 
           {/* Search Box */}
-          <form onSubmit={handleSearchSubmit} className="max-w-2xl mx-auto flex items-center gap-2 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 shadow-xl">
+          <form onSubmit={handleSearchSubmit} className="max-w-2xl mx-auto flex items-center gap-2 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
             <div className="relative flex-1">
               <input
                 type="text"
                 value={searchInput}
                 onChange={e => setSearchInput(e.target.value)}
                 placeholder="Enter LR # (e.g. LR-2026-0001) or Bilty / Load #"
-                className="w-full bg-white text-slate-900 placeholder-slate-400 px-4 py-3.5 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner"
+                className="w-full bg-slate-50 text-slate-900 placeholder-slate-400 px-4 py-3.5 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-200"
               />
             </div>
             <button

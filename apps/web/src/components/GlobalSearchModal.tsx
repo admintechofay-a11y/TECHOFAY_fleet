@@ -117,7 +117,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(15, 23, 42, 0.75)',
+        backgroundColor: 'rgba(15, 23, 42, 0.45)',
         backdropFilter: 'blur(8px)',
         zIndex: 1000,
         display: 'flex',
@@ -136,9 +136,9 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
           display: 'flex',
           flexDirection: 'column',
           borderRadius: '16px',
-          background: 'rgba(24, 30, 49, 0.95)',
-          border: '1px solid rgba(56, 189, 248, 0.3)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 24px rgba(6, 182, 212, 0.25)',
+          background: '#ffffff',
+          border: '1px solid var(--border-subtle)',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
           overflow: 'hidden'
         }}
         onClick={(e) => e.stopPropagation()}
@@ -153,7 +153,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
             gap: '0.75rem'
           }}
         >
-          <span style={{ fontSize: '1.25rem', color: '#38bdf8' }}>🔍</span>
+          <span style={{ fontSize: '1.25rem', color: 'var(--accent-cyan)' }}>🔍</span>
           <input
             ref={inputRef}
             type="text"
@@ -165,7 +165,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
               background: 'transparent',
               border: 'none',
               outline: 'none',
-              color: '#f8fafc',
+              color: 'var(--text-primary)',
               fontSize: '1rem',
               fontWeight: 500
             }}
@@ -176,8 +176,8 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
           <span
             style={{
               fontSize: '0.7rem',
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
+              background: '#f1f5f9',
+              border: '1px solid #cbd5e1',
               borderRadius: '4px',
               padding: '0.2rem 0.5rem',
               color: 'var(--text-secondary)'
@@ -202,7 +202,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
           ) : results.length === 0 && !isLoading ? (
             <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: 'var(--text-muted)' }}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🔍</div>
-              <div style={{ fontSize: '0.9rem', color: '#f8fafc' }}>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 600 }}>
                 No records matching "{query}"
               </div>
               <div style={{ fontSize: '0.75rem', marginTop: '0.35rem', color: 'var(--text-secondary)' }}>
@@ -227,9 +227,9 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
                     justifyContent: 'space-between',
                     padding: '0.75rem 1rem',
                     borderRadius: '8px',
-                    backgroundColor: isSelected ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
+                    backgroundColor: isSelected ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
                     border: isSelected
-                      ? '1px solid rgba(56, 189, 248, 0.35)'
+                      ? '1px solid rgba(37, 99, 235, 0.25)'
                       : '1px solid transparent',
                     cursor: 'pointer',
                     marginBottom: '0.25rem',
@@ -251,7 +251,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
                       {badge.label}
                     </span>
                     <div>
-                      <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f8fafc' }}>
+                      <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                         {item.title}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -266,7 +266,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
                         {item.status}
                       </span>
                     )}
-                    <span style={{ fontSize: '0.75rem', color: isSelected ? '#38bdf8' : 'var(--text-muted)' }}>
+                    <span style={{ fontSize: '0.75rem', color: isSelected ? 'var(--accent-cyan)' : 'var(--text-muted)' }}>
                       ↵
                     </span>
                   </div>
@@ -281,7 +281,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
           <div
             style={{
               padding: '0.6rem 1.25rem',
-              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              backgroundColor: '#f8fafc',
               borderTop: '1px solid var(--border-subtle)',
               display: 'flex',
               justifyContent: 'space-between',

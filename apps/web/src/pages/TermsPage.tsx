@@ -6,13 +6,13 @@ interface TermsPageProps {
 
 export const TermsPage: React.FC<TermsPageProps> = ({ onNavigateHome }) => {
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0a0f1d', color: '#f8fafc', padding: '3rem 1.5rem' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-app)', color: 'var(--text-primary)', padding: '3rem 1.5rem' }}>
       <div style={{ maxWidth: '840px', margin: '0 auto' }}>
         {/* Navigation Bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <span style={{ fontSize: '1.75rem' }}>🚚</span>
-            <span style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em', color: '#38bdf8' }}>
+            <span style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em', color: 'var(--accent-cyan)' }}>
               TECHNOFAY FLEET OS
             </span>
           </div>
@@ -28,7 +28,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ onNavigateHome }) => {
         </div>
 
         {/* Header */}
-        <h1 style={{ fontSize: '2.2rem', fontWeight: 800, marginBottom: '0.5rem', letterSpacing: '-0.03em' }}>
+        <h1 style={{ fontSize: '2.2rem', fontWeight: 800, marginBottom: '0.5rem', letterSpacing: '-0.03em', color: 'var(--text-primary)' }}>
           Terms of Service &amp; Operational Agreement
         </h1>
         <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '2rem' }}>
@@ -36,9 +36,9 @@ export const TermsPage: React.FC<TermsPageProps> = ({ onNavigateHome }) => {
         </div>
 
         {/* Content Body */}
-        <div className="glass-panel" style={{ padding: '2rem', borderRadius: '14px', lineHeight: 1.7, fontSize: '0.925rem', color: '#cbd5e1' }}>
+        <div className="glass-panel" style={{ padding: '2rem', borderRadius: '14px', lineHeight: 1.7, fontSize: '0.925rem', color: 'var(--text-secondary)', background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
           <section style={{ marginBottom: '1.75rem' }}>
-            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.75rem' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
               1. Platform Usage &amp; Eligibility
             </h2>
             <p>
@@ -47,7 +47,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ onNavigateHome }) => {
           </section>
 
           <section style={{ marginBottom: '1.75rem' }}>
-            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.75rem' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
               2. Goods Transport Agency (GTA) Declarations &amp; GST
             </h2>
             <p>
@@ -56,7 +56,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ onNavigateHome }) => {
           </section>
 
           <section style={{ marginBottom: '1.75rem' }}>
-            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.75rem' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
               3. Proof of Delivery &amp; Consignment Finality
             </h2>
             <p>
@@ -65,7 +65,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ onNavigateHome }) => {
           </section>
 
           <section>
-            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.75rem' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
               4. Governing Law &amp; Jurisdiction
             </h2>
             <p>

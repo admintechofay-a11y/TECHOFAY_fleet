@@ -368,36 +368,36 @@ export const TripsPage: React.FC = () => {
 
       {/* Top Operational Metrics */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-        <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', padding: '1.25rem' }}>
-          <div style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Active Fleet Trips</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#38bdf8', marginTop: '0.35rem' }}>
+        <div style={{ background: '#ffffff', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Active Fleet Trips</div>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#2563eb', marginTop: '0.35rem' }}>
             {trips.filter(t => !['CLOSED', 'CANCELLED'].includes(t.status)).length}
           </div>
-          <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: '0.25rem' }}>Dispatched or In Transit</div>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Dispatched or In Transit</div>
         </div>
 
-        <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', padding: '1.25rem' }}>
-          <div style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>In Transit</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#c084fc', marginTop: '0.35rem' }}>
+        <div style={{ background: '#ffffff', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>In Transit</div>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#9333ea', marginTop: '0.35rem' }}>
             {trips.filter(t => t.status === 'IN_TRANSIT').length}
           </div>
-          <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: '0.25rem' }}>On the highway</div>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>On the highway</div>
         </div>
 
-        <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', padding: '1.25rem' }}>
-          <div style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Delivered / Ready to Close</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#4ade80', marginTop: '0.35rem' }}>
+        <div style={{ background: '#ffffff', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Delivered / Ready to Close</div>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#16a36a', marginTop: '0.35rem' }}>
             {trips.filter(t => t.status === 'DELIVERED').length}
           </div>
-          <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: '0.25rem' }}>Awaiting POD verification</div>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Awaiting POD verification</div>
         </div>
 
-        <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', padding: '1.25rem' }}>
-          <div style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Completed / Closed</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#10b981', marginTop: '0.35rem' }}>
+        <div style={{ background: '#ffffff', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Total Completed / Closed</div>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#16a36a', marginTop: '0.35rem' }}>
             {trips.filter(t => t.status === 'CLOSED').length}
           </div>
-          <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: '0.25rem' }}>Settled & archived</div>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Settled & archived</div>
         </div>
       </div>
 
@@ -407,10 +407,11 @@ export const TripsPage: React.FC = () => {
           display: 'flex',
           gap: '1rem',
           flexWrap: 'wrap',
-          background: '#0f172a',
+          background: '#ffffff',
           padding: '1rem',
           borderRadius: '12px',
-          border: '1px solid #1e293b',
+          border: '1px solid var(--border-subtle)',
+          boxShadow: 'var(--shadow-sm)',
           marginBottom: '1.5rem'
         }}
       >
@@ -424,9 +425,9 @@ export const TripsPage: React.FC = () => {
               width: '100%',
               padding: '0.6rem 0.9rem',
               borderRadius: '8px',
-              background: '#1e293b',
-              border: '1px solid #334155',
-              color: '#f8fafc',
+              background: '#f8fafc',
+              border: '1px solid var(--border-medium)',
+              color: 'var(--text-primary)',
               fontSize: '0.875rem'
             }}
           />
@@ -440,9 +441,9 @@ export const TripsPage: React.FC = () => {
               width: '100%',
               padding: '0.6rem 0.9rem',
               borderRadius: '8px',
-              background: '#1e293b',
-              border: '1px solid #334155',
-              color: '#f8fafc',
+              background: '#f8fafc',
+              border: '1px solid var(--border-medium)',
+              color: 'var(--text-primary)',
               fontSize: '0.875rem'
             }}
           >
@@ -459,11 +460,11 @@ export const TripsPage: React.FC = () => {
       </div>
 
       {/* Trips Table */}
-      <div style={{ background: '#0f172a', borderRadius: '12px', border: '1px solid #1e293b', overflow: 'hidden' }}>
+      <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
             <thead>
-              <tr style={{ background: '#1e293b', color: '#94a3b8', borderBottom: '1px solid #334155' }}>
+              <tr style={{ background: '#f8fafc', color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-subtle)' }}>
                 <th style={{ padding: '0.85rem 1rem' }}>Trip Ref #</th>
                 <th style={{ padding: '0.85rem 1rem' }}>Linked Load</th>
                 <th style={{ padding: '0.85rem 1rem' }}>Vehicle</th>
@@ -478,13 +479,13 @@ export const TripsPage: React.FC = () => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={9} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+                  <td colSpan={9} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
                     Loading active trip registry...
                   </td>
                 </tr>
               ) : trips.length === 0 ? (
                 <tr>
-                  <td colSpan={9} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+                  <td colSpan={9} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
                     No trips found matching filter criteria. Dispatch your first trip above!
                   </td>
                 </tr>
@@ -498,15 +499,15 @@ export const TripsPage: React.FC = () => {
                     <tr
                       key={trip._id}
                       style={{
-                        borderBottom: '1px solid #1e293b',
+                        borderBottom: '1px solid var(--border-subtle)',
                         transition: 'background 0.15s ease',
                         cursor: 'pointer'
                       }}
                       onClick={() => setActiveTrip(trip)}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = '#1e293b55')}
+                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = '#f8fafc')}
                       onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = 'transparent')}
                     >
-                      <td style={{ padding: '1rem', fontWeight: 700, color: '#38bdf8' }}>
+                      <td style={{ padding: '1rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>
                         {trip.tripNumber}
                       </td>
                       <td style={{ padding: '1rem' }}>
@@ -597,20 +598,20 @@ export const TripsPage: React.FC = () => {
         >
           <div
             style={{
-              background: '#0f172a',
-              border: '1px solid #1e293b',
+              background: '#ffffff',
+              border: '1px solid var(--border-subtle)',
               borderRadius: '16px',
               maxWidth: '620px',
               width: '100%',
               padding: '2rem',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Dispatch New Trip</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>Dispatch New Trip</h2>
               <button
                 onClick={() => setIsDispatchOpen(false)}
-                style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1.2rem' }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem' }}
               >
                 ✕
               </button>
@@ -621,9 +622,9 @@ export const TripsPage: React.FC = () => {
                 style={{
                   padding: '0.75rem 1rem',
                   borderRadius: '8px',
-                  background: 'rgba(239, 68, 68, 0.15)',
-                  border: '1px solid #ef4444',
-                  color: '#f87171',
+                  background: '#fef2f2',
+                  border: '1px solid #fecaca',
+                  color: '#dc2626',
                   marginBottom: '1rem',
                   fontSize: '0.85rem'
                 }}
@@ -634,7 +635,7 @@ export const TripsPage: React.FC = () => {
 
             <form onSubmit={handleCreateDispatch} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Select Load / Order *
                 </label>
                 <select
@@ -645,9 +646,9 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#f8fafc',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 >
                   <option value="">-- Choose Consignment Load --</option>
@@ -661,7 +662,7 @@ export const TripsPage: React.FC = () => {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                     Assigned Vehicle *
                   </label>
                   <select
@@ -672,9 +673,9 @@ export const TripsPage: React.FC = () => {
                       width: '100%',
                       padding: '0.65rem 0.9rem',
                       borderRadius: '8px',
-                      background: '#1e293b',
-                      border: '1px solid #334155',
-                      color: '#f8fafc'
+                      background: '#f8fafc',
+                      border: '1px solid var(--border-medium)',
+                      color: 'var(--text-primary)'
                     }}
                   >
                     <option value="">-- Select Available Vehicle --</option>
@@ -687,7 +688,7 @@ export const TripsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                     Assigned Driver *
                   </label>
                   <select
@@ -698,9 +699,9 @@ export const TripsPage: React.FC = () => {
                       width: '100%',
                       padding: '0.65rem 0.9rem',
                       borderRadius: '8px',
-                      background: '#1e293b',
-                      border: '1px solid #334155',
-                      color: '#f8fafc'
+                      background: '#f8fafc',
+                      border: '1px solid var(--border-medium)',
+                      color: 'var(--text-primary)'
                     }}
                   >
                     <option value="">-- Select Available Driver --</option>
@@ -714,7 +715,7 @@ export const TripsPage: React.FC = () => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Driver Route Advance (₹)
                 </label>
                 <input
@@ -727,15 +728,15 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#f8fafc',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Trip Dispatch Remarks
                 </label>
                 <textarea
@@ -747,9 +748,9 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#f8fafc',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 />
               </div>
@@ -761,9 +762,9 @@ export const TripsPage: React.FC = () => {
                   style={{
                     padding: '0.65rem 1.25rem',
                     borderRadius: '8px',
-                    background: '#334155',
-                    border: 'none',
-                    color: '#f8fafc',
+                    background: '#f1f5f9',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-secondary)',
                     cursor: 'pointer'
                   }}
                 >
@@ -796,7 +797,7 @@ export const TripsPage: React.FC = () => {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.8)',
+            background: 'rgba(15, 23, 42, 0.45)',
             display: 'flex',
             justifyContent: 'flex-end',
             zIndex: 100
@@ -806,32 +807,33 @@ export const TripsPage: React.FC = () => {
             style={{
               width: '100%',
               maxWidth: '850px',
-              background: '#0a0f1d',
-              borderLeft: '1px solid #1e293b',
+              background: '#ffffff',
+              borderLeft: '1px solid var(--border-subtle)',
               height: '100vh',
               overflowY: 'auto',
               padding: '2rem',
               display: 'flex',
               flexDirection: 'column',
-              gap: '1.5rem'
+              gap: '1.5rem',
+              boxShadow: '-4px 0 25px rgba(0,0,0,0.08)'
             }}
           >
             {/* Drawer Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#38bdf8' }}>
+                  <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>
                     Trip {activeTrip.tripNumber}
                   </h2>
                   {renderStatusBadge(activeTrip.status)}
                 </div>
-                <div style={{ color: '#94a3b8', fontSize: '0.85rem', marginTop: '0.25rem' }}>
-                  Load Ref: <span style={{ color: '#f8fafc', fontWeight: 600 }}>{activeTrip.loadId?.loadNumber}</span> | Dispatched: {new Date(activeTrip.startDateTime || activeTrip.createdAt).toLocaleDateString('en-IN')}
+                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                  Load Ref: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{activeTrip.loadId?.loadNumber}</span> | Dispatched: {new Date(activeTrip.startDateTime || activeTrip.createdAt).toLocaleDateString('en-IN')}
                 </div>
               </div>
               <button
                 onClick={() => setActiveTrip(null)}
-                style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1.5rem' }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.5rem' }}
               >
                 ✕
               </button>
@@ -843,10 +845,10 @@ export const TripsPage: React.FC = () => {
                 display: 'flex',
                 gap: '0.5rem',
                 flexWrap: 'wrap',
-                background: '#0f172a',
+                background: '#f8fafc',
                 padding: '0.75rem',
                 borderRadius: '10px',
-                border: '1px solid #1e293b'
+                border: '1px solid var(--border-subtle)'
               }}
             >
               {activeTrip.status === 'VEHICLE_ASSIGNED' && (
@@ -886,13 +888,13 @@ export const TripsPage: React.FC = () => {
               )}
               <button
                 onClick={() => handlePreviewTripSheet(activeTrip)}
-                style={{ padding: '0.45rem 0.85rem', borderRadius: '6px', background: '#1e293b', border: '1px solid #334155', color: '#38bdf8', fontWeight: 600, cursor: 'pointer' }}
+                style={{ padding: '0.45rem 0.85rem', borderRadius: '6px', background: '#ffffff', border: '1px solid var(--border-medium)', color: 'var(--accent-cyan)', fontWeight: 600, cursor: 'pointer' }}
               >
                 👁️ Preview Trip Sheet
               </button>
               <button
                 onClick={() => handlePreviewSettlement(activeTrip)}
-                style={{ padding: '0.45rem 0.85rem', borderRadius: '6px', background: '#1e293b', border: '1px solid #334155', color: '#4ade80', fontWeight: 600, cursor: 'pointer' }}
+                style={{ padding: '0.45rem 0.85rem', borderRadius: '6px', background: '#ffffff', border: '1px solid var(--border-medium)', color: '#16a36a', fontWeight: 600, cursor: 'pointer' }}
               >
                 👁️ Preview Settlement
               </button>
@@ -900,30 +902,30 @@ export const TripsPage: React.FC = () => {
 
             {/* Asset Allocation Card */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '10px', padding: '1rem' }}>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>Assigned Vehicle</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', marginTop: '0.25rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '1rem' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Assigned Vehicle</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
                   {activeTrip.vehicleId?.plateNumber || 'N/A'}
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                   {activeTrip.vehicleId?.vehicleType} • Capacity: {activeTrip.vehicleId?.capacityTonnage} MT
                 </div>
               </div>
 
-              <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '10px', padding: '1rem' }}>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>Assigned Driver</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', marginTop: '0.25rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '1rem' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Assigned Driver</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
                   {activeTrip.driverId?.name || 'N/A'}
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                   Phone: {activeTrip.driverId?.phone} • Licence: {activeTrip.driverId?.licenseNumber}
                 </div>
               </div>
             </div>
 
             {/* Stops & Waypoint Delivery Progress */}
-            <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '10px', padding: '1.25rem' }}>
-              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ background: '#ffffff', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
                 <span>📍</span> Waypoint Delivery Progress
               </h3>
 
@@ -932,8 +934,8 @@ export const TripsPage: React.FC = () => {
                   <div
                     key={stop._id}
                     style={{
-                      background: '#1e293b55',
-                      border: '1px solid #334155',
+                      background: '#f8fafc',
+                      border: '1px solid var(--border-subtle)',
                       borderRadius: '8px',
                       padding: '0.85rem 1rem',
                       display: 'flex',
@@ -945,22 +947,22 @@ export const TripsPage: React.FC = () => {
                   >
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{ fontWeight: 700, color: '#38bdf8' }}>Stop {stop.sequence}:</span>
-                        <span style={{ fontWeight: 600 }}>{stop.locationId?.name || 'Warehouse Point'}</span>
+                        <span style={{ fontWeight: 700, color: 'var(--accent-cyan)' }}>Stop {stop.sequence}:</span>
+                        <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{stop.locationId?.name || 'Warehouse Point'}</span>
                         <span
                           style={{
                             fontSize: '0.65rem',
                             padding: '0.15rem 0.45rem',
                             borderRadius: '4px',
-                            background: stop.stopType === 'PICKUP' ? '#0284c733' : '#10b98133',
-                            color: stop.stopType === 'PICKUP' ? '#38bdf8' : '#34d399',
+                            background: stop.stopType === 'PICKUP' ? 'rgba(37, 99, 235, 0.1)' : 'rgba(22, 163, 106, 0.1)',
+                            color: stop.stopType === 'PICKUP' ? 'var(--accent-cyan)' : '#16a36a',
                             fontWeight: 600
                           }}
                         >
                           {stop.stopType}
                         </span>
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
                         Allocated: {stop.allocatedQuantity} Pkgs | Delivered: {stop.deliveredQuantity} | Pending: {stop.pendingQuantity}
                       </div>
                     </div>
@@ -971,8 +973,8 @@ export const TripsPage: React.FC = () => {
                           fontSize: '0.72rem',
                           padding: '0.2rem 0.5rem',
                           borderRadius: '6px',
-                          background: stop.status === 'COMPLETED' ? '#10b98122' : '#f59e0b22',
-                          color: stop.status === 'COMPLETED' ? '#34d399' : '#fbbf24',
+                          background: stop.status === 'COMPLETED' ? 'rgba(22, 163, 106, 0.1)' : 'rgba(217, 119, 6, 0.1)',
+                          color: stop.status === 'COMPLETED' ? '#16a36a' : '#d97706',
                           fontWeight: 600
                         }}
                       >
@@ -1007,9 +1009,9 @@ export const TripsPage: React.FC = () => {
             </div>
 
             {/* Financial Reconciliation & Route Expenses */}
-            <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '10px', padding: '1.25rem' }}>
+            <div style={{ background: '#ffffff', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
                   <span>💰</span> Route Accounting & Expenses
                 </h3>
                 <button
@@ -1020,9 +1022,9 @@ export const TripsPage: React.FC = () => {
                   style={{
                     padding: '0.35rem 0.75rem',
                     borderRadius: '6px',
-                    background: '#334155',
-                    border: '1px solid #475569',
-                    color: '#f8fafc',
+                    background: '#ffffff',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)',
                     fontSize: '0.75rem',
                     cursor: 'pointer'
                   }}
@@ -1033,27 +1035,27 @@ export const TripsPage: React.FC = () => {
 
               {/* Financial summary bar */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem', marginBottom: '1rem', textAlign: 'center' }}>
-                <div style={{ background: '#1e293b', padding: '0.75rem', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Gross Freight</div>
-                  <div style={{ fontWeight: 700, color: '#f8fafc', fontSize: '1rem' }}>
+                <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', padding: '0.75rem', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Gross Freight</div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1rem' }}>
                     ₹{((activeTrip.financials?.grossFreightPaise || 0) / 100).toFixed(2)}
                   </div>
                 </div>
-                <div style={{ background: '#1e293b', padding: '0.75rem', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Driver Advance</div>
-                  <div style={{ fontWeight: 700, color: '#38bdf8', fontSize: '1rem' }}>
+                <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', padding: '0.75rem', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Driver Advance</div>
+                  <div style={{ fontWeight: 700, color: 'var(--accent-cyan)', fontSize: '1rem' }}>
                     - ₹{((activeTrip.financials?.driverAdvancePaise || 0) / 100).toFixed(2)}
                   </div>
                 </div>
-                <div style={{ background: '#1e293b', padding: '0.75rem', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Route Expenses</div>
-                  <div style={{ fontWeight: 700, color: '#fb923c', fontSize: '1rem' }}>
+                <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', padding: '0.75rem', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Route Expenses</div>
+                  <div style={{ fontWeight: 700, color: '#ea580c', fontSize: '1rem' }}>
                     - ₹{((activeTrip.financials?.totalExpensesPaise || 0) / 100).toFixed(2)}
                   </div>
                 </div>
-                <div style={{ background: '#1e293b', padding: '0.75rem', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Net Settlement</div>
-                  <div style={{ fontWeight: 700, color: '#4ade80', fontSize: '1rem' }}>
+                <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', padding: '0.75rem', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Net Settlement</div>
+                  <div style={{ fontWeight: 700, color: '#16a36a', fontSize: '1rem' }}>
                     ₹{((activeTrip.financials?.netSettlementPaise || 0) / 100).toFixed(2)}
                   </div>
                 </div>
@@ -1064,7 +1066,7 @@ export const TripsPage: React.FC = () => {
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
                     <thead>
-                      <tr style={{ color: '#94a3b8', borderBottom: '1px solid #334155' }}>
+                      <tr style={{ color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-subtle)' }}>
                         <th style={{ padding: '0.4rem' }}>Type</th>
                         <th style={{ padding: '0.4rem' }}>Description</th>
                         <th style={{ padding: '0.4rem' }}>Paid By</th>
@@ -1073,11 +1075,11 @@ export const TripsPage: React.FC = () => {
                     </thead>
                     <tbody>
                       {activeTrip.expenses.map((exp: any, idx: number) => (
-                        <tr key={idx} style={{ borderBottom: '1px solid #1e293b' }}>
-                          <td style={{ padding: '0.5rem', fontWeight: 600, color: '#38bdf8' }}>{exp.expenseType}</td>
-                          <td style={{ padding: '0.5rem' }}>{exp.description || '-'}</td>
-                          <td style={{ padding: '0.5rem', color: '#94a3b8' }}>{exp.paidBy}</td>
-                          <td style={{ padding: '0.5rem', textAlign: 'right', fontWeight: 600 }}>
+                        <tr key={idx} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                          <td style={{ padding: '0.5rem', fontWeight: 600, color: 'var(--accent-cyan)' }}>{exp.expenseType}</td>
+                          <td style={{ padding: '0.5rem', color: 'var(--text-primary)' }}>{exp.description || '-'}</td>
+                          <td style={{ padding: '0.5rem', color: 'var(--text-secondary)' }}>{exp.paidBy}</td>
+                          <td style={{ padding: '0.5rem', textAlign: 'right', fontWeight: 600, color: 'var(--text-primary)' }}>
                             ₹{((exp.amountPaise || 0) / 100).toFixed(2)}
                           </td>
                         </tr>
@@ -1086,7 +1088,7 @@ export const TripsPage: React.FC = () => {
                   </table>
                 </div>
               ) : (
-                <div style={{ fontSize: '0.8rem', color: '#64748b', textAlign: 'center', padding: '0.75rem' }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', padding: '0.75rem' }}>
                   No line-item route expenses recorded yet.
                 </div>
               )}
@@ -1101,7 +1103,7 @@ export const TripsPage: React.FC = () => {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.85)',
+            background: 'rgba(15, 23, 42, 0.45)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1111,19 +1113,20 @@ export const TripsPage: React.FC = () => {
         >
           <div
             style={{
-              background: '#0f172a',
-              border: '1px solid #1e293b',
+              background: '#ffffff',
+              border: '1px solid var(--border-subtle)',
               borderRadius: '16px',
               maxWidth: '520px',
               width: '100%',
-              padding: '2rem'
+              padding: '2rem',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Record Delivery — Stop {selectedStop.sequence}</h3>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)' }}>Record Delivery — Stop {selectedStop.sequence}</h3>
               <button
                 onClick={() => setIsDeliveryOpen(false)}
-                style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1.2rem' }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem' }}
               >
                 ✕
               </button>
@@ -1136,7 +1139,7 @@ export const TripsPage: React.FC = () => {
                   borderRadius: '8px',
                   background: 'rgba(239, 68, 68, 0.15)',
                   border: '1px solid #ef4444',
-                  color: '#f87171',
+                  color: '#dc2626',
                   marginBottom: '1rem',
                   fontSize: '0.85rem'
                 }}
@@ -1147,7 +1150,7 @@ export const TripsPage: React.FC = () => {
 
             <form onSubmit={handleRecordDelivery} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Delivered Quantity (Pkgs) *
                 </label>
                 <input
@@ -1161,18 +1164,18 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#ffffff',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 />
-                <span style={{ fontSize: '0.72rem', color: '#38bdf8', marginTop: '0.25rem', display: 'block' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', marginTop: '0.25rem', display: 'block' }}>
                   Pending for delivery: {selectedStop.pendingQuantity} Pkgs
                 </span>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Receiver Name *
                 </label>
                 <input
@@ -1185,15 +1188,15 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#ffffff',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Receiver Contact Phone
                 </label>
                 <input
@@ -1205,15 +1208,15 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#ffffff',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Remarks / Unloading Notes
                 </label>
                 <textarea
@@ -1225,9 +1228,9 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#ffffff',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 />
               </div>
@@ -1236,7 +1239,7 @@ export const TripsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsDeliveryOpen(false)}
-                  style={{ padding: '0.65rem 1.25rem', borderRadius: '8px', background: '#334155', border: 'none', color: '#f8fafc', cursor: 'pointer' }}
+                  style={{ padding: '0.65rem 1.25rem', borderRadius: '8px', background: '#f1f5f9', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', cursor: 'pointer' }}
                 >
                   Cancel
                 </button>
@@ -1259,7 +1262,7 @@ export const TripsPage: React.FC = () => {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.85)',
+            background: 'rgba(15, 23, 42, 0.45)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1269,19 +1272,20 @@ export const TripsPage: React.FC = () => {
         >
           <div
             style={{
-              background: '#0f172a',
-              border: '1px solid #1e293b',
+              background: '#ffffff',
+              border: '1px solid var(--border-subtle)',
               borderRadius: '16px',
               maxWidth: '500px',
               width: '100%',
-              padding: '2rem'
+              padding: '2rem',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Add Line-Item Route Expense</h3>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)' }}>Add Line-Item Route Expense</h3>
               <button
                 onClick={() => setIsExpenseOpen(false)}
-                style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1.2rem' }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem' }}
               >
                 ✕
               </button>
@@ -1294,7 +1298,7 @@ export const TripsPage: React.FC = () => {
                   borderRadius: '8px',
                   background: 'rgba(239, 68, 68, 0.15)',
                   border: '1px solid #ef4444',
-                  color: '#f87171',
+                  color: '#dc2626',
                   marginBottom: '1rem',
                   fontSize: '0.85rem'
                 }}
@@ -1305,7 +1309,7 @@ export const TripsPage: React.FC = () => {
 
             <form onSubmit={handleAddExpense} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Expense Category *
                 </label>
                 <select
@@ -1315,9 +1319,9 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#ffffff',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 >
                   <option value="DIESEL">Diesel / Fuel</option>
@@ -1331,7 +1335,7 @@ export const TripsPage: React.FC = () => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Amount (₹) *
                 </label>
                 <input
@@ -1346,15 +1350,15 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#ffffff',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Paid By *
                 </label>
                 <select
@@ -1364,9 +1368,9 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#ffffff',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 >
                   <option value="DRIVER">Driver (Cash / From Advance)</option>
@@ -1375,7 +1379,7 @@ export const TripsPage: React.FC = () => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Description / Receipt Reference
                 </label>
                 <input
@@ -1387,9 +1391,9 @@ export const TripsPage: React.FC = () => {
                     width: '100%',
                     padding: '0.65rem 0.9rem',
                     borderRadius: '8px',
-                    background: '#1e293b',
-                    border: '1px solid #334155',
-                    color: '#f8fafc'
+                    background: '#ffffff',
+                    border: '1px solid var(--border-medium)',
+                    color: 'var(--text-primary)'
                   }}
                 />
               </div>
@@ -1398,7 +1402,7 @@ export const TripsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsExpenseOpen(false)}
-                  style={{ padding: '0.65rem 1.25rem', borderRadius: '8px', background: '#334155', border: 'none', color: '#f8fafc', cursor: 'pointer' }}
+                  style={{ padding: '0.65rem 1.25rem', borderRadius: '8px', background: '#f1f5f9', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', cursor: 'pointer' }}
                 >
                   Cancel
                 </button>

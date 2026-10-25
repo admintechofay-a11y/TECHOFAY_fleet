@@ -39,7 +39,7 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'radial-gradient(circle at 50% 20%, #172554 0%, #0a0f1d 80%)',
+        background: 'linear-gradient(135deg, #f4f6fa 0%, #e9eff7 100%)',
         padding: '1.5rem'
       }}
     >
@@ -50,6 +50,8 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
           maxWidth: '420px',
           padding: '2.5rem',
           borderRadius: '16px',
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border-subtle)',
           boxShadow: 'var(--shadow-lg)'
         }}
       >
@@ -60,7 +62,7 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
               width: '54px',
               height: '54px',
               borderRadius: '14px',
-              background: 'linear-gradient(135deg, #06b6d4 0%, #0284c7 100%)',
+              background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
               margin: '0 auto 1rem',
               display: 'flex',
               alignItems: 'center',
@@ -71,7 +73,7 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
           >
             🚚
           </div>
-          <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f8fafc', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Technofay Fleet OS
           </h1>
           <p style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
@@ -84,12 +86,12 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
           <div
             style={{
               backgroundColor: 'var(--status-error-subtle)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
+              border: '1px solid #fecaca',
               borderRadius: 'var(--radius-sm)',
               padding: '0.75rem',
               marginBottom: '1.25rem',
               fontSize: '0.825rem',
-              color: '#fca5a5'
+              color: '#dc2626'
             }}
           >
             ⚠️ {error}
@@ -150,7 +152,7 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#38bdf8',
+                color: 'var(--accent-cyan)',
                 fontWeight: 600,
                 cursor: 'pointer',
                 padding: 0,
@@ -173,7 +175,7 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
               <button
                 type="button"
                 onClick={() => onNavigatePublic('/track')}
-                style={{ background: 'none', border: 'none', color: '#10b981', fontWeight: 600, cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: '#16a36a', fontWeight: 600, cursor: 'pointer', padding: 0 }}
               >
                 🔍 Track Consignment
               </button>
@@ -181,7 +183,7 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
               <button
                 type="button"
                 onClick={() => onNavigatePublic('/privacy')}
-                style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', padding: 0 }}
               >
                 Privacy Policy
               </button>
@@ -189,7 +191,7 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
               <button
                 type="button"
                 onClick={() => onNavigatePublic('/terms')}
-                style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', padding: 0 }}
               >
                 Terms of Service
               </button>
@@ -197,7 +199,7 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
               <button
                 type="button"
                 onClick={() => onNavigatePublic('/contact')}
-                style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', padding: 0 }}
               >
                 Contact Operations
               </button>

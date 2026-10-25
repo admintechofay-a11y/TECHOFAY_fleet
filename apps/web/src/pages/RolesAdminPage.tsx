@@ -25,7 +25,7 @@ export function RolesAdminPage() {
   return (
     <div className="animate-fade-in" style={{ padding: '2rem' }}>
       <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f8fafc' }}>
+        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)' }}>
           Roles & Permissions Matrix
         </h1>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
@@ -41,10 +41,10 @@ export function RolesAdminPage() {
             <div key={role._id} className="glass-panel" style={{ padding: '1.5rem', borderRadius: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
                 <div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#f8fafc' }}>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                     {role.name}
                   </h3>
-                  <div className="font-mono" style={{ fontSize: '0.72rem', color: '#38bdf8', marginTop: '0.2rem' }}>
+                  <div className="font-mono" style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', marginTop: '0.2rem' }}>
                     slug: {role.slug}
                   </div>
                 </div>
@@ -71,13 +71,13 @@ export function RolesAdminPage() {
                         style={{
                           fontSize: '0.675rem',
                           padding: '0.2rem 0.5rem',
-                          backgroundColor: '#1e293b',
+                          backgroundColor: '#f1f5f9',
                           borderRadius: '4px',
-                          color: '#cbd5e1',
+                          color: 'var(--text-secondary)',
                           border: '1px solid var(--border-subtle)'
                         }}
                       >
-                        <strong style={{ color: '#38bdf8' }}>{p.module}</strong>: {p.actions.join(', ')}
+                        <strong style={{ color: 'var(--accent-cyan)' }}>{p.module}</strong>: {p.actions.join(', ')}
                       </span>
                     ))
                   ) : (

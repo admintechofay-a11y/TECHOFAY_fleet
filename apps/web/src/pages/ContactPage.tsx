@@ -56,13 +56,13 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0a0f1d', color: '#f8fafc', padding: '3rem 1.5rem' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-app)', color: 'var(--text-primary)', padding: '3rem 1.5rem' }}>
       <div style={{ maxWidth: '780px', margin: '0 auto' }}>
         {/* Navigation Bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <span style={{ fontSize: '1.75rem' }}>🚚</span>
-            <span style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em', color: '#38bdf8' }}>
+            <span style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em', color: 'var(--accent-cyan)' }}>
               TECHNOFAY FLEET OS
             </span>
           </div>
@@ -79,7 +79,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <h1 style={{ fontSize: '2.2rem', fontWeight: 800, marginBottom: '0.5rem', letterSpacing: '-0.03em' }}>
+          <h1 style={{ fontSize: '2.2rem', fontWeight: 800, marginBottom: '0.5rem', letterSpacing: '-0.03em', color: 'var(--text-primary)' }}>
             Contact Transport &amp; Fleet Operations
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '520px', margin: '0 auto' }}>
@@ -97,9 +97,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
               display: 'flex',
               alignItems: 'center',
               gap: '0.75rem',
-              backgroundColor: status.type === 'success' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-              border: status.type === 'success' ? '1px solid rgba(34, 197, 94, 0.35)' : '1px solid rgba(239, 68, 68, 0.35)',
-              color: status.type === 'success' ? '#4ade80' : '#f87171'
+              backgroundColor: status.type === 'success' ? '#eafaf1' : '#fdf2f2',
+              border: status.type === 'success' ? '1px solid #bbf7d0' : '1px solid #fecaca',
+              color: status.type === 'success' ? '#16a36a' : '#dc2626'
             }}
           >
             <span style={{ fontSize: '1.25rem' }}>{status.type === 'success' ? '✅' : '⚠️'}</span>
@@ -108,7 +108,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
         )}
 
         {/* Contact Form */}
-        <div className="glass-panel" style={{ padding: '2.25rem', borderRadius: '16px' }}>
+        <div className="glass-panel" style={{ padding: '2.25rem', borderRadius: '16px', background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {/* Hidden honeypot field for bot suppression */}
             <input
@@ -137,8 +137,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
                     padding: '0.7rem 0.9rem',
                     borderRadius: '8px',
                     border: '1px solid var(--border-medium)',
-                    backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                    color: '#f8fafc',
+                    backgroundColor: '#ffffff',
+                    color: 'var(--text-primary)',
                     fontSize: '0.9rem'
                   }}
                 />
@@ -159,8 +159,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
                     padding: '0.7rem 0.9rem',
                     borderRadius: '8px',
                     border: '1px solid var(--border-medium)',
-                    backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                    color: '#f8fafc',
+                    backgroundColor: '#ffffff',
+                    color: 'var(--text-primary)',
                     fontSize: '0.9rem'
                   }}
                 />
@@ -182,8 +182,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
                     padding: '0.7rem 0.9rem',
                     borderRadius: '8px',
                     border: '1px solid var(--border-medium)',
-                    backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                    color: '#f8fafc',
+                    backgroundColor: '#ffffff',
+                    color: 'var(--text-primary)',
                     fontSize: '0.9rem'
                   }}
                 />
@@ -203,8 +203,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
                     padding: '0.7rem 0.9rem',
                     borderRadius: '8px',
                     border: '1px solid var(--border-medium)',
-                    backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                    color: '#f8fafc',
+                    backgroundColor: '#ffffff',
+                    color: 'var(--text-primary)',
                     fontSize: '0.9rem'
                   }}
                 />
@@ -223,8 +223,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
                   padding: '0.7rem 0.9rem',
                   borderRadius: '8px',
                   border: '1px solid var(--border-medium)',
-                  backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                  color: '#f8fafc',
+                  backgroundColor: '#ffffff',
+                  color: 'var(--text-primary)',
                   fontSize: '0.9rem'
                 }}
               >
@@ -251,8 +251,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
                   padding: '0.75rem 0.9rem',
                   borderRadius: '8px',
                   border: '1px solid var(--border-medium)',
-                  backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                  color: '#f8fafc',
+                  backgroundColor: '#ffffff',
+                  color: 'var(--text-primary)',
                   fontSize: '0.9rem',
                   lineHeight: 1.5,
                   resize: 'vertical'

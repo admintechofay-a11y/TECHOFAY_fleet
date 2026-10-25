@@ -111,7 +111,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'radial-gradient(circle at 50% 15%, #172554 0%, #0a0f1d 85%)',
+        background: 'linear-gradient(135deg, #f4f6fa 0%, #e9eff7 100%)',
         padding: '2rem 1rem'
       }}
     >
@@ -122,6 +122,8 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
           maxWidth: '680px',
           padding: '2.5rem',
           borderRadius: '18px',
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border-subtle)',
           boxShadow: 'var(--shadow-lg)'
         }}
       >
@@ -132,7 +134,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               width: '56px',
               height: '56px',
               borderRadius: '14px',
-              background: 'linear-gradient(135deg, #06b6d4 0%, #0284c7 100%)',
+              background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
               margin: '0 auto 1rem',
               display: 'flex',
               alignItems: 'center',
@@ -143,7 +145,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
           >
             🚚
           </div>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 700, color: '#f8fafc', letterSpacing: '-0.02em', margin: 0 }}>
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: 0 }}>
             Register Your Fleet
           </h1>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.35rem' }}>
@@ -156,9 +158,9 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               type="button"
               onClick={handleFillDemo}
               style={{
-                background: 'rgba(6, 182, 212, 0.12)',
-                border: '1px dashed #06b6d4',
-                color: '#38bdf8',
+                background: 'rgba(37, 99, 235, 0.08)',
+                border: '1px dashed #2563eb',
+                color: '#2563eb',
                 borderRadius: '6px',
                 padding: '0.35rem 0.85rem',
                 fontSize: '0.75rem',
@@ -177,12 +179,12 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
           <div
             style={{
               backgroundColor: 'var(--status-error-subtle)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
+              border: '1px solid #fecaca',
               borderRadius: 'var(--radius-sm)',
               padding: '0.85rem',
               marginBottom: '1.5rem',
               fontSize: '0.85rem',
-              color: '#fca5a5'
+              color: '#dc2626'
             }}
           >
             ⚠️ {error}
@@ -196,10 +198,10 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               border: '1px solid var(--border-subtle)',
               borderRadius: '12px',
               padding: '1.25rem',
-              background: 'rgba(255, 255, 255, 0.02)'
+              background: '#f8fafc'
             }}
           >
-            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#38bdf8', marginBottom: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#2563eb', marginBottom: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
               🏢 Company Profile
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
@@ -277,10 +279,10 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               border: '1px solid var(--border-subtle)',
               borderRadius: '12px',
               padding: '1.25rem',
-              background: 'rgba(255, 255, 255, 0.02)'
+              background: '#f8fafc'
             }}
           >
-            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#10b981', marginBottom: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#16a36a', marginBottom: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
               👤 Primary Administrator Account
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
@@ -333,10 +335,10 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               border: '1px solid var(--border-subtle)',
               borderRadius: '12px',
               padding: '1.25rem',
-              background: 'rgba(255, 255, 255, 0.02)'
+              background: '#f8fafc'
             }}
           >
-            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f59e0b', marginBottom: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#d97706', marginBottom: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
               🔒 Security & Login Credentials
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
@@ -351,7 +353,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: '#38bdf8',
+                      color: 'var(--accent-cyan)',
                       fontSize: '0.725rem',
                       cursor: 'pointer',
                       padding: 0
@@ -374,7 +376,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
                       <span>Strength: {strength.label}</span>
                       <span>{strength.score}%</span>
                     </div>
-                    <div style={{ height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', marginTop: '0.2rem', overflow: 'hidden' }}>
+                    <div style={{ height: '4px', background: '#e2e8f0', borderRadius: '2px', marginTop: '0.2rem', overflow: 'hidden' }}>
                       <div style={{ width: `${strength.score}%`, height: '100%', background: strength.color, transition: 'all 0.2s ease' }} />
                     </div>
                   </div>
@@ -394,12 +396,12 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
                   required
                 />
                 {confirmPassword && password !== confirmPassword && (
-                  <div style={{ fontSize: '0.7rem', color: '#ef4444', marginTop: '0.25rem' }}>
+                  <div style={{ fontSize: '0.7rem', color: '#dc2626', marginTop: '0.25rem' }}>
                     ⚠️ Passwords do not match
                   </div>
                 )}
                 {confirmPassword && password === confirmPassword && (
-                  <div style={{ fontSize: '0.7rem', color: '#10b981', marginTop: '0.25rem' }}>
+                  <div style={{ fontSize: '0.7rem', color: '#16a36a', marginTop: '0.25rem' }}>
                     ✓ Passwords match
                   </div>
                 )}
@@ -421,7 +423,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               <button
                 type="button"
                 onClick={() => onNavigate && onNavigate('/terms')}
-                style={{ background: 'none', border: 'none', color: '#38bdf8', textDecoration: 'underline', padding: 0, cursor: 'pointer', fontSize: 'inherit' }}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', textDecoration: 'underline', padding: 0, cursor: 'pointer', fontSize: 'inherit' }}
               >
                 Terms of Service
               </button>{' '}
@@ -429,7 +431,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               <button
                 type="button"
                 onClick={() => onNavigate && onNavigate('/privacy')}
-                style={{ background: 'none', border: 'none', color: '#38bdf8', textDecoration: 'underline', padding: 0, cursor: 'pointer', fontSize: 'inherit' }}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', textDecoration: 'underline', padding: 0, cursor: 'pointer', fontSize: 'inherit' }}
               >
                 Privacy Policy
               </button>
@@ -458,7 +460,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#38bdf8',
+                color: 'var(--accent-cyan)',
                 fontWeight: 600,
                 cursor: 'pointer',
                 padding: 0,
@@ -476,7 +478,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               <button
                 type="button"
                 onClick={() => onNavigate('/track')}
-                style={{ background: 'none', border: 'none', color: '#10b981', fontWeight: 600, cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: '#16a36a', fontWeight: 600, cursor: 'pointer', padding: 0 }}
               >
                 🔍 Track Consignment
               </button>
@@ -484,7 +486,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               <button
                 type="button"
                 onClick={() => onNavigate('/contact')}
-                style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', padding: 0 }}
               >
                 Contact Operations
               </button>
@@ -492,7 +494,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               <button
                 type="button"
                 onClick={() => onNavigate('/privacy')}
-                style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 0 }}
               >
                 Privacy Policy
               </button>

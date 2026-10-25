@@ -132,15 +132,15 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
         style={{
           padding: '1.75rem 2rem',
           borderRadius: '16px',
-          background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%)',
-          border: '1px solid rgba(6, 182, 212, 0.25)',
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border-subtle)',
           marginBottom: '2rem',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+          boxShadow: 'var(--shadow-sm)'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.02em', margin: 0 }}>
+            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: 0 }}>
               Operations Command Center
             </h1>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.35rem' }}>
@@ -174,7 +174,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
           style={{
             marginTop: '1.5rem',
             paddingTop: '1.25rem',
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            borderTop: '1px solid var(--border-subtle)',
             display: 'flex',
             gap: '0.75rem',
             flexWrap: 'wrap'
@@ -232,8 +232,9 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
           className="glass-card"
           style={{
             padding: '1.4rem',
-            background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.7) 0%, rgba(30, 41, 59, 0.4) 100%)',
-            border: '1px solid rgba(56, 189, 248, 0.25)',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: 'var(--shadow-sm)',
             position: 'relative'
           }}
         >
@@ -244,7 +245,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
             <span style={{ fontSize: '1.2rem' }}>📦</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginTop: '0.5rem' }}>
-            <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#38bdf8' }}>
+            <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#2563eb' }}>
               {metrics?.loads.today ?? 0}
             </span>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
@@ -252,8 +253,8 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
             </span>
           </div>
           <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-            <span>In-Transit: <strong style={{ color: '#38bdf8' }}>{metrics?.loads.byStatus.IN_TRANSIT ?? 0}</strong></span>
-            <span>Delivered: <strong style={{ color: '#34d399' }}>{metrics?.loads.byStatus.DELIVERED ?? 0}</strong></span>
+            <span>In-Transit: <strong style={{ color: '#2563eb' }}>{metrics?.loads.byStatus.IN_TRANSIT ?? 0}</strong></span>
+            <span>Delivered: <strong style={{ color: '#16a36a' }}>{metrics?.loads.byStatus.DELIVERED ?? 0}</strong></span>
             <span>Tonnage: <strong>{metrics?.loads.totalWeightMt ?? 0} MT</strong></span>
           </div>
         </div>
@@ -263,8 +264,9 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
           className="glass-card"
           style={{
             padding: '1.4rem',
-            background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.7) 0%, rgba(30, 41, 59, 0.4) 100%)',
-            border: '1px solid rgba(251, 191, 36, 0.25)'
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: 'var(--shadow-sm)'
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -274,7 +276,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
             <span style={{ fontSize: '1.2rem' }}>🛣️</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginTop: '0.5rem' }}>
-            <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#fbbf24' }}>
+            <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#d97706' }}>
               {metrics?.trips.active ?? 0}
             </span>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
@@ -283,8 +285,8 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
           </div>
           <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
             <span>Loading: <strong>{metrics?.trips.byStatus.LOADING ?? 0}</strong></span>
-            <span>In-Transit: <strong style={{ color: '#fbbf24' }}>{metrics?.trips.byStatus.IN_TRANSIT ?? 0}</strong></span>
-            <span>Closed: <strong style={{ color: '#34d399' }}>{metrics?.trips.closed ?? 0}</strong></span>
+            <span>In-Transit: <strong style={{ color: '#d97706' }}>{metrics?.trips.byStatus.IN_TRANSIT ?? 0}</strong></span>
+            <span>Closed: <strong style={{ color: '#16a36a' }}>{metrics?.trips.closed ?? 0}</strong></span>
           </div>
         </div>
 
@@ -293,8 +295,9 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
           className="glass-card"
           style={{
             padding: '1.4rem',
-            background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.7) 0%, rgba(30, 41, 59, 0.4) 100%)',
-            border: '1px solid rgba(52, 211, 153, 0.25)'
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: 'var(--shadow-sm)'
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -304,7 +307,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
             <span style={{ fontSize: '1.2rem' }}>🚚</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginTop: '0.5rem' }}>
-            <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#34d399' }}>
+            <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#16a36a' }}>
               {metrics?.fleet.vehicles.available ?? 0}
             </span>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
@@ -312,9 +315,9 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
             </span>
           </div>
           <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-            <span>On Trip: <strong style={{ color: '#fbbf24' }}>{metrics?.fleet.vehicles.onTrip ?? 0}</strong></span>
-            <span>Workshop: <strong style={{ color: '#f87171' }}>{metrics?.fleet.vehicles.maintenance ?? 0}</strong></span>
-            <span>Drivers Ready: <strong style={{ color: '#34d399' }}>{metrics?.fleet.drivers.available ?? 0}</strong></span>
+            <span>On Trip: <strong style={{ color: '#d97706' }}>{metrics?.fleet.vehicles.onTrip ?? 0}</strong></span>
+            <span>Workshop: <strong style={{ color: '#dc2626' }}>{metrics?.fleet.vehicles.maintenance ?? 0}</strong></span>
+            <span>Drivers Ready: <strong style={{ color: '#16a36a' }}>{metrics?.fleet.drivers.available ?? 0}</strong></span>
           </div>
         </div>
 
@@ -323,8 +326,9 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
           className="glass-card"
           style={{
             padding: '1.4rem',
-            background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.7) 0%, rgba(30, 41, 59, 0.4) 100%)',
-            border: '1px solid rgba(129, 140, 248, 0.25)'
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: 'var(--shadow-sm)'
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -334,13 +338,13 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
             <span style={{ fontSize: '1.2rem' }}>💰</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginTop: '0.5rem' }}>
-            <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#818cf8' }}>
+            <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#4f46e5' }}>
               {formatCurrency(metrics?.financials.balanceOutstanding)}
             </span>
           </div>
           <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-            <span>Billed: <strong style={{ color: '#f8fafc' }}>{formatCurrency(metrics?.financials.freightBilled)}</strong></span>
-            <span>Advance: <strong style={{ color: '#34d399' }}>{formatCurrency(metrics?.financials.advanceReceived)}</strong></span>
+            <span>Billed: <strong style={{ color: 'var(--text-primary)' }}>{formatCurrency(metrics?.financials.freightBilled)}</strong></span>
+            <span>Advance: <strong style={{ color: '#16a36a' }}>{formatCurrency(metrics?.financials.advanceReceived)}</strong></span>
           </div>
         </div>
 
@@ -349,10 +353,11 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
           className="glass-card"
           style={{
             padding: '1.4rem',
-            background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.7) 0%, rgba(30, 41, 59, 0.4) 100%)',
+            background: 'var(--bg-surface)',
             border: `1px solid ${
-              (metrics?.compliance.expired ?? 0) > 0 ? 'rgba(239, 68, 68, 0.4)' : 'rgba(148, 163, 184, 0.25)'
-            }`
+              (metrics?.compliance.expired ?? 0) > 0 ? '#fecaca' : 'var(--border-subtle)'
+            }`,
+            boxShadow: 'var(--shadow-sm)'
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -366,7 +371,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
               style={{
                 fontSize: '2.2rem',
                 fontWeight: 800,
-                color: (metrics?.compliance.expired ?? 0) > 0 ? '#ef4444' : '#34d399'
+                color: (metrics?.compliance.expired ?? 0) > 0 ? '#dc2626' : '#16a36a'
               }}
             >
               {metrics?.compliance.expired ?? 0}
@@ -376,11 +381,11 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
             </span>
           </div>
           <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-            <span>Due ≤ 15d: <strong style={{ color: '#fbbf24' }}>{metrics?.compliance.expiring15Days ?? 0}</strong></span>
-            <span>Due ≤ 30d: <strong style={{ color: '#38bdf8' }}>{metrics?.compliance.expiring30Days ?? 0}</strong></span>
+            <span>Due ≤ 15d: <strong style={{ color: '#d97706' }}>{metrics?.compliance.expiring15Days ?? 0}</strong></span>
+            <span>Due ≤ 30d: <strong style={{ color: '#2563eb' }}>{metrics?.compliance.expiring30Days ?? 0}</strong></span>
             <button
               onClick={() => handleNav('/app/compliance')}
-              style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+              style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
             >
               Audit →
             </button>
@@ -392,8 +397,9 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
           className="glass-card"
           style={{
             padding: '1.4rem',
-            background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.7) 0%, rgba(30, 41, 59, 0.4) 100%)',
-            border: '1px solid rgba(168, 85, 247, 0.25)'
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: 'var(--shadow-sm)'
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -403,7 +409,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
             <span style={{ fontSize: '1.2rem' }}>📱</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginTop: '0.5rem' }}>
-            <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#c084fc' }}>
+            <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#9333ea' }}>
               {metrics?.pod.pending ?? 0}
             </span>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
@@ -411,11 +417,11 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
             </span>
           </div>
           <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-            <span>Verified: <strong style={{ color: '#34d399' }}>{metrics?.pod.verified ?? 0}</strong></span>
-            <span>WA Delivery: <strong style={{ color: '#38bdf8' }}>{metrics?.whatsapp.deliveryRate ?? 100}%</strong></span>
+            <span>Verified: <strong style={{ color: '#16a36a' }}>{metrics?.pod.verified ?? 0}</strong></span>
+            <span>WA Delivery: <strong style={{ color: '#2563eb' }}>{metrics?.whatsapp.deliveryRate ?? 100}%</strong></span>
             <button
               onClick={() => handleNav('/app/deliveries')}
-              style={{ background: 'none', border: 'none', color: '#c084fc', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+              style={{ background: 'none', border: 'none', color: '#9333ea', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
             >
               Verify →
             </button>
@@ -429,7 +435,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
         <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
             <div>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', margin: 0 }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
                 7-Day Dispatch & Revenue Velocity
               </h2>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
@@ -455,12 +461,12 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
                     <div className="font-mono" style={{ width: '85px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                       {new Date(day.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}
                     </div>
-                    <div style={{ flex: 1, backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: '6px', height: '26px', overflow: 'hidden', position: 'relative' }}>
+                    <div style={{ flex: 1, backgroundColor: '#f1f5f9', borderRadius: '6px', height: '26px', overflow: 'hidden', position: 'relative' }}>
                       <div
                         style={{
                           width: `${Math.max(6, percent)}%`,
                           height: '100%',
-                          background: 'linear-gradient(90deg, #0284c7, #38bdf8)',
+                          background: 'linear-gradient(90deg, #2563eb, #3b82f6)',
                           borderRadius: '6px',
                           display: 'flex',
                           alignItems: 'center',
@@ -468,12 +474,12 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
                           transition: 'width 0.5s ease'
                         }}
                       >
-                        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#0f172a' }}>
+                        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#ffffff' }}>
                           {day.loadCount > 0 ? `${day.loadCount} loads` : ''}
                         </span>
                       </div>
                     </div>
-                    <div style={{ width: '110px', textAlign: 'right', fontSize: '0.8rem', fontWeight: 600, color: '#38bdf8' }}>
+                    <div style={{ width: '110px', textAlign: 'right', fontSize: '0.8rem', fontWeight: 600, color: '#2563eb' }}>
                       {day.freight > 0 ? formatCurrency(day.freight) : '₹0'}
                     </div>
                   </div>
@@ -487,7 +493,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
         <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
             <div>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', margin: 0 }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
                 Actionable Operations Alerts
               </h2>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
@@ -502,7 +508,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
           {alerts.length === 0 ? (
             <div style={{ padding: '3rem 1rem', textAlign: 'center', color: 'var(--text-muted)' }}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>✨</div>
-              <div style={{ fontSize: '0.85rem', color: '#f8fafc' }}>All Systems Compliant</div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 600 }}>All Systems Compliant</div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
                 No document expiries or overdue verification alerts.
               </div>
@@ -518,16 +524,16 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
                     borderRadius: '8px',
                     backgroundColor:
                       alert.severity === 'CRITICAL'
-                        ? 'rgba(239, 68, 68, 0.12)'
+                        ? '#fef2f2'
                         : alert.severity === 'WARNING'
-                        ? 'rgba(251, 191, 36, 0.12)'
-                        : 'rgba(56, 189, 248, 0.12)',
+                        ? '#fffbeb'
+                        : '#eff6ff',
                     border: `1px solid ${
                       alert.severity === 'CRITICAL'
-                        ? 'rgba(239, 68, 68, 0.3)'
+                        ? '#fecaca'
                         : alert.severity === 'WARNING'
-                        ? 'rgba(251, 191, 36, 0.3)'
-                        : 'rgba(56, 189, 248, 0.3)'
+                        ? '#fde68a'
+                        : '#bfdbfe'
                     }`,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease'
@@ -540,10 +546,10 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
                         fontWeight: 700,
                         color:
                           alert.severity === 'CRITICAL'
-                            ? '#ef4444'
+                            ? '#dc2626'
                             : alert.severity === 'WARNING'
-                            ? '#fbbf24'
-                            : '#38bdf8',
+                            ? '#d97706'
+                            : '#2563eb',
                         textTransform: 'uppercase'
                       }}
                     >
@@ -551,7 +557,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
                     </span>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Action →</span>
                   </div>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#f8fafc', marginTop: '0.25rem' }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
                     {alert.title}
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
