@@ -2,6 +2,17 @@
  * Express Application Setup
  */
 
+// Intercept '@fleet/shared' to ensure guaranteed resolution in serverless and monorepo runtimes
+const Module = require('module');
+const path = require('node:path');
+const originalResolveFilename = Module._resolveFilename;
+Module._resolveFilename = function (request, parent, isMain, options) {
+  if (request === '@fleet/shared') {
+    return path.resolve(__dirname, 'shared/index.js');
+  }
+  return originalResolveFilename.call(this, request, parent, isMain, options);
+};
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
