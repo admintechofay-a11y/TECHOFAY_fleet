@@ -27,38 +27,76 @@ class PdfService {
   }
 
   /**
-   * Draw a simulated vector barcode with human-readable code
+   * Draw an authentic ISO/IEC 15417 Code 128-B scannable vector barcode
    */
   _drawBarcode(doc, x, y, codeText) {
-    const clean = String(codeText || '').replace(/[^A-Z0-9-]/gi, '').toUpperCase();
-    const barcodeWidth = 140;
+    const raw = String(codeText || '').trim();
+    if (!raw) return;
+
+    // Standard Code 128 Pattern Table (0 to 106)
+    const CODE128_PATTERNS = [
+      '212222', '222122', '222221', '121223', '121322', '131222', '122213', '122312', '132212', '221213',
+      '221312', '231212', '112232', '122132', '122231', '113222', '123122', '123221', '223211', '221132',
+      '221231', '213212', '223112', '312131', '311222', '321122', '321221', '312212', '322112', '322211',
+      '212123', '212321', '232121', '111323', '131123', '131321', '112313', '132113', '132311', '211313',
+      '231113', '231311', '112133', '112331', '132131', '113123', '113321', '133121', '313121', '211331',
+      '231131', '213113', '213311', '213131', '311123', '311321', '331121', '312113', '312311', '332111',
+      '314111', '221411', '431111', '111224', '111422', '121124', '121421', '141122', '141221', '112214',
+      '112412', '122114', '122411', '142112', '142211', '241211', '221114', '413111', '241112', '134111',
+      '111242', '121142', '121241', '114212', '124112', '124211', '411212', '421112', '421211', '212141',
+      '214121', '412121', '111143', '111341', '131141', '114113', '114311', '411113', '411311', '113141',
+      '114131', '311141', '411131', '211412', '211214', '211232', '2331112'
+    ];
+
+    // Encode chars in Code 128-B range (ASCII 32 to 126)
+    const values = [];
+    for (let i = 0; i < raw.length; i++) {
+      const code = raw.charCodeAt(i);
+      if (code >= 32 && code <= 126) {
+        values.push(code - 32);
+      }
+    }
+
+    // Start Code B is index 104
+    let checksum = 104;
+    for (let i = 0; i < values.length; i++) {
+      checksum += values[i] * (i + 1);
+    }
+    checksum %= 103;
+
+    // Sequence: Start B (104), data symbols, checksum, Stop (106)
+    const sequence = [104, ...values, checksum, 106];
+
+    // Calculate total module count
+    // Each standard symbol is 11 modules; Stop is 13 modules
+    const totalModules = (sequence.length - 1) * 11 + 13;
+    const maxBarcodeWidth = 145;
+    const moduleWidth = Math.min(0.85, maxBarcodeWidth / totalModules);
     const barcodeHeight = 22;
 
     doc.save();
-    // Background card for barcode
-    doc.rect(x - 4, y - 2, barcodeWidth + 8, barcodeHeight + 14).fill('#ffffff');
+    // Background card for quiet zone
+    doc.rect(x - 4, y - 2, maxBarcodeWidth + 8, barcodeHeight + 14).fill('#ffffff');
 
-    // Generate alternating bar widths based on char codes
     let currentX = x;
-    for (let i = 0; i < clean.length; i++) {
-      const code = clean.charCodeAt(i);
-      const w1 = (code % 2) + 1;
-      const w2 = ((code >> 1) % 2) + 1;
-      doc.rect(currentX, y, w1, barcodeHeight).fill('#0f172a');
-      currentX += w1 + 1.2;
-      doc.rect(currentX, y, w2, barcodeHeight).fill('#0f172a');
-      currentX += w2 + 1.5;
-      if (currentX > x + barcodeWidth - 6) break;
-    }
-    // Guard bars at ends
-    doc.rect(x + barcodeWidth - 3, y, 2, barcodeHeight).fill('#0f172a');
+    sequence.forEach((symIdx) => {
+      const pattern = CODE128_PATTERNS[symIdx] || '212222';
+      for (let p = 0; p < pattern.length; p++) {
+        const width = parseInt(pattern[p], 10) * moduleWidth;
+        if (p % 2 === 0) {
+          // Bar (filled)
+          doc.rect(currentX, y, width, barcodeHeight).fill('#0f172a');
+        }
+        currentX += width;
+      }
+    });
 
-    // Code text below barcode
+    // Human-readable caption beneath barcode
     doc
       .fillColor('#334155')
       .fontSize(7)
       .font('Courier-Bold')
-      .text(`* ${clean} *`, x, y + barcodeHeight + 2, { width: barcodeWidth, align: 'center' });
+      .text(`* ${raw} *`, x, y + barcodeHeight + 2, { width: maxBarcodeWidth, align: 'center' });
 
     doc.restore();
   }
@@ -66,7 +104,7 @@ class PdfService {
   /**
    * Helper to write company branding header with copy indicator
    */
-  _drawHeader(doc, company, documentTitle, copyType = 'ORIGINAL') {
+  _drawHeader(doc, company = {}, documentTitle, copyType = 'ORIGINAL') {
     // Determine badge color based on copy type
     const copyColors = {
       CONSIGNOR: { bg: '#be123c', text: '#ffffff', label: 'CONSIGNOR COPY' },
@@ -84,24 +122,56 @@ class PdfService {
     doc.rect(48, 38, 36, 36).fill('#0284c7');
     doc.fillColor('#ffffff').fontSize(14).font('Helvetica-Bold').text('T', 60, 48);
 
-    // Company Name & Info
+    // Company Name & Info (Never fabricate names or fake GSTINs)
+    const companyDisplayName =
+      company.tradeName || company.legalName || company.name || 'ORGANIZATION NAME NOT CONFIGURED';
+    const gstinLine = company.gstin ? `GSTIN: ${company.gstin}` : 'GSTIN: UNREGISTERED / NOT CONFIGURED';
+    const panLine = company.pan
+      ? `PAN: ${company.pan}`
+      : (company.gstin && company.gstin.length >= 12 ? `PAN: ${company.gstin.slice(2, 12)}` : 'PAN: NOT CONFIGURED');
+
+    let carrierAddress = '';
+    if (company.address) {
+      if (typeof company.address === 'string') {
+        carrierAddress = company.address;
+      } else {
+        carrierAddress = [
+          company.address.addressLine1 || company.address.street,
+          company.address.city,
+          company.address.state,
+          company.address.pincode
+        ].filter(Boolean).join(', ');
+      }
+    }
+    if (!carrierAddress && company.billingAddress) {
+      carrierAddress = [
+        company.billingAddress.addressLine1 || company.billingAddress.street,
+        company.billingAddress.city,
+        company.billingAddress.state,
+        company.billingAddress.pincode
+      ].filter(Boolean).join(', ');
+    }
+    if (!carrierAddress) {
+      carrierAddress = company.registeredAddress || 'Registered Office Address: Not Configured';
+    }
+
     doc
       .fillColor('#38bdf8')
-      .fontSize(13)
+      .fontSize(12)
       .font('Helvetica-Bold')
-      .text(company.tradeName || company.legalName || 'TECHNOFAY GLOBAL LOGISTICS', 92, 38);
+      .text(companyDisplayName, 92, 38, { width: 240, ellipsis: true });
 
     doc
       .fillColor('#94a3b8')
       .fontSize(7.5)
       .font('Helvetica')
-      .text(`GSTIN: ${company.gstin || '24AAACT1234A1Z5'}  •  PAN: ${company.pan || 'AAACT1234A'}  •  GTA SAC CODE: 9965`, 92, 54);
+      .text(`${gstinLine}  •  ${panLine}  •  GTA SAC: 9965`, 92, 54);
 
     doc
       .fillColor('#64748b')
       .fontSize(7)
       .font('Helvetica')
-      .text('Regd. Carrier Office: Fleet Hub & Corridor Gateway, Ahmedabad, Gujarat, India', 92, 66);
+      .text(`Carrier Office: ${carrierAddress}`, 92, 66, { width: 250, ellipsis: true });
 
     // Document Title & Copy Type Badge
     doc
@@ -163,7 +233,7 @@ class PdfService {
 
       // Consignor Box
       doc.fillColor('#0284c7').fontSize(7.5).font('Helvetica-Bold').text('CONSIGNOR (BOOKED BY / FROM):', 50, y + 8);
-      doc.fillColor('#0f172a').fontSize(8.5).font('Helvetica-Bold').text(lr.consignorId?.name || 'Consignor Corporate Ltd', 50, y + 20);
+      doc.fillColor('#0f172a').fontSize(8.5).font('Helvetica-Bold').text(lr.consignorId?.name || 'Party Name Not Provided', 50, y + 20);
       doc.font('Helvetica').fontSize(7.5).fillColor('#475569');
       doc.text(`GSTIN: ${lr.consignorId?.gstin || 'Unregistered'}  •  PAN: ${lr.consignorId?.pan || 'N/A'}`, 50, y + 33);
       doc.text(`Dispatch Terminal: ${lr.fromLocationId?.name || lr.consignorId?.billingAddress?.city || 'Origin Depot'}`, 50, y + 45);
@@ -171,7 +241,7 @@ class PdfService {
 
       // Consignee Box
       doc.fillColor('#0284c7').fontSize(7.5).font('Helvetica-Bold').text('CONSIGNEE (DELIVER TO):', 320, y + 8);
-      doc.fillColor('#0f172a').fontSize(8.5).font('Helvetica-Bold').text(lr.consigneeId?.name || 'Consignee Enterprise Ltd', 320, y + 20);
+      doc.fillColor('#0f172a').fontSize(8.5).font('Helvetica-Bold').text(lr.consigneeId?.name || 'Party Name Not Provided', 320, y + 20);
       doc.font('Helvetica').fontSize(7.5).fillColor('#475569');
       doc.text(`GSTIN: ${lr.consigneeId?.gstin || 'Unregistered'}  •  PAN: ${lr.consigneeId?.pan || 'N/A'}`, 320, y + 33);
       doc.text(`Delivery Hub: ${lr.toLocationId?.name || lr.consigneeId?.billingAddress?.city || 'Destination Hub'}`, 320, y + 45);

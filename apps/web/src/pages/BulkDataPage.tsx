@@ -44,12 +44,12 @@ export const BulkDataPage: React.FC = () => {
   }, [activeTab]);
 
   // Handle Download Blank/Sample Template
-  const handleDownloadTemplate = () => {
+  const handleDownloadTemplate = async () => {
     try {
-      apiDownload(`/master/template/${selectedEntity}`, `${selectedEntity}_template.xlsx`);
+      await apiDownload(`/master/template/${selectedEntity}`, `${selectedEntity}_template.xlsx`);
       setFeedback({ text: `Downloaded ${selectedEntity} template successfully.`, type: 'success' });
     } catch (err: any) {
-      setFeedback({ text: 'Failed to download template', type: 'error' });
+      setFeedback({ text: err.message || 'Failed to download template', type: 'error' });
     }
   };
 
@@ -116,14 +116,14 @@ export const BulkDataPage: React.FC = () => {
   };
 
   // Handle Direct Streaming Export
-  const handleDirectExport = () => {
+  const handleDirectExport = async () => {
     try {
       let q = `/master/export/${selectedEntity}?format=${exportFormat}`;
       if (exportFilterStatus) q += `&status=${encodeURIComponent(exportFilterStatus)}`;
       if (exportSearch) q += `&search=${encodeURIComponent(exportSearch)}`;
 
-      apiDownload(q, `${selectedEntity}_export.${exportFormat}`);
       setFeedback({ text: `Generating and streaming ${selectedEntity} ${exportFormat.toUpperCase()} file...`, type: 'success' });
+      await apiDownload(q, `${selectedEntity}_export.${exportFormat}`);
     } catch (err: any) {
       setFeedback({ text: err.message || 'Export failed', type: 'error' });
     }
@@ -151,6 +151,14 @@ export const BulkDataPage: React.FC = () => {
       setFeedback({ text: err.message || 'Failed to create export job', type: 'error' });
     } finally {
       setExportLoading(false);
+    }
+  };
+
+  const handleDownloadJob = async (job: any) => {
+    try {
+      await apiDownload(`/master/jobs/${job._id}/download`, job.fileName || `export.${job.format}`);
+    } catch (err: any) {
+      setFeedback({ text: err.message || 'Failed to download job export file', type: 'error' });
     }
   };
 
@@ -713,7 +721,7 @@ export const BulkDataPage: React.FC = () => {
                       <td style={{ padding: '0.85rem 1rem', textAlign: 'right' }}>
                         {job.status === 'COMPLETED' && (
                           <button
-                            onClick={() => apiDownload(`/master/jobs/${job._id}/download`, job.fileName || `export.${job.format}`)}
+                            onClick={() => handleDownloadJob(job)}
                             style={{
                               padding: '0.35rem 0.75rem',
                               borderRadius: '6px',

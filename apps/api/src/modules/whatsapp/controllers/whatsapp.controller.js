@@ -264,7 +264,8 @@ class WhatsAppController {
       const result = await whatsappService.handleWebhook({
         signature,
         rawBody,
-        payload: req.body
+        payload: req.body,
+        url: `${req.protocol}://${req.get('host')}${req.originalUrl}`
       });
 
       res.status(200).json({

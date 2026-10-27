@@ -27,6 +27,10 @@ const config = {
   authRateLimitMaxRequests: parseInt(process.env.AUTH_RATE_LIMIT_MAX_REQUESTS || '5', 10),
   defaultTimezone: process.env.DEFAULT_TIMEZONE || 'Asia/Kolkata',
   defaultCurrency: process.env.DEFAULT_CURRENCY || 'INR',
+  storageDriver: process.env.STORAGE_DRIVER || 'local',
+  storageLocalRoot: process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || './uploads',
+  storageMaxFileSizeMb: parseInt(process.env.STORAGE_MAX_FILE_SIZE_MB || '15', 10),
+  appBaseUrl: process.env.APP_BASE_URL || process.env.PUBLIC_APP_URL || 'http://localhost:5000',
   validateConfig: function (targetEnv = process.env.NODE_ENV) {
     if (targetEnv === 'production') {
       const defaultJwt = 'dev_jwt_secret_min_32_characters_for_transport_platform';

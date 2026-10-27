@@ -9,6 +9,7 @@ const WhatsAppConfig = require('../models/WhatsAppConfig');
 const WhatsAppAdapterFactory = require('../adapters/WhatsAppAdapterFactory');
 const { normalizePhoneNumber, renderTemplate } = require('./whatsappTemplate.service');
 const auditLogService = require('../../audit/services/auditLog.service');
+const documentController = require('../../documents/controllers/document.controller');
 const LrNumber = require('../../lr/models/LrNumber');
 const Bilty = require('../../bilties/models/Bilty');
 const Load = require('../../loads/models/Load');
@@ -82,7 +83,8 @@ class WhatsAppService {
     messageLog.providerMessageId = result.providerMessageId;
     messageLog.errorMessage = result.error || null;
     messageLog.lastAttemptAt = new Date();
-    if (result.status === WhatsAppMessageStatus.MOCK_DELIVERED || result.status === WhatsAppMessageStatus.DELIVERED) {
+    const isProd = process.env.NODE_ENV === 'production';
+    if (result.status === WhatsAppMessageStatus.DELIVERED || (!isProd && result.status === WhatsAppMessageStatus.MOCK_DELIVERED)) {
       messageLog.deliveredAt = new Date();
     }
     await messageLog.save();
@@ -129,7 +131,15 @@ class WhatsAppService {
       fileName = `Bilty_${bilty.biltyNumber}.pdf`;
     }
 
-    const documentUrl = `/api/v1/documents/${documentType.toLowerCase()}/${documentId}/pdf`;
+    const token = documentController.generateExpiringDocumentToken({
+      documentType,
+      documentId,
+      companyId,
+      expiresInHours: 48
+    });
+    const documentUrl = `/api/v1/documents/${documentType.toLowerCase()}/${documentId}/pdf?token=${token}`;
+    const baseUrl = process.env.APP_BASE_URL || process.env.PUBLIC_APP_URL || '';
+    const fullDocumentUrl = baseUrl ? `${baseUrl}${documentUrl}` : documentUrl;
     const finalCaption = caption || `Official ${documentType} document: ${docRefNumber}`;
 
     const tenantConfig = await this.getTenantConfig(companyId);
@@ -156,7 +166,7 @@ class WhatsAppService {
 
     const result = await adapter.sendPdf({
       toPhone: normalizedPhone,
-      pdfUrl: documentUrl,
+      pdfUrl: fullDocumentUrl,
       caption: finalCaption,
       fileName,
       companyId: companyId.toString()
@@ -166,7 +176,8 @@ class WhatsAppService {
     messageLog.providerMessageId = result.providerMessageId;
     messageLog.errorMessage = result.error || null;
     messageLog.lastAttemptAt = new Date();
-    if (result.status === WhatsAppMessageStatus.MOCK_DELIVERED || result.status === WhatsAppMessageStatus.DELIVERED) {
+    const isProd = process.env.NODE_ENV === 'production';
+    if (result.status === WhatsAppMessageStatus.DELIVERED || (!isProd && result.status === WhatsAppMessageStatus.MOCK_DELIVERED)) {
       messageLog.deliveredAt = new Date();
     }
     await messageLog.save();
@@ -305,7 +316,7 @@ class WhatsAppService {
   /**
    * 5. Process Inbound Webhook with HMAC Signature Verification & Idempotency
    */
-  async handleWebhook({ signature, rawBody, payload }) {
+  async handleWebhook({ signature, rawBody, payload, url }) {
     if (!signature) {
       throw new AppError('Missing webhook signature header.', 401);
     }
@@ -336,6 +347,9 @@ class WhatsAppService {
     const isValid = adapter.verifyWebhookSignature({
       signature,
       rawBody,
+      payload,
+      url,
+      params: payload,
       webhookSecret: tenantConfig.webhookSecret || process.env.WHATSAPP_WEBHOOK_SECRET
     });
 

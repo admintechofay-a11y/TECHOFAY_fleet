@@ -94,18 +94,43 @@ class TwilioWhatsAppAdapter extends IWhatsAppProvider {
     }
   }
 
-  verifyWebhookSignature({ signature, rawBody, webhookSecret }) {
+  verifyWebhookSignature({ signature, rawBody, webhookSecret, url, params }) {
     const secret = webhookSecret || this.authToken;
     if (!signature || !secret) return false;
+
+    // 1. Official Twilio HMAC-SHA1 protocol: URL + sorted key-value pairs encoded in Base64
+    const dataParams = params || (typeof rawBody === 'object' && rawBody !== null ? rawBody : {});
+    const targetUrl = url || '';
+    let twilioData = targetUrl;
+    const sortedKeys = Object.keys(dataParams).sort();
+    for (const key of sortedKeys) {
+      twilioData += key + dataParams[key];
+    }
+    const expectedTwilio = crypto.createHmac('sha1', secret).update(twilioData, 'utf-8').digest('base64');
+    if (signature === expectedTwilio) return true;
+    try {
+      if (
+        Buffer.byteLength(signature) === Buffer.byteLength(expectedTwilio) &&
+        crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedTwilio))
+      ) {
+        return true;
+      }
+    } catch {}
+
+    // 2. Fallback HMAC-SHA256 check on raw body for generic/test webhook payloads
     const bodyStr = typeof rawBody === 'string' ? rawBody : JSON.stringify(rawBody || {});
     const cleanSig = signature.replace(/^sha256=/i, '').trim();
-    const expected = crypto.createHmac('sha256', secret).update(bodyStr).digest('hex');
-
+    const expectedSha256 = crypto.createHmac('sha256', secret).update(bodyStr).digest('hex');
     try {
-      return crypto.timingSafeEqual(Buffer.from(cleanSig, 'hex'), Buffer.from(expected, 'hex'));
-    } catch {
-      return false;
-    }
+      if (
+        Buffer.byteLength(cleanSig, 'hex') === Buffer.byteLength(expectedSha256, 'hex') &&
+        crypto.timingSafeEqual(Buffer.from(cleanSig, 'hex'), Buffer.from(expectedSha256, 'hex'))
+      ) {
+        return true;
+      }
+    } catch {}
+
+    return false;
   }
 
   parseWebhookEvent(payload) {

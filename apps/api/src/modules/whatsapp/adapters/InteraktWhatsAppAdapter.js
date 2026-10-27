@@ -6,6 +6,7 @@
 const crypto = require('crypto');
 const IWhatsAppProvider = require('../interfaces/IWhatsAppProvider');
 const { WhatsAppMessageStatus } = require('@fleet/shared');
+const { TEMPLATES } = require('../services/whatsappTemplate.service');
 
 class InteraktWhatsAppAdapter extends IWhatsAppProvider {
   constructor(config = {}) {
@@ -41,7 +42,16 @@ class InteraktWhatsAppAdapter extends IWhatsAppProvider {
     const countryCode = match ? match[1] : '+91';
     const phoneNumber = match ? match[2] : toPhone.replace(/\D/g, '');
 
-    const bodyValues = Object.values(variables || {}).map(String);
+    // Map variables deterministically based on pre-approved template definition order
+    const templateDef = TEMPLATES[templateName];
+    let bodyValues = [];
+    if (templateDef && Array.isArray(templateDef.requiredVars)) {
+      bodyValues = templateDef.requiredVars.map(key => String(variables[key] ?? ''));
+    } else {
+      bodyValues = Object.keys(variables || {})
+        .sort()
+        .map(key => String(variables[key] ?? ''));
+    }
 
     try {
       const response = await fetch(`${this.baseUrl}/message/`, {

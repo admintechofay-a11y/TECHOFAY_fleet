@@ -496,8 +496,11 @@ describe('Phase 5 Integration Test Suite: Trips, POD, Freight Settlement & Deliv
   // Test 5: Proof of Delivery (POD) Upload, Streaming & Supervisor Verification
   // -------------------------------------------------------------
   test('5. Proof of Delivery: Secure upload, authenticated download, and supervisor sign-off', async () => {
-    // Create a mock POD image buffer
-    const mockFileBuffer = Buffer.from('FAKE_POD_CONSIGNMENT_RECEIPT_IMAGE_DATA_BYTES_12345');
+    // Create a mock POD image buffer with authentic JPEG magic bytes
+    const mockFileBuffer = Buffer.concat([
+      Buffer.from([0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00]),
+      Buffer.from('POD_CONSIGNMENT_RECEIPT_IMAGE_DATA_BYTES_12345')
+    ]);
     const boundary = '----WebKitFormBoundaryPhase5PodTest';
 
     let body = `--${boundary}\r\n`;
@@ -557,7 +560,7 @@ describe('Phase 5 Integration Test Suite: Trips, POD, Freight Settlement & Deliv
     assert.equal(resDownload.status, 200);
     assert.equal(resDownload.headers.get('content-type'), 'image/jpeg');
     const downloadedBuffer = Buffer.from(await resDownload.arrayBuffer());
-    assert.equal(downloadedBuffer.toString(), 'FAKE_POD_CONSIGNMENT_RECEIPT_IMAGE_DATA_BYTES_12345');
+    assert.deepEqual(downloadedBuffer, mockFileBuffer);
 
     // C. Supervisor Verification Sign-Off
     const resVerify = await fetch(`${baseUrl}/pod/${createdPodId}/verify`, {

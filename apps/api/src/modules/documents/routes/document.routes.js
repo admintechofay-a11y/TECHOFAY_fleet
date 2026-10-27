@@ -8,8 +8,21 @@ const { authenticate, enforceTenantScope } = require('../../../middleware/auth.m
 
 const router = express.Router();
 
-router.use(authenticate, enforceTenantScope);
+const optionalAuth = (req, res, next) => {
+  authenticate(req, res, (err) => {
+    if (err) {
+      // Continue without session; controller will verify ?token= query param
+      return next();
+    }
+    enforceTenantScope(req, res, next);
+  });
+};
 
+// Stream document PDF (Supports authenticated session OR signed expiring ?token=)
+router.get('/:type/:id/pdf', optionalAuth, documentController.streamDocumentPdf);
+
+// Private authenticated file download (for vehicle/driver compliance documents)
+router.use(authenticate, enforceTenantScope);
 router.get('/:id/download', documentController.download);
 
 module.exports = router;

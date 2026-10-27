@@ -55,6 +55,13 @@ function sanitizeSpreadsheetValue(val) {
 
 class MasterImportExportService {
   /**
+   * Helper to sanitize cell values against spreadsheet formula injection
+   */
+  sanitizeSpreadsheetValue(val) {
+    return sanitizeSpreadsheetValue(val);
+  }
+
+  /**
    * 1. Generate downloadable Excel Template with instructions & sample data
    */
   async generateTemplate(entityType) {
@@ -767,9 +774,11 @@ class MasterImportExportService {
       baseFilter.$or = [{ name: reg }, { code: reg }, { plateNumber: reg }, { loadNumber: reg }, { tripNumber: reg }];
     }
 
+    const maxLimit = Math.min(Math.max(parseInt(filters.limit, 10) || 10000, 1), 50000);
+
     switch (entityType.toLowerCase()) {
       case 'customers':
-        records = await CustomerParty.find(baseFilter).sort({ createdAt: -1 });
+        records = await CustomerParty.find(baseFilter).sort({ createdAt: -1 }).limit(maxLimit);
         columns = [
           { header: 'Party Name', key: 'name', width: 28 },
           { header: 'Code', key: 'code', width: 14 },
@@ -786,7 +795,7 @@ class MasterImportExportService {
         break;
 
       case 'vehicles':
-        records = await Vehicle.find(baseFilter).sort({ createdAt: -1 });
+        records = await Vehicle.find(baseFilter).sort({ createdAt: -1 }).limit(maxLimit);
         columns = [
           { header: 'Plate Number', key: 'plateNumber', width: 18 },
           { header: 'Vehicle Type', key: 'vehicleType', width: 18 },
@@ -800,7 +809,7 @@ class MasterImportExportService {
         break;
 
       case 'drivers':
-        records = await Driver.find(baseFilter).sort({ createdAt: -1 });
+        records = await Driver.find(baseFilter).sort({ createdAt: -1 }).limit(maxLimit);
         columns = [
           { header: 'Driver Name', key: 'name', width: 24 },
           { header: 'Phone', key: 'phone', width: 16 },
@@ -812,7 +821,7 @@ class MasterImportExportService {
         break;
 
       case 'locations':
-        records = await Location.find(baseFilter).sort({ createdAt: -1 });
+        records = await Location.find(baseFilter).sort({ createdAt: -1 }).limit(maxLimit);
         columns = [
           { header: 'Location Name', key: 'name', width: 28 },
           { header: 'Code', key: 'code', width: 14 },
@@ -832,7 +841,8 @@ class MasterImportExportService {
           .populate('originLocationId', 'name city')
           .populate('destinationLocationId', 'name city')
           .populate('stops.locationId', 'name city')
-          .sort({ createdAt: -1 });
+          .sort({ createdAt: -1 })
+          .limit(maxLimit);
         columns = [
           { header: 'Load Number', key: 'loadNumber', width: 18 },
           { header: 'Status', key: 'status', width: 16 },
@@ -855,7 +865,8 @@ class MasterImportExportService {
           .populate('loadId', 'loadNumber')
           .populate('vehicleId', 'plateNumber')
           .populate('driverId', 'name')
-          .sort({ createdAt: -1 });
+          .sort({ createdAt: -1 })
+          .limit(maxLimit);
         columns = [
           { header: 'LR Number', key: 'lrNumber', width: 18 },
           { header: 'Status', key: 'status', width: 16 },
@@ -872,7 +883,8 @@ class MasterImportExportService {
           .populate('lrId', 'lrNumber')
           .populate('consignorId', 'name')
           .populate('consigneeId', 'name')
-          .sort({ createdAt: -1 });
+          .sort({ createdAt: -1 })
+          .limit(maxLimit);
         columns = [
           { header: 'Bilty Number', key: 'biltyNumber', width: 18 },
           { header: 'LR Number', key: 'lrNumber', width: 18 },
@@ -892,7 +904,8 @@ class MasterImportExportService {
           .populate('loadId', 'loadNumber')
           .populate('vehicleId', 'plateNumber')
           .populate('driverId', 'name')
-          .sort({ createdAt: -1 });
+          .sort({ createdAt: -1 })
+          .limit(maxLimit);
         columns = [
           { header: 'Trip Number', key: 'tripNumber', width: 18 },
           { header: 'Status', key: 'status', width: 16 },
@@ -911,7 +924,8 @@ class MasterImportExportService {
         records = await ProofOfDelivery.find(baseFilter)
           .populate('tripId', 'tripNumber')
           .populate('verifiedBySupervisor', 'name')
-          .sort({ createdAt: -1 });
+          .sort({ createdAt: -1 })
+          .limit(maxLimit);
         columns = [
           { header: 'POD Number', key: 'podNumber', width: 18 },
           { header: 'Trip Number', key: 'tripNumber', width: 18 },

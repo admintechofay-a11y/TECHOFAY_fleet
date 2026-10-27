@@ -59,6 +59,14 @@ export const DeliveriesPodPage: React.FC = () => {
     }
   };
 
+  const handleDownloadPod = async (pod: any) => {
+    try {
+      await apiDownload(`/pod/${pod._id}/download`, pod.fileName || 'pod_document.pdf');
+    } catch (err: any) {
+      setActionMessage({ text: err.message || 'Failed to download POD file', type: 'error' });
+    }
+  };
+
   useEffect(() => {
     fetchPods(1);
     fetchTrips();
@@ -396,7 +404,7 @@ export const DeliveriesPodPage: React.FC = () => {
                     <td style={{ padding: '1rem', textAlign: 'right' }}>
                       <div style={{ display: 'inline-flex', gap: '0.4rem' }}>
                         <button
-                          onClick={() => apiDownload(`/pod/${pod._id}/download`, pod.fileName || 'pod_document.pdf')}
+                          onClick={() => handleDownloadPod(pod)}
                           title="Download Original POD Document"
                           style={{
                             padding: '0.35rem 0.65rem',
