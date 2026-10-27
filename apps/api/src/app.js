@@ -52,6 +52,7 @@ const eventRoutes = require('./modules/events/routes/event.routes');
 const telematicsRoutes = require('./modules/telematics/routes/telematics.routes');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Build exact whitelist of allowed CORS origins
 const allowedOrigins = new Set([

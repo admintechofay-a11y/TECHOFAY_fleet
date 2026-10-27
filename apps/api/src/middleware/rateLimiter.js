@@ -57,6 +57,18 @@ class SlidingWindowLimiter {
   }
 }
 
+function getClientIp(req) {
+  if (!req) return '127.0.0.1';
+  return (
+    req.ip ||
+    (req.headers && req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : null) ||
+    (req.headers && req.headers['x-real-ip']) ||
+    (req.socket && req.socket.remoteAddress) ||
+    (req.connection && req.connection.remoteAddress) ||
+    '127.0.0.1'
+  );
+}
+
 // 1. General API Limiter (100 req per 15m)
 const generalLimiterInstance = new SlidingWindowLimiter(15 * 60 * 1000, 100, 'gen');
 
@@ -64,7 +76,7 @@ const generalLimiterInstance = new SlidingWindowLimiter(15 * 60 * 1000, 100, 'ge
 const authLimiterInstance = new SlidingWindowLimiter(15 * 60 * 1000, 5, 'auth');
 
 function generalRateLimiter(req, res, next) {
-  const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
+  const ip = getClientIp(req);
   const result = generalLimiterInstance.isAllowed(ip);
 
   res.setHeader('X-RateLimit-Limit', generalLimiterInstance.maxRequests);
@@ -79,7 +91,7 @@ function generalRateLimiter(req, res, next) {
 }
 
 function authRateLimiter(req, res, next) {
-  const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
+  const ip = getClientIp(req);
   const email = (req.body && req.body.email) ? req.body.email.toLowerCase().trim() : '';
   const key = `${ip}_${email}`;
 
@@ -100,7 +112,7 @@ function authRateLimiter(req, res, next) {
 const trackingLimiterInstance = new SlidingWindowLimiter(60 * 1000, 30, 'track');
 
 function publicTrackingRateLimiter(req, res, next) {
-  const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
+  const ip = getClientIp(req);
   const result = trackingLimiterInstance.isAllowed(ip);
 
   res.setHeader('X-Tracking-RateLimit-Limit', trackingLimiterInstance.maxRequests);

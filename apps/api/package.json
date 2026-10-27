@@ -2,7 +2,7 @@
   "name": "@fleet/api",
   "version": "1.0.0",
   "description": "Backend API Service for Fleet & Transport Platform",
-  "main": "src/app.js",
+  "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",

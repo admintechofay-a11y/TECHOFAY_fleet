@@ -92,7 +92,7 @@ class AuthController {
       const rawRefreshToken = TokenService.generateRefreshToken();
       const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
 
-      const ipAddress = req.ip || req.connection.remoteAddress || '';
+      const ipAddress = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || '';
       const userAgent = req.headers['user-agent'] || '';
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
@@ -212,7 +212,7 @@ class AuthController {
         .populate('roleId')
         .populate('companyId');
 
-      const ipAddress = req.ip || req.connection.remoteAddress || '';
+      const ipAddress = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || '';
       const userAgent = req.headers['user-agent'] || '';
 
       if (!user) {
