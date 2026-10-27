@@ -65,11 +65,20 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}): P
   let data = null;
   const contentType = response.headers.get('content-type');
   if (contentType && contentType.includes('application/json')) {
-    data = await response.json();
+    try {
+      data = await response.json();
+    } catch (_) {}
+  } else {
+    try {
+      const rawText = await response.text();
+      if (rawText && rawText.length < 500) {
+        data = { message: rawText.trim() };
+      }
+    } catch (_) {}
   }
 
   if (!response.ok) {
-    const errorMsg = (data && data.message) || `HTTP ${response.status}: Request failed`;
+    const errorMsg = (data && data.message) || (data && data.error) || `HTTP ${response.status}: Request failed`;
     const err: any = new Error(errorMsg);
     err.status = response.status;
     err.data = data;

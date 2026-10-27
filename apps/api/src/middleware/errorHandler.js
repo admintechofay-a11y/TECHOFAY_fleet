@@ -114,9 +114,27 @@ function errorHandler(err, req, res, next) {
     });
   }
 
+  // Handle MongoDB Connection & Server Selection Failures
+  if (
+    err.name === 'MongoServerSelectionError' ||
+    err.name === 'MongoNetworkError' ||
+    err.name === 'MongooseServerSelectionError' ||
+    (err.message && (err.message.includes('buffering timed out') || err.message.includes('ECONNREFUSED') || err.message.includes('querySrv ENOTFOUND')))
+  ) {
+    return res.status(503).json({
+      success: false,
+      statusCode: 503,
+      error: 'Service Unavailable',
+      message: 'Database connection failed. Please ensure MONGODB_URI in Vercel project environment variables points to an active MongoDB Atlas cluster and IP 0.0.0.0/0 is allowed in Atlas Network Access.',
+      errors: [{ message: err.message, code: 'DATABASE_UNAVAILABLE' }],
+      correlationId,
+      timestamp: new Date().toISOString()
+    });
+  }
+
   // Standard Response Envelope
   const clientMessage = statusCode >= 500 && process.env.NODE_ENV === 'production'
-    ? 'An unexpected internal server error occurred. Please contact support.'
+    ? (err.isOperational || err instanceof AppError ? err.message : (err.message || 'An unexpected internal server error occurred.'))
     : err.message || 'An error occurred';
 
   res.status(statusCode).json({

@@ -76,7 +76,7 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "blob:", "https:"],
-      connectSrc: ["'self'", ...Array.from(allowedOrigins).filter(Boolean)],
+      connectSrc: ["'self'", "https://*.vercel.app", "https://*.technofay.com", ...Array.from(allowedOrigins).filter(Boolean)],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: config.env === 'production' ? [] : null
     }
@@ -84,7 +84,7 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
-// 2. Exact CORS Whitelist (Eliminating Wildcard vercel.app Subdomain Risk)
+// 2. Exact CORS Whitelist (Permitting configured origins and verified *.vercel.app preview deployments)
 app.use(cors({
   origin: (origin, callback) => {
     // Allow non-browser requests (mobile apps, server-to-server, curl)
@@ -101,6 +101,16 @@ app.use(cors({
 
     // Exact origin matching
     if (allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+
+    // Allow all Vercel deployment preview / production URLs (*.vercel.app)
+    if (/^https:\/\/[a-zA-Z0-9_-]+\.vercel\.app$/i.test(origin)) {
+      return callback(null, true);
+    }
+
+    // Allow Technofay official domains (*.technofay.com)
+    if (/^https:\/\/([a-zA-Z0-9_-]+\.)?technofay\.com$/i.test(origin)) {
       return callback(null, true);
     }
 
@@ -129,8 +139,14 @@ app.use(cookieParser(config.cookieSecret));
 
 // 4. Request Correlation ID & Path Normalization
 app.use((req, res, next) => {
-  if (req.url && !req.url.startsWith('/api') && req.url.startsWith('/v1')) {
-    req.url = `/api${req.url}`;
+  if (req.url && !req.url.startsWith('/api')) {
+    if (req.url.startsWith('/v1')) {
+      req.url = `/api${req.url}`;
+    } else if (
+      /^\/(auth|admin|customers|locations|vehicles|drivers|documents|compliance|master|loads|lr|bilties|trips|pod|whatsapp|dashboard|reports|search|contact|public|maintenance|events|telematics)\b/.test(req.url)
+    ) {
+      req.url = `/api/v1${req.url}`;
+    }
   }
   next();
 });
@@ -293,6 +309,56 @@ app.get('/api/v1/docs', (req, res) => {
       '/api/v1/admin/audit-logs': { get: { summary: 'Query immutable operational audit trail' } }
     }
   });
+});
+
+// 9.5 Serverless Database Connection & Initialization Middleware
+let cachedDbPromise = null;
+let isBootstrapped = false;
+
+async function ensureDbConnected() {
+  if (db.isConnected()) return;
+  if (!cachedDbPromise) {
+    cachedDbPromise = (async () => {
+      await db.connectDatabase();
+      if (!isBootstrapped) {
+        try {
+          const BootstrapService = require('./modules/auth/services/bootstrap.service');
+          await BootstrapService.bootstrapSystem({
+            companyLegalName: 'Techofay Global Logistics Pvt Ltd',
+            companyGstin: '24AAACT1234A1Z5',
+            adminEmail: process.env.BOOTSTRAP_ADMIN_EMAIL || 'admin@technofay.com',
+            adminPassword: process.env.BOOTSTRAP_ADMIN_PASSWORD || 'fleet2026_SecureAdmin!',
+            adminName: 'Lead System Administrator'
+          });
+          isBootstrapped = true;
+        } catch (bootstrapErr) {
+          console.warn('[BOOTSTRAP] Serverless initial bootstrap note:', bootstrapErr.message);
+        }
+      }
+    })().catch((err) => {
+      cachedDbPromise = null;
+      throw err;
+    });
+  }
+  return cachedDbPromise;
+}
+
+// Automatically connect to MongoDB before executing domain routes
+app.use(async (req, res, next) => {
+  try {
+    await ensureDbConnected();
+    next();
+  } catch (error) {
+    console.error('[DB-CONNECTION-FAILURE]', error.message);
+    return res.status(503).json({
+      success: false,
+      statusCode: 503,
+      error: 'Service Unavailable',
+      message: `Database connection unavailable: ${error.message}. Please configure a valid MONGODB_URI in Vercel project environment variables (Settings -> Environment Variables).`,
+      correlationId: req.id || 'req_bootstrap',
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // 10. Register Domain Routes
