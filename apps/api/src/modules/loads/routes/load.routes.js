@@ -43,6 +43,12 @@ router.post(
   loadController.assignAssets
 );
 
+router.post(
+  '/:id/assign-assets',
+  requirePermission(SystemModule.LOADS, ActionPermission.EDIT),
+  loadController.assignAssets
+);
+
 router.get(
   '/:id/loading-slip',
   requirePermission(SystemModule.LOADS, ActionPermission.VIEW),

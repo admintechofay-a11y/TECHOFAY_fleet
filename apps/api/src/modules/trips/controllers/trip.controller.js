@@ -9,6 +9,7 @@ const Load = require('../../loads/models/Load');
 const Vehicle = require('../../vehicles/models/Vehicle');
 const Driver = require('../../drivers/models/Driver');
 const ProofOfDelivery = require('../../pod/models/ProofOfDelivery');
+const Location = require('../../locations/models/Location');
 const tripStatusService = require('../services/tripStatus.service');
 const sequenceService = require('../../sequences/services/sequence.service');
 const auditLogService = require('../../audit/services/auditLog.service');
@@ -143,12 +144,36 @@ class TripController {
         throw new AppError('loadId, vehicleId, and driverId are required.', 400);
       }
 
-      // A. Verify Load
+      // 1. Date Constraints
+      const startDate = startDateTime ? new Date(startDateTime) : new Date();
+      if (isNaN(startDate.getTime())) {
+        throw new AppError('Invalid startDateTime provided.', 400);
+      }
+      let expectedDelivery = null;
+      if (expectedDeliveryDateTime) {
+        expectedDelivery = new Date(expectedDeliveryDateTime);
+        if (isNaN(expectedDelivery.getTime())) {
+          throw new AppError('Invalid expectedDeliveryDateTime provided.', 400);
+        }
+        if (expectedDelivery < startDate) {
+          throw new AppError('Expected delivery date cannot be earlier than trip start date.', 400);
+        }
+      }
+
+      const advancePaise = Math.max(0, parseInt(driverAdvancePaise, 10) || 0);
+
+      // A. Verify Load Existence & State
       const load = await Load.findOne({ _id: loadId, companyId, isActive: true });
       if (!load) {
         throw new AppError('Specified load does not exist.', 404);
       }
-      if (load.status === LoadStatus.CLOSED || load.status === LoadStatus.CANCELLED) {
+      if (
+        load.status === LoadStatus.CLOSED ||
+        load.status === LoadStatus.CANCELLED ||
+        load.status === LoadStatus.IN_TRANSIT ||
+        load.status === LoadStatus.PARTIALLY_DELIVERED ||
+        load.status === LoadStatus.DELIVERED
+      ) {
         throw new AppError(`Cannot create trip for Load in ${load.status} status.`, 400);
       }
 
@@ -232,18 +257,48 @@ class TripController {
         );
       }
 
-      // D. Build Trip Stops from Load or Request
+      // Active conflict check: Load must not already be tied to an active trip
+      const activeLoadTrip = await Trip.findOne({
+        companyId,
+        loadId,
+        status: {
+          $in: [
+            TripStatus.CREATED,
+            TripStatus.VEHICLE_ASSIGNED,
+            TripStatus.LOADING,
+            TripStatus.IN_TRANSIT,
+            TripStatus.PARTIALLY_DELIVERED
+          ]
+        },
+        isActive: true
+      });
+      if (activeLoadTrip) {
+        throw new AppError(`Load ${load.loadNumber} is already assigned to active Trip ${activeLoadTrip.tripNumber}.`, 400);
+      }
+
+      // D. Build Trip Stops and validate cross-tenant locations
       let tripStops = [];
       if (Array.isArray(customStops) && customStops.length > 0) {
+        const stopLocationIds = Array.from(new Set(customStops.map(s => s.locationId?.toString()).filter(Boolean)));
+        if (stopLocationIds.length > 0) {
+          const validLocationsCount = await Location.countDocuments({
+            _id: { $in: stopLocationIds },
+            companyId,
+            isActive: true
+          });
+          if (validLocationsCount !== stopLocationIds.length) {
+            throw new AppError('One or more referenced stop locations are invalid or belong to another organization.', 403);
+          }
+        }
         tripStops = customStops.map((s, idx) => ({
           sequence: s.sequence || idx + 1,
           stopType: s.stopType || StopType.PICKUP,
           locationId: s.locationId,
           loadStopId: s.loadStopId || null,
-          allocatedQuantity: s.allocatedQuantity || 0,
-          allocatedWeightMt: s.allocatedWeightMt || 0,
+          allocatedQuantity: Math.max(0, parseInt(s.allocatedQuantity, 10) || 0),
+          allocatedWeightMt: Math.max(0, parseFloat(s.allocatedWeightMt) || 0),
           deliveredQuantity: 0,
-          pendingQuantity: s.allocatedQuantity || 0,
+          pendingQuantity: Math.max(0, parseInt(s.allocatedQuantity, 10) || 0),
           status: StopStatus.PENDING,
           receiverName: s.receiverName || '',
           receiverPhone: s.receiverPhone || '',
@@ -263,21 +318,77 @@ class TripController {
         }));
       }
 
-      // E. Allocate Atomic Sequence
+      // E. Concurrency-Safe Atomic Reservations with Compensation Rollback
+      // 1. Atomic Vehicle Reservation
+      const reservedVehicle = await Vehicle.findOneAndUpdate(
+        {
+          _id: vehicleId,
+          companyId,
+          isActive: true,
+          status: { $nin: [VehicleStatus.ON_TRIP, VehicleStatus.UNDER_MAINTENANCE, VehicleStatus.OUT_OF_SERVICE, VehicleStatus.INACTIVE] }
+        },
+        { $set: { status: VehicleStatus.ON_TRIP } },
+        { new: true }
+      );
+      if (!reservedVehicle) {
+        const v = await Vehicle.findOne({ _id: vehicleId, companyId, isActive: true });
+        if (!v) throw new AppError('Specified vehicle does not exist.', 404);
+        throw new AppError(`Vehicle ${v.plateNumber} is currently ${v.status} and cannot be assigned to trips.`, 400);
+      }
+
+      // 2. Atomic Driver Reservation
+      const reservedDriver = await Driver.findOneAndUpdate(
+        {
+          _id: driverId,
+          companyId,
+          isActive: true,
+          status: { $nin: [DriverStatus.ON_TRIP, DriverStatus.ON_LEAVE, DriverStatus.INACTIVE] }
+        },
+        { $set: { status: DriverStatus.ON_TRIP } },
+        { new: true }
+      );
+      if (!reservedDriver) {
+        // Rollback Vehicle
+        await Vehicle.findByIdAndUpdate(vehicleId, { status: vehicle.status || VehicleStatus.AVAILABLE });
+        const d = await Driver.findOne({ _id: driverId, companyId, isActive: true });
+        if (!d) throw new AppError('Specified driver does not exist.', 404);
+        throw new AppError(`Driver ${d.name} is currently ${d.status} and cannot be assigned.`, 400);
+      }
+
+      // 3. Atomic Load Reservation
+      const reservedLoad = await Load.findOneAndUpdate(
+        {
+          _id: loadId,
+          companyId,
+          isActive: true,
+          status: { $in: [LoadStatus.CREATED, LoadStatus.ASSIGNED] }
+        },
+        { $set: { status: LoadStatus.ASSIGNED, assignedVehicleId: vehicleId, assignedDriverId: driverId } },
+        { new: true }
+      );
+      if (!reservedLoad) {
+        // Rollback Vehicle & Driver
+        await Promise.allSettled([
+          Vehicle.findByIdAndUpdate(vehicleId, { status: vehicle.status || VehicleStatus.AVAILABLE }),
+          Driver.findByIdAndUpdate(driverId, { status: driver.status || DriverStatus.AVAILABLE })
+        ]);
+        const l = await Load.findOne({ _id: loadId, companyId, isActive: true });
+        if (!l) throw new AppError('Specified load does not exist.', 404);
+        throw new AppError(`Cannot create trip for Load in ${l.status} status.`, 400);
+      }
+
+      // F. Allocate Atomic Sequence & Persist Trip
       const tripNumber = await sequenceService.getNextSequence(companyId, 'TRIP', 'TR');
-
       const grossFreightPaise = load.financials?.totalFreightPaise || 0;
-      const advancePaise = Math.max(0, parseInt(driverAdvancePaise, 10) || 0);
 
-      // F. Create Trip
       const trip = new Trip({
         companyId,
         tripNumber,
         loadId,
         vehicleId,
         driverId,
-        startDateTime: startDateTime ? new Date(startDateTime) : new Date(),
-        expectedDeliveryDateTime: expectedDeliveryDateTime ? new Date(expectedDeliveryDateTime) : null,
+        startDateTime: startDate,
+        expectedDeliveryDateTime: expectedDelivery,
         status: TripStatus.VEHICLE_ASSIGNED,
         stops: tripStops,
         financials: {
@@ -303,16 +414,29 @@ class TripController {
         remarks
       });
 
-      await trip.save();
+      try {
+        await trip.save();
+        await Promise.all([
+          Vehicle.findByIdAndUpdate(vehicleId, { currentTripId: trip._id }),
+          Driver.findByIdAndUpdate(driverId, { currentTripId: trip._id }),
+          Load.findByIdAndUpdate(loadId, { currentTripId: trip._id })
+        ]);
+      } catch (saveErr) {
+        // Rollback all reservations on persistence error
+        await Promise.allSettled([
+          Vehicle.findByIdAndUpdate(vehicleId, { status: vehicle.status || VehicleStatus.AVAILABLE, currentTripId: null }),
+          Driver.findByIdAndUpdate(driverId, { status: driver.status || DriverStatus.AVAILABLE, currentTripId: null }),
+          Load.findByIdAndUpdate(loadId, {
+            status: load.status || LoadStatus.CREATED,
+            assignedVehicleId: load.assignedVehicleId,
+            assignedDriverId: load.assignedDriverId,
+            currentTripId: null
+          })
+        ]);
+        throw saveErr;
+      }
 
-      // G. Synchronize Vehicle, Driver, and Load status
-      await Promise.all([
-        Vehicle.findByIdAndUpdate(vehicleId, { status: VehicleStatus.ON_TRIP }),
-        Driver.findByIdAndUpdate(driverId, { status: DriverStatus.ON_TRIP }),
-        Load.findByIdAndUpdate(loadId, { status: LoadStatus.ASSIGNED })
-      ]);
-
-      // H. Operational Audit Log
+      // G. Operational Audit Log
       await auditLogService.logAction({
         companyId,
         userId,
@@ -364,6 +488,28 @@ class TripController {
       // Validate Transition
       tripStatusService.validateTransition(trip.status, targetStatus);
 
+      if (targetStatus === TripStatus.CLOSED) {
+        const deliveryStops = trip.stops.filter(s => s.stopType === StopType.DELIVERY);
+        const incompleteStops = deliveryStops.filter(s => s.status !== StopStatus.COMPLETED);
+        if (incompleteStops.length > 0) {
+          throw new AppError(
+            `Cannot close Trip: ${incompleteStops.length} delivery stop(s) are not yet COMPLETED.`,
+            400
+          );
+        }
+        const podCount = await ProofOfDelivery.countDocuments({
+          companyId,
+          tripId: trip._id,
+          isActive: true
+        });
+        if (podCount === 0) {
+          throw new AppError(
+            'Cannot close Trip: At least one Proof of Delivery (POD) document must be uploaded and attached before final closure.',
+            400
+          );
+        }
+      }
+
       const oldStatus = trip.status;
       trip.status = targetStatus;
       trip.statusHistory.push({
@@ -376,12 +522,21 @@ class TripController {
       // Synchronize vehicle, driver, and load states
       if (targetStatus === TripStatus.CANCELLED) {
         await Promise.all([
-          Vehicle.findByIdAndUpdate(trip.vehicleId, { status: VehicleStatus.AVAILABLE }),
-          Driver.findByIdAndUpdate(trip.driverId, { status: DriverStatus.AVAILABLE }),
-          Load.findByIdAndUpdate(trip.loadId, { status: LoadStatus.CREATED })
+          Vehicle.findByIdAndUpdate(trip.vehicleId, { status: VehicleStatus.AVAILABLE, currentTripId: null }),
+          Driver.findByIdAndUpdate(trip.driverId, { status: DriverStatus.AVAILABLE, currentTripId: null }),
+          Load.findByIdAndUpdate(trip.loadId, { status: LoadStatus.CREATED, currentTripId: null })
         ]);
       } else if (targetStatus === TripStatus.IN_TRANSIT) {
         await Load.findByIdAndUpdate(trip.loadId, { status: LoadStatus.IN_TRANSIT });
+      } else if (targetStatus === TripStatus.DELIVERED) {
+        await Load.findByIdAndUpdate(trip.loadId, { status: LoadStatus.DELIVERED });
+      } else if (targetStatus === TripStatus.CLOSED) {
+        trip.actualEndDateTime = new Date();
+        await Promise.all([
+          Vehicle.findByIdAndUpdate(trip.vehicleId, { status: VehicleStatus.AVAILABLE, currentTripId: null }),
+          Driver.findByIdAndUpdate(trip.driverId, { status: DriverStatus.AVAILABLE, currentTripId: null }),
+          Load.findByIdAndUpdate(trip.loadId, { status: LoadStatus.CLOSED })
+        ]);
       }
 
       await trip.save();
@@ -438,6 +593,10 @@ class TripController {
       const stop = trip.stops.id(stopId);
       if (!stop) {
         throw new AppError('Specified stop not found in trip itinerary.', 404);
+      }
+
+      if (stop.status === StopStatus.COMPLETED && stop.pendingQuantity === 0) {
+        throw new AppError(`Stop sequence ${stop.sequence} is already fully completed. No pending quantity to deliver.`, 400);
       }
 
       // Strict over-delivery prevention rule:
@@ -548,6 +707,10 @@ class TripController {
         throw new AppError('Trip record not found', 404);
       }
 
+      if (trip.status === TripStatus.CLOSED || trip.status === TripStatus.CANCELLED) {
+        throw new AppError(`Cannot add expense to Trip in ${trip.status} status. Trip accounting is finalized.`, 400);
+      }
+
       trip.expenses.push({
         expenseType,
         amountPaise: amount,
@@ -603,6 +766,16 @@ class TripController {
         throw new AppError('Trip record not found', 404);
       }
 
+      // Idempotent: If already closed, return existing closed trip
+      if (trip.status === TripStatus.CLOSED) {
+        return res.status(200).json({
+          success: true,
+          statusCode: 200,
+          message: `Trip ${trip.tripNumber} is already closed.`,
+          data: trip
+        });
+      }
+
       // Check delivery stops completion
       const deliveryStops = trip.stops.filter(s => s.stopType === StopType.DELIVERY);
       const incompleteStops = deliveryStops.filter(s => s.status !== StopStatus.COMPLETED);
@@ -616,7 +789,8 @@ class TripController {
       // Check Proof of Delivery presence
       const podCount = await ProofOfDelivery.countDocuments({
         companyId,
-        tripId: trip._id
+        tripId: trip._id,
+        isActive: true
       });
       if (podCount === 0) {
         throw new AppError(
@@ -636,10 +810,10 @@ class TripController {
 
       await trip.save();
 
-      // Release Vehicle and Driver back to AVAILABLE
+      // Release Vehicle and Driver back to AVAILABLE, and mark load as CLOSED
       await Promise.all([
-        Vehicle.findByIdAndUpdate(trip.vehicleId, { status: VehicleStatus.AVAILABLE }),
-        Driver.findByIdAndUpdate(trip.driverId, { status: DriverStatus.AVAILABLE }),
+        Vehicle.findByIdAndUpdate(trip.vehicleId, { status: VehicleStatus.AVAILABLE, currentTripId: null }),
+        Driver.findByIdAndUpdate(trip.driverId, { status: DriverStatus.AVAILABLE, currentTripId: null }),
         Load.findByIdAndUpdate(trip.loadId, { status: LoadStatus.CLOSED })
       ]);
 

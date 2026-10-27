@@ -59,8 +59,8 @@ class ReportsService {
       Load.find(query)
         .populate('consignorId', 'name city state gstin')
         .populate('consigneeId', 'name city state gstin')
-        .populate('assignedVehicleId', 'registrationNumber make model')
-        .populate('assignedDriverId', 'name phone')
+        .populate('assignedVehicleId', 'plateNumber registrationNumber make model')
+        .populate('assignedDriverId', 'name phone licenseNumber licenceNumber')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -260,7 +260,11 @@ class ReportsService {
     const match = { companyId: tenantObjectId };
 
     if (filters.customerId) {
-      match.consignorId = new mongoose.Types.ObjectId(filters.customerId);
+      const custObjId = new mongoose.Types.ObjectId(filters.customerId);
+      match.$or = [
+        { customerId: custObjId },
+        { consignorId: custObjId }
+      ];
     }
 
     if (filters.startDate || filters.endDate) {
@@ -277,7 +281,7 @@ class ReportsService {
       { $match: match },
       {
         $group: {
-          _id: '$consignorId',
+          _id: { $ifNull: ['$customerId', '$consignorId'] },
           loadCount: { $sum: 1 },
           totalWeightMt: { $sum: { $ifNull: ['$totalWeightMt', 0] } },
           grossFreight: {

@@ -8,6 +8,7 @@ const path = require('path');
 
 const suites = [
   { name: 'Phase 1: Baseline & Documentation Gate', path: 'tests/phase1-baseline.test.js' },
+  { name: 'Phase 2: Core Transport Workflows & Data Integrity', path: 'tests/phase2-workflows.test.js' },
   { name: 'Phase 2: Auth, IAM, RBAC & Multi-Tenancy', path: 'apps/api/tests/phase2-auth-rbac.test.js' },
   { name: 'Phase 3: Core Master Data, Compliance & Excel', path: 'apps/api/tests/phase3-master-data.test.js' },
   { name: 'Phase 4: Loads, LR, Bilty & PDF Documents', path: 'apps/api/tests/phase4-loads-documents.test.js' },

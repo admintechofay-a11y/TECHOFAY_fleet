@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "test:phase1": "node --test tests/phase1-baseline.test.js",
+    "test:phase2-workflows": "node --test tests/phase2-workflows.test.js",
     "test:phase2": "node --test apps/api/tests/phase2-auth-rbac.test.js",
     "test:phase3": "node --test apps/api/tests/phase3-master-data.test.js",
     "test:phase4": "node --test apps/api/tests/phase4-loads-documents.test.js",

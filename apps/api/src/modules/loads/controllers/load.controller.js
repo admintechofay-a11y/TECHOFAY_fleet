@@ -111,6 +111,8 @@ class LoadController {
         customerId,
         consignorId,
         consigneeId,
+        originLocationId,
+        destinationLocationId,
         totalWeightMt,
         totalQuantity,
         packageType,
@@ -135,6 +137,19 @@ class LoadController {
         return next(new AppError('One or more referenced parties (Customer, Consignor, Consignee) are invalid or belong to another organization.', 403));
       }
 
+      // Cross-Tenant Validation: Ensure origin/destination locations belong to this company
+      const directLocIds = [originLocationId, destinationLocationId].filter(Boolean);
+      if (directLocIds.length > 0) {
+        const validDirectLocs = await Location.countDocuments({
+          _id: { $in: directLocIds },
+          companyId,
+          isActive: true
+        });
+        if (validDirectLocs !== directLocIds.length) {
+          return next(new AppError('Referenced origin or destination location is invalid or belongs to another organization.', 403));
+        }
+      }
+
       // Cross-Tenant Validation: Ensure all referenced stop locations belong to this company
       if (stops && stops.length > 0) {
         const stopLocationIds = Array.from(new Set(stops.map(s => s.locationId?.toString()).filter(Boolean)));
@@ -154,6 +169,34 @@ class LoadController {
         return next(new AppError('Total weight in Metric Tons (MT) is required and must be > 0.', 400));
       }
 
+      const orderDate = new Date();
+      let expDelivery = null;
+      if (expectedDeliveryDate) {
+        expDelivery = new Date(expectedDeliveryDate);
+        if (isNaN(expDelivery.getTime())) {
+          return next(new AppError('Invalid expectedDeliveryDate provided.', 400));
+        }
+        if (expDelivery < orderDate) {
+          return next(new AppError('Expected delivery date cannot be before order creation date.', 400));
+        }
+      }
+
+      // Financial validation in integer Paise
+      const baseFreight = Math.max(0, Math.round(Number(financials.baseFreightPaise) || 0));
+      const loading = Math.max(0, Math.round(Number(financials.loadingPaise) || 0));
+      const unloading = Math.max(0, Math.round(Number(financials.unloadingPaise) || 0));
+      const detention = Math.max(0, Math.round(Number(financials.detentionPaise) || 0));
+      const toll = Math.max(0, Math.round(Number(financials.tollPaise) || 0));
+      const handling = Math.max(0, Math.round(Number(financials.handlingPaise) || 0));
+      const misc = Math.max(0, Math.round(Number(financials.miscChargePaise) || 0));
+      const advance = Math.max(0, Math.round(Number(financials.advancePaise) || 0));
+      const deduction = Math.max(0, Math.round(Number(financials.deductionPaise) || 0));
+
+      const totalFreight = baseFreight + loading + unloading + detention + toll + handling + misc;
+      if (advance + deduction > totalFreight && totalFreight > 0) {
+        return next(new AppError('Advance and deductions cannot exceed total freight amount.', 400));
+      }
+
       // Allocate next collision-safe atomic Load Number (e.g. LD-2026-00001)
       const loadNumber = await sequenceService.getNextSequence(companyId, 'LOAD', 'LD');
 
@@ -165,28 +208,42 @@ class LoadController {
         pendingQuantity: s.allocatedQuantity || 0
       }));
 
+      // Infer origin/destination locations if not explicitly supplied
+      let finalOriginId = originLocationId || null;
+      let finalDestId = destinationLocationId || null;
+      if (!finalOriginId && stops && stops.length > 0) {
+        const firstPickup = stops.find(s => s.stopType === 'PICKUP');
+        if (firstPickup) finalOriginId = firstPickup.locationId;
+      }
+      if (!finalDestId && stops && stops.length > 0) {
+        const lastDelivery = [...stops].reverse().find(s => s.stopType === 'DELIVERY');
+        if (lastDelivery) finalDestId = lastDelivery.locationId;
+      }
+
       const load = new Load({
         companyId,
         loadNumber,
         customerId,
         consignorId,
         consigneeId,
-        orderDate: new Date(),
-        expectedDeliveryDate: expectedDeliveryDate ? new Date(expectedDeliveryDate) : null,
+        originLocationId: finalOriginId,
+        destinationLocationId: finalDestId,
+        orderDate,
+        expectedDeliveryDate: expDelivery,
         status: LoadStatus.CREATED,
         totalWeightMt: parseFloat(totalWeightMt),
         totalQuantity: parseInt(totalQuantity, 10) || 1,
         packageType: packageType || 'Bags',
         financials: {
-          baseFreightPaise: Math.round(Number(financials.baseFreightPaise) || 0),
-          loadingPaise: Math.round(Number(financials.loadingPaise) || 0),
-          unloadingPaise: Math.round(Number(financials.unloadingPaise) || 0),
-          detentionPaise: Math.round(Number(financials.detentionPaise) || 0),
-          tollPaise: Math.round(Number(financials.tollPaise) || 0),
-          handlingPaise: Math.round(Number(financials.handlingPaise) || 0),
-          miscChargePaise: Math.round(Number(financials.miscChargePaise) || 0),
-          advancePaise: Math.round(Number(financials.advancePaise) || 0),
-          deductionPaise: Math.round(Number(financials.deductionPaise) || 0)
+          baseFreightPaise: baseFreight,
+          loadingPaise: loading,
+          unloadingPaise: unloading,
+          detentionPaise: detention,
+          tollPaise: toll,
+          handlingPaise: handling,
+          miscChargePaise: misc,
+          advancePaise: advance,
+          deductionPaise: deduction
         },
         stops: formattedStops,
         statusHistory: [
@@ -233,6 +290,20 @@ class LoadController {
       const load = await Load.findOne({ _id: id, companyId, isActive: true });
       if (!load) {
         return next(new AppError('Load not found.', 404));
+      }
+
+      // If cancelling, ensure no active trip in progress
+      if (status === LoadStatus.CANCELLED) {
+        const Trip = require('../../trips/models/Trip');
+        const activeTrip = await Trip.findOne({
+          companyId,
+          loadId: load._id,
+          status: { $in: ['IN_TRANSIT', 'PARTIALLY_DELIVERED', 'DELIVERED'] },
+          isActive: true
+        });
+        if (activeTrip) {
+          return next(new AppError(`Cannot cancel Load ${load.loadNumber}: Trip ${activeTrip.tripNumber} is currently in progress or delivered.`, 400));
+        }
       }
 
       // Enforce State Machine Transitions
@@ -287,7 +358,7 @@ class LoadController {
         if (!vehicle) {
           return next(new AppError('Selected vehicle not found in your fleet.', 404));
         }
-        if (vehicle.status === 'OUT_OF_SERVICE' || vehicle.status === 'UNDER_MAINTENANCE') {
+        if (vehicle.status === 'OUT_OF_SERVICE' || vehicle.status === 'UNDER_MAINTENANCE' || vehicle.status === 'INACTIVE' || vehicle.status === 'ON_TRIP') {
           return next(new AppError(`Vehicle ${vehicle.plateNumber} is currently ${vehicle.status}. Cannot assign.`, 400));
         }
         load.assignedVehicleId = vehicle._id;
@@ -298,7 +369,10 @@ class LoadController {
         if (!driver) {
           return next(new AppError('Selected driver not found.', 404));
         }
-        if (new Date(driver.licenseExpiryDate) < new Date()) {
+        if (driver.status === 'ON_TRIP' || driver.status === 'ON_LEAVE' || driver.status === 'INACTIVE') {
+          return next(new AppError(`Driver ${driver.name} is currently ${driver.status}. Cannot assign.`, 400));
+        }
+        if (driver.licenseExpiryDate && new Date(driver.licenseExpiryDate) < new Date()) {
           return next(new AppError(`Driver ${driver.name}'s licence has expired. Cannot assign.`, 400));
         }
         load.assignedDriverId = driver._id;

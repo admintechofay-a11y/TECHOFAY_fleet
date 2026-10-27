@@ -79,9 +79,21 @@ const driverSchema = new Schema(
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
+
+// Virtual alias: licenceNumber maps seamlessly to licenseNumber
+driverSchema
+  .virtual('licenceNumber')
+  .get(function () {
+    return this.licenseNumber;
+  })
+  .set(function (v) {
+    this.licenseNumber = v;
+  });
 
 // Compound Unique Index: License unique within tenant
 driverSchema.index({ companyId: 1, licenseNumber: 1 }, { unique: true });

@@ -253,6 +253,18 @@ class VehicleController {
         return next(new AppError('Vehicle not found.', 404));
       }
 
+      // Referential Guard: Cannot deactivate vehicle if on an active trip
+      const Trip = require('../../trips/models/Trip');
+      const activeTrip = await Trip.findOne({
+        companyId,
+        vehicleId: vehicle._id,
+        status: { $in: ['CREATED', 'VEHICLE_ASSIGNED', 'LOADING', 'IN_TRANSIT', 'PARTIALLY_DELIVERED'] },
+        isActive: true
+      });
+      if (activeTrip) {
+        return next(new AppError(`Cannot deactivate vehicle ${vehicle.plateNumber}: currently assigned to active Trip ${activeTrip.tripNumber}.`, 400));
+      }
+
       vehicle.isActive = false;
       vehicle.status = VehicleStatus.INACTIVE;
       await vehicle.save();

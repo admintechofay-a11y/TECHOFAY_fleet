@@ -264,6 +264,18 @@ class DriverController {
         return next(new AppError('Driver not found.', 404));
       }
 
+      // Referential Guard: Cannot deactivate driver if on an active trip
+      const Trip = require('../../trips/models/Trip');
+      const activeTrip = await Trip.findOne({
+        companyId,
+        driverId: driver._id,
+        status: { $in: ['CREATED', 'VEHICLE_ASSIGNED', 'LOADING', 'IN_TRANSIT', 'PARTIALLY_DELIVERED'] },
+        isActive: true
+      });
+      if (activeTrip) {
+        return next(new AppError(`Cannot deactivate driver ${driver.name}: currently assigned to active Trip ${activeTrip.tripNumber}.`, 400));
+      }
+
       driver.isActive = false;
       driver.status = DriverStatus.INACTIVE;
       await driver.save();

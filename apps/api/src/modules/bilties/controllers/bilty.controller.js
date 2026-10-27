@@ -141,6 +141,14 @@ class BiltyController {
         ? Math.round(Number(advancePaise))
         : (load.financials?.advancePaise || 0);
 
+      if (freightPaise < 0 || advPaise < 0) {
+        return next(new AppError('Freight and advance amounts cannot be negative.', 400));
+      }
+
+      if (advPaise > freightPaise && freightPaise > 0) {
+        return next(new AppError('Advance amount cannot exceed total freight.', 400));
+      }
+
       const balPaise = Math.max(0, freightPaise - advPaise);
 
       const bilty = new Bilty({

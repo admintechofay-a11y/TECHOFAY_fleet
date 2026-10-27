@@ -231,5 +231,48 @@ tripSchema.index({ companyId: 1, tripNumber: 1 }, { unique: true });
 tripSchema.index({ companyId: 1, status: 1 });
 tripSchema.index({ companyId: 1, vehicleId: 1, status: 1 });
 tripSchema.index({ companyId: 1, driverId: 1, status: 1 });
+tripSchema.index({ companyId: 1, loadId: 1, status: 1 });
+
+// Partial unique indexes to prevent concurrent double-booking of active assets at the DB level
+const ACTIVE_STATUSES = [
+  TripStatus.CREATED,
+  TripStatus.VEHICLE_ASSIGNED,
+  TripStatus.LOADING,
+  TripStatus.IN_TRANSIT,
+  TripStatus.PARTIALLY_DELIVERED
+];
+
+tripSchema.index(
+  { companyId: 1, vehicleId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      isActive: true,
+      status: { $in: ACTIVE_STATUSES }
+    }
+  }
+);
+
+tripSchema.index(
+  { companyId: 1, driverId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      isActive: true,
+      status: { $in: ACTIVE_STATUSES }
+    }
+  }
+);
+
+tripSchema.index(
+  { companyId: 1, loadId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      isActive: true,
+      status: { $in: ACTIVE_STATUSES }
+    }
+  }
+);
 
 module.exports = mongoose.model('Trip', tripSchema);

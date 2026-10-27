@@ -99,9 +99,21 @@ const vehicleSchema = new Schema(
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
+
+// Virtual alias: registrationNumber maps seamlessly to plateNumber
+vehicleSchema
+  .virtual('registrationNumber')
+  .get(function () {
+    return this.plateNumber;
+  })
+  .set(function (v) {
+    this.plateNumber = v;
+  });
 
 // Compound Unique Index: Vehicle plate unique within tenant
 vehicleSchema.index({ companyId: 1, plateNumber: 1 }, { unique: true });

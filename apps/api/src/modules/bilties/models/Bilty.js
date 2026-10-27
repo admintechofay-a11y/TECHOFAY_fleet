@@ -108,5 +108,6 @@ const biltySchema = new Schema(
 
 // Compound unique index: Bilty numbers unique within tenant
 biltySchema.index({ companyId: 1, biltyNumber: 1 }, { unique: true });
+biltySchema.index({ companyId: 1, lrId: 1 }, { unique: true, partialFilterExpression: { isActive: true } });
 
 module.exports = mongoose.model('Bilty', biltySchema);

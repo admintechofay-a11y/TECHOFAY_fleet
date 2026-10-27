@@ -50,15 +50,15 @@ export const LoadsPage: React.FC = () => {
       { sequence: 2, stopType: 'DELIVERY', locationId: '', allocatedQuantity: 100, allocatedWeightMt: 10, contactPerson: '', contactPhone: '' }
     ],
     financials: {
-      baseFreightRupees: '45000',
-      loadingRupees: '1500',
-      unloadingRupees: '1500',
-      detentionRupees: '0',
-      tollRupees: '2500',
-      handlingRupees: '0',
-      miscRupees: '0',
-      advanceRupees: '10000',
-      deductionRupees: '0'
+      baseFreightRupees: '',
+      loadingRupees: '',
+      unloadingRupees: '',
+      detentionRupees: '',
+      tollRupees: '',
+      handlingRupees: '',
+      miscRupees: '',
+      advanceRupees: '',
+      deductionRupees: ''
     }
   });
 

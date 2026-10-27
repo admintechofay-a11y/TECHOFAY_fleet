@@ -232,6 +232,22 @@ class CustomerController {
         return next(new AppError('Customer party not found.', 404));
       }
 
+      // Referential Guard: Cannot deactivate party if linked to active load
+      const Load = require('../../loads/models/Load');
+      const activeLoad = await Load.findOne({
+        companyId,
+        $or: [
+          { customerId: party._id },
+          { consignorId: party._id },
+          { consigneeId: party._id }
+        ],
+        status: { $in: ['CREATED', 'ASSIGNED', 'LOADING', 'IN_TRANSIT', 'PARTIALLY_DELIVERED'] },
+        isActive: true
+      });
+      if (activeLoad) {
+        return next(new AppError(`Cannot deactivate party '${party.name}': currently associated with active consignment ${activeLoad.loadNumber}.`, 400));
+      }
+
       party.isActive = false;
       await party.save();
 

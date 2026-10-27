@@ -145,6 +145,14 @@ class PodController {
         throw new AppError('Specified Trip does not exist.', 404);
       }
 
+      // Validate stopId belongs to this trip
+      if (stopId) {
+        const stop = trip.stops.id(stopId);
+        if (!stop) {
+          throw new AppError('Specified stop does not belong to this trip itinerary.', 404);
+        }
+      }
+
       // Cross-Tenant Validation on explicit loadId or lrId
       if (loadId) {
         const load = await Load.findOne({ _id: loadId, companyId, isActive: true });
@@ -263,6 +271,16 @@ class PodController {
       const pod = await ProofOfDelivery.findOne({ _id: id, companyId, isActive: true });
       if (!pod) {
         throw new AppError('Proof of Delivery record not found.', 404);
+      }
+
+      // Idempotent: return existing record if already in requested status
+      if (pod.status === status) {
+        return res.status(200).json({
+          success: true,
+          statusCode: 200,
+          message: `POD ${pod.podNumber} is already marked as ${status}.`,
+          data: pod
+        });
       }
 
       pod.status = status;
