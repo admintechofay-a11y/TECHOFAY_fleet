@@ -3,15 +3,7 @@
   "services": {
     "api": {
       "root": "apps/api",
-      "framework": "express",
-      "bindings": [
-        {
-          "type": "service",
-          "service": "web",
-          "format": "url",
-          "env": "WEB_URL"
-        }
-      ]
+      "framework": "express"
     },
     "web": {
       "root": "apps/web",
