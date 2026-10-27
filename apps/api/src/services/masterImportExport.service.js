@@ -45,12 +45,16 @@ function sanitizeSpreadsheetValue(val) {
   if (typeof val === 'number' || typeof val === 'boolean') return val;
   if (val instanceof Date) return val.toISOString().split('T')[0];
 
-  const str = String(val).trim();
-  // If cell starts with dangerous formula triggers: =, +, -, @, Tab, Carriage Return
-  if (/^[=+\-@\t\r]/.test(str)) {
-    return `'${str}`; // Escape with leading single-quote
+  const rawStr = String(val);
+  const trimmed = rawStr.trim();
+  if (!trimmed) return '';
+
+  // Defend against formula injection (=, +, -, @, \t, \r)
+  // Check if raw value has leading tab or carriage return, or if trimmed value begins with formula trigger
+  if (/^[\t\r]/.test(rawStr) || /^[=+\-@\t\r]/.test(trimmed)) {
+    return `'${trimmed}`;
   }
-  return str;
+  return trimmed;
 }
 
 class MasterImportExportService {
@@ -259,11 +263,36 @@ class MasterImportExportService {
   }
 
   /**
-   * 2. Dry-Run / Preview & Validation of Uploaded Master Excel Workbook
+   * 2. Dry-Run / Preview & Validation of Uploaded Master Excel / CSV Workbook
    */
   async dryRunValidate(entityType, fileBuffer, companyId, userId = null) {
+    if (!fileBuffer || !Buffer.isBuffer(fileBuffer) || fileBuffer.length === 0) {
+      throw new AppError('The uploaded file is empty or missing.', 400);
+    }
+
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.load(fileBuffer);
+    let isLoaded = false;
+
+    // 1. Try loading as XLSX
+    try {
+      await workbook.xlsx.load(fileBuffer);
+      isLoaded = true;
+    } catch (_) {}
+
+    // 2. If XLSX failed, try loading as CSV (handling UTF-8 BOM if present)
+    if (!isLoaded) {
+      try {
+        const { Readable } = require('stream');
+        let cleanBuffer = fileBuffer;
+        if (fileBuffer[0] === 0xEF && fileBuffer[1] === 0xBB && fileBuffer[2] === 0xBF) {
+          cleanBuffer = fileBuffer.slice(3);
+        }
+        await workbook.csv.read(Readable.from(cleanBuffer));
+        isLoaded = true;
+      } catch (_) {
+        throw new AppError('Unable to parse spreadsheet file. Please upload a valid, uncorrupted Excel (.xlsx) or CSV (.csv) file.', 400);
+      }
+    }
 
     const worksheet = workbook.worksheets[0];
     if (!worksheet) {
@@ -275,7 +304,7 @@ class MasterImportExportService {
 
     // Extract headers from Row 1
     worksheet.getRow(1).eachCell((cell, colNumber) => {
-      headers[colNumber] = cell.text.trim();
+      headers[colNumber] = cell.text ? cell.text.trim() : '';
     });
 
     // Extract Data Rows
@@ -305,6 +334,44 @@ class MasterImportExportService {
       throw new AppError('The uploaded spreadsheet contains no data rows.', 400);
     }
 
+    if (rows.length > 5000) {
+      throw new AppError(`Spreadsheet contains ${rows.length} data rows, which exceeds the maximum allowed batch limit of 5,000 rows. Please split the file into smaller batches.`, 400);
+    }
+
+    // Helper to construct exact row-level error location
+    const makeError = (rowNumber, field, value, message) => ({
+      row: rowNumber,
+      rowNumber: rowNumber,
+      column: field,
+      field: field,
+      value: value !== undefined && value !== null ? String(value) : '',
+      reason: message,
+      message: message
+    });
+
+    // Helper for header drift & synonym resolution
+    const normalizeHeader = (h) => String(h || '').toLowerCase().replace(/[\*\(\)\[\]_.\-\s/]/g, '');
+
+    const createRowAccessor = (rowData) => {
+      const normMap = new Map();
+      for (const [k, v] of Object.entries(rowData)) {
+        normMap.set(normalizeHeader(k), v);
+      }
+      return (aliases, defaultVal = '') => {
+        for (const alias of aliases) {
+          const normKey = normalizeHeader(alias);
+          if (normMap.has(normKey)) {
+            const val = normMap.get(normKey);
+            const clean = (val && typeof val === 'object' && val.text) ? val.text : val;
+            if (clean !== undefined && clean !== null && String(clean).trim() !== '') {
+              return clean;
+            }
+          }
+        }
+        return defaultVal;
+      };
+    };
+
     const errors = [];
     const validRecords = [];
     const seenInFile = new Set();
@@ -313,77 +380,86 @@ class MasterImportExportService {
     for (const item of rows) {
       const { rowNumber, data } = item;
       const rowErrors = [];
+      const rowGet = createRowAccessor(data);
 
       if (entityType === 'customers') {
-        const name = (data['Party Name *'] || data['Party Name'] || '').toString().trim();
-        const code = (data['Code'] || '').toString().trim().toUpperCase();
-        const partyType = (data['Party Type (CUSTOMER/CONSIGNOR/CONSIGNEE/BOTH) *'] || data['Party Type'] || 'CUSTOMER').toString().trim().toUpperCase();
-        const gstin = (data['GSTIN (15 chars)'] || data['GSTIN'] || '').toString().trim().toUpperCase();
-        const pan = (data['PAN'] || '').toString().trim().toUpperCase();
-        const phone = (data['Phone *'] || data['Phone'] || '').toString().trim();
-        const city = (data['City *'] || data['City'] || '').toString().trim();
-        const state = (data['State *'] || data['State'] || '').toString().trim();
+        const name = String(rowGet(['Party Name *', 'Party Name', 'Customer Name', 'Name', 'Company Name'])).trim();
+        const code = String(rowGet(['Code', 'Customer Code', 'Party Code'])).trim().toUpperCase();
+        const partyType = String(rowGet(['Party Type (CUSTOMER/CONSIGNOR/CONSIGNEE/BOTH) *', 'Party Type', 'Type'], 'CUSTOMER')).trim().toUpperCase();
+        const gstin = String(rowGet(['GSTIN (15 chars)', 'GSTIN', 'GST Number', 'GST'])).trim().toUpperCase();
+        const pan = String(rowGet(['PAN', 'PAN Number'])).trim().toUpperCase();
+        const phone = String(rowGet(['Phone *', 'Phone', 'Phone Number', 'Mobile Number', 'Mobile'])).trim();
+        const city = String(rowGet(['City *', 'City'])).trim();
+        const state = String(rowGet(['State *', 'State'])).trim();
 
-        if (!name) rowErrors.push({ rowNumber, field: 'name', message: 'Party Name is mandatory.' });
+        if (!name) rowErrors.push(makeError(rowNumber, 'name', '', 'Party Name is mandatory.'));
         if (!Object.values(PartyType).includes(partyType)) {
-          rowErrors.push({ rowNumber, field: 'partyType', value: partyType, message: `Invalid Party Type. Allowed: ${Object.values(PartyType).join(', ')}` });
+          rowErrors.push(makeError(rowNumber, 'partyType', partyType, `Invalid Party Type. Allowed: ${Object.values(PartyType).join(', ')}`));
         }
         if (gstin) {
           if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(gstin)) {
-            rowErrors.push({ rowNumber, field: 'gstin', value: gstin, message: 'Invalid 15-character GSTIN format.' });
+            rowErrors.push(makeError(rowNumber, 'gstin', gstin, 'Invalid 15-character GSTIN format.'));
           } else {
             if (seenInFile.has(`GSTIN:${gstin}`)) {
-              rowErrors.push({ rowNumber, field: 'gstin', value: gstin, message: 'Duplicate GSTIN within uploaded file.' });
+              rowErrors.push(makeError(rowNumber, 'gstin', gstin, 'Duplicate GSTIN within uploaded file.'));
             } else {
               seenInFile.add(`GSTIN:${gstin}`);
             }
           }
         }
+        if (code) {
+          if (seenInFile.has(`CODE:${code}`)) {
+            rowErrors.push(makeError(rowNumber, 'code', code, 'Duplicate party code within uploaded file.'));
+          } else {
+            seenInFile.add(`CODE:${code}`);
+          }
+        }
 
         if (rowErrors.length === 0) {
           validRecords.push({
+            _sourceRowNumber: rowNumber,
             name,
             code,
             partyType,
             gstin,
             pan,
             primaryContact: {
-              name: (data['Contact Person'] || '').toString().trim(),
+              name: String(rowGet(['Contact Person', 'Contact Name', 'Contact'])).trim(),
               phone,
-              email: (data['Email'] || '').toString().trim().toLowerCase()
+              email: String(rowGet(['Email', 'Email Address'])).trim().toLowerCase()
             },
             billingAddress: {
-              street: (data['Billing Street'] || '').toString().trim(),
+              street: String(rowGet(['Billing Street', 'Street Address', 'Street', 'Address'])).trim(),
               city,
               state,
-              pincode: (data['Pincode'] || '').toString().trim()
+              pincode: String(rowGet(['Pincode', 'Pin Code', 'Postal Code', 'ZIP'])).trim()
             },
-            paymentTermsDays: parseInt(data['Payment Terms Days'] || '30', 10) || 30
+            paymentTermsDays: parseInt(String(rowGet(['Payment Terms Days', 'Payment Terms', 'Credit Days'], '30')), 10) || 30
           });
         }
       } else if (entityType === 'vehicles') {
-        const plateNumber = (data['Plate Number *'] || data['Plate Number'] || '').toString().trim().toUpperCase().replace(/\s+/g, '');
-        const vehicleType = (data['Vehicle Type *'] || data['Vehicle Type'] || '').toString().trim();
-        const category = (data['Category (OWNED/ATTACHED/MARKET) *'] || data['Category'] || 'OWNED').toString().trim().toUpperCase();
-        const rawCap = data['Capacity Tonnage (MT) *'] || data['Capacity Tonnage'] || data['Capacity (MT)'];
+        const plateNumber = String(rowGet(['Plate Number *', 'Plate Number', 'Vehicle Number', 'Vehicle No', 'Registration Number', 'Reg No', 'Plate No'])).trim().toUpperCase().replace(/\s+/g, '');
+        const vehicleType = String(rowGet(['Vehicle Type *', 'Vehicle Type', 'Type'])).trim();
+        const category = String(rowGet(['Category (OWNED/ATTACHED/MARKET) *', 'Category', 'Vehicle Category'], 'OWNED')).trim().toUpperCase();
+        const rawCap = rowGet(['Capacity Tonnage (MT) *', 'Capacity Tonnage', 'Capacity (MT)', 'Capacity MT', 'Capacity', 'Tonnage']);
         const capacityTonnage = parseFloat(rawCap);
 
         if (!plateNumber) {
-          rowErrors.push({ rowNumber, field: 'plateNumber', message: 'Plate Number is mandatory.' });
+          rowErrors.push(makeError(rowNumber, 'plateNumber', '', 'Plate Number is mandatory.'));
         } else if (!/^[A-Z]{2}[0-9]{1,2}[A-Z]{0,3}[0-9]{4}$/.test(plateNumber)) {
-          rowErrors.push({ rowNumber, field: 'plateNumber', value: plateNumber, message: 'Invalid vehicle registration plate format.' });
+          rowErrors.push(makeError(rowNumber, 'plateNumber', plateNumber, 'Invalid vehicle registration plate format.'));
         }
-        if (!vehicleType) rowErrors.push({ rowNumber, field: 'vehicleType', message: 'Vehicle Type is mandatory.' });
+        if (!vehicleType) rowErrors.push(makeError(rowNumber, 'vehicleType', '', 'Vehicle Type is mandatory.'));
         if (!Object.values(VehicleCategory).includes(category)) {
-          rowErrors.push({ rowNumber, field: 'category', value: category, message: `Invalid Category. Allowed: ${Object.values(VehicleCategory).join(', ')}` });
+          rowErrors.push(makeError(rowNumber, 'category', category, `Invalid Category. Allowed: ${Object.values(VehicleCategory).join(', ')}`));
         }
         if (isNaN(capacityTonnage) || capacityTonnage <= 0) {
-          rowErrors.push({ rowNumber, field: 'capacityTonnage', value: rawCap, message: 'Capacity must be a positive number in Metric Tons.' });
+          rowErrors.push(makeError(rowNumber, 'capacityTonnage', rawCap, 'Capacity must be a positive number in Metric Tons.'));
         }
 
         if (plateNumber) {
           if (seenInFile.has(`PLATE:${plateNumber}`)) {
-            rowErrors.push({ rowNumber, field: 'plateNumber', value: plateNumber, message: 'Duplicate vehicle plate within uploaded file.' });
+            rowErrors.push(makeError(rowNumber, 'plateNumber', plateNumber, 'Duplicate vehicle plate within uploaded file.'));
           } else {
             seenInFile.add(`PLATE:${plateNumber}`);
           }
@@ -391,40 +467,41 @@ class MasterImportExportService {
 
         if (rowErrors.length === 0) {
           validRecords.push({
+            _sourceRowNumber: rowNumber,
             plateNumber,
             vehicleType,
             category,
             capacityTonnage,
-            make: (data['Make'] || '').toString().trim(),
-            model: (data['Model'] || '').toString().trim(),
-            yearOfManufacture: parseInt(data['Year of Manufacture'] || '', 10) || undefined,
-            chassisNumber: (data['Chassis Number'] || '').toString().trim(),
-            engineNumber: (data['Engine Number'] || '').toString().trim(),
-            ownerName: (data['Owner Name'] || '').toString().trim(),
-            ownerPhone: (data['Owner Phone'] || '').toString().trim()
+            make: String(rowGet(['Make', 'Brand', 'Manufacturer'])).trim(),
+            model: String(rowGet(['Model', 'Vehicle Model'])).trim(),
+            yearOfManufacture: parseInt(String(rowGet(['Year of Manufacture', 'Manufacture Year', 'Year'])), 10) || undefined,
+            chassisNumber: String(rowGet(['Chassis Number', 'Chassis No', 'VIN'])).trim(),
+            engineNumber: String(rowGet(['Engine Number', 'Engine No'])).trim(),
+            ownerName: String(rowGet(['Owner Name', 'Owner'])).trim(),
+            ownerPhone: String(rowGet(['Owner Phone', 'Owner Mobile'])).trim()
           });
         }
       } else if (entityType === 'drivers') {
-        const name = (data['Driver Name *'] || data['Driver Name'] || '').toString().trim();
-        const phone = (data['Phone Number *'] || data['Phone Number'] || data['Phone'] || '').toString().trim();
-        const licenseNumber = (data['Licence Number *'] || data['Licence Number'] || '').toString().trim().toUpperCase();
-        const licenseType = (data['Licence Type (LMV/HMV/TRANS/TRAILER) *'] || data['Licence Type'] || 'HMV').toString().trim().toUpperCase();
-        const rawExpiry = (data['Licence Expiry Date (YYYY-MM-DD) *'] || data['Licence Expiry Date'] || '').toString().trim();
+        const name = String(rowGet(['Driver Name *', 'Driver Name', 'Name', 'Driver'])).trim();
+        const phone = String(rowGet(['Phone Number *', 'Phone Number', 'Phone *', 'Phone', 'Mobile Number', 'Mobile'])).trim();
+        const licenseNumber = String(rowGet(['Licence Number *', 'Licence Number', 'License Number', 'DL Number', 'DL No'])).trim().toUpperCase();
+        const licenseType = String(rowGet(['Licence Type (LMV/HMV/TRANS/TRAILER) *', 'Licence Type', 'License Type', 'DL Type'], 'HMV')).trim().toUpperCase();
+        const rawExpiry = String(rowGet(['Licence Expiry Date (YYYY-MM-DD) *', 'Licence Expiry Date', 'License Expiry Date', 'Expiry Date', 'DL Expiry'])).trim();
         const expiryDate = new Date(rawExpiry);
 
-        if (!name) rowErrors.push({ rowNumber, field: 'name', message: 'Driver name is mandatory.' });
-        if (!phone) rowErrors.push({ rowNumber, field: 'phone', message: 'Phone number is mandatory.' });
-        if (!licenseNumber) rowErrors.push({ rowNumber, field: 'licenseNumber', message: 'Licence number is mandatory.' });
+        if (!name) rowErrors.push(makeError(rowNumber, 'name', '', 'Driver name is mandatory.'));
+        if (!phone) rowErrors.push(makeError(rowNumber, 'phone', '', 'Phone number is mandatory.'));
+        if (!licenseNumber) rowErrors.push(makeError(rowNumber, 'licenseNumber', '', 'Licence number is mandatory.'));
         if (!Object.values(DriverLicenseType).includes(licenseType)) {
-          rowErrors.push({ rowNumber, field: 'licenseType', value: licenseType, message: `Invalid Licence Type. Allowed: ${Object.values(DriverLicenseType).join(', ')}` });
+          rowErrors.push(makeError(rowNumber, 'licenseType', licenseType, `Invalid Licence Type. Allowed: ${Object.values(DriverLicenseType).join(', ')}`));
         }
         if (isNaN(expiryDate.getTime())) {
-          rowErrors.push({ rowNumber, field: 'licenseExpiryDate', value: rawExpiry, message: 'Invalid licence expiry date (Format: YYYY-MM-DD).' });
+          rowErrors.push(makeError(rowNumber, 'licenseExpiryDate', rawExpiry, 'Invalid licence expiry date (Format: YYYY-MM-DD).'));
         }
 
         if (licenseNumber) {
           if (seenInFile.has(`DL:${licenseNumber}`)) {
-            rowErrors.push({ rowNumber, field: 'licenseNumber', value: licenseNumber, message: 'Duplicate licence number within uploaded file.' });
+            rowErrors.push(makeError(rowNumber, 'licenseNumber', licenseNumber, 'Duplicate licence number within uploaded file.'));
           } else {
             seenInFile.add(`DL:${licenseNumber}`);
           }
@@ -432,75 +509,89 @@ class MasterImportExportService {
 
         if (rowErrors.length === 0) {
           validRecords.push({
+            _sourceRowNumber: rowNumber,
             name,
             phone,
-            alternatePhone: (data['Alternate Phone'] || '').toString().trim(),
+            alternatePhone: String(rowGet(['Alternate Phone', 'Alt Phone', 'Secondary Phone'])).trim(),
             licenseNumber,
             licenseType,
             licenseExpiryDate: expiryDate,
-            address: (data['Address'] || '').toString().trim(),
+            address: String(rowGet(['Address', 'Driver Address'])).trim(),
             emergencyContact: {
-              name: (data['Emergency Contact Name'] || '').toString().trim(),
-              phone: (data['Emergency Contact Phone'] || '').toString().trim()
+              name: String(rowGet(['Emergency Contact Name', 'Emergency Contact'])).trim(),
+              phone: String(rowGet(['Emergency Contact Phone', 'Emergency Phone'])).trim()
             }
           });
         }
       } else if (entityType === 'locations') {
-        const name = (data['Location Name *'] || data['Location Name'] || '').toString().trim();
-        const code = (data['Code'] || '').toString().trim().toUpperCase();
-        const locationType = (data['Location Type (HUB/PICKUP/DELIVERY/WAYPOINT) *'] || data['Location Type'] || 'PICKUP').toString().trim().toUpperCase();
-        const city = (data['City *'] || data['City'] || '').toString().trim();
-        const state = (data['State *'] || data['State'] || '').toString().trim();
+        const name = String(rowGet(['Location Name *', 'Location Name', 'Hub Name', 'Name'])).trim();
+        const code = String(rowGet(['Code', 'Location Code', 'Hub Code'])).trim().toUpperCase();
+        const locationType = String(rowGet(['Location Type (HUB/PICKUP/DELIVERY/WAYPOINT) *', 'Location Type', 'Type'], 'PICKUP')).trim().toUpperCase();
+        const city = String(rowGet(['City *', 'City'])).trim();
+        const state = String(rowGet(['State *', 'State'])).trim();
 
-        if (!name) rowErrors.push({ rowNumber, field: 'name', message: 'Location name is mandatory.' });
-        if (!city) rowErrors.push({ rowNumber, field: 'city', message: 'City is mandatory.' });
-        if (!state) rowErrors.push({ rowNumber, field: 'state', message: 'State is mandatory.' });
+        if (!name) rowErrors.push(makeError(rowNumber, 'name', '', 'Location name is mandatory.'));
+        if (!city) rowErrors.push(makeError(rowNumber, 'city', '', 'City is mandatory.'));
+        if (!state) rowErrors.push(makeError(rowNumber, 'state', '', 'State is mandatory.'));
         if (!Object.values(LocationType).includes(locationType)) {
-          rowErrors.push({ rowNumber, field: 'locationType', value: locationType, message: `Invalid Location Type. Allowed: ${Object.values(LocationType).join(', ')}` });
+          rowErrors.push(makeError(rowNumber, 'locationType', locationType, `Invalid Location Type. Allowed: ${Object.values(LocationType).join(', ')}`));
+        }
+
+        if (code) {
+          if (seenInFile.has(`LOC_CODE:${code}`)) {
+            rowErrors.push(makeError(rowNumber, 'code', code, 'Duplicate location code within uploaded file.'));
+          } else {
+            seenInFile.add(`LOC_CODE:${code}`);
+          }
         }
 
         if (rowErrors.length === 0) {
           validRecords.push({
+            _sourceRowNumber: rowNumber,
             name,
             code,
             locationType,
             address: {
-              street: (data['Street Address'] || '').toString().trim(),
+              street: String(rowGet(['Street Address', 'Street', 'Address'])).trim(),
               city,
               state,
-              pincode: (data['Pincode'] || '').toString().trim()
+              pincode: String(rowGet(['Pincode', 'Pin Code', 'Postal Code'])).trim()
             },
-            contactPerson: (data['Contact Person'] || '').toString().trim(),
-            contactPhone: (data['Contact Phone'] || '').toString().trim()
+            contactPerson: String(rowGet(['Contact Person', 'Contact Name'])).trim(),
+            contactPhone: String(rowGet(['Contact Phone', 'Phone'])).trim()
           });
         }
       } else if (entityType === 'loads') {
-        const customerRef = (data['Customer GSTIN or Name *'] || data['Customer'] || '').toString().trim();
-        const consignorRef = (data['Consignor GSTIN or Name *'] || data['Consignor'] || '').toString().trim();
-        const consigneeRef = (data['Consignee GSTIN or Name *'] || data['Consignee'] || '').toString().trim();
-        const originRef = (data['Origin Location Code or Name *'] || data['Origin'] || '').toString().trim();
-        const destRef = (data['Destination Location Code or Name *'] || data['Destination'] || '').toString().trim();
-        const totalWeightMt = parseFloat(data['Total Weight MT *'] || data['Total Weight MT'] || 0);
-        const totalQuantity = parseInt(data['Total Quantity *'] || data['Total Quantity'] || 1, 10);
-        const packageType = (data['Package Type (Bags/Boxes/Drums/Pallets)'] || data['Package Type'] || 'Boxes').toString().trim();
-        const baseFreightRupees = parseFloat(data['Base Freight INR *'] || data['Base Freight INR'] || 0);
-        const advanceRupees = parseFloat(data['Advance Freight INR'] || 0);
-        const remarks = (data['Remarks'] || '').toString().trim();
+        const customerRef = String(rowGet(['Customer GSTIN or Name *', 'Customer', 'Customer Name', 'Customer GSTIN', 'Customer Ref'])).trim();
+        const consignorRef = String(rowGet(['Consignor GSTIN or Name *', 'Consignor', 'Consignor Name', 'Consignor Ref'])).trim();
+        const consigneeRef = String(rowGet(['Consignee GSTIN or Name *', 'Consignee', 'Consignee Name', 'Consignee Ref'])).trim();
+        const originRef = String(rowGet(['Origin Location Code or Name *', 'Origin', 'Origin Location', 'Origin Ref'])).trim();
+        const destRef = String(rowGet(['Destination Location Code or Name *', 'Destination', 'Destination Location', 'Dest', 'Dest Ref'])).trim();
+        const rawWeight = rowGet(['Total Weight MT *', 'Total Weight MT', 'Weight MT', 'Weight (MT)', 'Weight']);
+        const totalWeightMt = parseFloat(rawWeight);
+        const rawQty = rowGet(['Total Quantity *', 'Total Quantity', 'Quantity', 'Packages', 'Qty'], 1);
+        const totalQuantity = parseInt(rawQty, 10);
+        const packageType = String(rowGet(['Package Type (Bags/Boxes/Drums/Pallets)', 'Package Type', 'Packaging'], 'Boxes')).trim();
+        const rawFreight = rowGet(['Base Freight INR *', 'Base Freight INR', 'Base Freight', 'Freight (INR)', 'Freight']);
+        const baseFreightRupees = parseFloat(rawFreight);
+        const advanceRupees = parseFloat(rowGet(['Advance Freight INR', 'Advance Freight', 'Advance (INR)', 'Advance'], 0));
+        const remarks = String(rowGet(['Remarks', 'Instructions', 'Notes'])).trim();
 
-        if (!customerRef) rowErrors.push({ rowNumber, field: 'customerRef', message: 'Customer reference is mandatory.' });
-        if (!consignorRef) rowErrors.push({ rowNumber, field: 'consignorRef', message: 'Consignor reference is mandatory.' });
-        if (!consigneeRef) rowErrors.push({ rowNumber, field: 'consigneeRef', message: 'Consignee reference is mandatory.' });
-        if (!originRef) rowErrors.push({ rowNumber, field: 'originRef', message: 'Origin location reference is mandatory.' });
-        if (!destRef) rowErrors.push({ rowNumber, field: 'destRef', message: 'Destination location reference is mandatory.' });
+        if (!customerRef) rowErrors.push(makeError(rowNumber, 'customerRef', '', 'Customer reference is mandatory.'));
+        if (!consignorRef) rowErrors.push(makeError(rowNumber, 'consignorRef', '', 'Consignor reference is mandatory.'));
+        if (!consigneeRef) rowErrors.push(makeError(rowNumber, 'consigneeRef', '', 'Consignee reference is mandatory.'));
+        if (!originRef) rowErrors.push(makeError(rowNumber, 'originRef', '', 'Origin location reference is mandatory.'));
+        if (!destRef) rowErrors.push(makeError(rowNumber, 'destRef', '', 'Destination location reference is mandatory.'));
         if (isNaN(totalWeightMt) || totalWeightMt <= 0) {
-          rowErrors.push({ rowNumber, field: 'totalWeightMt', value: data['Total Weight MT *'], message: 'Total weight must be positive MT.' });
+          rowErrors.push(makeError(rowNumber, 'totalWeightMt', rawWeight, 'Total weight must be positive MT.'));
         }
         if (isNaN(baseFreightRupees) || baseFreightRupees <= 0) {
-          rowErrors.push({ rowNumber, field: 'baseFreightRupees', value: data['Base Freight INR *'], message: 'Base freight must be positive.' });
+          rowErrors.push(makeError(rowNumber, 'baseFreightRupees', rawFreight, 'Base freight must be positive.'));
         }
 
         if (rowErrors.length === 0) {
           validRecords.push({
+            _sourceRowNumber: rowNumber,
             customerRef,
             consignorRef,
             consigneeRef,
@@ -521,19 +612,43 @@ class MasterImportExportService {
       }
     }
 
-    // Check database collisions for valid records
-    if (entityType === 'vehicles' && validRecords.length > 0) {
+    // Check database collisions for valid records using exact original row number
+    if (entityType === 'customers' && validRecords.length > 0) {
+      const gstins = validRecords.map(r => r.gstin).filter(Boolean);
+      const codes = validRecords.map(r => r.code).filter(Boolean);
+      const existing = await CustomerParty.find({
+        companyId,
+        $or: [
+          ...(gstins.length ? [{ gstin: { $in: gstins } }] : []),
+          ...(codes.length ? [{ code: { $in: codes } }] : [])
+        ]
+      }).select('gstin code name');
+      const existingGstins = new Set(existing.map(e => e.gstin).filter(Boolean));
+      const existingCodes = new Set(existing.map(e => e.code).filter(Boolean));
+
+      for (let i = validRecords.length - 1; i >= 0; i--) {
+        const item = validRecords[i];
+        if (item.gstin && existingGstins.has(item.gstin)) {
+          errors.push(makeError(item._sourceRowNumber, 'gstin', item.gstin, `Customer with GSTIN '${item.gstin}' already exists in your organization.`));
+          validRecords.splice(i, 1);
+        } else if (item.code && existingCodes.has(item.code)) {
+          errors.push(makeError(item._sourceRowNumber, 'code', item.code, `Customer with code '${item.code}' already exists.`));
+          validRecords.splice(i, 1);
+        }
+      }
+    } else if (entityType === 'vehicles' && validRecords.length > 0) {
       const plates = validRecords.map(r => r.plateNumber);
       const existing = await Vehicle.find({ companyId, plateNumber: { $in: plates } }).select('plateNumber');
       const existingSet = new Set(existing.map(e => e.plateNumber));
       for (let i = validRecords.length - 1; i >= 0; i--) {
-        if (existingSet.has(validRecords[i].plateNumber)) {
-          errors.push({
-            rowNumber: i + 2,
-            field: 'plateNumber',
-            value: validRecords[i].plateNumber,
-            message: `Vehicle plate '${validRecords[i].plateNumber}' already exists in your organization's fleet.`
-          });
+        const item = validRecords[i];
+        if (existingSet.has(item.plateNumber)) {
+          errors.push(makeError(
+            item._sourceRowNumber,
+            'plateNumber',
+            item.plateNumber,
+            `Vehicle plate '${item.plateNumber}' already exists in your organization's fleet.`
+          ));
           validRecords.splice(i, 1);
         }
       }
@@ -542,14 +657,33 @@ class MasterImportExportService {
       const existing = await Driver.find({ companyId, licenseNumber: { $in: dls } }).select('licenseNumber');
       const existingSet = new Set(existing.map(e => e.licenseNumber));
       for (let i = validRecords.length - 1; i >= 0; i--) {
-        if (existingSet.has(validRecords[i].licenseNumber)) {
-          errors.push({
-            rowNumber: i + 2,
-            field: 'licenseNumber',
-            value: validRecords[i].licenseNumber,
-            message: `Driving licence '${validRecords[i].licenseNumber}' already exists for another driver.`
-          });
+        const item = validRecords[i];
+        if (existingSet.has(item.licenseNumber)) {
+          errors.push(makeError(
+            item._sourceRowNumber,
+            'licenseNumber',
+            item.licenseNumber,
+            `Driving licence '${item.licenseNumber}' already exists for another driver.`
+          ));
           validRecords.splice(i, 1);
+        }
+      }
+    } else if (entityType === 'locations' && validRecords.length > 0) {
+      const codes = validRecords.map(r => r.code).filter(Boolean);
+      if (codes.length > 0) {
+        const existing = await Location.find({ companyId, code: { $in: codes } }).select('code');
+        const existingSet = new Set(existing.map(e => e.code));
+        for (let i = validRecords.length - 1; i >= 0; i--) {
+          const item = validRecords[i];
+          if (item.code && existingSet.has(item.code)) {
+            errors.push(makeError(
+              item._sourceRowNumber,
+              'code',
+              item.code,
+              `Location with code '${item.code}' already exists.`
+            ));
+            validRecords.splice(i, 1);
+          }
         }
       }
     } else if (entityType === 'loads' && validRecords.length > 0) {
@@ -559,31 +693,32 @@ class MasterImportExportService {
 
       for (let i = validRecords.length - 1; i >= 0; i--) {
         const item = validRecords[i];
-        const custMatch = parties.find(p => p.gstin === item.customerRef || p.name.toLowerCase() === item.customerRef.toLowerCase());
-        const conMatch = parties.find(p => p.gstin === item.consignorRef || p.name.toLowerCase() === item.consignorRef.toLowerCase());
-        const cneeMatch = parties.find(p => p.gstin === item.consigneeRef || p.name.toLowerCase() === item.consigneeRef.toLowerCase());
-        const origMatch = locations.find(l => l.code === item.originRef || l.name.toLowerCase() === item.originRef.toLowerCase());
-        const destMatch = locations.find(l => l.code === item.destRef || l.name.toLowerCase() === item.destRef.toLowerCase());
+        const srcRow = item._sourceRowNumber;
+        const custMatch = parties.find(p => (item.customerRef && (p.gstin === item.customerRef || p.name.toLowerCase() === item.customerRef.toLowerCase())));
+        const conMatch = parties.find(p => (item.consignorRef && (p.gstin === item.consignorRef || p.name.toLowerCase() === item.consignorRef.toLowerCase())));
+        const cneeMatch = parties.find(p => (item.consigneeRef && (p.gstin === item.consigneeRef || p.name.toLowerCase() === item.consigneeRef.toLowerCase())));
+        const origMatch = locations.find(l => (item.originRef && (l.code === item.originRef || l.name.toLowerCase() === item.originRef.toLowerCase())));
+        const destMatch = locations.find(l => (item.destRef && (l.code === item.destRef || l.name.toLowerCase() === item.destRef.toLowerCase())));
 
         let hasRefError = false;
         if (!custMatch) {
-          errors.push({ rowNumber: i + 2, field: 'customerRef', value: item.customerRef, message: `Customer '${item.customerRef}' not found in master records.` });
+          errors.push(makeError(srcRow, 'customerRef', item.customerRef, `Customer '${item.customerRef}' not found in master records.`));
           hasRefError = true;
         }
         if (!conMatch) {
-          errors.push({ rowNumber: i + 2, field: 'consignorRef', value: item.consignorRef, message: `Consignor '${item.consignorRef}' not found in master records.` });
+          errors.push(makeError(srcRow, 'consignorRef', item.consignorRef, `Consignor '${item.consignorRef}' not found in master records.`));
           hasRefError = true;
         }
         if (!cneeMatch) {
-          errors.push({ rowNumber: i + 2, field: 'consigneeRef', value: item.consigneeRef, message: `Consignee '${item.consigneeRef}' not found in master records.` });
+          errors.push(makeError(srcRow, 'consigneeRef', item.consigneeRef, `Consignee '${item.consigneeRef}' not found in master records.`));
           hasRefError = true;
         }
         if (!origMatch) {
-          errors.push({ rowNumber: i + 2, field: 'originRef', value: item.originRef, message: `Origin location '${item.originRef}' not found.` });
+          errors.push(makeError(srcRow, 'originRef', item.originRef, `Origin location '${item.originRef}' not found.`));
           hasRefError = true;
         }
         if (!destMatch) {
-          errors.push({ rowNumber: i + 2, field: 'destRef', value: item.destRef, message: `Destination location '${item.destRef}' not found.` });
+          errors.push(makeError(srcRow, 'destRef', item.destRef, `Destination location '${item.destRef}' not found.`));
           hasRefError = true;
         }
 
@@ -664,11 +799,11 @@ class MasterImportExportService {
     }
 
     let inserted = [];
-    const enriched = recordsToImport.map(r => ({
-      ...r,
-      companyId,
-      createdVia: 'EXCEL_IMPORT'
-    }));
+    const enriched = recordsToImport.map(r => {
+      const copy = { ...r, companyId, createdVia: 'EXCEL_IMPORT' };
+      delete copy._sourceRowNumber;
+      return copy;
+    });
 
     switch (entityType.toLowerCase()) {
       case 'customers':
@@ -1102,6 +1237,66 @@ class MasterImportExportService {
       contentType,
       fileSize: job.fileSize
     };
+  }
+
+  /**
+   * 7. Initiate and Track Asynchronous Import Jobs
+   */
+  async createImportJob({ companyId, userId, entityType, fileBuffer, fileName = 'import.xlsx' }) {
+    if (!fileBuffer || !Buffer.isBuffer(fileBuffer) || fileBuffer.length === 0) {
+      throw new AppError('Import file is required.', 400);
+    }
+
+    const job = new ExportJob({
+      companyId,
+      jobType: 'IMPORT',
+      entityType: entityType.toLowerCase(),
+      format: fileName.endsWith('.csv') ? 'csv' : 'xlsx',
+      status: 'PROCESSING',
+      requestedBy: userId,
+      fileName,
+      totalRecords: 0
+    });
+    await job.save();
+
+    try {
+      // 1. Execute Dry-Run Validation
+      const dryRunResult = await this.dryRunValidate(entityType, fileBuffer, companyId, userId);
+
+      job.totalRecords = dryRunResult.totalRows;
+      job.validCount = dryRunResult.validRowsCount;
+      job.errorCount = dryRunResult.invalidRowsCount;
+      job.batchId = dryRunResult.batchId;
+      job.errorDetails = dryRunResult.errors.map(e => ({
+        row: e.rowNumber,
+        field: e.field,
+        message: e.message
+      }));
+
+      // 2. Persist uploaded file in tenant storage for audit & durability
+      const saved = await storageService.saveFile({
+        buffer: fileBuffer,
+        originalName: fileName,
+        mimeType: fileName.endsWith('.csv') ? 'text/csv' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        companyId,
+        module: 'imports'
+      });
+      job.fileKey = saved.fileKey;
+      job.fileSize = saved.fileSize;
+
+      job.status = 'COMPLETED';
+      await job.save();
+
+      return {
+        job,
+        dryRunResult
+      };
+    } catch (err) {
+      job.status = 'FAILED';
+      job.errorDetails = [{ row: 0, field: 'general', message: err.message }];
+      await job.save();
+      throw err;
+    }
   }
 }
 

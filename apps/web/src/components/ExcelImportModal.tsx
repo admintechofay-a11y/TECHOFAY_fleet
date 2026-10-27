@@ -196,10 +196,10 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
                     <tbody className="divide-y divide-slate-800">
                       {dryRunResult.errors.map((err: any, i: number) => (
                         <tr key={i} className="hover:bg-red-950/20">
-                          <td className="p-2 font-mono text-slate-400">{err.rowNumber}</td>
-                          <td className="p-2 font-semibold text-slate-200">{err.field}</td>
-                          <td className="p-2 text-slate-400 font-mono">{String(err.value || '-')}</td>
-                          <td className="p-2 text-red-300">{err.message}</td>
+                          <td className="p-2 font-mono text-slate-400">{err.row ?? err.rowNumber}</td>
+                          <td className="p-2 font-semibold text-slate-200">{err.column ?? err.field}</td>
+                          <td className="p-2 text-slate-400 font-mono">{String(err.value ?? '-')}</td>
+                          <td className="p-2 text-red-300">{err.reason ?? err.message}</td>
                         </tr>
                       ))}
                     </tbody>

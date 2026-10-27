@@ -20,11 +20,13 @@ function sanitizeValue(val) {
   if (val === null || val === undefined) return '';
   if (typeof val === 'number' || typeof val === 'boolean') return val;
   if (val instanceof Date) return val.toISOString().split('T')[0];
-  const str = String(val).trim();
-  if (/^[=+\-@\t\r]/.test(str)) {
-    return `'${str}`;
+  const rawStr = String(val);
+  const trimmed = rawStr.trim();
+  if (!trimmed) return '';
+  if (/^[\t\r]/.test(rawStr) || /^[=+\-@\t\r]/.test(trimmed)) {
+    return `'${trimmed}`;
   }
-  return str;
+  return trimmed;
 }
 
 class ReportsService {

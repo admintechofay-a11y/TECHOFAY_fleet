@@ -460,10 +460,10 @@ export const BulkDataPage: React.FC = () => {
                         <tbody>
                           {dryRunResult.errors.map((err: any, idx: number) => (
                             <tr key={idx} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                              <td style={{ padding: '0.5rem', fontWeight: 700, color: '#dc2626' }}>{err.rowNumber}</td>
-                              <td style={{ padding: '0.5rem', color: 'var(--accent-cyan)' }}>{err.field}</td>
-                              <td style={{ padding: '0.5rem', color: 'var(--text-primary)' }}>{String(err.value || '-')}</td>
-                              <td style={{ padding: '0.5rem', color: '#b91c1c' }}>{err.message}</td>
+                              <td style={{ padding: '0.5rem', fontWeight: 700, color: '#dc2626' }}>{err.row ?? err.rowNumber}</td>
+                              <td style={{ padding: '0.5rem', color: 'var(--accent-cyan)' }}>{err.column ?? err.field}</td>
+                              <td style={{ padding: '0.5rem', color: 'var(--text-primary)' }}>{String(err.value ?? '-')}</td>
+                              <td style={{ padding: '0.5rem', color: '#b91c1c' }}>{err.reason ?? err.message}</td>
                             </tr>
                           ))}
                         </tbody>

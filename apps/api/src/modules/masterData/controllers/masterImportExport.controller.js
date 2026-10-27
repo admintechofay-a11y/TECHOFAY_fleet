@@ -247,6 +247,38 @@ class MasterImportExportController {
       next(err);
     }
   }
+
+  /**
+   * 9. Initiate Asynchronous Import Job
+   */
+  async createImportJob(req, res, next) {
+    try {
+      const { entityType } = req.params;
+      const companyId = req.tenant.companyId;
+      const userId = req.user._id;
+
+      if (!req.file) {
+        return next(new AppError('Spreadsheet file is required (.xlsx or .csv).', 400));
+      }
+
+      const result = await masterImportExportService.createImportJob({
+        companyId,
+        userId,
+        entityType,
+        fileBuffer: req.file.buffer,
+        fileName: req.file.originalname || `${entityType}_import.xlsx`
+      });
+
+      res.status(201).json({
+        success: true,
+        statusCode: 201,
+        message: `Async import job created for ${entityType}.`,
+        data: result
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = new MasterImportExportController();

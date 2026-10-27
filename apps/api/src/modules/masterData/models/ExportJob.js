@@ -59,6 +59,19 @@ const exportJobSchema = new Schema(
       type: Number,
       default: 0
     },
+    batchId: {
+      type: Schema.Types.ObjectId,
+      ref: 'ImportBatch',
+      default: null
+    },
+    validCount: {
+      type: Number,
+      default: 0
+    },
+    errorCount: {
+      type: Number,
+      default: 0
+    },
     downloadExpiresAt: {
       type: Date,
       default: () => new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours retention

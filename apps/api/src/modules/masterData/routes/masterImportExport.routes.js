@@ -46,7 +46,14 @@ router.get(
   masterImportExportController.exportData
 );
 
-// 5. Asynchronous / Background Export Jobs
+// 5. Asynchronous / Background Import & Export Jobs
+router.post(
+  '/jobs/import/:entityType',
+  requirePermission(SystemModule.IMPORT_EXPORT, ActionPermission.ADD),
+  upload.single('file'),
+  masterImportExportController.createImportJob
+);
+
 router.post(
   '/jobs/export',
   requirePermission(SystemModule.IMPORT_EXPORT, ActionPermission.EXPORT),

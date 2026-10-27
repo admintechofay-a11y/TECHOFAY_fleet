@@ -492,4 +492,308 @@ describe('Phase 6 Integration Test Suite: Excel, CSV, Bulk Imports, Exports & Jo
     assert.equal(resDownloadJob.status, 404, 'Company B should get 404 when downloading Company A file');
   });
 
+  // -------------------------------------------------------------
+  // Test 8: Row-Level Error Exact Locations (row, column, value, reason)
+  // -------------------------------------------------------------
+  test('8. Row-Level Validation: Error breakdown includes exact row, column, value, and reason', async () => {
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('VEHICLES');
+    ws.columns = [
+      { header: 'Plate Number *', key: 'plateNumber' },
+      { header: 'Vehicle Type *', key: 'vehicleType' },
+      { header: 'Category (OWNED/ATTACHED/MARKET) *', key: 'category' },
+      { header: 'Capacity Tonnage (MT) *', key: 'capacityTonnage' }
+    ];
+
+    // Row 2: Invalid capacity and invalid category
+    ws.addRow({
+      plateNumber: 'MH04AB1234',
+      vehicleType: 'Truck',
+      category: 'INVALID_CATEGORY',
+      capacityTonnage: -5
+    });
+
+    const fileBuffer = await wb.xlsx.writeBuffer();
+    const boundary = '----WebKitFormBoundaryPhase6RowLoc';
+    const body = Buffer.concat([
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="test_err_loc.xlsx"\r\nContent-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\r\n\r\n`),
+      Buffer.from(fileBuffer),
+      Buffer.from(`\r\n--${boundary}--\r\n`)
+    ]);
+
+    const res = await fetch(`${baseUrl}/master/dry-run/vehicles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        Authorization: `Bearer ${userAToken}`
+      },
+      body
+    });
+
+    const data = await res.json();
+    assert.equal(res.status, 200);
+    assert.ok(data.data.errors.length >= 2);
+
+    for (const err of data.data.errors) {
+      assert.ok('row' in err, 'Error must contain row');
+      assert.ok('column' in err, 'Error must contain column');
+      assert.ok('value' in err, 'Error must contain value');
+      assert.ok('reason' in err, 'Error must contain reason');
+      assert.equal(err.row, 2, 'Error row must be 2');
+    }
+  });
+
+  // -------------------------------------------------------------
+  // Test 9: Malformed and Empty File Handling
+  // -------------------------------------------------------------
+  test('9. Malformed Files: Rejects corrupt binary or empty files with clean 400 Bad Request', async () => {
+    const boundary = '----WebKitFormBoundaryPhase6Malformed';
+
+    // 1. Corrupt non-zip binary buffer
+    const corruptBody = Buffer.concat([
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="corrupt.xlsx"\r\nContent-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\r\n\r\n`),
+      Buffer.from('NOT_A_VALID_ZIP_OR_EXCEL_FILE_DATA_CORRUPTION_SIMULATION'),
+      Buffer.from(`\r\n--${boundary}--\r\n`)
+    ]);
+
+    const resCorrupt = await fetch(`${baseUrl}/master/dry-run/vehicles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        Authorization: `Bearer ${userAToken}`
+      },
+      body: corruptBody
+    });
+
+    const corruptData = await resCorrupt.json();
+    assert.equal(resCorrupt.status, 400);
+    assert.equal(corruptData.success, false);
+    assert.ok(
+      corruptData.message.includes('Unable to parse spreadsheet file') ||
+      corruptData.message.includes('contains no data rows') ||
+      corruptData.message.includes('spreadsheet')
+    );
+
+    // 2. Empty file upload
+    const emptyBody = Buffer.concat([
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="empty.xlsx"\r\nContent-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\r\n\r\n`),
+      Buffer.from(''),
+      Buffer.from(`\r\n--${boundary}--\r\n`)
+    ]);
+
+    const resEmpty = await fetch(`${baseUrl}/master/dry-run/vehicles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        Authorization: `Bearer ${userAToken}`
+      },
+      body: emptyBody
+    });
+
+    const emptyData = await resEmpty.json();
+    assert.equal(resEmpty.status, 400);
+    assert.equal(emptyData.success, false);
+  });
+
+  // -------------------------------------------------------------
+  // Test 10: CSV Upload with UTF-8 BOM
+  // -------------------------------------------------------------
+  test('10. Encodings: Successfully parses CSV upload containing UTF-8 BOM', async () => {
+    const uniquePlate = `MH12BOM${Math.floor(1000 + Math.random() * 8999)}`;
+    const csvContent = '\uFEFFPlate Number *,Vehicle Type *,Category (OWNED/ATTACHED/MARKET) *,Capacity Tonnage (MT) *\r\n' +
+      `${uniquePlate},Container 20ft,OWNED,18.5\r\n`;
+
+    const boundary = '----WebKitFormBoundaryPhase6BomCsv';
+    const body = Buffer.concat([
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="vehicles_bom.csv"\r\nContent-Type: text/csv\r\n\r\n`),
+      Buffer.from(csvContent, 'utf8'),
+      Buffer.from(`\r\n--${boundary}--\r\n`)
+    ]);
+
+    const res = await fetch(`${baseUrl}/master/dry-run/vehicles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        Authorization: `Bearer ${userAToken}`
+      },
+      body
+    });
+
+    const data = await res.json();
+    assert.equal(res.status, 200);
+    assert.equal(data.success, true);
+    assert.equal(data.data.totalRows, 1);
+    assert.equal(data.data.validRowsCount, 1);
+    assert.equal(data.data.invalidRowsCount, 0);
+    assert.equal(data.data.validRecords[0].plateNumber, uniquePlate);
+  });
+
+  // -------------------------------------------------------------
+  // Test 11: Header Drift and Synonym Tolerance
+  // -------------------------------------------------------------
+  test('11. Header Drift: Tolerates non-standard header synonyms without rejecting rows', async () => {
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('VEHICLES');
+    // Using synonyms: 'Vehicle No', 'Type', 'Category', 'Capacity (MT)' instead of strict template headers
+    ws.columns = [
+      { header: 'Vehicle No', key: 'plateNumber' },
+      { header: 'Type', key: 'vehicleType' },
+      { header: 'Vehicle Category', key: 'category' },
+      { header: 'Capacity (MT)', key: 'capacityTonnage' }
+    ];
+
+    const driftPlate = `GJ06DR${Math.floor(1000 + Math.random() * 8999)}`;
+    ws.addRow({
+      plateNumber: driftPlate,
+      vehicleType: 'Flatbed',
+      category: 'OWNED',
+      capacityTonnage: 25.0
+    });
+
+    const fileBuffer = await wb.xlsx.writeBuffer();
+    const boundary = '----WebKitFormBoundaryPhase6Drift';
+    const body = Buffer.concat([
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="drift_test.xlsx"\r\nContent-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\r\n\r\n`),
+      Buffer.from(fileBuffer),
+      Buffer.from(`\r\n--${boundary}--\r\n`)
+    ]);
+
+    const res = await fetch(`${baseUrl}/master/dry-run/vehicles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        Authorization: `Bearer ${userAToken}`
+      },
+      body
+    });
+
+    const data = await res.json();
+    assert.equal(res.status, 200);
+    assert.equal(data.success, true);
+    assert.equal(data.data.validRowsCount, 1);
+    assert.equal(data.data.validRecords[0].plateNumber, driftPlate);
+  });
+
+  // -------------------------------------------------------------
+  // Test 12: Accurate Row Number on Database Collisions
+  // -------------------------------------------------------------
+  test('12. Database Collisions: Accurately reports original file row number on DB uniqueness collisions', async () => {
+    const existingPlate = `KA01EX${Math.floor(1000 + Math.random() * 8999)}`;
+    await Vehicle.create({
+      companyId: companyA._id,
+      plateNumber: existingPlate,
+      vehicleType: 'Trailer',
+      capacityTonnage: 22,
+      category: 'OWNED',
+      status: 'AVAILABLE'
+    });
+
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('VEHICLES');
+    ws.columns = [
+      { header: 'Plate Number *', key: 'plateNumber' },
+      { header: 'Vehicle Type *', key: 'vehicleType' },
+      { header: 'Category (OWNED/ATTACHED/MARKET) *', key: 'category' },
+      { header: 'Capacity Tonnage (MT) *', key: 'capacityTonnage' }
+    ];
+
+    // Row 2: Invalid row (will be caught in stage 1)
+    ws.addRow({
+      plateNumber: 'INVALID_PLATE_FORMAT',
+      vehicleType: 'Truck',
+      category: 'OWNED',
+      capacityTonnage: 10
+    });
+
+    // Row 3: Valid format, but collides with existing vehicle plate in database
+    ws.addRow({
+      plateNumber: existingPlate,
+      vehicleType: 'Trailer',
+      category: 'OWNED',
+      capacityTonnage: 22
+    });
+
+    const fileBuffer = await wb.xlsx.writeBuffer();
+    const boundary = '----WebKitFormBoundaryPhase6RowCol';
+    const body = Buffer.concat([
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="test_collision_row.xlsx"\r\nContent-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\r\n\r\n`),
+      Buffer.from(fileBuffer),
+      Buffer.from(`\r\n--${boundary}--\r\n`)
+    ]);
+
+    const res = await fetch(`${baseUrl}/master/dry-run/vehicles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        Authorization: `Bearer ${userAToken}`
+      },
+      body
+    });
+
+    const data = await res.json();
+    assert.equal(res.status, 200);
+
+    // Collision error must report row 3 (NOT row 2)
+    const collisionErr = data.data.errors.find((e) => e.value === existingPlate);
+    assert.ok(collisionErr, 'Must identify collision on existing plate');
+    assert.equal(collisionErr.row, 3, 'Collision error must report exact row 3');
+  });
+
+  // -------------------------------------------------------------
+  // Test 13: Asynchronous Import Job Creation & Status Polling
+  // -------------------------------------------------------------
+  test('13. Async Import Jobs: POST /master/jobs/import creates trackable import job with staged batchId', async () => {
+    const uniquePlate = `DL01AS${Math.floor(1000 + Math.random() * 8999)}`;
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('VEHICLES');
+    ws.columns = [
+      { header: 'Plate Number *', key: 'plateNumber' },
+      { header: 'Vehicle Type *', key: 'vehicleType' },
+      { header: 'Category (OWNED/ATTACHED/MARKET) *', key: 'category' },
+      { header: 'Capacity Tonnage (MT) *', key: 'capacityTonnage' }
+    ];
+
+    ws.addRow({
+      plateNumber: uniquePlate,
+      vehicleType: 'Tanker',
+      category: 'OWNED',
+      capacityTonnage: 28.0
+    });
+
+    const fileBuffer = await wb.xlsx.writeBuffer();
+    const boundary = '----WebKitFormBoundaryPhase6AsyncImport';
+    const body = Buffer.concat([
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="async_import.xlsx"\r\nContent-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\r\n\r\n`),
+      Buffer.from(fileBuffer),
+      Buffer.from(`\r\n--${boundary}--\r\n`)
+    ]);
+
+    const res = await fetch(`${baseUrl}/master/jobs/import/vehicles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        Authorization: `Bearer ${userAToken}`
+      },
+      body
+    });
+
+    const data = await res.json();
+    assert.equal(res.status, 201);
+    assert.equal(data.success, true);
+    assert.ok(data.data.job._id, 'Must return job ID');
+    assert.equal(data.data.job.jobType, 'IMPORT');
+    assert.equal(data.data.job.status, 'COMPLETED');
+    assert.ok(data.data.job.batchId, 'Must return staged batch ID');
+
+    // Query job status via GET /master/jobs/:id
+    const resGet = await fetch(`${baseUrl}/master/jobs/${data.data.job._id}`, {
+      headers: { Authorization: `Bearer ${userAToken}` }
+    });
+    const fetched = await resGet.json();
+    assert.equal(resGet.status, 200);
+    assert.equal(fetched.data.jobType, 'IMPORT');
+    assert.equal(fetched.data.status, 'COMPLETED');
+    assert.equal(fetched.data.validCount, 1);
+  });
+
 });
