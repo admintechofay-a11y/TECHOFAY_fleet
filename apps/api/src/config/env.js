@@ -13,7 +13,7 @@ const config = {
   env: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '5000', 10),
   host: process.env.HOST || '0.0.0.0',
-  mongoUri: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/fleet_transport_dev',
+  mongoUri: process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/fleet_transport_dev',
   jwtSecret: process.env.JWT_SECRET || 'dev_jwt_secret_min_32_characters_for_transport_platform',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '15m',
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || 'dev_refresh_secret_min_32_characters_transport',

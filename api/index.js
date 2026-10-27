@@ -11,6 +11,12 @@ module.exports = async (req, res) => {
     if (!db.isConnected()) {
       await db.connectDatabase();
     }
+
+    // Normalize URL path if Vercel serverless rewrite strips /api
+    if (req.url && !req.url.startsWith('/api') && req.url.startsWith('/v1')) {
+      req.url = `/api${req.url}`;
+    }
+
     return app(req, res);
   } catch (error) {
     console.error('[VERCEL-SERVERLESS] Database connection or runtime failure:', error);
