@@ -10,7 +10,13 @@
  * - Asynchronous/trackable ExportJob generation with 24h expiration
  */
 
-const ExcelJS = require('exceljs');
+let ExcelJS = null;
+function getExcelJS() {
+  if (!ExcelJS) {
+    ExcelJS = require('exceljs');
+  }
+  return ExcelJS;
+}
 const mongoose = require('mongoose');
 const CustomerParty = require('../modules/customers/models/CustomerParty');
 const Location = require('../modules/locations/models/Location');
@@ -69,7 +75,7 @@ class MasterImportExportService {
    * 1. Generate downloadable Excel Template with instructions & sample data
    */
   async generateTemplate(entityType) {
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new (getExcelJS().Workbook)();
     workbook.creator = 'Technofay Fleet Platform';
     workbook.created = new Date();
 
@@ -270,7 +276,7 @@ class MasterImportExportService {
       throw new AppError('The uploaded file is empty or missing.', 400);
     }
 
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new (getExcelJS().Workbook)();
     let isLoaded = false;
 
     // 1. Try loading as XLSX
@@ -1133,7 +1139,7 @@ class MasterImportExportService {
     }
 
     // Build ExcelJS workbook with styling
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new (getExcelJS().Workbook)();
     workbook.creator = 'Technofay Fleet Platform';
     const worksheet = workbook.addWorksheet(entityType.toUpperCase());
     worksheet.columns = columns;

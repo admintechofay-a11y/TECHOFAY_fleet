@@ -11,7 +11,13 @@
  * Uses PDFKit with precision vector layouts, simulated barcodes, and Indian logistics formatting.
  */
 
-const PDFDocument = require('pdfkit');
+let PDFDocument = null;
+function getPDFDocument() {
+  if (!PDFDocument) {
+    PDFDocument = require('pdfkit');
+  }
+  return PDFDocument;
+}
 
 class PdfService {
   /**
@@ -197,7 +203,7 @@ class PdfService {
   async generateLrPdf(lr, company, options = {}) {
     const copy = (options.copy || 'ORIGINAL').toUpperCase();
     return new Promise((resolve, reject) => {
-      const doc = new PDFDocument({ margin: 40, size: 'A4' });
+      const doc = new (getPDFDocument())({ margin: 40, size: 'A4' });
       const buffers = [];
 
       doc.on('data', buffers.push.bind(buffers));
@@ -326,7 +332,7 @@ class PdfService {
   async generateBiltyPdf(bilty, company, options = {}) {
     const copy = (options.copy || 'ORIGINAL').toUpperCase();
     return new Promise((resolve, reject) => {
-      const doc = new PDFDocument({ margin: 40, size: 'A4' });
+      const doc = new (getPDFDocument())({ margin: 40, size: 'A4' });
       const buffers = [];
 
       doc.on('data', buffers.push.bind(buffers));
@@ -430,7 +436,7 @@ class PdfService {
   async generateLoadingSlipPdf(load, company, options = {}) {
     const copy = (options.copy || 'ORIGINAL').toUpperCase();
     return new Promise((resolve, reject) => {
-      const doc = new PDFDocument({ margin: 40, size: 'A4' });
+      const doc = new (getPDFDocument())({ margin: 40, size: 'A4' });
       const buffers = [];
 
       doc.on('data', buffers.push.bind(buffers));
@@ -506,7 +512,7 @@ class PdfService {
   async generateTripSheetPdf(trip, company, options = {}) {
     const copy = (options.copy || 'ORIGINAL').toUpperCase();
     return new Promise((resolve, reject) => {
-      const doc = new PDFDocument({ margin: 40, size: 'A4' });
+      const doc = new (getPDFDocument())({ margin: 40, size: 'A4' });
       const buffers = [];
 
       doc.on('data', buffers.push.bind(buffers));
@@ -600,7 +606,7 @@ class PdfService {
   async generateSettlementPdf(trip, company, options = {}) {
     const copy = (options.copy || 'ORIGINAL').toUpperCase();
     return new Promise((resolve, reject) => {
-      const doc = new PDFDocument({ margin: 40, size: 'A4' });
+      const doc = new (getPDFDocument())({ margin: 40, size: 'A4' });
       const buffers = [];
 
       doc.on('data', buffers.push.bind(buffers));
@@ -697,7 +703,7 @@ class PdfService {
   async generateMaintenancePdf(maintenance, company, options = {}) {
     const copy = (options.copy || 'ORIGINAL').toUpperCase();
     return new Promise((resolve, reject) => {
-      const doc = new PDFDocument({ margin: 40, size: 'A4' });
+      const doc = new (getPDFDocument())({ margin: 40, size: 'A4' });
       const buffers = [];
 
       doc.on('data', buffers.push.bind(buffers));

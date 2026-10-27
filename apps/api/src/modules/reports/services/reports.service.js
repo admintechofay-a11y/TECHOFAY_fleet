@@ -4,7 +4,13 @@
  * and high-fidelity streaming Excel/CSV exports with formula sanitization.
  */
 
-const ExcelJS = require('exceljs');
+let ExcelJS = null;
+function getExcelJS() {
+  if (!ExcelJS) {
+    ExcelJS = require('exceljs');
+  }
+  return ExcelJS;
+}
 const mongoose = require('mongoose');
 const Load = require('../../loads/models/Load');
 const Trip = require('../../trips/models/Trip');
@@ -494,7 +500,7 @@ class ReportsService {
    * 5. High-Fidelity Excel / CSV Export Builder
    */
   static async exportReport(companyId, reportType, filters = {}, format = 'xlsx') {
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new (getExcelJS().Workbook)();
     workbook.creator = 'Technofay Fleet OS';
     workbook.created = new Date();
 

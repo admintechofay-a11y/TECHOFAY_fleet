@@ -233,7 +233,7 @@ app.get('/login.html', (req, res) => {
 app.use('/api/', generalRateLimiter);
 
 // 8. Health, Readiness & SEO Probes
-app.get('/api/v1/health', (req, res) => {
+app.get(['/api/v1/health', '/v1/health', '/health'], (req, res) => {
   res.status(200).json({
     success: true,
     statusCode: 200,
@@ -247,7 +247,7 @@ app.get('/api/v1/health', (req, res) => {
   });
 });
 
-app.get('/api/v1/ready', (req, res) => {
+app.get(['/api/v1/ready', '/v1/ready', '/ready'], (req, res) => {
   const isDbReady = db.isConnected();
   if (!isDbReady) {
     return res.status(503).json({
