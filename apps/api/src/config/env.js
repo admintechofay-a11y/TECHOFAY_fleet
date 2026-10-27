@@ -43,23 +43,36 @@ const config = {
       const defaultRefresh = 'dev_refresh_secret_min_32_characters_transport';
       const defaultCookie = 'dev_cookie_secret_key_fleet_transport';
 
-      if (!process.env.JWT_SECRET || process.env.JWT_SECRET === defaultJwt || process.env.JWT_SECRET.length < 32) {
-        if (process.env.VERCEL) {
+      const secret = this.jwtSecret || process.env.JWT_SECRET;
+      if (!secret || secret === defaultJwt || secret.length < 32) {
+        if (process.env.VERCEL || process.env.SERVERLESS) {
           console.warn('[SECURITY] Using secure serverless fallback for JWT_SECRET.');
+          this.jwtSecret = serverlessFallbackSecret;
+          process.env.JWT_SECRET = serverlessFallbackSecret;
         } else {
           throw new Error('[FATAL] Production startup rejected: Insecure or missing JWT_SECRET (must be >= 32 characters and not development default).');
         }
       }
-      if (!process.env.JWT_REFRESH_SECRET || process.env.JWT_REFRESH_SECRET === defaultRefresh || process.env.JWT_REFRESH_SECRET.length < 32) {
-        if (process.env.VERCEL) {
+
+      const refresh = this.jwtRefreshSecret || process.env.JWT_REFRESH_SECRET;
+      if (!refresh || refresh === defaultRefresh || refresh.length < 32) {
+        if (process.env.VERCEL || process.env.SERVERLESS) {
           console.warn('[SECURITY] Using secure serverless fallback for JWT_REFRESH_SECRET.');
+          const rSec = crypto.createHash('sha256').update(serverlessFallbackSecret + '_refresh').digest('hex');
+          this.jwtRefreshSecret = rSec;
+          process.env.JWT_REFRESH_SECRET = rSec;
         } else {
           throw new Error('[FATAL] Production startup rejected: Insecure or missing JWT_REFRESH_SECRET (must be >= 32 characters and not development default).');
         }
       }
-      if (!process.env.COOKIE_SECRET || process.env.COOKIE_SECRET === defaultCookie || process.env.COOKIE_SECRET.length < 32) {
-        if (process.env.VERCEL) {
+
+      const cookie = this.cookieSecret || process.env.COOKIE_SECRET;
+      if (!cookie || cookie === defaultCookie || cookie.length < 32) {
+        if (process.env.VERCEL || process.env.SERVERLESS) {
           console.warn('[SECURITY] Using secure serverless fallback for COOKIE_SECRET.');
+          const cSec = crypto.createHash('sha256').update(serverlessFallbackSecret + '_cookie').digest('hex');
+          this.cookieSecret = cSec;
+          process.env.COOKIE_SECRET = cSec;
         } else {
           throw new Error('[FATAL] Production startup rejected: Insecure or missing COOKIE_SECRET (must be >= 32 characters and not development default).');
         }
