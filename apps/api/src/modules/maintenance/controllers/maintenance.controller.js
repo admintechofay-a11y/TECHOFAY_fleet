@@ -6,7 +6,7 @@ const VehicleMaintenance = require('../models/VehicleMaintenance');
 const Vehicle = require('../../vehicles/models/Vehicle');
 const sequenceService = require('../../sequences/services/sequence.service');
 const auditLogService = require('../../audit/services/auditLog.service');
-const { VehicleStatus, MaintenanceStatus, SystemModule, AuditAction } = require('@fleet/shared');
+const { VehicleStatus, MaintenanceStatus, SystemModule, AuditAction } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 const pdfService = require('../../../services/pdf.service');
 

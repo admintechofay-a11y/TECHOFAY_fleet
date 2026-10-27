@@ -2,7 +2,7 @@
  * Role-Based Access Control (RBAC) Middleware
  */
 
-const { UserRole } = require('@fleet/shared');
+const { UserRole } = require('../shared');
 const { AppError } = require('./errorHandler');
 
 /**

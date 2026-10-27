@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { NotificationCategory, NotificationSeverity } = require('@fleet/shared');
+const { NotificationCategory, NotificationSeverity } = require('../../../shared');
 
 const inAppNotificationSchema = new Schema(
   {

@@ -6,7 +6,7 @@
 const Company = require('../models/Company');
 const Role = require('../models/Role');
 const User = require('../models/User');
-const { UserRole, SystemModule, ActionPermission } = require('@fleet/shared');
+const { UserRole, SystemModule, ActionPermission } = require('../../../shared');
 
 // Default permission matrix definition based on docs/ROLE_PERMISSION_MATRIX.md
 const SYSTEM_ROLES_DEFINITIONS = [

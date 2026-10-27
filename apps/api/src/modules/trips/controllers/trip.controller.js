@@ -24,7 +24,7 @@ const {
   VehicleStatus,
   DriverStatus,
   LoadStatus
-} = require('@fleet/shared');
+} = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class TripController {

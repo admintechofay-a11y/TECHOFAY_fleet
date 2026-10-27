@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { LocationType } = require('@fleet/shared');
+const { LocationType } = require('../../../shared');
 
 const locationSchema = new Schema(
   {

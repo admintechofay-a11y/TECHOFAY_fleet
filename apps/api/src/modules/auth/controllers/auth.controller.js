@@ -9,7 +9,7 @@ const Company = require('../models/Company');
 const BootstrapService = require('../services/bootstrap.service');
 const TokenService = require('../services/token.service');
 const AuditLogService = require('../../audit/services/auditLog.service');
-const { SystemModule, AuditAction } = require('@fleet/shared');
+const { SystemModule, AuditAction } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class AuthController {

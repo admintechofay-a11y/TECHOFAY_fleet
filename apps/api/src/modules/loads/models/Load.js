@@ -6,7 +6,7 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { LoadStatus, StopType, StopStatus } = require('@fleet/shared');
+const { LoadStatus, StopType, StopStatus } = require('../../../shared');
 
 const loadStopSchema = new Schema(
   {

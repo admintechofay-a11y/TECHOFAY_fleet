@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { MaintenanceStatus, MaintenanceServiceType } = require('@fleet/shared');
+const { MaintenanceStatus, MaintenanceServiceType } = require('../../../shared');
 
 const vehicleMaintenanceSchema = new Schema(
   {

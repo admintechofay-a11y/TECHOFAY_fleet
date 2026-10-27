@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { LrStatus } = require('@fleet/shared');
+const { LrStatus } = require('../../../shared');
 
 const lrNumberSchema = new Schema(
   {

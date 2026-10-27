@@ -6,7 +6,7 @@ const express = require('express');
 const AuditLogService = require('../services/auditLog.service');
 const { authenticate, enforceTenantScope } = require('../../../middleware/auth.middleware');
 const { requirePermission } = require('../../../middleware/rbac.middleware');
-const { SystemModule } = require('@fleet/shared');
+const { SystemModule } = require('../../../shared');
 
 const router = express.Router();
 

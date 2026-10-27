@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { PodStatus } = require('@fleet/shared');
+const { PodStatus } = require('../../../shared');
 
 const proofOfDeliverySchema = new Schema(
   {

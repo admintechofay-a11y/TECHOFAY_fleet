@@ -6,7 +6,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { WhatsAppProvider } = require('@fleet/shared');
+const { WhatsAppProvider } = require('../../../shared');
 
 const whatsAppConfigSchema = new Schema(
   {

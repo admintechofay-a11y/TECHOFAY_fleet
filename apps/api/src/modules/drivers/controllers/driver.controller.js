@@ -7,7 +7,7 @@ const Driver = require('../models/Driver');
 const DriverDocument = require('../models/DriverDocument');
 const storageService = require('../../../services/storage.service');
 const auditLogService = require('../../audit/services/auditLog.service');
-const { AuditAction, DriverStatus, DriverDocumentType } = require('@fleet/shared');
+const { AuditAction, DriverStatus, DriverDocumentType } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class DriverController {

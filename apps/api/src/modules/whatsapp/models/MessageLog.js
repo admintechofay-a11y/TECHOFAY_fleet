@@ -11,7 +11,7 @@ const {
   WhatsAppMessageType,
   WhatsAppMessageStatus,
   WhatsAppTemplateType
-} = require('@fleet/shared');
+} = require('../../../shared');
 
 const messageLogSchema = new Schema(
   {

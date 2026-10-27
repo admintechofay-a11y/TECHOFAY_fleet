@@ -3,7 +3,7 @@
  * Validates allowed transitions for the 8-stage trip execution lifecycle.
  */
 
-const { TripStatus } = require('@fleet/shared');
+const { TripStatus } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 const ALLOWED_TRIP_TRANSITIONS = {

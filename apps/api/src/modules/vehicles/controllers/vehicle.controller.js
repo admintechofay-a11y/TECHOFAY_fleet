@@ -7,7 +7,7 @@ const Vehicle = require('../models/Vehicle');
 const VehicleDocument = require('../models/VehicleDocument');
 const storageService = require('../../../services/storage.service');
 const auditLogService = require('../../audit/services/auditLog.service');
-const { AuditAction, VehicleStatus, VehicleDocumentType } = require('@fleet/shared');
+const { AuditAction, VehicleStatus, VehicleDocumentType } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class VehicleController {

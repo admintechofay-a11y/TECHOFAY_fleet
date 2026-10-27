@@ -7,7 +7,7 @@ const express = require('express');
 const ContactController = require('../controllers/contact.controller');
 const { authenticate } = require('../../../middleware/auth.middleware');
 const { requireRole } = require('../../../middleware/rbac.middleware');
-const { UserRole } = require('@fleet/shared');
+const { UserRole } = require('../../../shared');
 
 const router = express.Router();
 

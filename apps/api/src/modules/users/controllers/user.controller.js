@@ -5,7 +5,7 @@
 const User = require('../../auth/models/User');
 const Role = require('../../auth/models/Role');
 const AuditLogService = require('../../audit/services/auditLog.service');
-const { SystemModule, AuditAction, UserRole } = require('@fleet/shared');
+const { SystemModule, AuditAction, UserRole } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class UserController {

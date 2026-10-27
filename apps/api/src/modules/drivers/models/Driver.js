@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { DriverStatus, DriverLicenseType } = require('@fleet/shared');
+const { DriverStatus, DriverLicenseType } = require('../../../shared');
 
 const driverSchema = new Schema(
   {

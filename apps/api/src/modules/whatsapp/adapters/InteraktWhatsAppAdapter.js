@@ -5,7 +5,7 @@
 
 const crypto = require('crypto');
 const IWhatsAppProvider = require('../interfaces/IWhatsAppProvider');
-const { WhatsAppMessageStatus } = require('@fleet/shared');
+const { WhatsAppMessageStatus } = require('../../../shared');
 const { TEMPLATES } = require('../services/whatsappTemplate.service');
 
 class InteraktWhatsAppAdapter extends IWhatsAppProvider {

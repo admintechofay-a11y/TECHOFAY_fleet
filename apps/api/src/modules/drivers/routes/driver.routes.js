@@ -7,7 +7,7 @@ const multer = require('multer');
 const driverController = require('../controllers/driver.controller');
 const { authenticate, enforceTenantScope } = require('../../../middleware/auth.middleware');
 const { requirePermission } = require('../../../middleware/rbac.middleware');
-const { SystemModule, ActionPermission } = require('@fleet/shared');
+const { SystemModule, ActionPermission } = require('../../../shared');
 
 const router = express.Router();
 const upload = multer({

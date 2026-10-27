@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const masterImportExportService = require('../../../services/masterImportExport.service');
 const ExportJob = require('../models/ExportJob');
 const auditLogService = require('../../audit/services/auditLog.service');
-const { SystemModule, AuditAction } = require('@fleet/shared');
+const { SystemModule, AuditAction } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class MasterImportExportController {

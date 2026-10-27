@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { PartyType } = require('@fleet/shared');
+const { PartyType } = require('../../../shared');
 
 const customerPartySchema = new Schema(
   {

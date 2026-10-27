@@ -9,7 +9,7 @@ const Load = require('../../loads/models/Load');
 const sequenceService = require('../../sequences/services/sequence.service');
 const auditLogService = require('../../audit/services/auditLog.service');
 const pdfService = require('../../../services/pdf.service');
-const { AuditAction, BiltyStatus, PaymentTerms, SystemModule } = require('@fleet/shared');
+const { AuditAction, BiltyStatus, PaymentTerms, SystemModule } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class BiltyController {

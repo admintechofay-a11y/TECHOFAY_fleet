@@ -13,7 +13,7 @@ const loadStatusService = require('../services/loadStatus.service');
 const auditLogService = require('../../audit/services/auditLog.service');
 const pdfService = require('../../../services/pdf.service');
 const eventBus = require('../../../services/eventBus.service');
-const { AuditAction, LoadStatus, SystemModule } = require('@fleet/shared');
+const { AuditAction, LoadStatus, SystemModule } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class LoadController {

@@ -4,7 +4,7 @@
 
 const CustomerParty = require('../models/CustomerParty');
 const auditLogService = require('../../audit/services/auditLog.service');
-const { AuditAction } = require('@fleet/shared');
+const { AuditAction } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class CustomerController {

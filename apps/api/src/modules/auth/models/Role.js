@@ -4,7 +4,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { UserRole, SystemModule, ActionPermission } = require('@fleet/shared');
+const { UserRole, SystemModule, ActionPermission } = require('../../../shared');
 
 const permissionRuleSchema = new Schema(
   {

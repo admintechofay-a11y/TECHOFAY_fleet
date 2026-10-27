@@ -20,7 +20,7 @@ const {
   WhatsAppMessageType,
   WhatsAppMessageStatus,
   WhatsAppTemplateType
-} = require('@fleet/shared');
+} = require('../../../shared');
 const eventBusService = require('../../../services/eventBus.service');
 const { AppError } = require('../../../middleware/errorHandler');
 

@@ -9,7 +9,7 @@ const VehicleDocument = require('../../vehicles/models/VehicleDocument');
 const Driver = require('../../drivers/models/Driver');
 const DriverDocument = require('../../drivers/models/DriverDocument');
 const InAppNotification = require('../models/InAppNotification');
-const { ComplianceStatus, NotificationCategory, NotificationSeverity } = require('@fleet/shared');
+const { ComplianceStatus, NotificationCategory, NotificationSeverity } = require('../../../shared');
 
 // Mandatory regulatory documents required for commercial transport vehicles
 const MANDATORY_VEHICLE_DOCS = ['RC', 'INSURANCE', 'PUC', 'FITNESS'];

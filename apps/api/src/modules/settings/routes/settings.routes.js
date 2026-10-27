@@ -7,7 +7,7 @@ const express = require('express');
 const SettingsController = require('../controllers/settings.controller');
 const { authenticate, enforceTenantScope } = require('../../../middleware/auth.middleware');
 const { requirePermission } = require('../../../middleware/rbac.middleware');
-const { SystemModule } = require('@fleet/shared');
+const { SystemModule } = require('../../../shared');
 
 const router = express.Router();
 

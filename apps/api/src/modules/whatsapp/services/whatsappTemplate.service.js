@@ -3,7 +3,7 @@
  * Formats, renders, and validates pre-approved business notification templates.
  */
 
-const { WhatsAppTemplateType } = require('@fleet/shared');
+const { WhatsAppTemplateType } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 /**

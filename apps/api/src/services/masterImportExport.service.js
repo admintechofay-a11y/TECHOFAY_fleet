@@ -36,7 +36,7 @@ const {
   StopType,
   StopStatus,
   LoadStatus
-} = require('@fleet/shared');
+} = require('../shared');
 const { AppError } = require('../middleware/errorHandler');
 
 // Formula injection defense for CSV/Excel cells

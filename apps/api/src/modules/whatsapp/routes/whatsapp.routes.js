@@ -8,7 +8,7 @@ const whatsappController = require('../controllers/whatsapp.controller');
 const { authenticate, enforceTenantScope } = require('../../../middleware/auth.middleware');
 const { requirePermission } = require('../../../middleware/rbac.middleware');
 const { whatsappRateLimiter } = require('../../../middleware/rateLimiter');
-const { SystemModule, ActionPermission } = require('@fleet/shared');
+const { SystemModule, ActionPermission } = require('../../../shared');
 
 // 1. Inbound Public Webhooks (Secured by HMAC Signature Header & Replay Defense)
 router.post('/webhook', (req, res, next) => whatsappController.handleWebhook(req, res, next));

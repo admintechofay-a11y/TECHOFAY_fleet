@@ -6,7 +6,7 @@
 
 const crypto = require('crypto');
 const IWhatsAppProvider = require('../interfaces/IWhatsAppProvider');
-const { WhatsAppMessageStatus } = require('@fleet/shared');
+const { WhatsAppMessageStatus } = require('../../../shared');
 
 class MockWhatsAppAdapter extends IWhatsAppProvider {
   constructor(config = {}) {

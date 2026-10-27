@@ -7,7 +7,7 @@
 const MockWhatsAppAdapter = require('./MockWhatsAppAdapter');
 const InteraktWhatsAppAdapter = require('./InteraktWhatsAppAdapter');
 const TwilioWhatsAppAdapter = require('./TwilioWhatsAppAdapter');
-const { WhatsAppProvider } = require('@fleet/shared');
+const { WhatsAppProvider } = require('../../../shared');
 
 class WhatsAppAdapterFactory {
   /**

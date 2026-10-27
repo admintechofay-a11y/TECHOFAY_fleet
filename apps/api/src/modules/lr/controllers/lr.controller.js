@@ -13,7 +13,7 @@ const sequenceService = require('../../sequences/services/sequence.service');
 const loadStatusService = require('../../loads/services/loadStatus.service');
 const auditLogService = require('../../audit/services/auditLog.service');
 const pdfService = require('../../../services/pdf.service');
-const { AuditAction, LrStatus, SystemModule } = require('@fleet/shared');
+const { AuditAction, LrStatus, SystemModule } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class LrController {

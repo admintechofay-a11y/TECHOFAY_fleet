@@ -4,7 +4,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { SystemModule, AuditAction } = require('@fleet/shared');
+const { SystemModule, AuditAction } = require('../../../shared');
 
 const auditLogSchema = new Schema(
   {

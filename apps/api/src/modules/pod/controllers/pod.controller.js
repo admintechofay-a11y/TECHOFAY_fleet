@@ -13,7 +13,7 @@ const sequenceService = require('../../sequences/services/sequence.service');
 const storageService = require('../../../services/storage.service');
 const auditLogService = require('../../audit/services/auditLog.service');
 const eventBus = require('../../../services/eventBus.service');
-const { AuditAction, PodStatus, SystemModule } = require('@fleet/shared');
+const { AuditAction, PodStatus, SystemModule } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 class PodController {

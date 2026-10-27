@@ -3,7 +3,7 @@
  * Validates allowed status transitions and preserves immutable status history.
  */
 
-const { LoadStatus, LrStatus } = require('@fleet/shared');
+const { LoadStatus, LrStatus } = require('../../../shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
 const ALLOWED_LOAD_TRANSITIONS = {
