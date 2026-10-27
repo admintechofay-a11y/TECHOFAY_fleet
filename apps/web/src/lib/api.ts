@@ -15,10 +15,10 @@ export function getAccessToken() {
 const RAW_API_URL = (import.meta.env?.VITE_API_BASE_URL || import.meta.env?.VITE_API_URL || '').trim();
 const API_BASE_URL = RAW_API_URL ? `${RAW_API_URL.replace(/\/+$/, '')}/api/v1` : '/api/v1';
 
-export async function apiRequest(endpoint, options = {}) {
+export async function apiRequest(endpoint: string, options: RequestInit = {}): Promise<any> {
   const url = `${API_BASE_URL}${endpoint}`;
-  const headers = {
-    ...(options.headers || {})
+  const headers: Record<string, string> = {
+    ...((options.headers as Record<string, string>) || {})
   };
 
   // Only set application/json if body is not FormData
@@ -30,10 +30,10 @@ export async function apiRequest(endpoint, options = {}) {
     headers['Authorization'] = `Bearer ${memoryAccessToken}`;
   }
 
-  const fetchConfig = {
+  const fetchConfig: RequestInit = {
     ...options,
     headers,
-    credentials: 'include' // Sends cookies
+    credentials: 'include' as RequestCredentials // Sends cookies
   };
 
   let response = await fetch(url, fetchConfig);
@@ -44,7 +44,7 @@ export async function apiRequest(endpoint, options = {}) {
       const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
+        credentials: 'include' as RequestCredentials
       });
 
       if (refreshRes.ok) {
@@ -70,7 +70,7 @@ export async function apiRequest(endpoint, options = {}) {
 
   if (!response.ok) {
     const errorMsg = (data && data.message) || `HTTP ${response.status}: Request failed`;
-    const err = new Error(errorMsg);
+    const err: any = new Error(errorMsg);
     err.status = response.status;
     err.data = data;
     throw err;
@@ -79,14 +79,14 @@ export async function apiRequest(endpoint, options = {}) {
   return data;
 }
 
-export async function apiDownload(endpoint, fallbackFilename = 'download.xlsx') {
+export async function apiDownload(endpoint: string, fallbackFilename = 'download.xlsx'): Promise<void> {
   const url = `${API_BASE_URL}${endpoint}`;
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (memoryAccessToken) {
     headers['Authorization'] = `Bearer ${memoryAccessToken}`;
   }
 
-  const response = await fetch(url, { headers, credentials: 'include' });
+  const response = await fetch(url, { headers, credentials: 'include' as RequestCredentials });
   if (!response.ok) {
     let errorMsg = `Failed to download file (HTTP ${response.status})`;
     try {
@@ -116,14 +116,14 @@ export async function apiDownload(endpoint, fallbackFilename = 'download.xlsx') 
   window.URL.revokeObjectURL(blobUrl);
 }
 
-export async function apiFetchBlob(endpoint, fallbackFilename = 'document.pdf') {
+export async function apiFetchBlob(endpoint: string, fallbackFilename = 'document.pdf'): Promise<{ blob: Blob; filename: string }> {
   const url = `${API_BASE_URL}${endpoint}`;
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (memoryAccessToken) {
     headers['Authorization'] = `Bearer ${memoryAccessToken}`;
   }
 
-  const response = await fetch(url, { headers, credentials: 'include' });
+  const response = await fetch(url, { headers, credentials: 'include' as RequestCredentials });
   if (!response.ok) {
     let errorMsg = `Failed to load document (HTTP ${response.status})`;
     try {
