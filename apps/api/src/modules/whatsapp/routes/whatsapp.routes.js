@@ -7,10 +7,12 @@ const router = express.Router();
 const whatsappController = require('../controllers/whatsapp.controller');
 const { authenticate, enforceTenantScope } = require('../../../middleware/auth.middleware');
 const { requirePermission } = require('../../../middleware/rbac.middleware');
+const { whatsappRateLimiter } = require('../../../middleware/rateLimiter');
 const { SystemModule, ActionPermission } = require('@fleet/shared');
 
-// 1. Inbound Public Webhook (Secured by HMAC Signature Header)
-router.post('/webhook', express.json(), (req, res, next) => whatsappController.handleWebhook(req, res, next));
+// 1. Inbound Public Webhooks (Secured by HMAC Signature Header & Replay Defense)
+router.post('/webhook', (req, res, next) => whatsappController.handleWebhook(req, res, next));
+router.post('/webhook/:provider', (req, res, next) => whatsappController.handleWebhook(req, res, next));
 
 // All subsequent routes require authenticated tenant user
 router.use(authenticate);
@@ -36,21 +38,31 @@ router.put(
   (req, res, next) => whatsappController.updateConfig(req, res, next)
 );
 
-// 4. Send Operations
+// 4. Send Operations (Protected by Outbound WhatsApp Rate Limiter)
 router.post(
   '/send',
+  whatsappRateLimiter,
   requirePermission(SystemModule.WHATSAPP, ActionPermission.ADD),
   (req, res, next) => whatsappController.sendTemplateMessage(req, res, next)
 );
 
 router.post(
+  '/send-batch',
+  whatsappRateLimiter,
+  requirePermission(SystemModule.WHATSAPP, ActionPermission.ADD),
+  (req, res, next) => whatsappController.sendBatchMessages(req, res, next)
+);
+
+router.post(
   '/send-document',
+  whatsappRateLimiter,
   requirePermission(SystemModule.WHATSAPP, ActionPermission.ADD),
   (req, res, next) => whatsappController.sendDocumentMessage(req, res, next)
 );
 
 router.post(
   '/send-custom',
+  whatsappRateLimiter,
   requirePermission(SystemModule.WHATSAPP, ActionPermission.ADD),
   (req, res, next) => whatsappController.sendCustomTextMessage(req, res, next)
 );
@@ -70,6 +82,7 @@ router.get(
 
 router.post(
   '/retry/:id',
+  whatsappRateLimiter,
   requirePermission(SystemModule.WHATSAPP, ActionPermission.ADD),
   (req, res, next) => whatsappController.retryMessage(req, res, next)
 );

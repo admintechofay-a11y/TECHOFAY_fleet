@@ -99,9 +99,20 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID', 'X-Requested-With']
 }));
 
-// 3. Body Parsing & Cookies
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// 3. Body Parsing & Cookies (preserving raw body for webhook HMAC signature checks)
+app.use(express.json({
+  limit: '10mb',
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
+app.use(express.urlencoded({
+  extended: true,
+  limit: '10mb',
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
 app.use(cookieParser(config.cookieSecret));
 
 // 4. Request Correlation ID

@@ -20,6 +20,7 @@ const LrNumber = require('../src/modules/lr/models/LrNumber');
 const MessageLog = require('../src/modules/whatsapp/models/MessageLog');
 const WhatsAppConfig = require('../src/modules/whatsapp/models/WhatsAppConfig');
 const AuditLog = require('../src/modules/audit/models/AuditLog');
+const eventBusService = require('../src/services/eventBus.service');
 
 let server;
 let baseUrl;
@@ -551,6 +552,241 @@ describe('Phase 7 Integration Test Suite: WhatsApp Messaging, Queue, Webhooks & 
     assert.equal(resUpdate.status, 200);
     const updatedData = await resUpdate.json();
     assert.equal(updatedData.data.senderNumber, '+919988776655');
+  });
+
+  // -------------------------------------------------------------
+  // Test 9: Outbound Batch Queue Dispatching
+  // -------------------------------------------------------------
+  test('9. Outbound Batch Dispatching: POST /whatsapp/send-batch queues and dispatches multiple messages returning aggregate metrics', async () => {
+    const batchPayload = {
+      messages: [
+        {
+          toPhone: '+919876543210',
+          recipientName: 'Consignor Contact',
+          templateName: 'LOAD_CREATED',
+          variables: { loadNumber: 'LD-BATCH-01', originCity: 'Delhi', destCity: 'Jaipur', weightMt: '18' }
+        },
+        {
+          toPhone: '+919876543211',
+          recipientName: 'Consignee Contact',
+          templateName: 'IN_TRANSIT',
+          variables: { loadNumber: 'LD-BATCH-01', destCity: 'Jaipur' }
+        },
+        {
+          toPhone: 'invalid-number',
+          recipientName: 'Faulty Phone User',
+          templateName: 'LOAD_CREATED',
+          variables: { loadNumber: 'LD-BATCH-02', originCity: 'Delhi', destCity: 'Agra', weightMt: '10' }
+        }
+      ]
+    };
+
+    const resBatch = await fetch(`${baseUrl}/whatsapp/send-batch`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userAToken}`
+      },
+      body: JSON.stringify(batchPayload)
+    });
+
+    assert.equal(resBatch.status, 200);
+    const batchData = await resBatch.json();
+    assert.equal(batchData.success, true);
+    assert.equal(batchData.data.total, 3);
+    assert.equal(batchData.data.successful, 2);
+    assert.equal(batchData.data.failed, 1);
+    assert.equal(batchData.data.results.length, 3);
+    assert.equal(batchData.data.results[2].success, false);
+    assert.match(batchData.data.results[2].error, /Invalid phone number/i);
+  });
+
+  // -------------------------------------------------------------
+  // Test 10: Webhook Replay Attack Defense
+  // -------------------------------------------------------------
+  test('10. Webhook Replay Defense: Suppresses duplicate webhook events when identical cryptographic signatures are submitted', async () => {
+    // 1. Create a fresh test message
+    const msg = await MessageLog.create({
+      companyId: companyA._id,
+      provider: 'MOCK',
+      recipientPhone: '+919876543222',
+      templateName: 'LOAD_CREATED',
+      messageType: 'TEMPLATE',
+      renderedMessage: 'Replay defense test',
+      providerMessageId: `mock_replay_test_${Date.now()}`,
+      status: 'DISPATCHED'
+    });
+
+    const webhookPayload = JSON.stringify({
+      providerMessageId: msg.providerMessageId,
+      status: 'delivered',
+      timestamp: new Date().toISOString()
+    });
+
+    const sig = crypto.createHmac('sha256', testWebhookSecret).update(webhookPayload).digest('hex');
+
+    // First delivery -> processed: true
+    const resFirst = await fetch(`${baseUrl}/whatsapp/webhook`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Hub-Signature-256': `sha256=${sig}`
+      },
+      body: webhookPayload
+    });
+    assert.equal(resFirst.status, 200);
+    const dataFirst = await resFirst.json();
+    assert.equal(dataFirst.data.acknowledged, true);
+    assert.equal(dataFirst.data.processed, true);
+
+    // Replay with identical signature -> suppressed by replay cache
+    const resReplay = await fetch(`${baseUrl}/whatsapp/webhook`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Hub-Signature-256': `sha256=${sig}`
+      },
+      body: webhookPayload
+    });
+    assert.equal(resReplay.status, 200);
+    const dataReplay = await resReplay.json();
+    assert.equal(dataReplay.data.acknowledged, true);
+    assert.equal(dataReplay.data.processed, false);
+    assert.match(dataReplay.data.reason, /Duplicate webhook signature suppressed/i);
+  });
+
+  // -------------------------------------------------------------
+  // Test 11: Real-time Event Bus Push on Webhook Status Update
+  // -------------------------------------------------------------
+  test('11. Real-time Event Bus Push: Emits SSE event WHATSAPP_STATUS_UPDATED when status progresses via webhook', async () => {
+    const sseMsg = await MessageLog.create({
+      companyId: companyA._id,
+      provider: 'MOCK',
+      recipientPhone: '+919876543233',
+      templateName: 'LOAD_CREATED',
+      messageType: 'TEMPLATE',
+      renderedMessage: 'Realtime SSE event test',
+      providerMessageId: `mock_sse_test_${Date.now()}`,
+      status: 'DISPATCHED'
+    });
+
+    let receivedEvent = null;
+    const unsubscribe = eventBusService.subscribe(companyA._id.toString(), (event) => {
+      if (event.eventType === 'WHATSAPP_STATUS_UPDATED' && event.payload?.providerMessageId === sseMsg.providerMessageId) {
+        receivedEvent = event;
+      }
+    });
+
+    try {
+      const webhookPayload = JSON.stringify({
+        providerMessageId: sseMsg.providerMessageId,
+        status: 'delivered',
+        timestamp: new Date().toISOString()
+      });
+
+      const sig = crypto.createHmac('sha256', testWebhookSecret).update(webhookPayload).digest('hex');
+
+      const res = await fetch(`${baseUrl}/whatsapp/webhook`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Hub-Signature-256': `sha256=${sig}`
+        },
+        body: webhookPayload
+      });
+      assert.equal(res.status, 200);
+
+      // Verify that event was emitted through the SSE event bus
+      assert.ok(receivedEvent, 'Event bus must receive WHATSAPP_STATUS_UPDATED event');
+      assert.equal(receivedEvent.payload.status, 'DELIVERED');
+      assert.equal(receivedEvent.payload.providerMessageId, sseMsg.providerMessageId);
+    } finally {
+      unsubscribe();
+    }
+  });
+
+  // -------------------------------------------------------------
+  // Test 12: Dual Webhook Routes & Meta Graph API Payload Format
+  // -------------------------------------------------------------
+  test('12. Dual Webhook Route & Meta Graph API Payload: Handles POST /whatsapp/webhook/:provider with nested entry[0].changes[0].value.statuses payload', async () => {
+    const metaMsg = await MessageLog.create({
+      companyId: companyA._id,
+      provider: 'MOCK',
+      recipientPhone: '+919876543244',
+      templateName: 'LOAD_CREATED',
+      messageType: 'TEMPLATE',
+      renderedMessage: 'Meta payload test',
+      providerMessageId: `wamid.HBgLMOTE5ODc2NTQzMjQ0FQIAEhgg${Date.now()}`,
+      status: 'DISPATCHED'
+    });
+
+    const metaPayload = JSON.stringify({
+      object: 'whatsapp_business_account',
+      entry: [
+        {
+          id: 'meta_waba_101',
+          changes: [
+            {
+              field: 'messages',
+              value: {
+                messaging_product: 'whatsapp',
+                statuses: [
+                  {
+                    id: metaMsg.providerMessageId,
+                    status: 'delivered',
+                    timestamp: Math.floor(Date.now() / 1000).toString()
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    });
+
+    const metaSig = crypto.createHmac('sha256', testWebhookSecret).update(metaPayload).digest('hex');
+
+    // Post to parameterized endpoint: /whatsapp/webhook/meta
+    const res = await fetch(`${baseUrl}/whatsapp/webhook/meta`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Hub-Signature-256': `sha256=${metaSig}`
+      },
+      body: metaPayload
+    });
+
+    assert.equal(res.status, 200);
+    const data = await res.json();
+    assert.equal(data.success, true);
+    assert.equal(data.data.processed, true);
+
+    const checkMsg = await MessageLog.findById(metaMsg._id);
+    assert.equal(checkMsg.status, 'DELIVERED');
+  });
+
+  // -------------------------------------------------------------
+  // Test 13: Outbound WhatsApp Rate Limiting Headers
+  // -------------------------------------------------------------
+  test('13. Outbound WhatsApp Rate Limiter: Enforces rate limiting headers X-WhatsApp-RateLimit-Limit & X-WhatsApp-RateLimit-Remaining', async () => {
+    const res = await fetch(`${baseUrl}/whatsapp/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userAToken}`
+      },
+      body: JSON.stringify({
+        toPhone: '+919876543299',
+        templateName: 'LOAD_CREATED',
+        variables: { loadNumber: 'LD-RATE-01', originCity: 'A', destCity: 'B', weightMt: '10' }
+      })
+    });
+
+    assert.equal(res.status, 201);
+    assert.ok(res.headers.has('x-whatsapp-ratelimit-limit'), 'Must include X-WhatsApp-RateLimit-Limit header');
+    assert.ok(res.headers.has('x-whatsapp-ratelimit-remaining'), 'Must include X-WhatsApp-RateLimit-Remaining header');
+    const limit = parseInt(res.headers.get('x-whatsapp-ratelimit-limit'), 10);
+    assert.equal(limit, 60);
   });
 
 });

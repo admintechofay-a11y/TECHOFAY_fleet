@@ -21,7 +21,22 @@ const {
   WhatsAppMessageStatus,
   WhatsAppTemplateType
 } = require('@fleet/shared');
+const eventBusService = require('../../../services/eventBus.service');
 const { AppError } = require('../../../middleware/errorHandler');
+
+// Replay attack defense cache (sliding window for duplicate signatures)
+const processedWebhookSignatures = new Map();
+const REPLAY_TTL_MS = 15 * 60 * 1000;
+
+const cleanupReplayInterval = setInterval(() => {
+  const now = Date.now();
+  for (const [sig, ts] of processedWebhookSignatures.entries()) {
+    if (now - ts > REPLAY_TTL_MS) {
+      processedWebhookSignatures.delete(sig);
+    }
+  }
+}, 5 * 60 * 1000);
+if (cleanupReplayInterval.unref) cleanupReplayInterval.unref();
 
 class WhatsAppService {
   /**
@@ -86,8 +101,24 @@ class WhatsAppService {
     const isProd = process.env.NODE_ENV === 'production';
     if (result.status === WhatsAppMessageStatus.DELIVERED || (!isProd && result.status === WhatsAppMessageStatus.MOCK_DELIVERED)) {
       messageLog.deliveredAt = new Date();
+      messageLog.nextRetryAllowedAt = null;
+    } else if (result.status === WhatsAppMessageStatus.FAILED) {
+      const backoffSeconds = Math.min(300, Math.pow(2, messageLog.retryCount) * 15);
+      messageLog.nextRetryAllowedAt = new Date(Date.now() + backoffSeconds * 1000);
     }
     await messageLog.save();
+
+    // Real-time SSE dispatch
+    eventBusService.publish(companyId, 'WHATSAPP_MESSAGE_SENT', {
+      messageId: messageLog._id,
+      recipientPhone: normalizedPhone,
+      recipientName,
+      status: messageLog.status,
+      templateName,
+      provider: adapter.name,
+      providerMessageId: messageLog.providerMessageId,
+      errorMessage: messageLog.errorMessage
+    });
 
     // Audit log
     await auditLogService.logAction({
@@ -179,8 +210,23 @@ class WhatsAppService {
     const isProd = process.env.NODE_ENV === 'production';
     if (result.status === WhatsAppMessageStatus.DELIVERED || (!isProd && result.status === WhatsAppMessageStatus.MOCK_DELIVERED)) {
       messageLog.deliveredAt = new Date();
+      messageLog.nextRetryAllowedAt = null;
+    } else if (result.status === WhatsAppMessageStatus.FAILED) {
+      const backoffSeconds = Math.min(300, Math.pow(2, messageLog.retryCount) * 15);
+      messageLog.nextRetryAllowedAt = new Date(Date.now() + backoffSeconds * 1000);
     }
     await messageLog.save();
+
+    eventBusService.publish(companyId, 'WHATSAPP_MESSAGE_SENT', {
+      messageId: messageLog._id,
+      recipientPhone: normalizedPhone,
+      recipientName,
+      status: messageLog.status,
+      documentType,
+      provider: adapter.name,
+      providerMessageId: messageLog.providerMessageId,
+      errorMessage: messageLog.errorMessage
+    });
 
     await auditLogService.logAction({
       companyId,
@@ -234,10 +280,26 @@ class WhatsAppService {
     messageLog.providerMessageId = result.providerMessageId;
     messageLog.errorMessage = result.error || null;
     messageLog.lastAttemptAt = new Date();
-    if (result.status === WhatsAppMessageStatus.MOCK_DELIVERED || result.status === WhatsAppMessageStatus.DELIVERED) {
+    const isProd = process.env.NODE_ENV === 'production';
+    if (result.status === WhatsAppMessageStatus.DELIVERED || (!isProd && result.status === WhatsAppMessageStatus.MOCK_DELIVERED)) {
       messageLog.deliveredAt = new Date();
+      messageLog.nextRetryAllowedAt = null;
+    } else if (result.status === WhatsAppMessageStatus.FAILED) {
+      const backoffSeconds = Math.min(300, Math.pow(2, messageLog.retryCount) * 15);
+      messageLog.nextRetryAllowedAt = new Date(Date.now() + backoffSeconds * 1000);
     }
     await messageLog.save();
+
+    eventBusService.publish(companyId, 'WHATSAPP_MESSAGE_SENT', {
+      messageId: messageLog._id,
+      recipientPhone: normalizedPhone,
+      recipientName,
+      status: messageLog.status,
+      messageType: WhatsAppMessageType.CUSTOM_TEXT,
+      provider: adapter.name,
+      providerMessageId: messageLog.providerMessageId,
+      errorMessage: messageLog.errorMessage
+    });
 
     return messageLog;
   }
@@ -245,7 +307,7 @@ class WhatsAppService {
   /**
    * 4. Retry Failed Message with Exponential Backoff Tracking
    */
-  async retryFailedMessage(messageId, companyId, userId = null, ipAddress = '') {
+  async retryFailedMessage(messageId, companyId, userId = null, ipAddress = '', force = false) {
     const messageLog = await MessageLog.findOne({ _id: messageId, companyId });
     if (!messageLog) {
       throw new AppError('Message log record not found.', 404);
@@ -257,6 +319,11 @@ class WhatsAppService {
 
     if (messageLog.retryCount >= messageLog.maxRetries) {
       throw new AppError(`Maximum retry limit of ${messageLog.maxRetries} attempts has been reached for this message.`, 400);
+    }
+
+    if (messageLog.retryCount > 0 && !force && messageLog.nextRetryAllowedAt && messageLog.nextRetryAllowedAt > new Date()) {
+      const waitSeconds = Math.ceil((messageLog.nextRetryAllowedAt.getTime() - Date.now()) / 1000);
+      throw new AppError(`Exponential backoff active. Next retry allowed in ${waitSeconds} seconds.`, 429);
     }
 
     messageLog.retryCount += 1;
@@ -292,10 +359,24 @@ class WhatsAppService {
     messageLog.status = result.status;
     messageLog.providerMessageId = result.providerMessageId || messageLog.providerMessageId;
     messageLog.errorMessage = result.error || null;
-    if (result.status === WhatsAppMessageStatus.DELIVERED || result.status === WhatsAppMessageStatus.MOCK_DELIVERED) {
+    const isProd = process.env.NODE_ENV === 'production';
+    if (result.status === WhatsAppMessageStatus.DELIVERED || (!isProd && result.status === WhatsAppMessageStatus.MOCK_DELIVERED)) {
       messageLog.deliveredAt = new Date();
+      messageLog.nextRetryAllowedAt = null;
+    } else if (result.status === WhatsAppMessageStatus.FAILED) {
+      const backoffSeconds = Math.min(300, Math.pow(2, messageLog.retryCount) * 15);
+      messageLog.nextRetryAllowedAt = new Date(Date.now() + backoffSeconds * 1000);
     }
     await messageLog.save();
+
+    eventBusService.publish(companyId, 'WHATSAPP_STATUS_UPDATED', {
+      messageId: messageLog._id,
+      providerMessageId: messageLog.providerMessageId,
+      status: messageLog.status,
+      retryCount: messageLog.retryCount,
+      recipientPhone: messageLog.recipientPhone,
+      errorMessage: messageLog.errorMessage
+    });
 
     await auditLogService.logAction({
       companyId,
@@ -314,11 +395,16 @@ class WhatsAppService {
   }
 
   /**
-   * 5. Process Inbound Webhook with HMAC Signature Verification & Idempotency
+   * 5. Process Inbound Webhook with HMAC Signature Verification, Replay Defense & Idempotency
    */
   async handleWebhook({ signature, rawBody, payload, url }) {
     if (!signature) {
       throw new AppError('Missing webhook signature header.', 401);
+    }
+
+    const cleanSig = signature.trim();
+    if (processedWebhookSignatures.has(cleanSig)) {
+      return { acknowledged: true, processed: false, reason: 'Duplicate webhook signature suppressed (replay defense).' };
     }
 
     // Identify provider message ID to locate the tenant and matching message log
@@ -328,7 +414,8 @@ class WhatsAppService {
       payload?.messageId ||
       payload?.id ||
       payload?.MessageSid ||
-      payload?.SmsSid;
+      payload?.SmsSid ||
+      payload?.entry?.[0]?.changes?.[0]?.value?.statuses?.[0]?.id;
 
     if (!providerMessageId) {
       throw new AppError('Unable to extract providerMessageId from webhook payload.', 400);
@@ -357,6 +444,9 @@ class WhatsAppService {
       throw new AppError('Invalid webhook HMAC signature.', 401);
     }
 
+    // Record valid signature in replay defense cache
+    processedWebhookSignatures.set(cleanSig, Date.now());
+
     // Parse event details
     const parsedEvent = adapter.parseWebhookEvent(payload);
 
@@ -377,17 +467,86 @@ class WhatsAppService {
       messageLog.status = parsedEvent.status;
       if (parsedEvent.status === WhatsAppMessageStatus.DELIVERED) {
         messageLog.deliveredAt = parsedEvent.timestamp;
+        messageLog.nextRetryAllowedAt = null;
       } else if (parsedEvent.status === WhatsAppMessageStatus.READ) {
         messageLog.readAt = parsedEvent.timestamp;
+        messageLog.nextRetryAllowedAt = null;
         if (!messageLog.deliveredAt) messageLog.deliveredAt = parsedEvent.timestamp;
       }
       if (parsedEvent.error) {
         messageLog.errorMessage = parsedEvent.error;
       }
       await messageLog.save();
+
+      // Real-time status update push to active tenant clients
+      eventBusService.publish(messageLog.companyId, 'WHATSAPP_STATUS_UPDATED', {
+        messageId: messageLog._id,
+        providerMessageId: messageLog.providerMessageId,
+        status: messageLog.status,
+        deliveredAt: messageLog.deliveredAt,
+        readAt: messageLog.readAt,
+        errorMessage: messageLog.errorMessage
+      });
     }
 
     return { acknowledged: true, processed: true, messageId: messageLog._id, newStatus: messageLog.status };
+  }
+
+  /**
+   * Batch dispatch pre-approved template messages with queue semantics and rate limit resilience
+   */
+  async sendBatchMessages({ companyId, messages = [], userId = null, ipAddress = '' }) {
+    if (!companyId) throw new AppError('Tenant company ID is required.', 400);
+    if (!Array.isArray(messages) || messages.length === 0) {
+      throw new AppError('Batch messages array must not be empty.', 400);
+    }
+    if (messages.length > 100) {
+      throw new AppError('Batch size cannot exceed 100 messages per request.', 400);
+    }
+
+    const results = [];
+    let successful = 0;
+    let failed = 0;
+
+    for (const item of messages) {
+      try {
+        const log = await this.sendMessage({
+          companyId,
+          toPhone: item.toPhone,
+          recipientName: item.recipientName || '',
+          templateName: item.templateName,
+          variables: item.variables || {},
+          relatedEntity: item.relatedEntity || null,
+          userId,
+          ipAddress
+        });
+        results.push({
+          success: true,
+          messageId: log._id,
+          recipientPhone: log.recipientPhone,
+          status: log.status
+        });
+        if (log.status !== WhatsAppMessageStatus.FAILED) {
+          successful++;
+        } else {
+          failed++;
+        }
+      } catch (err) {
+        failed++;
+        results.push({
+          success: false,
+          recipientPhone: item.toPhone,
+          error: err.message
+        });
+      }
+    }
+
+    return {
+      total: messages.length,
+      successful,
+      failed,
+      results
+    };
   }
 
   /**

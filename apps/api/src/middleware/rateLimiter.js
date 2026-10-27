@@ -114,10 +114,30 @@ function publicTrackingRateLimiter(req, res, next) {
   next();
 }
 
+// 4. WhatsApp Dispatch Rate Limiter (60 dispatches per minute per tenant/IP)
+const whatsappLimiterInstance = new SlidingWindowLimiter(60 * 1000, 60, 'wa_send');
+
+function whatsappRateLimiter(req, res, next) {
+  const tenantId = req.tenant?.companyId ? req.tenant.companyId.toString() : (req.ip || '127.0.0.1');
+  const result = whatsappLimiterInstance.isAllowed(tenantId);
+
+  res.setHeader('X-WhatsApp-RateLimit-Limit', whatsappLimiterInstance.maxRequests);
+  res.setHeader('X-WhatsApp-RateLimit-Remaining', result.remaining);
+
+  if (!result.allowed) {
+    res.setHeader('Retry-After', result.resetTime);
+    return next(new AppError(`WhatsApp outbound message rate limit exceeded. Please wait ${result.resetTime} seconds.`, 429));
+  }
+
+  next();
+}
+
 module.exports = {
   generalRateLimiter,
   authRateLimiter,
   authLimiterInstance,
   publicTrackingRateLimiter,
-  trackingLimiterInstance
+  trackingLimiterInstance,
+  whatsappRateLimiter,
+  whatsappLimiterInstance
 };

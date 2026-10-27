@@ -106,6 +106,10 @@ const messageLogSchema = new Schema(
       type: Date,
       default: null
     },
+    nextRetryAllowedAt: {
+      type: Date,
+      default: null
+    },
     deliveredAt: {
       type: Date,
       default: null

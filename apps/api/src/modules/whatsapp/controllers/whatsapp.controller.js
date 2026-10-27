@@ -115,11 +115,14 @@ class WhatsAppController {
       const companyId = req.tenant.companyId;
       const { id } = req.params;
 
+      const force = req.body?.force === true || req.query?.force === 'true';
+
       const messageLog = await whatsappService.retryFailedMessage(
         id,
         companyId,
         req.user._id,
-        req.ip
+        req.ip,
+        force
       );
 
       res.status(200).json({
@@ -248,7 +251,33 @@ class WhatsAppController {
   }
 
   /**
-   * 10. Inbound Webhook Receiver
+   * 10. Batch Template Messages Dispatch
+   */
+  async sendBatchMessages(req, res, next) {
+    try {
+      const companyId = req.tenant.companyId;
+      const { messages } = req.body;
+
+      const result = await whatsappService.sendBatchMessages({
+        companyId,
+        messages,
+        userId: req.user._id,
+        ipAddress: req.ip
+      });
+
+      res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: `Processed batch of ${result.total} WhatsApp messages (${result.successful} successful, ${result.failed} failed).`,
+        data: result
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * 11. Inbound Webhook Receiver
    */
   async handleWebhook(req, res, next) {
     try {
@@ -257,9 +286,10 @@ class WhatsAppController {
         req.headers['x-hub-signature-256'] ||
         req.headers['x-interakt-signature'] ||
         req.headers['x-twilio-signature'] ||
+        req.headers['x-hub-signature'] ||
         req.headers['x-signature'];
 
-      const rawBody = req.body;
+      const rawBody = req.rawBody ? req.rawBody.toString('utf8') : req.body;
 
       const result = await whatsappService.handleWebhook({
         signature,
