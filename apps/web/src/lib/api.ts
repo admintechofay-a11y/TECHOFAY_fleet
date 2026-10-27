@@ -88,7 +88,14 @@ export async function apiDownload(endpoint, fallbackFilename = 'download.xlsx') 
 
   const response = await fetch(url, { headers, credentials: 'include' });
   if (!response.ok) {
-    throw new Error(`Failed to download file (HTTP ${response.status})`);
+    let errorMsg = `Failed to download file (HTTP ${response.status})`;
+    try {
+      const errorData = await response.json();
+      if (errorData && errorData.message) {
+        errorMsg = errorData.message;
+      }
+    } catch (_) {}
+    throw new Error(errorMsg);
   }
 
   const blob = await response.blob();
@@ -118,7 +125,14 @@ export async function apiFetchBlob(endpoint, fallbackFilename = 'document.pdf') 
 
   const response = await fetch(url, { headers, credentials: 'include' });
   if (!response.ok) {
-    throw new Error(`Failed to load document (HTTP ${response.status})`);
+    let errorMsg = `Failed to load document (HTTP ${response.status})`;
+    try {
+      const errorData = await response.json();
+      if (errorData && errorData.message) {
+        errorMsg = errorData.message;
+      }
+    } catch (_) {}
+    throw new Error(errorMsg);
   }
 
   const blob = await response.blob();

@@ -12,6 +12,7 @@ export const CustomersPage: React.FC = () => {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -26,16 +27,17 @@ export const CustomersPage: React.FC = () => {
 
   const fetchCustomers = async (page = 1) => {
     setLoading(true);
+    setFetchError(null);
     try {
       let q = `/customers?page=${page}&limit=10`;
       if (search) q += `&search=${encodeURIComponent(search)}`;
       if (partyType) q += `&partyType=${partyType}`;
 
       const res = await apiRequest(q);
-      setCustomers(res.data.items);
+      setCustomers(res.data.items || []);
       setPagination(res.data.pagination);
     } catch (err: any) {
-      console.error('Failed to load customers:', err.message);
+      setFetchError(err.message || 'Failed to load customer accounts');
     } finally {
       setLoading(false);
     }
@@ -49,6 +51,12 @@ export const CustomersPage: React.FC = () => {
     e.preventDefault();
     setFormLoading(true);
     setFormError(null);
+
+    if (!formData.name.trim()) {
+      setFormError('Please enter a party / company name.');
+      setFormLoading(false);
+      return;
+    }
 
     try {
       await apiRequest('/customers', {
@@ -175,6 +183,15 @@ export const CustomersPage: React.FC = () => {
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-slate-500">
                     Loading customer accounts...
+                  </td>
+                </tr>
+              ) : fetchError ? (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-red-400">
+                    <div className="mb-2 font-semibold">⚠️ {fetchError}</div>
+                    <button onClick={() => fetchCustomers(1)} className="btn btn-secondary text-xs">
+                      🔄 Retry
+                    </button>
                   </td>
                 </tr>
               ) : customers.length === 0 ? (

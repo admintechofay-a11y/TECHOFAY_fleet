@@ -32,19 +32,21 @@ export const DeliveriesPodPage: React.FC = () => {
 
   // Action Message
   const [actionMessage, setActionMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const fetchPods = async (page = 1) => {
     setLoading(true);
+    setFetchError(null);
     try {
       let q = `/pod?page=${page}&limit=10`;
       if (search) q += `&search=${encodeURIComponent(search)}`;
       if (statusFilter) q += `&status=${statusFilter}`;
 
       const res = await apiRequest(q);
-      setPods(res.data.items);
+      setPods(res.data.items || []);
       setPagination(res.data.pagination);
     } catch (err: any) {
-      console.error('Failed to load POD records:', err.message);
+      setFetchError(err.message || 'Failed to load Proof of Delivery records');
     } finally {
       setLoading(false);
     }
@@ -350,6 +352,15 @@ export const DeliveriesPodPage: React.FC = () => {
                 <tr>
                   <td colSpan={7} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
                     Loading Proof of Delivery registry...
+                  </td>
+                </tr>
+              ) : fetchError ? (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '3rem', color: '#ef4444' }}>
+                    <div style={{ marginBottom: '0.75rem', fontWeight: 600 }}>⚠️ {fetchError}</div>
+                    <button onClick={() => fetchPods(1)} className="btn btn-secondary" style={{ fontSize: '0.8rem' }}>
+                      🔄 Retry
+                    </button>
                   </td>
                 </tr>
               ) : pods.length === 0 ? (

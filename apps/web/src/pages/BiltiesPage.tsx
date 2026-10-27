@@ -6,6 +6,7 @@ export const BiltiesPage: React.FC = () => {
   const [bilties, setBilties] = useState<any[]>([]);
   const [lrs, setLrs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [termsFilter, setTermsFilter] = useState('');
   const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
@@ -41,16 +42,17 @@ export const BiltiesPage: React.FC = () => {
   // Fetch Bilties
   const fetchBilties = async (page = 1) => {
     setLoading(true);
+    setFetchError(null);
     try {
       let q = `/bilties?page=${page}&limit=10`;
       if (search) q += `&search=${encodeURIComponent(search)}`;
       if (termsFilter) q += `&paymentTerms=${termsFilter}`;
 
       const res = await apiRequest(q);
-      setBilties(res.data.items);
+      setBilties(res.data.items || []);
       setPagination(res.data.pagination);
     } catch (err: any) {
-      console.error('Failed to load Bilties:', err.message);
+      setFetchError(err.message || 'Failed to load Bilties');
     } finally {
       setLoading(false);
     }
@@ -283,6 +285,15 @@ export const BiltiesPage: React.FC = () => {
                 <tr>
                   <td colSpan={9} style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
                     Loading Bilties...
+                  </td>
+                </tr>
+              ) : fetchError ? (
+                <tr>
+                  <td colSpan={9} style={{ padding: '3rem', textAlign: 'center', color: '#ef4444' }}>
+                    <div style={{ marginBottom: '0.75rem', fontWeight: 600 }}>⚠️ {fetchError}</div>
+                    <button onClick={() => fetchBilties(1)} className="btn btn-secondary" style={{ fontSize: '0.8rem' }}>
+                      🔄 Retry
+                    </button>
                   </td>
                 </tr>
               ) : bilties.length === 0 ? (

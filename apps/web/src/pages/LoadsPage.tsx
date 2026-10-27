@@ -35,19 +35,19 @@ export const LoadsPage: React.FC = () => {
     documentNumber: ''
   });
 
-  // New Load Form State
-  const [formData, setFormData] = useState({
+  // New Load Form Initial State (Clean production defaults without fixtures)
+  const initialFormData = {
     customerId: '',
     consignorId: '',
     consigneeId: '',
     packageType: 'Bags',
     totalWeightMt: '',
-    totalQuantity: '100',
+    totalQuantity: '',
     expectedDeliveryDate: '',
     remarks: '',
     stops: [
-      { sequence: 1, stopType: 'PICKUP', locationId: '', allocatedQuantity: 100, allocatedWeightMt: 10, contactPerson: '', contactPhone: '' },
-      { sequence: 2, stopType: 'DELIVERY', locationId: '', allocatedQuantity: 100, allocatedWeightMt: 10, contactPerson: '', contactPhone: '' }
+      { sequence: 1, stopType: 'PICKUP', locationId: '', allocatedQuantity: '' as any, allocatedWeightMt: '' as any, contactPerson: '', contactPhone: '' },
+      { sequence: 2, stopType: 'DELIVERY', locationId: '', allocatedQuantity: '' as any, allocatedWeightMt: '' as any, contactPerson: '', contactPhone: '' }
     ],
     financials: {
       baseFreightRupees: '',
@@ -60,7 +60,10 @@ export const LoadsPage: React.FC = () => {
       advanceRupees: '',
       deductionRupees: ''
     }
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Assign form state
   const [assignData, setAssignData] = useState({
@@ -71,16 +74,17 @@ export const LoadsPage: React.FC = () => {
   // Fetch Loads
   const fetchLoads = async (page = 1) => {
     setLoading(true);
+    setFetchError(null);
     try {
       let q = `/loads?page=${page}&limit=10`;
       if (search) q += `&search=${encodeURIComponent(search)}`;
       if (statusFilter) q += `&status=${statusFilter}`;
 
       const res = await apiRequest(q);
-      setLoads(res.data.items);
+      setLoads(res.data.items || []);
       setPagination(res.data.pagination);
     } catch (err: any) {
-      console.error('Failed to load consignments:', err.message);
+      setFetchError(err.message || 'Failed to load consignments');
     } finally {
       setLoading(false);
     }
@@ -162,19 +166,49 @@ export const LoadsPage: React.FC = () => {
     setFormLoading(true);
     setFormError(null);
 
+    if (!formData.customerId) {
+      setFormError('Please select a customer for this load.');
+      setFormLoading(false);
+      return;
+    }
+    const weight = parseFloat(formData.totalWeightMt);
+    if (isNaN(weight) || weight <= 0) {
+      setFormError('Please enter a valid total weight in Metric Tonnes (> 0).');
+      setFormLoading(false);
+      return;
+    }
+    const qty = parseInt(formData.totalQuantity, 10);
+    if (isNaN(qty) || qty <= 0) {
+      setFormError('Please enter a valid total package quantity (> 0).');
+      setFormLoading(false);
+      return;
+    }
+    for (const stop of formData.stops) {
+      if (!stop.locationId) {
+        setFormError(`Please select a location for route stop #${stop.sequence}.`);
+        setFormLoading(false);
+        return;
+      }
+    }
+
     try {
       const payload = {
         customerId: formData.customerId,
-        consignorId: formData.consignorId,
-        consigneeId: formData.consigneeId,
-        totalWeightMt: parseFloat(formData.totalWeightMt),
-        totalQuantity: parseInt(formData.totalQuantity, 10),
+        consignorId: formData.consignorId || formData.customerId,
+        consigneeId: formData.consigneeId || formData.customerId,
+        totalWeightMt: weight,
+        totalQuantity: qty,
         packageType: formData.packageType,
         expectedDeliveryDate: formData.expectedDeliveryDate || undefined,
         remarks: formData.remarks,
-        stops: formData.stops,
+        stops: formData.stops.map((s) => ({
+          ...s,
+          allocatedQuantity: parseInt(String(s.allocatedQuantity), 10) || qty,
+          allocatedWeightMt: parseFloat(String(s.allocatedWeightMt)) || weight
+        })),
         financials: {
           baseFreightPaise: Math.round((parseFloat(formData.financials.baseFreightRupees) || 0) * 100),
+          loadingRupees: undefined,
           loadingPaise: Math.round((parseFloat(formData.financials.loadingRupees) || 0) * 100),
           unloadingPaise: Math.round((parseFloat(formData.financials.unloadingRupees) || 0) * 100),
           detentionPaise: Math.round((parseFloat(formData.financials.detentionRupees) || 0) * 100),
@@ -192,6 +226,7 @@ export const LoadsPage: React.FC = () => {
       });
 
       setIsCreateOpen(false);
+      setFormData(initialFormData);
       fetchLoads(1);
     } catch (err: any) {
       setFormError(err.message || 'Failed to create consignment load');
@@ -314,8 +349,9 @@ export const LoadsPage: React.FC = () => {
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button
             onClick={() => {
-              setIsCreateOpen(true);
+              setFormData(initialFormData);
               setFormError(null);
+              setIsCreateOpen(true);
             }}
             className="btn btn-primary"
             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
@@ -414,6 +450,15 @@ export const LoadsPage: React.FC = () => {
                 <tr>
                   <td colSpan={8} style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
                     Loading consignments...
+                  </td>
+                </tr>
+              ) : fetchError ? (
+                <tr>
+                  <td colSpan={8} style={{ padding: '3rem', textAlign: 'center', color: '#ef4444' }}>
+                    <div style={{ marginBottom: '0.75rem', fontWeight: 600 }}>⚠️ {fetchError}</div>
+                    <button onClick={() => fetchLoads(1)} className="btn btn-secondary" style={{ fontSize: '0.8rem' }}>
+                      🔄 Retry
+                    </button>
                   </td>
                 </tr>
               ) : loads.length === 0 ? (

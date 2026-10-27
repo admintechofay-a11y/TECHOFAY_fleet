@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigation } from '../context/NavigationContext';
 
 export interface BreadcrumbItem {
   label: string;
   path?: string;
+  href?: string;
 }
 
 interface BreadcrumbsProps {
@@ -11,6 +13,9 @@ interface BreadcrumbsProps {
 }
 
 export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, onNavigate }) => {
+  const { navigate } = useNavigation();
+  const handleNav = onNavigate || navigate;
+
   if (!items || items.length === 0) return null;
 
   return (
@@ -26,9 +31,9 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, onNavigate }) =
       }}
     >
       <span
-        onClick={() => onNavigate && onNavigate('/app/dashboard')}
+        onClick={() => handleNav('/app/dashboard')}
         style={{
-          cursor: onNavigate ? 'pointer' : 'default',
+          cursor: 'pointer',
           color: 'var(--text-secondary)',
           display: 'flex',
           alignItems: 'center',
@@ -41,16 +46,17 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, onNavigate }) =
 
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
+        const targetPath = item.path || item.href;
         return (
           <React.Fragment key={index}>
             <span style={{ color: 'var(--border-medium)', userSelect: 'none' }}>/</span>
-            {isLast || !item.path ? (
+            {isLast || !targetPath ? (
               <span aria-current="page" style={{ color: '#38bdf8', fontWeight: 600 }}>
                 {item.label}
               </span>
             ) : (
               <span
-                onClick={() => onNavigate && item.path && onNavigate(item.path)}
+                onClick={() => handleNav(targetPath)}
                 style={{
                   cursor: 'pointer',
                   color: 'var(--text-secondary)',

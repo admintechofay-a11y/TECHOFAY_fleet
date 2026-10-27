@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { NavigationProvider, useNavigation } from './context/NavigationContext';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -33,12 +34,7 @@ import { analytics } from './lib/analytics';
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
-  const [currentPath, setCurrentPath] = useState(() => {
-    if (typeof window !== 'undefined' && window.location.pathname && window.location.pathname !== '/') {
-      return window.location.pathname;
-    }
-    return '/app/dashboard';
-  });
+  const { currentPath, navigate } = useNavigation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Track privacy-aware analytics on path change
@@ -58,6 +54,15 @@ function AppContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Automatic redirect if authenticated on auth pages or root
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      if (currentPath === '/' || currentPath === '/login' || currentPath === '/register' || currentPath === '/signup') {
+        navigate('/app/dashboard', { replace: true });
+      }
+    }
+  }, [isLoading, isAuthenticated, currentPath, navigate]);
+
   if (isLoading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0f1d' }}>
@@ -75,29 +80,29 @@ function AppContent() {
 
   // Public Routes (Accessible without login)
   if (currentPath === '/privacy') {
-    return <PrivacyPage onNavigateHome={() => setCurrentPath(isAuthenticated ? '/app/dashboard' : '/login')} />;
+    return <PrivacyPage onNavigateHome={() => navigate(isAuthenticated ? '/app/dashboard' : '/login')} />;
   }
   if (currentPath === '/terms') {
-    return <TermsPage onNavigateHome={() => setCurrentPath(isAuthenticated ? '/app/dashboard' : '/login')} />;
+    return <TermsPage onNavigateHome={() => navigate(isAuthenticated ? '/app/dashboard' : '/login')} />;
   }
   if (currentPath === '/contact') {
-    return <ContactPage onNavigateHome={() => setCurrentPath(isAuthenticated ? '/app/dashboard' : '/login')} />;
+    return <ContactPage onNavigateHome={() => navigate(isAuthenticated ? '/app/dashboard' : '/login')} />;
   }
   if (currentPath === '/track' || currentPath.startsWith('/track/')) {
     return <PublicTrackingPage />;
   }
   if (currentPath === '/register' || currentPath === '/signup') {
-    return <RegisterPage onNavigate={(path) => setCurrentPath(path)} />;
+    return <RegisterPage onNavigate={(path) => navigate(path)} />;
   }
 
   if (!isAuthenticated) {
-    return <LoginPage onNavigatePublic={(path) => setCurrentPath(path)} />;
+    return <LoginPage onNavigatePublic={(path) => navigate(path)} />;
   }
 
   const renderCurrentView = () => {
     switch (currentPath) {
       case '/app/dashboard':
-        return <DashboardPage />;
+        return <DashboardPage onNavigate={navigate} />;
       case '/app/loads':
         return <LoadsPage />;
       case '/app/lr':
@@ -108,13 +113,15 @@ function AppContent() {
         return <TripsPage />;
       case '/app/deliveries':
         return <DeliveriesPodPage />;
+      case '/app/billing':
+        return <ReportsPage defaultTab="freight" />;
       case '/app/bulk-data':
         return <BulkDataPage />;
       case '/app/whatsapp':
       case '/app/messages':
         return <WhatsAppPage />;
       case '/app/reports':
-        return <ReportsPage />;
+        return <ReportsPage defaultTab="loads" />;
       case '/app/customers':
         return <CustomersPage />;
       case '/app/locations':
@@ -138,8 +145,8 @@ function AppContent() {
       default:
         return (
           <NotFoundPage
-            onNavigateHome={() => setCurrentPath('/app/dashboard')}
-            onNavigateContact={() => setCurrentPath('/contact')}
+            onNavigateHome={() => navigate('/app/dashboard')}
+            onNavigateContact={() => navigate('/contact')}
           />
         );
     }
@@ -148,7 +155,7 @@ function AppContent() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--bg-app)' }}>
       {/* Navigation Sidebar */}
-      <Sidebar currentPath={currentPath} onNavigate={(path: string) => setCurrentPath(path)} />
+      <Sidebar currentPath={currentPath} onNavigate={(path: string) => navigate(path)} />
 
       {/* Main Content Area */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
@@ -162,7 +169,7 @@ function AppContent() {
       <GlobalSearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        onNavigate={(path: string) => setCurrentPath(path)}
+        onNavigate={(path: string) => navigate(path)}
       />
     </div>
   );
@@ -170,8 +177,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <NavigationProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </NavigationProvider>
   );
 }

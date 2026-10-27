@@ -15,9 +15,10 @@ export const DriversPage: React.FC = () => {
   const [isUploadDocModalOpen, setIsUploadDocModalOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
-  // New Driver Form
-  const [formData, setFormData] = useState({
+  // New Driver Form Initial State
+  const initialDriverForm = {
     name: '',
     phone: '',
     alternatePhone: '',
@@ -26,7 +27,9 @@ export const DriversPage: React.FC = () => {
     licenseExpiryDate: '',
     address: '',
     emergencyContact: { name: '', relation: '', phone: '' }
-  });
+  };
+
+  const [formData, setFormData] = useState(initialDriverForm);
 
   // Document Upload Form
   const [docFormData, setDocFormData] = useState({
@@ -40,6 +43,7 @@ export const DriversPage: React.FC = () => {
 
   const fetchDrivers = async (page = 1) => {
     setLoading(true);
+    setFetchError(null);
     try {
       let q = `/drivers?page=${page}&limit=10`;
       if (search) q += `&search=${encodeURIComponent(search)}`;
@@ -47,10 +51,10 @@ export const DriversPage: React.FC = () => {
       if (licenseType) q += `&licenseType=${licenseType}`;
 
       const res = await apiRequest(q);
-      setDrivers(res.data.items);
+      setDrivers(res.data.items || []);
       setPagination(res.data.pagination);
     } catch (err: any) {
-      console.error('Failed to load drivers:', err.message);
+      setFetchError(err.message || 'Failed to load drivers');
     } finally {
       setLoading(false);
     }
@@ -74,22 +78,34 @@ export const DriversPage: React.FC = () => {
     setFormLoading(true);
     setFormError(null);
 
+    if (!formData.name.trim()) {
+      setFormError('Please enter a driver full name.');
+      setFormLoading(false);
+      return;
+    }
+    if (!formData.phone.trim()) {
+      setFormError('Please enter a primary mobile contact number.');
+      setFormLoading(false);
+      return;
+    }
+    if (!formData.licenseNumber.trim()) {
+      setFormError('Please enter a valid driver licence number.');
+      setFormLoading(false);
+      return;
+    }
+    if (!formData.licenseExpiryDate) {
+      setFormError('Please enter licence expiration date.');
+      setFormLoading(false);
+      return;
+    }
+
     try {
       await apiRequest('/drivers', {
         method: 'POST',
         body: JSON.stringify(formData)
       });
       setIsModalOpen(false);
-      setFormData({
-        name: '',
-        phone: '',
-        alternatePhone: '',
-        licenseNumber: '',
-        licenseType: 'HMV',
-        licenseExpiryDate: '',
-        address: '',
-        emergencyContact: { name: '', relation: '', phone: '' }
-      });
+      setFormData(initialDriverForm);
       fetchDrivers(1);
     } catch (err: any) {
       setFormError(err.message || 'Failed to create driver');
@@ -260,10 +276,19 @@ export const DriversPage: React.FC = () => {
                     Loading drivers...
                   </td>
                 </tr>
+              ) : fetchError ? (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-red-400">
+                    <div className="mb-2 font-semibold">⚠️ {fetchError}</div>
+                    <button onClick={() => fetchDrivers(1)} className="btn btn-secondary text-xs">
+                      🔄 Retry
+                    </button>
+                  </td>
+                </tr>
               ) : drivers.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-slate-500">
-                    No drivers found.
+                    No drivers found. Click "+ Add Driver" to register your first crew member.
                   </td>
                 </tr>
               ) : (

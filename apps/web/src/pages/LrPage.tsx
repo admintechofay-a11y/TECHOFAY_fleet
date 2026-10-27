@@ -6,6 +6,7 @@ export const LrPage: React.FC = () => {
   const [lrs, setLrs] = useState<any[]>([]);
   const [loads, setLoads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
@@ -49,16 +50,17 @@ export const LrPage: React.FC = () => {
   // Fetch LRs
   const fetchLrs = async (page = 1) => {
     setLoading(true);
+    setFetchError(null);
     try {
       let q = `/lr?page=${page}&limit=10`;
       if (search) q += `&search=${encodeURIComponent(search)}`;
       if (statusFilter) q += `&status=${statusFilter}`;
 
       const res = await apiRequest(q);
-      setLrs(res.data.items);
+      setLrs(res.data.items || []);
       setPagination(res.data.pagination);
     } catch (err: any) {
-      console.error('Failed to load LRs:', err.message);
+      setFetchError(err.message || 'Failed to load Lorry Receipts');
     } finally {
       setLoading(false);
     }
@@ -302,6 +304,15 @@ export const LrPage: React.FC = () => {
                 <tr>
                   <td colSpan={8} style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
                     Loading Lorry Receipts...
+                  </td>
+                </tr>
+              ) : fetchError ? (
+                <tr>
+                  <td colSpan={8} style={{ padding: '3rem', textAlign: 'center', color: '#ef4444' }}>
+                    <div style={{ marginBottom: '0.75rem', fontWeight: 600 }}>⚠️ {fetchError}</div>
+                    <button onClick={() => fetchLrs(1)} className="btn btn-secondary" style={{ fontSize: '0.8rem' }}>
+                      🔄 Retry
+                    </button>
                   </td>
                 </tr>
               ) : lrs.length === 0 ? (

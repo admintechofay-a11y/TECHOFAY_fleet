@@ -16,18 +16,21 @@ export const VehiclesPage: React.FC = () => {
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
-  // New Vehicle Form State
-  const [formData, setFormData] = useState({
+  // New Vehicle Form Initial State (Clean production defaults without fixtures)
+  const initialVehicleForm = {
     plateNumber: '',
     vehicleType: 'Open Truck',
     category: 'OWNED',
-    capacityTonnage: 15,
+    capacityTonnage: '' as any,
     make: '',
     model: '',
-    yearOfManufacture: 2023,
+    yearOfManufacture: new Date().getFullYear(),
     ownerName: '',
     ownerPhone: ''
-  });
+  };
+
+  const [formData, setFormData] = useState(initialVehicleForm);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Document Upload Form State
   const [docFormData, setDocFormData] = useState({
@@ -41,6 +44,7 @@ export const VehiclesPage: React.FC = () => {
 
   const fetchVehicles = async (page = 1) => {
     setLoading(true);
+    setFetchError(null);
     try {
       let q = `/vehicles?page=${page}&limit=10`;
       if (search) q += `&search=${encodeURIComponent(search)}`;
@@ -48,10 +52,10 @@ export const VehiclesPage: React.FC = () => {
       if (category) q += `&category=${category}`;
 
       const res = await apiRequest(q);
-      setVehicles(res.data.items);
+      setVehicles(res.data.items || []);
       setPagination(res.data.pagination);
     } catch (err: any) {
-      console.error('Failed to load vehicles:', err.message);
+      setFetchError(err.message || 'Failed to load vehicles');
     } finally {
       setLoading(false);
     }
@@ -75,23 +79,29 @@ export const VehiclesPage: React.FC = () => {
     setFormLoading(true);
     setFormError(null);
 
+    if (!formData.plateNumber.trim()) {
+      setFormError('Please enter a vehicle registration plate number.');
+      setFormLoading(false);
+      return;
+    }
+    const tonnage = parseFloat(String(formData.capacityTonnage));
+    if (isNaN(tonnage) || tonnage <= 0) {
+      setFormError('Please enter a valid vehicle payload capacity in Metric Tonnes (> 0).');
+      setFormLoading(false);
+      return;
+    }
+
     try {
       await apiRequest('/vehicles', {
         method: 'POST',
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          capacityTonnage: tonnage,
+          yearOfManufacture: parseInt(String(formData.yearOfManufacture), 10) || new Date().getFullYear()
+        })
       });
       setIsModalOpen(false);
-      setFormData({
-        plateNumber: '',
-        vehicleType: 'Open Truck',
-        category: 'OWNED',
-        capacityTonnage: 15,
-        make: '',
-        model: '',
-        yearOfManufacture: 2023,
-        ownerName: '',
-        ownerPhone: ''
-      });
+      setFormData(initialVehicleForm);
       fetchVehicles(1);
     } catch (err: any) {
       setFormError(err.message || 'Failed to add vehicle');
@@ -262,10 +272,19 @@ export const VehiclesPage: React.FC = () => {
                     Loading vehicles...
                   </td>
                 </tr>
+              ) : fetchError ? (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-red-400">
+                    <div className="mb-2 font-semibold">⚠️ {fetchError}</div>
+                    <button onClick={() => fetchVehicles(1)} className="btn btn-secondary text-xs">
+                      🔄 Retry
+                    </button>
+                  </td>
+                </tr>
               ) : vehicles.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-slate-500">
-                    No vehicles found.
+                    No vehicles found. Click "+ Add Vehicle" to register your first asset.
                   </td>
                 </tr>
               ) : (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { PdfViewerModal } from '../components/PdfViewerModal';
+import { apiRequest } from '../lib/api';
 
 interface MaintenanceRecord {
   _id: string;
@@ -50,9 +51,16 @@ export const MaintenancePage: React.FC = () => {
   const [vehicles, setVehicles] = useState<VehicleOption[]>([]);
   const [stats, setStats] = useState<MaintenanceStats | null>(null);
   const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string>('');
+  
   const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [scheduleLoading, setScheduleLoading] = useState(false);
+  const [scheduleError, setScheduleError] = useState<string | null>(null);
+
   const [showCompleteModal, setShowCompleteModal] = useState<MaintenanceRecord | null>(null);
+  const [completeLoading, setCompleteLoading] = useState(false);
+  const [completeError, setCompleteError] = useState<string | null>(null);
 
   // PDF Viewer Modal State
   const [pdfModal, setPdfModal] = useState<{
@@ -98,34 +106,20 @@ export const MaintenancePage: React.FC = () => {
     technicianRemarks: ''
   });
 
-  useEffect(() => {
-    loadData();
-    loadVehicles();
-  }, [selectedStatus]);
-
   const loadData = async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const queryParam = selectedStatus ? `?status=${selectedStatus}` : '';
       const [resList, resStats] = await Promise.all([
-        fetch(`/api/v1/maintenance${queryParam}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token') || ''}` }
-        }),
-        fetch('/api/v1/maintenance/stats', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token') || ''}` }
-        })
+        apiRequest(`/maintenance${queryParam}`),
+        apiRequest('/maintenance/stats')
       ]);
 
-      if (resList.ok) {
-        const json = await resList.json();
-        setRecords(json.data?.items || []);
-      }
-      if (resStats.ok) {
-        const json = await resStats.json();
-        setStats(json.data);
-      }
-    } catch (err) {
-      console.error('Failed to load maintenance data', err);
+      setRecords(resList.data?.items || []);
+      setStats(resStats.data || null);
+    } catch (err: any) {
+      setFetchError(err.message || 'Failed to load maintenance records');
     } finally {
       setLoading(false);
     }
@@ -133,29 +127,31 @@ export const MaintenancePage: React.FC = () => {
 
   const loadVehicles = async () => {
     try {
-      const res = await fetch('/api/v1/vehicles?limit=100', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token') || ''}` }
-      });
-      if (res.ok) {
-        const json = await res.json();
-        setVehicles(json.data?.vehicles || json.data?.items || []);
-      }
+      const res = await apiRequest('/vehicles?limit=100');
+      setVehicles(res.data?.vehicles || res.data?.items || []);
     } catch (err) {
-      console.error('Failed to load vehicles', err);
+      console.error('Failed to load vehicles for maintenance:', err);
     }
   };
 
+  useEffect(() => {
+    loadData();
+    loadVehicles();
+  }, [selectedStatus]);
+
   const handleScheduleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.vehicleId || !formData.scheduledDate) return;
+    if (!formData.vehicleId || !formData.scheduledDate) {
+      setScheduleError('Please choose a vehicle and scheduled service date.');
+      return;
+    }
+
+    setScheduleLoading(true);
+    setScheduleError(null);
 
     try {
-      const res = await fetch('/api/v1/maintenance', {
+      await apiRequest('/maintenance', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token') || ''}`
-        },
         body: JSON.stringify({
           vehicleId: formData.vehicleId,
           serviceType: formData.serviceType,
@@ -171,39 +167,35 @@ export const MaintenancePage: React.FC = () => {
         })
       });
 
-      if (res.ok) {
-        setShowScheduleModal(false);
-        setFormData({
-          vehicleId: '',
-          serviceType: 'GENERAL_SERVICE',
-          priority: 'MEDIUM',
-          scheduledDate: new Date().toISOString().split('T')[0],
-          odometerReadingKm: '',
-          serviceCenterName: '',
-          serviceCenterCity: '',
-          costRupees: '',
-          technicianRemarks: ''
-        });
-        loadData();
-      }
-    } catch (err) {
-      console.error('Failed to schedule maintenance', err);
+      setShowScheduleModal(false);
+      setFormData({
+        vehicleId: '',
+        serviceType: 'GENERAL_SERVICE',
+        priority: 'MEDIUM',
+        scheduledDate: new Date().toISOString().split('T')[0],
+        odometerReadingKm: '',
+        serviceCenterName: '',
+        serviceCenterCity: '',
+        costRupees: '',
+        technicianRemarks: ''
+      });
+      loadData();
+    } catch (err: any) {
+      setScheduleError(err.message || 'Failed to schedule maintenance');
+    } finally {
+      setScheduleLoading(false);
     }
   };
 
   const handleStartService = async (record: MaintenanceRecord) => {
     try {
-      const res = await fetch(`/api/v1/maintenance/${record._id}/status`, {
+      await apiRequest(`/maintenance/${record._id}/status`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token') || ''}`
-        },
         body: JSON.stringify({ status: 'IN_PROGRESS' })
       });
-      if (res.ok) loadData();
-    } catch (err) {
-      console.error('Failed to start service', err);
+      loadData();
+    } catch (err: any) {
+      alert(err.message || 'Failed to start service');
     }
   };
 
@@ -211,13 +203,12 @@ export const MaintenancePage: React.FC = () => {
     e.preventDefault();
     if (!showCompleteModal) return;
 
+    setCompleteLoading(true);
+    setCompleteError(null);
+
     try {
-      const res = await fetch(`/api/v1/maintenance/${showCompleteModal._id}/status`, {
+      await apiRequest(`/maintenance/${showCompleteModal._id}/status`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token') || ''}`
-        },
         body: JSON.stringify({
           status: 'COMPLETED',
           costPaise: Math.round((Number(completionData.costRupees) || 0) * 100),
@@ -226,126 +217,104 @@ export const MaintenancePage: React.FC = () => {
         })
       });
 
-      if (res.ok) {
-        setShowCompleteModal(null);
-        setCompletionData({ costRupees: '', invoiceNumber: '', technicianRemarks: '' });
-        loadData();
-      }
-    } catch (err) {
-      console.error('Failed to complete service', err);
+      setShowCompleteModal(null);
+      setCompletionData({ costRupees: '', invoiceNumber: '', technicianRemarks: '' });
+      loadData();
+    } catch (err: any) {
+      setCompleteError(err.message || 'Failed to complete service');
+    } finally {
+      setCompleteLoading(false);
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+      {/* Breadcrumb Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <Breadcrumbs items={[{ label: 'Fleet & Assets', href: '/app/vehicles' }, { label: 'Maintenance & Service' }]} />
-          <h1 className="text-2xl font-bold text-white mt-1">Fleet Preventative Maintenance & Service</h1>
-          <p className="text-sm text-slate-400">
-            Schedule vehicle overhauls, log garage servicing, and avoid unexpected operational downtime.
+          <Breadcrumbs items={[{ label: 'Fleet & Vehicles', href: '/app/vehicles' }, { label: 'Maintenance & Service' }]} />
+          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-3">
+            <span>🔧</span> Fleet Maintenance & Workshop Work Orders
+          </h1>
+          <p className="text-sm text-slate-400 mt-1">
+            Preventative maintenance, routine servicing schedules, repair logs, and atomic vehicle availability transitions.
           </p>
         </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              setScheduleError(null);
+              setShowScheduleModal(true);
+            }}
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl shadow-lg shadow-blue-900/30 flex items-center gap-2 transition text-sm"
+          >
+            <span>+</span> Schedule Service
+          </button>
+        </div>
+      </div>
 
+      {/* KPI Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Scheduled</div>
+          <div className="text-2xl font-black text-blue-400 mt-1">{stats ? stats.scheduledCount : '-'}</div>
+          <div className="text-[11px] text-slate-500 mt-0.5">Upcoming services</div>
+        </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">In Progress</div>
+          <div className="text-2xl font-black text-amber-400 mt-1">{stats ? stats.inProgressCount : '-'}</div>
+          <div className="text-[11px] text-slate-500 mt-0.5">In garage currently</div>
+        </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Overdue</div>
+          <div className="text-2xl font-black text-rose-400 mt-1">{stats ? stats.overdueCount : '-'}</div>
+          <div className="text-[11px] text-slate-500 mt-0.5">Past scheduled date</div>
+        </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Completed Month</div>
+          <div className="text-2xl font-black text-emerald-400 mt-1">{stats ? stats.completedThisMonth : '-'}</div>
+          <div className="text-[11px] text-slate-500 mt-0.5">Certified this month</div>
+        </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 col-span-2 md:col-span-1">
+          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Monthly Spend</div>
+          <div className="text-2xl font-black text-purple-400 mt-1">
+            ₹{stats ? stats.totalCostThisMonthRupees.toLocaleString('en-IN') : '-'}
+          </div>
+          <div className="text-[11px] text-slate-500 mt-0.5">Fleet repair expenses</div>
+        </div>
+      </div>
+
+      {/* Filter Strip */}
+      <div className="flex items-center justify-between gap-4 bg-slate-900/60 border border-slate-800/80 p-3 rounded-xl">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Filter Status:</span>
+          <select
+            value={selectedStatus}
+            onChange={e => setSelectedStatus(e.target.value)}
+            className="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500"
+          >
+            <option value="">All Statuses</option>
+            <option value="SCHEDULED">Scheduled</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </div>
         <button
-          onClick={() => setShowScheduleModal(true)}
-          className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2 text-sm"
+          onClick={loadData}
+          className="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 transition"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          <span>Schedule Service</span>
+          <span>🔄</span> Refresh
         </button>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-            Overdue Services
-          </span>
-          <div className="flex items-center justify-between">
-            <span className="text-2xl font-extrabold text-rose-400">{stats?.overdueCount ?? 0}</span>
-            <span className="w-10 h-10 rounded-xl bg-rose-950/80 border border-rose-800 text-rose-400 flex items-center justify-center font-bold">
-              ⚠
-            </span>
-          </div>
-          <span className="text-xs text-rose-400 mt-2 block font-medium">Requires immediate inspection</span>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-            Currently In Garage
-          </span>
-          <div className="flex items-center justify-between">
-            <span className="text-2xl font-extrabold text-amber-400">{stats?.inProgressCount ?? 0}</span>
-            <span className="w-10 h-10 rounded-xl bg-amber-950/80 border border-amber-800 text-amber-400 flex items-center justify-center font-bold">
-              🔧
-            </span>
-          </div>
-          <span className="text-xs text-amber-400 mt-2 block font-medium">Vehicles marked Under Maintenance</span>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-            Scheduled Upcoming
-          </span>
-          <div className="flex items-center justify-between">
-            <span className="text-2xl font-extrabold text-blue-400">{stats?.scheduledCount ?? 0}</span>
-            <span className="w-10 h-10 rounded-xl bg-blue-950/80 border border-blue-800 text-blue-400 flex items-center justify-center font-bold">
-              📅
-            </span>
-          </div>
-          <span className="text-xs text-slate-400 mt-2 block font-medium">Queued preventative overhauls</span>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-            Completed This Month
-          </span>
-          <div className="flex items-center justify-between">
-            <span className="text-2xl font-extrabold text-emerald-400">₹{(stats?.totalCostThisMonthRupees ?? 0).toLocaleString('en-IN')}</span>
-            <span className="w-10 h-10 rounded-xl bg-emerald-950/80 border border-emerald-800 text-emerald-400 flex items-center justify-center font-bold">
-              ✔
-            </span>
-          </div>
-          <span className="text-xs text-slate-400 mt-2 block font-medium">
-            {stats?.completedThisMonth ?? 0} assets certified & released
-          </span>
-        </div>
-      </div>
-
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2 text-sm font-semibold text-slate-400">
-        {[
-          { label: 'All Maintenance', value: '' },
-          { label: 'Scheduled', value: 'SCHEDULED' },
-          { label: 'In Progress', value: 'IN_PROGRESS' },
-          { label: 'Completed', value: 'COMPLETED' },
-          { label: 'Cancelled', value: 'CANCELLED' }
-        ].map(tab => (
-          <button
-            key={tab.value}
-            onClick={() => setSelectedStatus(tab.value)}
-            className={`px-3 py-1.5 rounded-lg transition ${
-              selectedStatus === tab.value
-                ? 'bg-blue-600 text-white font-bold'
-                : 'hover:bg-slate-800 hover:text-white text-slate-400'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Maintenance Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-lg overflow-hidden">
+      {/* Maintenance Records Table */}
+      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-800 text-sm">
-            <thead className="bg-slate-950/70 border-b border-slate-800">
+          <table className="w-full text-left text-sm text-slate-300">
+            <thead className="bg-slate-950/80 border-b border-slate-800">
               <tr>
-                <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Ref #</th>
+                <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Work Order #</th>
                 <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Vehicle</th>
                 <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Service Type</th>
                 <th className="px-4 py-3 text-left font-semibold text-slate-400 uppercase text-xs">Priority</th>
@@ -360,6 +329,15 @@ export const MaintenancePage: React.FC = () => {
               {loading ? (
                 <tr>
                   <td colSpan={9} className="text-center py-8 text-slate-500">Loading fleet maintenance logs...</td>
+                </tr>
+              ) : fetchError ? (
+                <tr>
+                  <td colSpan={9} className="text-center py-8 text-red-400">
+                    <div className="mb-2 font-semibold">⚠️ {fetchError}</div>
+                    <button onClick={loadData} className="btn btn-secondary text-xs">
+                      🔄 Retry
+                    </button>
+                  </td>
                 </tr>
               ) : records.length === 0 ? (
                 <tr>
@@ -388,16 +366,18 @@ export const MaintenancePage: React.FC = () => {
                       {new Date(rec.scheduledDate).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3.5 text-slate-300 text-xs">
-                      {rec.serviceCenter?.name || 'In-House Depot'}
+                      <div>{rec.serviceCenter?.name || 'In-House'}</div>
+                      <div className="text-slate-500">{rec.serviceCenter?.city}</div>
                     </td>
-                    <td className="px-4 py-3.5 font-medium font-mono text-emerald-400">
-                      ₹{(rec.costPaise / 100).toLocaleString('en-IN')}
+                    <td className="px-4 py-3.5 font-mono text-slate-200 font-semibold">
+                      ₹{((rec.costPaise || 0) / 100).toLocaleString('en-IN')}
                     </td>
                     <td className="px-4 py-3.5">
-                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                        rec.status === 'COMPLETED' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' :
-                        rec.status === 'IN_PROGRESS' ? 'bg-amber-950 text-amber-300 border border-amber-800 animate-pulse' :
-                        rec.status === 'CANCELLED' ? 'bg-rose-950 text-rose-300 border border-rose-800' : 'bg-blue-950 text-blue-300 border border-blue-800'
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${
+                        rec.status === 'COMPLETED' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' :
+                        rec.status === 'IN_PROGRESS' ? 'bg-amber-950 text-amber-400 border border-amber-800' :
+                        rec.status === 'CANCELLED' ? 'bg-slate-800 text-slate-400 border border-slate-700' :
+                        'bg-blue-950 text-blue-400 border border-blue-800'
                       }`}>
                         {rec.status}
                       </span>
@@ -405,32 +385,28 @@ export const MaintenancePage: React.FC = () => {
                     <td className="px-4 py-3.5 text-right space-x-2">
                       <button
                         onClick={() => handlePreviewJobCard(rec)}
-                        className="bg-slate-800 hover:bg-slate-700 text-sky-400 border border-slate-700 text-xs px-2.5 py-1 rounded font-semibold transition inline-flex items-center gap-1"
-                        title="Preview & Print Maintenance Job Card"
+                        title="Print / View Job Card PDF"
+                        className="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-2.5 py-1 rounded transition"
                       >
-                        👁️ Job Card
+                        📄 Job Card
                       </button>
                       {rec.status === 'SCHEDULED' && (
                         <button
                           onClick={() => handleStartService(rec)}
-                          className="bg-amber-600 hover:bg-amber-500 text-white text-xs px-2.5 py-1 rounded font-semibold transition"
+                          className="text-xs bg-amber-600 hover:bg-amber-500 text-white font-semibold px-2.5 py-1 rounded transition shadow-sm"
                         >
-                          Start Service
+                          ▶ Start Service
                         </button>
                       )}
                       {rec.status === 'IN_PROGRESS' && (
                         <button
                           onClick={() => {
+                            setCompleteError(null);
                             setShowCompleteModal(rec);
-                            setCompletionData({
-                              costRupees: String(rec.costPaise / 100 || ''),
-                              invoiceNumber: rec.invoiceNumber || '',
-                              technicianRemarks: rec.technicianRemarks || ''
-                            });
                           }}
-                          className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-2.5 py-1 rounded font-semibold transition"
+                          className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2.5 py-1 rounded transition shadow-sm"
                         >
-                          Certify Complete
+                          ✓ Complete
                         </button>
                       )}
                     </td>
@@ -455,6 +431,12 @@ export const MaintenancePage: React.FC = () => {
                 ×
               </button>
             </div>
+
+            {scheduleError && (
+              <div className="bg-red-950/60 border border-red-800 text-red-300 text-xs p-3 rounded-lg mt-3">
+                ⚠️ {scheduleError}
+              </div>
+            )}
 
             <form onSubmit={handleScheduleSubmit} className="space-y-4 pt-4 text-sm">
               <div>
@@ -569,15 +551,17 @@ export const MaintenancePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowScheduleModal(false)}
+                  disabled={scheduleLoading}
                   className="px-4 py-2 text-slate-400 font-semibold hover:bg-slate-800 hover:text-white rounded-xl transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2 rounded-xl shadow-sm transition"
+                  disabled={scheduleLoading}
+                  className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold px-5 py-2 rounded-xl shadow-sm transition"
                 >
-                  Confirm Schedule
+                  {scheduleLoading ? 'Scheduling...' : 'Confirm Schedule'}
                 </button>
               </div>
             </form>
@@ -593,6 +577,12 @@ export const MaintenancePage: React.FC = () => {
             <p className="text-xs text-slate-400 mb-4">
               Completing service for vehicle <span className="font-semibold text-white font-mono">{showCompleteModal.vehicleId?.plateNumber}</span> releases the vehicle status back to <strong className="text-emerald-400">AVAILABLE</strong> for trip assignments.
             </p>
+
+            {completeError && (
+              <div className="bg-red-950/60 border border-red-800 text-red-300 text-xs p-3 rounded-lg mb-3">
+                ⚠️ {completeError}
+              </div>
+            )}
 
             <form onSubmit={handleCompleteSubmit} className="space-y-4 text-sm">
               <div>
@@ -633,15 +623,17 @@ export const MaintenancePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowCompleteModal(null)}
+                  disabled={completeLoading}
                   className="px-4 py-2 text-slate-400 font-semibold hover:bg-slate-800 hover:text-white rounded-xl transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-5 py-2 rounded-xl shadow-sm transition"
+                  disabled={completeLoading}
+                  className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold px-5 py-2 rounded-xl shadow-sm transition"
                 >
-                  Certify & Release Vehicle
+                  {completeLoading ? 'Certifying...' : 'Certify & Release Vehicle'}
                 </button>
               </div>
             </form>

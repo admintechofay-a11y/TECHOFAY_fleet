@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest, apiDownload } from '../lib/api';
 
-type ReportTab = 'loads' | 'trips' | 'freight' | 'compliance';
+export type ReportTab = 'loads' | 'trips' | 'freight' | 'compliance';
 
-export const ReportsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<ReportTab>('loads');
+interface ReportsPageProps {
+  defaultTab?: ReportTab;
+}
+
+export const ReportsPage: React.FC<ReportsPageProps> = ({ defaultTab = 'loads' }) => {
+  const [activeTab, setActiveTab] = useState<ReportTab>(defaultTab);
+
+  useEffect(() => {
+    if (defaultTab) {
+      setActiveTab(defaultTab);
+    }
+  }, [defaultTab]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

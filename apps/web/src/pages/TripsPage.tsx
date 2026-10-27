@@ -8,6 +8,7 @@ export const TripsPage: React.FC = () => {
   const [vehicles, setVehicles] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
@@ -86,16 +87,17 @@ export const TripsPage: React.FC = () => {
 
   const fetchTrips = async (page = 1) => {
     setLoading(true);
+    setFetchError(null);
     try {
       let q = `/trips?page=${page}&limit=10`;
       if (search) q += `&search=${encodeURIComponent(search)}`;
       if (statusFilter) q += `&status=${statusFilter}`;
 
       const res = await apiRequest(q);
-      setTrips(res.data.items);
+      setTrips(res.data.items || []);
       setPagination(res.data.pagination);
     } catch (err: any) {
-      console.error('Failed to load trips:', err.message);
+      setFetchError(err.message || 'Failed to load trips');
     } finally {
       setLoading(false);
     }
@@ -481,6 +483,15 @@ export const TripsPage: React.FC = () => {
                 <tr>
                   <td colSpan={9} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
                     Loading active trip registry...
+                  </td>
+                </tr>
+              ) : fetchError ? (
+                <tr>
+                  <td colSpan={9} style={{ textAlign: 'center', padding: '3rem', color: '#ef4444' }}>
+                    <div style={{ marginBottom: '0.75rem', fontWeight: 600 }}>⚠️ {fetchError}</div>
+                    <button onClick={() => fetchTrips(1)} className="btn btn-secondary" style={{ fontSize: '0.8rem' }}>
+                      🔄 Retry
+                    </button>
                   </td>
                 </tr>
               ) : trips.length === 0 ? (

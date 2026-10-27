@@ -12,6 +12,7 @@
     "test:phase2-workflows": "node --test tests/phase2-workflows.test.js",
     "test:phase3-integrations": "node --test tests/phase3-integrations.test.js",
     "test:phase4-realtime-gps": "node --test tests/phase4-realtime-gps.test.js",
+    "test:phase5-frontend-reliability": "node --test tests/phase5-frontend-reliability.test.js",
     "test:phase2": "node --test apps/api/tests/phase2-auth-rbac.test.js",
     "test:phase3": "node --test apps/api/tests/phase3-master-data.test.js",
     "test:phase4": "node --test apps/api/tests/phase4-loads-documents.test.js",

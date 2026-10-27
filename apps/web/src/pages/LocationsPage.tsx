@@ -12,8 +12,9 @@ export const LocationsPage: React.FC = () => {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState({
+  const initialLocationForm = {
     name: '',
     code: '',
     locationType: 'PICKUP',
@@ -21,20 +22,23 @@ export const LocationsPage: React.FC = () => {
     coordinates: { lat: '', lng: '' },
     contactPerson: '',
     contactPhone: ''
-  });
+  };
+
+  const [formData, setFormData] = useState(initialLocationForm);
 
   const fetchLocations = async (page = 1) => {
     setLoading(true);
+    setFetchError(null);
     try {
       let q = `/locations?page=${page}&limit=10`;
       if (search) q += `&search=${encodeURIComponent(search)}`;
       if (locationType) q += `&locationType=${locationType}`;
 
       const res = await apiRequest(q);
-      setLocations(res.data.items);
+      setLocations(res.data.items || []);
       setPagination(res.data.pagination);
     } catch (err: any) {
-      console.error('Failed to load locations:', err.message);
+      setFetchError(err.message || 'Failed to load locations');
     } finally {
       setLoading(false);
     }
@@ -48,6 +52,12 @@ export const LocationsPage: React.FC = () => {
     e.preventDefault();
     setFormLoading(true);
     setFormError(null);
+
+    if (!formData.name.trim()) {
+      setFormError('Please enter a location or hub name.');
+      setFormLoading(false);
+      return;
+    }
 
     try {
       const payload = {
@@ -63,15 +73,7 @@ export const LocationsPage: React.FC = () => {
         body: JSON.stringify(payload)
       });
       setIsModalOpen(false);
-      setFormData({
-        name: '',
-        code: '',
-        locationType: 'PICKUP',
-        address: { street: '', city: '', state: '', pincode: '' },
-        coordinates: { lat: '', lng: '' },
-        contactPerson: '',
-        contactPhone: ''
-      });
+      setFormData(initialLocationForm);
       fetchLocations(1);
     } catch (err: any) {
       setFormError(err.message || 'Failed to save location');
@@ -176,10 +178,19 @@ export const LocationsPage: React.FC = () => {
                     Loading locations...
                   </td>
                 </tr>
+              ) : fetchError ? (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-red-400">
+                    <div className="mb-2 font-semibold">⚠️ {fetchError}</div>
+                    <button onClick={() => fetchLocations(1)} className="btn btn-secondary text-xs">
+                      🔄 Retry
+                    </button>
+                  </td>
+                </tr>
               ) : locations.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-8 text-center text-slate-500">
-                    No locations found.
+                    No locations found. Click "+ Add Location" to register your first warehouse or hub.
                   </td>
                 </tr>
               ) : (
