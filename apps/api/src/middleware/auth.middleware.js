@@ -18,6 +18,9 @@ async function authenticate(req, res, next) {
     } else if (req.cookies && req.cookies.accessToken) {
       // 2. Fallback to HttpOnly Cookie
       token = req.cookies.accessToken;
+    } else if (req.query && req.query.token) {
+      // 3. Fallback to Query Parameter (for browser EventSource SSE)
+      token = req.query.token;
     }
 
     if (!token) {

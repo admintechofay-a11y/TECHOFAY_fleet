@@ -14,6 +14,7 @@ const tripStatusService = require('../services/tripStatus.service');
 const sequenceService = require('../../sequences/services/sequence.service');
 const auditLogService = require('../../audit/services/auditLog.service');
 const pdfService = require('../../../services/pdf.service');
+const eventBus = require('../../../services/eventBus.service');
 const {
   AuditAction,
   SystemModule,
@@ -455,6 +456,15 @@ class TripController {
         userAgent: req.headers['user-agent']
       });
 
+      // Emit Real-Time Event upon Successful DB Dispatch
+      eventBus.publish(companyId, 'TRIP_DISPATCHED', {
+        tripId: trip._id,
+        tripNumber,
+        vehicleId,
+        driverId,
+        status: trip.status
+      });
+
       res.status(201).json({
         success: true,
         statusCode: 201,
@@ -552,6 +562,19 @@ class TripController {
         details: { oldStatus, newStatus: targetStatus, reason },
         ipAddress: req.ip,
         userAgent: req.headers['user-agent']
+      });
+
+      // Emit Real-Time Event upon Successful Status Mutation
+      const eventName = targetStatus === TripStatus.CLOSED
+        ? 'TRIP_CLOSED'
+        : (targetStatus === TripStatus.DELIVERED ? 'TRIP_DELIVERED' : 'TRIP_STATUS_UPDATED');
+
+      eventBus.publish(companyId, eventName, {
+        tripId: trip._id,
+        tripNumber: trip.tripNumber,
+        oldStatus,
+        newStatus: targetStatus,
+        reason
       });
 
       res.status(200).json({
@@ -664,6 +687,18 @@ class TripController {
         },
         ipAddress: req.ip,
         userAgent: req.headers['user-agent']
+      });
+
+      // Emit Real-Time Event upon Successful Stop Delivery
+      eventBus.publish(companyId, 'STOP_DELIVERED', {
+        tripId: trip._id,
+        tripNumber: trip.tripNumber,
+        stopId,
+        sequence: stop.sequence,
+        deliveredQuantity: qty,
+        pendingQuantity: stop.pendingQuantity,
+        stopStatus: stop.status,
+        tripStatus: trip.status
       });
 
       res.status(200).json({

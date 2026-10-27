@@ -203,6 +203,39 @@ class PublicTrackingService {
     const consignorName = load.consignorId?.name || load.consignorId?.companyName || 'Registered Consignor';
     const consigneeName = load.consigneeId?.name || load.consigneeId?.companyName || 'Registered Consignee';
 
+    // Resolve live telematics if vehicle is equipped with active GPS
+    let liveTelematics = null;
+    if (vehicleObj?._id) {
+      const fullVehicle = await Vehicle.findById(vehicleObj._id).select('telematics');
+      if (
+        fullVehicle?.telematics?.lastPing?.latitude !== null &&
+        fullVehicle?.telematics?.lastPing?.latitude !== undefined &&
+        fullVehicle?.telematics?.lastPing?.recordedAt
+      ) {
+        liveTelematics = {
+          isLiveGps: true,
+          locationSource: 'TELEMATICS_GPS',
+          coordinates: {
+            lat: fullVehicle.telematics.lastPing.latitude,
+            lng: fullVehicle.telematics.lastPing.longitude
+          },
+          speedKmph: fullVehicle.telematics.lastPing.speedKmph || 0,
+          headingDegrees: fullVehicle.telematics.lastPing.headingDegrees || 0,
+          lastSeenAt: fullVehicle.telematics.lastPing.recordedAt
+        };
+      }
+    }
+
+    if (!liveTelematics) {
+      liveTelematics = {
+        isLiveGps: false,
+        locationSource: 'GEOCODED_HUB',
+        coordinates: null,
+        lastSeenAt: null,
+        disclaimer: 'Hardware telematics unconfigured. Trajectory reflects geocoded logistics corridor hubs.'
+      };
+    }
+
     return {
       trackingNumber: identifier,
       trackingToken: load.trackingToken || null,
@@ -223,6 +256,7 @@ class PublicTrackingService {
         type: vehicleObj?.vehicleType || 'Transport Commercial Vehicle',
         maskedPlateNumber: maskedPlate
       },
+      telematics: liveTelematics,
       pickupDate: load.pickupDate || null,
       expectedDeliveryDate: load.expectedDeliveryDate || trip?.expectedDeliveryDate || null,
       milestones,

@@ -16,9 +16,20 @@ export interface Waypoint {
   };
 }
 
+export interface TelematicsLocation {
+  isLiveGps: boolean;
+  locationSource: 'TELEMATICS_GPS' | 'GEOCODED_HUB' | 'UNAVAILABLE';
+  coordinates?: { lat: number; lng: number } | null;
+  speedKmph?: number;
+  headingDegrees?: number;
+  lastSeenAt?: string | null;
+  disclaimer?: string;
+}
+
 interface RouteMapProps {
   waypoints: Waypoint[];
   currentStatus?: string;
+  telematics?: TelematicsLocation | null;
   height?: number | string;
   className?: string;
 }
@@ -26,6 +37,7 @@ interface RouteMapProps {
 export const RouteMap: React.FC<RouteMapProps> = ({
   waypoints = [],
   currentStatus = 'IN_TRANSIT',
+  telematics = null,
   height = 360,
   className = ''
 }) => {
@@ -74,9 +86,20 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 
     const polylineStr = mapped.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
 
-    // Calculate in-transit estimated vehicle position along route
+    // Calculate vehicle position: Live GPS coordinates if equipped, otherwise corridor interpolation
     let transitPos = null;
-    if (mapped.length >= 2) {
+    if (telematics?.isLiveGps && telematics.coordinates?.lat && telematics.coordinates?.lng) {
+      const gpsLat = telematics.coordinates.lat;
+      const gpsLng = telematics.coordinates.lng;
+      const x = padding + ((gpsLng - minLng) / (maxLng - minLng)) * (svgWidth - 2 * padding);
+      const y = (svgHeight - padding) - ((gpsLat - minLat) / (maxLat - minLat)) * (svgHeight - 2 * padding);
+      transitPos = {
+        x,
+        y,
+        isLiveGps: true,
+        speedKmph: telematics.speedKmph || 0
+      };
+    } else if (mapped.length >= 2) {
       let progressRatio = 0.5; // default mid-route
       if (currentStatus === 'DELIVERED') progressRatio = 1.0;
       else if (currentStatus === 'BOOKED' || currentStatus === 'VEHICLE_ASSIGNED') progressRatio = 0.05;
@@ -86,12 +109,14 @@ export const RouteMap: React.FC<RouteMapProps> = ({
       const destination = mapped[mapped.length - 1];
       transitPos = {
         x: origin.x + (destination.x - origin.x) * progressRatio,
-        y: origin.y + (destination.y - origin.y) * progressRatio
+        y: origin.y + (destination.y - origin.y) * progressRatio,
+        isLiveGps: false,
+        speedKmph: 0
       };
     }
 
     return { points: mapped, polylinePoints: polylineStr, transitPosition: transitPos };
-  }, [validWaypoints, currentStatus]);
+  }, [validWaypoints, currentStatus, telematics]);
 
   if (validWaypoints.length === 0) {
     return (
@@ -104,15 +129,23 @@ export const RouteMap: React.FC<RouteMapProps> = ({
     );
   }
 
+  const isLive = Boolean(telematics?.isLiveGps);
+
   return (
     <div
       className={`relative overflow-hidden bg-slate-900 border border-slate-800 rounded-xl shadow-inner ${className}`}
       style={{ height }}
     >
       {/* Top Map Bar / Status Indicator */}
-      <div className="absolute top-3 left-4 z-10 flex items-center gap-2 bg-slate-800/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700/60 text-xs font-medium text-slate-200">
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>Interactive Route Trajectory • {validWaypoints.length} Logistics Hubs</span>
+      <div className="absolute top-3 left-4 z-10 flex items-center gap-2 bg-slate-800/90 backdrop-blur-md px-3.5 py-1.5 rounded-lg border border-slate-700/80 text-xs font-medium text-slate-200">
+        <span
+          className={`w-2.5 h-2.5 rounded-full ${isLive ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}
+        ></span>
+        <span>
+          {isLive
+            ? `🛰️ Live GPS Telematics • ${telematics?.speedKmph || 0} km/h • ${validWaypoints.length} Hubs`
+            : `📍 Corridor Trajectory • Geocoded Hub Positions (${validWaypoints.length} Hubs)`}
+        </span>
       </div>
 
       <svg
@@ -199,7 +232,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
               textAnchor="middle"
               className="fill-sky-300 font-bold text-[10px] tracking-wide uppercase filter drop-shadow"
             >
-              🚚 En Route
+              {transitPosition.isLiveGps ? `🛰️ Live GPS (${transitPosition.speedKmph} km/h)` : '🚚 Corridor Checkpoint'}
             </text>
           </g>
         )}
@@ -290,8 +323,8 @@ export const RouteMap: React.FC<RouteMapProps> = ({
           <span>Destination</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
-          <span>Vehicle Position</span>
+          <span className={`w-2.5 h-2.5 rounded-full ${isLive ? 'bg-emerald-400' : 'bg-sky-400'}`}></span>
+          <span>{isLive ? 'Live GPS (AIS-140)' : 'Corridor Checkpoint'}</span>
         </div>
       </div>
     </div>

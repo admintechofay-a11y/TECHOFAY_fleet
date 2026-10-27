@@ -12,6 +12,7 @@ const sequenceService = require('../../sequences/services/sequence.service');
 const loadStatusService = require('../services/loadStatus.service');
 const auditLogService = require('../../audit/services/auditLog.service');
 const pdfService = require('../../../services/pdf.service');
+const eventBus = require('../../../services/eventBus.service');
 const { AuditAction, LoadStatus, SystemModule } = require('@fleet/shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
@@ -270,6 +271,15 @@ class LoadController {
         ipAddress: req.ip
       });
 
+      // Emit Real-Time Event upon Successful DB Creation
+      eventBus.publish(companyId, 'LOAD_CREATED', {
+        loadId: load._id,
+        loadNumber: load.loadNumber,
+        customerId: load.customerId,
+        totalWeightMt: load.totalWeightMt,
+        status: load.status
+      });
+
       res.status(201).json({
         success: true,
         statusCode: 201,
@@ -329,6 +339,15 @@ class LoadController {
         oldValues: { status: oldStatus },
         newValues: { status, reason },
         ipAddress: req.ip
+      });
+
+      // Emit Real-Time Event upon Successful Status Change
+      eventBus.publish(companyId, 'LOAD_STATUS_UPDATED', {
+        loadId: load._id,
+        loadNumber: load.loadNumber,
+        oldStatus,
+        newStatus: status,
+        reason
       });
 
       res.status(200).json({

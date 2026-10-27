@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiRequest } from '../lib/api';
+import { useRealtimeEvents, RealtimeEvent } from '../hooks/useRealtimeEvents';
 
 interface DashboardMetrics {
   loads: {
@@ -76,37 +77,100 @@ interface AlertItem {
   link: string;
 }
 
+interface TelematicsStatus {
+  isConfigured: boolean;
+  provider: string;
+  status: 'CONFIGURED' | 'UNAVAILABLE';
+  supportedProtocols: string[];
+  dependencyMessage: string;
+}
+
 export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => void }) {
   const { user, tenant } = useAuth();
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [trends, setTrends] = useState<TrendDay[]>([]);
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
+  const [telematicsStatus, setTelematicsStatus] = useState<TelematicsStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [recentNotification, setRecentNotification] = useState<{ id: string; message: string; type: string } | null>(null);
 
-  async function fetchDashboardData() {
+  const fetchDashboardData = useCallback(async (silent = false) => {
     try {
-      setIsLoading(true);
-      const [metricsRes, trendsRes, alertsRes] = await Promise.all([
+      if (!silent) setIsLoading(true);
+      const [metricsRes, trendsRes, alertsRes, telematicsRes] = await Promise.allSettled([
         apiRequest('/dashboard/metrics'),
         apiRequest('/dashboard/trends?days=7'),
-        apiRequest('/dashboard/alerts')
+        apiRequest('/dashboard/alerts'),
+        apiRequest('/telematics/status')
       ]);
 
-      if (metricsRes?.data) setMetrics(metricsRes.data);
-      if (trendsRes?.data) setTrends(trendsRes.data);
-      if (alertsRes?.data) setAlerts(alertsRes.data);
+      if (metricsRes.status === 'fulfilled' && metricsRes.value?.data) {
+        setMetrics(metricsRes.value.data);
+      }
+      if (trendsRes.status === 'fulfilled' && trendsRes.value?.data) {
+        setTrends(trendsRes.value.data);
+      }
+      if (alertsRes.status === 'fulfilled' && alertsRes.value?.data) {
+        setAlerts(alertsRes.value.data);
+      }
+      if (telematicsRes.status === 'fulfilled' && telematicsRes.value?.data) {
+        setTelematicsStatus(telematicsRes.value.data);
+      }
       setLastRefreshed(new Date());
+      setElapsedSeconds(0);
     } catch (err) {
       console.error('Failed to load dashboard metrics:', err);
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
-  }
+  }, []);
+
+  // Real-time Event Subscription with Automatic Refresh and Notification
+  const handleRealtimeEvent = useCallback((event: RealtimeEvent) => {
+    const eventLabels: Record<string, string> = {
+      TRIP_DISPATCHED: `Trip Dispatched: ${event.payload?.tripNumber || ''}`,
+      TRIP_CLOSED: `Trip Closed: ${event.payload?.tripNumber || ''}`,
+      TRIP_DELIVERED: `Trip Delivered: ${event.payload?.tripNumber || ''}`,
+      TRIP_STATUS_UPDATED: `Trip Status Updated: ${event.payload?.tripNumber || ''}`,
+      STOP_DELIVERED: `Stop Completed on Trip ${event.payload?.tripNumber || ''}`,
+      LOAD_CREATED: `New Load Created: ${event.payload?.loadNumber || ''}`,
+      LOAD_STATUS_UPDATED: `Load Status: ${event.payload?.loadNumber || ''} -> ${event.payload?.newStatus || ''}`,
+      POD_UPLOADED: `POD Uploaded: ${event.payload?.podNumber || ''}`,
+      POD_VERIFIED: `POD ${event.payload?.podNumber || ''} Verified`,
+      TELEMATICS_PING: `Vehicle ${event.payload?.plateNumber || ''} GPS Ping Received`
+    };
+
+    const label = eventLabels[event.eventType] || `Live Event: ${event.eventType}`;
+    setRecentNotification({
+      id: event.eventId,
+      message: label,
+      type: event.eventType
+    });
+
+    setTimeout(() => {
+      setRecentNotification(current => (current?.id === event.eventId ? null : current));
+    }, 6000);
+
+    if (event.eventType !== 'TELEMATICS_PING') {
+      fetchDashboardData(true);
+    }
+  }, [fetchDashboardData]);
+
+  const { connectionState, reconnect } = useRealtimeEvents(handleRealtimeEvent);
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [fetchDashboardData]);
+
+  // Track elapsed seconds to flag stale data (> 60s)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setElapsedSeconds(Math.floor((Date.now() - lastRefreshed.getTime()) / 1000));
+    }, 2000);
+    return () => clearInterval(timer);
+  }, [lastRefreshed]);
 
   const formatCurrency = (amt: number = 0) => {
     return new Intl.NumberFormat('en-IN', {
@@ -126,6 +190,38 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
 
   return (
     <div className="animate-fade-in" style={{ padding: '2rem' }}>
+      {/* Real-time Push Notification Banner */}
+      {recentNotification && (
+        <div
+          style={{
+            padding: '0.75rem 1.25rem',
+            borderRadius: '10px',
+            background: 'rgba(37, 99, 235, 0.12)',
+            border: '1px solid rgba(37, 99, 235, 0.35)',
+            color: '#1d4ed8',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            marginBottom: '1.5rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            boxShadow: 'var(--shadow-sm)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span>⚡</span>
+            <span>Real-Time Dispatch Update:</span>
+            <span style={{ color: 'var(--text-primary)' }}>{recentNotification.message}</span>
+          </div>
+          <button
+            onClick={() => setRecentNotification(null)}
+            style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#1d4ed8', fontSize: '0.9rem' }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Top Banner: Greeting, Live State & Refresh */}
       <div
         className="glass-panel"
@@ -134,7 +230,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
           borderRadius: '16px',
           background: 'var(--bg-surface)',
           border: '1px solid var(--border-subtle)',
-          marginBottom: '2rem',
+          marginBottom: '1.25rem',
           boxShadow: 'var(--shadow-sm)'
         }}
       >
@@ -150,7 +246,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <button
-              onClick={fetchDashboardData}
+              onClick={() => fetchDashboardData()}
               className="btn btn-secondary"
               disabled={isLoading}
               style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem' }}
@@ -159,12 +255,69 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
               <span>Refresh Metrics</span>
             </button>
             <div style={{ textAlign: 'right' }}>
-              <span className="badge badge-success" style={{ fontSize: '0.72rem' }}>
-                ● Live Data Connected
-              </span>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                Updated: {lastRefreshed.toLocaleTimeString()}
-              </div>
+              {/* Dynamic SSE Live Connection Badge */}
+              {connectionState === 'CONNECTED' && (
+                <span className="badge badge-success" style={{ fontSize: '0.72rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }}></span>
+                  Live Connected (SSE)
+                </span>
+              )}
+              {connectionState === 'RECONNECTING' && (
+                <span className="badge badge-warning" style={{ fontSize: '0.72rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }}></span>
+                  Reconnecting...
+                </span>
+              )}
+              {connectionState === 'CONNECTING' && (
+                <span className="badge" style={{ fontSize: '0.72rem', background: '#3b82f6', color: '#ffffff' }}>
+                  Connecting...
+                </span>
+              )}
+              {connectionState === 'DISCONNECTED' && (
+                <button
+                  onClick={reconnect}
+                  className="badge"
+                  style={{ fontSize: '0.72rem', background: '#64748b', color: '#ffffff', cursor: 'pointer', border: 'none' }}
+                >
+                  Offline • Click Reconnect
+                </button>
+              )}
+
+              {/* Stale Data Detector */}
+              {elapsedSeconds >= 60 ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.25rem' }}>
+                  <span
+                    style={{
+                      fontSize: '0.68rem',
+                      color: '#d97706',
+                      background: 'rgba(245, 158, 11, 0.15)',
+                      padding: '0.15rem 0.4rem',
+                      borderRadius: '4px',
+                      fontWeight: 700
+                    }}
+                  >
+                    ⚠️ Stale ({Math.floor(elapsedSeconds / 60)}m ago)
+                  </span>
+                  <button
+                    onClick={() => fetchDashboardData()}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#2563eb',
+                      fontSize: '0.68rem',
+                      cursor: 'pointer',
+                      textDecoration: 'underline',
+                      padding: 0
+                    }}
+                  >
+                    Refresh
+                  </button>
+                </div>
+              ) : (
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                  Updated: {lastRefreshed.toLocaleTimeString()}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -216,6 +369,50 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
             📥 Excel Importer
           </button>
         </div>
+      </div>
+
+      {/* Honest Telematics Hardware Gateway Status Banner */}
+      <div
+        style={{
+          padding: '0.75rem 1.25rem',
+          borderRadius: '12px',
+          background: telematicsStatus?.isConfigured ? 'rgba(16, 185, 129, 0.08)' : 'rgba(245, 158, 11, 0.08)',
+          border: `1px solid ${telematicsStatus?.isConfigured ? 'rgba(16, 185, 129, 0.25)' : 'rgba(245, 158, 11, 0.25)'}`,
+          marginBottom: '1.75rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '0.75rem',
+          boxShadow: 'var(--shadow-xs)'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', fontSize: '0.82rem' }}>
+          <span style={{ fontSize: '1.1rem' }}>{telematicsStatus?.isConfigured ? '🛰️' : '📡'}</span>
+          <div>
+            <strong style={{ color: telematicsStatus?.isConfigured ? '#047857' : '#b45309', marginRight: '0.5rem' }}>
+              GPS Telematics Subsystem:
+            </strong>
+            <span style={{ color: 'var(--text-secondary)' }}>
+              {telematicsStatus?.dependencyMessage ||
+                'Physical AIS-140/Teltonika GPS gateway unconfigured. Vehicle positions resolve to geocoded freight corridor hubs.'}
+            </span>
+          </div>
+        </div>
+        <span
+          style={{
+            fontSize: '0.72rem',
+            fontWeight: 700,
+            letterSpacing: '0.04em',
+            padding: '0.25rem 0.65rem',
+            borderRadius: '6px',
+            background: telematicsStatus?.isConfigured ? '#d1fae5' : '#fef3c7',
+            color: telematicsStatus?.isConfigured ? '#065f46' : '#92400e',
+            textTransform: 'uppercase'
+          }}
+        >
+          {telematicsStatus?.isConfigured ? 'HARDWARE ONLINE' : 'CORRIDOR GEOCODE FALLBACK'}
+        </span>
       </div>
 
       {/* 6 Rich KPI Metrics Grid */}

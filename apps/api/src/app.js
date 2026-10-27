@@ -37,6 +37,8 @@ const settingsRoutes = require('./modules/settings/routes/settings.routes');
 const contactRoutes = require('./modules/contact/routes/contact.routes');
 const publicTrackingRoutes = require('./modules/tracking/routes/publicTracking.routes');
 const maintenanceRoutes = require('./modules/maintenance/routes/maintenance.routes');
+const eventRoutes = require('./modules/events/routes/event.routes');
+const telematicsRoutes = require('./modules/telematics/routes/telematics.routes');
 
 const app = express();
 
@@ -289,6 +291,8 @@ app.use('/api/v1/admin/settings', settingsRoutes);
 app.use('/api/v1/contact', contactRoutes);
 app.use('/api/v1/public/track', publicTrackingRoutes);
 app.use('/api/v1/maintenance', maintenanceRoutes);
+app.use('/api/v1/events', eventRoutes);
+app.use('/api/v1/telematics', telematicsRoutes);
 
 // 11. Catch-all 404 for Unmatched Routes
 app.use('*', (req, res, next) => {

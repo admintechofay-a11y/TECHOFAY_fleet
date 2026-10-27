@@ -12,6 +12,7 @@ const LrNumber = require('../../lr/models/LrNumber');
 const sequenceService = require('../../sequences/services/sequence.service');
 const storageService = require('../../../services/storage.service');
 const auditLogService = require('../../audit/services/auditLog.service');
+const eventBus = require('../../../services/eventBus.service');
 const { AuditAction, PodStatus, SystemModule } = require('@fleet/shared');
 const { AppError } = require('../../../middleware/errorHandler');
 
@@ -216,6 +217,16 @@ class PodController {
         userAgent: req.headers['user-agent']
       });
 
+      // Emit Real-Time Event upon Successful POD Upload
+      eventBus.publish(companyId, 'POD_UPLOADED', {
+        podId: pod._id,
+        podNumber,
+        tripId,
+        loadId: effectiveLoadId,
+        receiverName: pod.receiverName,
+        status: pod.status
+      });
+
       res.status(201).json({
         success: true,
         statusCode: 201,
@@ -305,6 +316,16 @@ class PodController {
         },
         ipAddress: req.ip,
         userAgent: req.headers['user-agent']
+      });
+
+      // Emit Real-Time Event upon Successful POD Verification
+      eventBus.publish(companyId, 'POD_VERIFIED', {
+        podId: pod._id,
+        podNumber: pod.podNumber,
+        tripId: pod.tripId,
+        loadId: pod.loadId,
+        status,
+        verifiedAt: pod.verifiedAt
       });
 
       res.status(200).json({

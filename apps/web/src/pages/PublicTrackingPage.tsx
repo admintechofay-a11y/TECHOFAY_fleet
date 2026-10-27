@@ -35,6 +35,14 @@ interface TrackingData {
   podVerified: boolean;
   podNumber: string | null;
   podReceiver: string | null;
+  telematics?: {
+    isLiveGps: boolean;
+    locationSource: 'TELEMATICS_GPS' | 'GEOCODED_HUB' | 'UNAVAILABLE';
+    coordinates?: { lat: number; lng: number } | null;
+    speedKmph?: number;
+    lastSeenAt?: string | null;
+    disclaimer?: string;
+  } | null;
   lastUpdated: string;
 }
 
@@ -322,7 +330,12 @@ export const PublicTrackingPage: React.FC = () => {
                 <span>Geographical Route & Hub Trajectory</span>
               </h3>
 
-              <RouteMap waypoints={trackingData.waypoints} currentStatus={trackingData.currentStatus} height={380} />
+              <RouteMap
+                waypoints={trackingData.waypoints}
+                currentStatus={trackingData.currentStatus}
+                telematics={trackingData.telematics}
+                height={380}
+              />
             </div>
 
             {/* Waypoints Breakdown Table */}

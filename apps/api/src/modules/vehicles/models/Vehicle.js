@@ -96,6 +96,50 @@ const vehicleSchema = new Schema(
       type: Boolean,
       default: true,
       index: true
+    },
+    telematics: {
+      deviceId: {
+        type: String,
+        trim: true,
+        index: true,
+        sparse: true
+      },
+      provider: {
+        type: String,
+        enum: ['AIS140', 'TELTONIKA', 'TRACCAR', 'SIM_TRACKING', 'REST_PING', 'NONE'],
+        default: 'NONE'
+      },
+      imei: {
+        type: String,
+        trim: true,
+        default: ''
+      },
+      simNumber: {
+        type: String,
+        trim: true,
+        default: ''
+      },
+      isActive: {
+        type: Boolean,
+        default: false
+      },
+      lastPing: {
+        latitude: { type: Number, default: null },
+        longitude: { type: Number, default: null },
+        speedKmph: { type: Number, default: 0 },
+        headingDegrees: { type: Number, default: 0 },
+        altitudeMeters: { type: Number, default: 0 },
+        accuracyMeters: { type: Number, default: 0 },
+        ignition: { type: Boolean, default: false },
+        batteryPercent: { type: Number, default: 100 },
+        recordedAt: { type: Date, default: null },
+        receivedAt: { type: Date, default: null },
+        rawPayload: { type: Schema.Types.Mixed, default: null }
+      },
+      lastGpsTimestamp: {
+        type: Date,
+        default: null
+      }
     }
   },
   {
@@ -119,5 +163,6 @@ vehicleSchema
 vehicleSchema.index({ companyId: 1, plateNumber: 1 }, { unique: true });
 vehicleSchema.index({ companyId: 1, status: 1 });
 vehicleSchema.index({ companyId: 1, category: 1 });
+vehicleSchema.index({ companyId: 1, 'telematics.deviceId': 1 });
 
 module.exports = mongoose.model('Vehicle', vehicleSchema);
