@@ -45,8 +45,9 @@ const app = express();
 // Build exact whitelist of allowed CORS origins
 const allowedOrigins = new Set([
   config.clientUrl,
+  process.env.WEB_URL,
   'https://techofay-fleet.vercel.app'
-]);
+].filter(Boolean));
 
 if (process.env.CORS_ALLOWED_ORIGINS) {
   process.env.CORS_ALLOWED_ORIGINS.split(',').forEach(o => {
@@ -115,7 +116,13 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser(config.cookieSecret));
 
-// 4. Request Correlation ID
+// 4. Request Correlation ID & Path Normalization
+app.use((req, res, next) => {
+  if (req.url && !req.url.startsWith('/api') && req.url.startsWith('/v1')) {
+    req.url = `/api${req.url}`;
+  }
+  next();
+});
 app.use(correlationIdMiddleware);
 
 // 5. Public Static SEO Files

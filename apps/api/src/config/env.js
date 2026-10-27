@@ -21,7 +21,7 @@ const config = {
   cookieSecret: process.env.COOKIE_SECRET || 'dev_cookie_secret_key_fleet_transport',
   cookieSecure: process.env.COOKIE_SECURE === 'true' || process.env.NODE_ENV === 'production',
   cookieSameSite: process.env.COOKIE_SAME_SITE || 'lax',
-  clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
+  clientUrl: process.env.WEB_URL || process.env.CLIENT_URL || 'http://localhost:5173',
   rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10),
   rateLimitMaxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100', 10),
   authRateLimitMaxRequests: parseInt(process.env.AUTH_RATE_LIMIT_MAX_REQUESTS || '5', 10),
@@ -30,7 +30,7 @@ const config = {
   storageDriver: process.env.STORAGE_DRIVER || 'local',
   storageLocalRoot: process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || './uploads',
   storageMaxFileSizeMb: parseInt(process.env.STORAGE_MAX_FILE_SIZE_MB || '15', 10),
-  appBaseUrl: process.env.APP_BASE_URL || process.env.PUBLIC_APP_URL || 'http://localhost:5000',
+  appBaseUrl: process.env.API_URL || process.env.APP_BASE_URL || process.env.PUBLIC_APP_URL || 'http://localhost:5000',
   validateConfig: function (targetEnv = process.env.NODE_ENV) {
     if (targetEnv === 'production') {
       const defaultJwt = 'dev_jwt_secret_min_32_characters_for_transport_platform';
