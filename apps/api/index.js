@@ -337336,9 +337336,7 @@ async function startServer() {
     process.exit(1);
   }
 }
-if (require.main === module || process.env.VERCEL) {
-  startServer();
-}
+startServer();
 module.exports = app;
 module.exports.startServer = startServer;
 /*! Bundled license information:
