@@ -54,6 +54,14 @@ const telematicsRoutes = require('./modules/telematics/routes/telematics.routes'
 const app = express();
 app.set('trust proxy', 1);
 
+// URL normalization for serverless proxies
+app.use((req, res, next) => {
+  if (req.url.startsWith('/v1/')) {
+    req.url = '/api' + req.url;
+  }
+  next();
+});
+
 // Build exact whitelist of allowed CORS origins
 const allowedOrigins = new Set([
   config.clientUrl,
@@ -233,7 +241,7 @@ app.get('/login.html', (req, res) => {
 app.use('/api/', generalRateLimiter);
 
 // 8. Health, Readiness & SEO Probes
-app.get(['/api/v1/health', '/v1/health', '/health'], (req, res) => {
+app.get(['/api', '/api/', '/api/v1/health', '/v1/health', '/health'], (req, res) => {
   res.status(200).json({
     success: true,
     statusCode: 200,

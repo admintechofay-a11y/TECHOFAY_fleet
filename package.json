@@ -26,8 +26,9 @@
     "check:env": "node scripts/health-check.js",
     "start:api": "node apps/api/src/server.js",
     "type-check": "tsc --project apps/web/tsconfig.json",
-    "build": "npm --prefix apps/web run build",
-    "build:web": "npm --prefix apps/web run build"
+    "build:api": "npx esbuild apps/api/src/app.js --bundle --platform=node --target=node18 --outfile=api/index.js",
+    "build:web": "npm --prefix apps/web run build",
+    "build": "npm run build:web && npm run build:api"
   },
   "keywords": [
     "mern",
