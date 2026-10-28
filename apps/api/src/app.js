@@ -2,17 +2,6 @@
  * Express Application Setup
  */
 
-// Intercept '@fleet/shared' to ensure guaranteed resolution in serverless and monorepo runtimes
-const Module = require('module');
-const path = require('node:path');
-const originalResolveFilename = Module._resolveFilename;
-Module._resolveFilename = function (request, parent, isMain, options) {
-  if (request === '@fleet/shared') {
-    return path.resolve(__dirname, 'shared/index.js');
-  }
-  return originalResolveFilename.call(this, request, parent, isMain, options);
-};
-
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -425,13 +414,13 @@ app.use('*', (req, res, next) => {
 // 12. Global Error Handling Middleware
 app.use(errorHandler);
 
-// Standalone direct execution guard
-if (require.main === module) {
-  const port = parseInt(process.env.PORT || config.port || 5000, 10);
-  const host = process.env.HOST || '0.0.0.0';
-  app.listen(port, host, () => {
-    console.log(`🚀 Fleet API server listening on http://${host}:${port}`);
-  });
-}
+const handler = (req, res) => {
+  return app(req, res);
+};
 
-module.exports = app;
+// Expose express application methods on handler
+Object.setPrototypeOf(handler, app);
+
+module.exports = handler;
+module.exports.default = handler;
+
