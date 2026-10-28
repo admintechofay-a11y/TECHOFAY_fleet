@@ -337273,6 +337273,13 @@ app.use("*", (req, res, next) => {
   next(new AppError(`Cannot ${req.method} ${req.originalUrl}. Route not found.`, 404));
 });
 app.use(errorHandler);
+if (require.main === module) {
+  const port = parseInt(process.env.PORT || config.port || 5e3, 10);
+  const host = process.env.HOST || "0.0.0.0";
+  app.listen(port, host, () => {
+    console.log(`\u{1F680} Fleet API server listening on http://${host}:${port}`);
+  });
+}
 module.exports = app;
 /*! Bundled license information:
 

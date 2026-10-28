@@ -417,4 +417,13 @@ app.use('*', (req, res, next) => {
 // 12. Global Error Handling Middleware
 app.use(errorHandler);
 
+// Standalone direct execution guard
+if (require.main === module) {
+  const port = parseInt(process.env.PORT || config.port || 5000, 10);
+  const host = process.env.HOST || '0.0.0.0';
+  app.listen(port, host, () => {
+    console.log(`🚀 Fleet API server listening on http://${host}:${port}`);
+  });
+}
+
 module.exports = app;
