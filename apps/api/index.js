@@ -24234,7 +24234,7 @@ var require_env = __commonJS({
       defaultTimezone: process.env.DEFAULT_TIMEZONE || "Asia/Kolkata",
       defaultCurrency: process.env.DEFAULT_CURRENCY || "INR",
       storageDriver: process.env.STORAGE_DRIVER || "local",
-      storageLocalRoot: process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || "./uploads",
+      storageLocalRoot: process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || (process.env.VERCEL || process.env.SERVERLESS ? require("path").join(require("os").tmpdir(), "uploads") : "./uploads"),
       storageMaxFileSizeMb: parseInt(process.env.STORAGE_MAX_FILE_SIZE_MB || "15", 10),
       appBaseUrl: process.env.API_URL || process.env.APP_BASE_URL || process.env.PUBLIC_APP_URL || "http://localhost:5000",
       validateConfig: function(targetEnv = process.env.NODE_ENV) {
@@ -104192,8 +104192,9 @@ var require_storage_service = __commonJS({
     var path = require("path");
     var crypto4 = require("crypto");
     var { AppError: AppError2 } = require_errorHandler();
+    var defaultUploadDir = process.env.VERCEL || process.env.SERVERLESS ? path.join(require("os").tmpdir(), "uploads") : "./uploads";
     var UPLOAD_ROOT = path.resolve(
-      process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || "./uploads"
+      process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || defaultUploadDir
     );
     var ALLOWED_MIME_TYPES = [
       "image/jpeg",
@@ -104303,8 +104304,12 @@ var require_storage_service = __commonJS({
         this.driver = process.env.STORAGE_DRIVER || "local";
         const maxMb = parseInt(process.env.STORAGE_MAX_FILE_SIZE_MB, 10) || 15;
         this.maxFileSize = maxMb * 1024 * 1024;
-        if (!fs.existsSync(this.root)) {
-          fs.mkdirSync(this.root, { recursive: true });
+        try {
+          if (!fs.existsSync(this.root)) {
+            fs.mkdirSync(this.root, { recursive: true });
+          }
+        } catch (err) {
+          console.warn("[STORAGE] Local storage initialization warning:", err.message);
         }
       }
       /**
@@ -104333,8 +104338,12 @@ var require_storage_service = __commonJS({
         const ext = path.extname(originalName || "").toLowerCase() || ".bin";
         validateFileSignature(buffer, mimeType, ext);
         const tenantDir = path.join(this.root, "tenants", companyId.toString(), module3);
-        if (!fs.existsSync(tenantDir)) {
-          fs.mkdirSync(tenantDir, { recursive: true });
+        try {
+          if (!fs.existsSync(tenantDir)) {
+            fs.mkdirSync(tenantDir, { recursive: true });
+          }
+        } catch (err) {
+          console.warn("[STORAGE] Tenant directory creation warning:", err.message);
         }
         const randomHex = crypto4.randomBytes(16).toString("hex");
         const storageFileName = `${Date.now()}_${randomHex}${ext}`;

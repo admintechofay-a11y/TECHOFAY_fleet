@@ -9,8 +9,12 @@ const path = require('path');
 const crypto = require('crypto');
 const { AppError } = require('../middleware/errorHandler');
 
+const defaultUploadDir = (process.env.VERCEL || process.env.SERVERLESS)
+  ? path.join(require('os').tmpdir(), 'uploads')
+  : './uploads';
+
 const UPLOAD_ROOT = path.resolve(
-  process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || './uploads'
+  process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || defaultUploadDir
 );
 
 // Allowed MIME types for vehicle/driver compliance documents, attachments, and bulk exports
@@ -134,8 +138,12 @@ class StorageService {
     const maxMb = parseInt(process.env.STORAGE_MAX_FILE_SIZE_MB, 10) || 15;
     this.maxFileSize = maxMb * 1024 * 1024;
 
-    if (!fs.existsSync(this.root)) {
-      fs.mkdirSync(this.root, { recursive: true });
+    try {
+      if (!fs.existsSync(this.root)) {
+        fs.mkdirSync(this.root, { recursive: true });
+      }
+    } catch (err) {
+      console.warn('[STORAGE] Local storage initialization warning:', err.message);
     }
   }
 
@@ -173,8 +181,12 @@ class StorageService {
 
     // Tenant-isolated subdirectory
     const tenantDir = path.join(this.root, 'tenants', companyId.toString(), module);
-    if (!fs.existsSync(tenantDir)) {
-      fs.mkdirSync(tenantDir, { recursive: true });
+    try {
+      if (!fs.existsSync(tenantDir)) {
+        fs.mkdirSync(tenantDir, { recursive: true });
+      }
+    } catch (err) {
+      console.warn('[STORAGE] Tenant directory creation warning:', err.message);
     }
 
     // Generate collision-safe random storage filename
