@@ -337274,6 +337274,12 @@ var handler = (req, res) => {
   return app(req, res);
 };
 Object.setPrototypeOf(handler, app);
+if (require.main === module) {
+  const port = parseInt(process.env.PORT || 5e3, 10);
+  app.listen(port, "0.0.0.0", () => {
+    console.log(`[SERVICE] Fleet API server listening on http://0.0.0.0:${port}`);
+  });
+}
 module.exports = handler;
 module.exports.default = handler;
 /*! Bundled license information:

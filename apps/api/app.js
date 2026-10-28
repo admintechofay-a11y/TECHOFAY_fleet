@@ -1,4 +1,4 @@
 /**
- * Direct root entrypoint for Vercel Express builder
+ * Direct entrypoint for Vercel Express builder - delegates to pre-bundled index.js
  */
-module.exports = require('./src/app');
+module.exports = require('./index.js');

@@ -421,6 +421,13 @@ const handler = (req, res) => {
 // Expose express application methods on handler
 Object.setPrototypeOf(handler, app);
 
+if (require.main === module) {
+  const port = parseInt(process.env.PORT || 5000, 10);
+  app.listen(port, '0.0.0.0', () => {
+    console.log(`[SERVICE] Fleet API server listening on http://0.0.0.0:${port}`);
+  });
+}
+
 module.exports = handler;
 module.exports.default = handler;
 
