@@ -23088,7 +23088,7 @@ var require_lib3 = __commonJS({
           }
         }
       }
-      function cors(options, req, res, next) {
+      function cors2(options, req, res, next) {
         var headers = [], method = req.method && req.method.toUpperCase && req.method.toUpperCase();
         if (method === "OPTIONS") {
           headers.push(configureOrigin(options, req));
@@ -23142,7 +23142,7 @@ var require_lib3 = __commonJS({
                     next(err2);
                   } else {
                     corsOptions.origin = origin;
-                    cors(corsOptions, req, res, next);
+                    cors2(corsOptions, req, res, next);
                   }
                 });
               } else {
@@ -23678,8 +23678,8 @@ var require_helmet = __commonJS({
       }
       return result;
     }
-    var helmet = Object.assign(
-      function helmet2(options = {}) {
+    var helmet2 = Object.assign(
+      function helmet3(options = {}) {
         if (options.constructor?.name === "IncomingMessage") {
           throw new Error("It appears you have done something like `app.use(helmet)`, but it should be `app.use(helmet())`.");
         }
@@ -23731,7 +23731,7 @@ var require_helmet = __commonJS({
     exports2.crossOriginEmbedderPolicy = crossOriginEmbedderPolicy;
     exports2.crossOriginOpenerPolicy = crossOriginOpenerPolicy;
     exports2.crossOriginResourcePolicy = crossOriginResourcePolicy;
-    exports2.default = helmet;
+    exports2.default = helmet2;
     exports2.dnsPrefetchControl = xDnsPrefetchControl;
     exports2.frameguard = xFrameOptions;
     exports2.hidePoweredBy = xPoweredBy;
@@ -23761,14 +23761,14 @@ var require_cookie_parser = __commonJS({
     "use strict";
     var cookie = require_cookie();
     var signature = require_cookie_signature();
-    module2.exports = cookieParser;
+    module2.exports = cookieParser2;
     module2.exports.JSONCookie = JSONCookie;
     module2.exports.JSONCookies = JSONCookies;
     module2.exports.signedCookie = signedCookie;
     module2.exports.signedCookies = signedCookies;
-    function cookieParser(secret, options) {
+    function cookieParser2(secret, options) {
       var secrets = !secret || Array.isArray(secret) ? secret || [] : [secret];
-      return function cookieParser2(req, res, next) {
+      return function cookieParser3(req, res, next) {
         if (req.cookies) {
           return next();
         }
@@ -43608,7 +43608,7 @@ var require_on_data = __commonJS({
           return closeHandler();
         },
         throw(err) {
-          errorHandler(err);
+          errorHandler2(err);
           return Promise.resolve({ value: void 0, done: true });
         },
         [Symbol.asyncIterator]() {
@@ -43620,13 +43620,13 @@ var require_on_data = __commonJS({
         }
       };
       emitter.on("data", eventHandler);
-      emitter.on("error", errorHandler);
+      emitter.on("error", errorHandler2);
       const abortListener = (0, utils_1.addAbortListener)(signal, function() {
-        errorHandler(this.reason);
+        errorHandler2(this.reason);
       });
       const timeoutForSocketRead = timeoutContext?.timeoutForSocketRead;
       timeoutForSocketRead?.throwIfExpired();
-      timeoutForSocketRead?.then(void 0, errorHandler);
+      timeoutForSocketRead?.then(void 0, errorHandler2);
       return iterator;
       function eventHandler(value) {
         const promise = unconsumedPromises.shift();
@@ -43635,7 +43635,7 @@ var require_on_data = __commonJS({
         else
           unconsumedEvents.push(value);
       }
-      function errorHandler(err) {
+      function errorHandler2(err) {
         const promise = unconsumedPromises.shift();
         if (promise != null)
           promise.reject(err);
@@ -43645,7 +43645,7 @@ var require_on_data = __commonJS({
       }
       function closeHandler() {
         emitter.off("data", eventHandler);
-        emitter.off("error", errorHandler);
+        emitter.off("error", errorHandler2);
         abortListener?.[utils_1.kDispose]();
         finished = true;
         timeoutForSocketRead?.clear();
@@ -57288,26 +57288,26 @@ var require_changeStream = __commonJS({
           }
         );
       }
-      addListener(event, handler) {
+      addListener(event, handler2) {
         if (this.errored) {
           throw new MongooseError("Cannot call addListener() on errored ChangeStream");
         }
         this._bindEvents();
-        return super.addListener(event, handler);
+        return super.addListener(event, handler2);
       }
-      on(event, handler) {
+      on(event, handler2) {
         if (this.errored) {
           throw new MongooseError("Cannot call on() on errored ChangeStream");
         }
         this._bindEvents();
-        return super.on(event, handler);
+        return super.on(event, handler2);
       }
-      once(event, handler) {
+      once(event, handler2) {
         if (this.errored) {
           throw new MongooseError("Cannot call once() on errored ChangeStream");
         }
         this._bindEvents();
-        return super.once(event, handler);
+        return super.once(event, handler2);
       }
       _queue(cb) {
         this.once("ready", () => cb());
@@ -67026,13 +67026,13 @@ var require_schemaType = __commonJS({
       $type
     };
     SchemaType.prototype.castForQuery = function($conditional, val, context) {
-      let handler;
+      let handler2;
       if ($conditional != null) {
-        handler = this.$conditionalHandlers[$conditional];
-        if (!handler) {
+        handler2 = this.$conditionalHandlers[$conditional];
+        if (!handler2) {
           throw new Error("Can't use " + $conditional);
         }
-        return handler.call(this, val, context);
+        return handler2.call(this, val, context);
       }
       try {
         return this.applySetters(val, context);
@@ -69528,13 +69528,13 @@ var require_number2 = __commonJS({
       value: $conditionalHandlers
     });
     SchemaNumber.prototype.castForQuery = function($conditional, val, context) {
-      let handler;
+      let handler2;
       if ($conditional != null) {
-        handler = this.$conditionalHandlers[$conditional];
-        if (!handler) {
+        handler2 = this.$conditionalHandlers[$conditional];
+        if (!handler2) {
           throw new CastError("number", val, this.path, null, this);
         }
-        return handler.call(this, val, context);
+        return handler2.call(this, val, context);
       }
       try {
         val = this.applySetters(val, context);
@@ -69985,13 +69985,13 @@ var require_array2 = __commonJS({
       return val;
     };
     SchemaArray.prototype.castForQuery = function($conditional, val, context) {
-      let handler;
+      let handler2;
       if ($conditional != null) {
-        handler = this.$conditionalHandlers[$conditional];
-        if (!handler) {
+        handler2 = this.$conditionalHandlers[$conditional];
+        if (!handler2) {
           throw new Error("Can't use " + $conditional + " with Array.");
         }
-        return handler.call(this, val, context);
+        return handler2.call(this, val, context);
       } else {
         return this._castForQuery(val, context);
       }
@@ -70183,11 +70183,11 @@ var require_bigint2 = __commonJS({
       return this.castForQuery(null, val, context);
     }
     SchemaBigInt.prototype.castForQuery = function($conditional, val, context) {
-      let handler;
+      let handler2;
       if ($conditional != null) {
-        handler = this.$conditionalHandlers[$conditional];
-        if (handler) {
-          return handler.call(this, val);
+        handler2 = this.$conditionalHandlers[$conditional];
+        if (handler2) {
+          return handler2.call(this, val);
         }
         return this.applySetters(val, context);
       }
@@ -70294,11 +70294,11 @@ var require_boolean2 = __commonJS({
       value: $conditionalHandlers
     });
     SchemaBoolean.prototype.castForQuery = function($conditional, val, context) {
-      let handler;
+      let handler2;
       if ($conditional != null) {
-        handler = this.$conditionalHandlers[$conditional];
-        if (handler) {
-          return handler.call(this, val);
+        handler2 = this.$conditionalHandlers[$conditional];
+        if (handler2) {
+          return handler2.call(this, val);
         }
         return this.applySetters(val, context);
       }
@@ -70478,13 +70478,13 @@ var require_buffer2 = __commonJS({
       value: $conditionalHandlers
     });
     SchemaBuffer.prototype.castForQuery = function($conditional, val, context) {
-      let handler;
+      let handler2;
       if ($conditional != null) {
-        handler = this.$conditionalHandlers[$conditional];
-        if (!handler) {
+        handler2 = this.$conditionalHandlers[$conditional];
+        if (!handler2) {
           throw new Error("Can't use " + $conditional + " with Buffer.");
         }
-        return handler.call(this, val);
+        return handler2.call(this, val);
       }
       let casted;
       try {
@@ -70708,11 +70708,11 @@ var require_date2 = __commonJS({
           throw err;
         }
       }
-      const handler = this.$conditionalHandlers[$conditional];
-      if (!handler) {
+      const handler2 = this.$conditionalHandlers[$conditional];
+      if (!handler2) {
         throw new Error("Can't use " + $conditional + " with Date.");
       }
-      return handler.call(this, val);
+      return handler2.call(this, val);
     };
     SchemaDate.prototype.toJSONSchema = function toJSONSchema(options) {
       const isRequired = this.options.required && typeof this.options.required !== "function";
@@ -71660,13 +71660,13 @@ var require_subdocument2 = __commonJS({
       return subdoc;
     };
     SchemaSubdocument.prototype.castForQuery = function($conditional, val, context, options) {
-      let handler;
+      let handler2;
       if ($conditional != null) {
-        handler = this.$conditionalHandlers[$conditional];
-        if (!handler) {
+        handler2 = this.$conditionalHandlers[$conditional];
+        if (!handler2) {
           throw new Error("Can't use " + $conditional);
         }
-        return handler.call(this, val);
+        return handler2.call(this, val);
       }
       if (val == null) {
         return val;
@@ -72471,11 +72471,11 @@ var require_int322 = __commonJS({
       return this.castForQuery(null, val, context);
     }
     SchemaInt32.prototype.castForQuery = function($conditional, val, context) {
-      let handler;
+      let handler2;
       if ($conditional != null) {
-        handler = this.$conditionalHandlers[$conditional];
-        if (handler) {
-          return handler.call(this, val);
+        handler2 = this.$conditionalHandlers[$conditional];
+        if (handler2) {
+          return handler2.call(this, val);
         }
         return this.applySetters(val, context);
       }
@@ -73116,13 +73116,13 @@ var require_string2 = __commonJS({
       value: $conditionalHandlers
     });
     SchemaString.prototype.castForQuery = function($conditional, val, context) {
-      let handler;
+      let handler2;
       if ($conditional != null) {
-        handler = this.$conditionalHandlers[$conditional];
-        if (!handler) {
+        handler2 = this.$conditionalHandlers[$conditional];
+        if (!handler2) {
           throw new Error("Can't use " + $conditional + " with String.");
         }
-        return handler.call(this, val, context);
+        return handler2.call(this, val, context);
       }
       if (Object.prototype.toString.call(val) === "[object RegExp]" || isBsonType(val, "BSONRegExp")) {
         return val;
@@ -73322,12 +73322,12 @@ var require_uuid3 = __commonJS({
       value: $conditionalHandlers
     });
     SchemaUUID.prototype.castForQuery = function($conditional, val, context) {
-      let handler;
+      let handler2;
       if ($conditional != null) {
-        handler = this.$conditionalHandlers[$conditional];
-        if (!handler)
+        handler2 = this.$conditionalHandlers[$conditional];
+        if (!handler2)
           throw new Error("Can't use " + $conditional + " with UUID.");
-        return handler.call(this, val, context);
+        return handler2.call(this, val, context);
       }
       try {
         return this.applySetters(val, context);
@@ -90385,14 +90385,14 @@ var require_correlationId = __commonJS({
   "apps/api/src/middleware/correlationId.js"(exports2, module2) {
     "use strict";
     var crypto4 = require("node:crypto");
-    function correlationIdMiddleware(req, res, next) {
+    function correlationIdMiddleware2(req, res, next) {
       const incomingId = req.headers["x-correlation-id"] || req.headers["x-request-id"];
       const correlationId = incomingId || `req_${crypto4.randomUUID()}`;
       req.id = correlationId;
       res.setHeader("X-Correlation-ID", correlationId);
       next();
     }
-    module2.exports = correlationIdMiddleware;
+    module2.exports = correlationIdMiddleware2;
   }
 });
 
@@ -90400,7 +90400,7 @@ var require_correlationId = __commonJS({
 var require_errorHandler = __commonJS({
   "apps/api/src/middleware/errorHandler.js"(exports2, module2) {
     "use strict";
-    var AppError = class extends Error {
+    var AppError2 = class extends Error {
       constructor(message, statusCode = 500, errors = [], errorCode = "INTERNAL_ERROR") {
         super(message);
         this.name = "AppError";
@@ -90420,7 +90420,7 @@ var require_errorHandler = __commonJS({
       429: "Too Many Requests",
       500: "Internal Server Error"
     };
-    function errorHandler(err, req, res, next) {
+    function errorHandler2(err, req, res, next) {
       const statusCode = err.statusCode || (err.status >= 400 ? err.status : res.statusCode >= 400 ? res.statusCode : 500);
       const errorTitle = HTTP_STATUS_NAMES[statusCode] || "Error";
       const correlationId = req.id || "req_unknown";
@@ -90507,7 +90507,7 @@ var require_errorHandler = __commonJS({
           timestamp: (/* @__PURE__ */ new Date()).toISOString()
         });
       }
-      const clientMessage = statusCode >= 500 && process.env.NODE_ENV === "production" ? err.isOperational || err instanceof AppError ? err.message : err.message || "An unexpected internal server error occurred." : err.message || "An error occurred";
+      const clientMessage = statusCode >= 500 && process.env.NODE_ENV === "production" ? err.isOperational || err instanceof AppError2 ? err.message : err.message || "An unexpected internal server error occurred." : err.message || "An error occurred";
       res.status(statusCode).json({
         success: false,
         statusCode,
@@ -90519,8 +90519,8 @@ var require_errorHandler = __commonJS({
       });
     }
     module2.exports = {
-      AppError,
-      errorHandler
+      AppError: AppError2,
+      errorHandler: errorHandler2
     };
   }
 });
@@ -90529,7 +90529,7 @@ var require_errorHandler = __commonJS({
 var require_rateLimiter = __commonJS({
   "apps/api/src/middleware/rateLimiter.js"(exports2, module2) {
     "use strict";
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var SlidingWindowLimiter = class {
       constructor(windowMs, maxRequests, keyPrefix = "rate") {
         this.windowMs = windowMs;
@@ -90580,14 +90580,14 @@ var require_rateLimiter = __commonJS({
     }
     var generalLimiterInstance = new SlidingWindowLimiter(15 * 60 * 1e3, 100, "gen");
     var authLimiterInstance = new SlidingWindowLimiter(15 * 60 * 1e3, 5, "auth");
-    function generalRateLimiter(req, res, next) {
+    function generalRateLimiter2(req, res, next) {
       const ip = getClientIp(req);
       const result = generalLimiterInstance.isAllowed(ip);
       res.setHeader("X-RateLimit-Limit", generalLimiterInstance.maxRequests);
       res.setHeader("X-RateLimit-Remaining", result.remaining);
       if (!result.allowed) {
         res.setHeader("Retry-After", result.resetTime);
-        return next(new AppError(`Too many requests. Please retry in ${result.resetTime} seconds.`, 429));
+        return next(new AppError2(`Too many requests. Please retry in ${result.resetTime} seconds.`, 429));
       }
       next();
     }
@@ -90600,7 +90600,7 @@ var require_rateLimiter = __commonJS({
       res.setHeader("X-Auth-RateLimit-Remaining", result.remaining);
       if (!result.allowed) {
         res.setHeader("Retry-After", result.resetTime);
-        return next(new AppError(`Too many failed login attempts. Account temporarily locked. Please retry in ${result.resetTime} seconds.`, 429));
+        return next(new AppError2(`Too many failed login attempts. Account temporarily locked. Please retry in ${result.resetTime} seconds.`, 429));
       }
       next();
     }
@@ -90612,7 +90612,7 @@ var require_rateLimiter = __commonJS({
       res.setHeader("X-Tracking-RateLimit-Remaining", result.remaining);
       if (!result.allowed) {
         res.setHeader("Retry-After", result.resetTime);
-        return next(new AppError(`Too many tracking lookup requests. Please retry in ${result.resetTime} seconds.`, 429));
+        return next(new AppError2(`Too many tracking lookup requests. Please retry in ${result.resetTime} seconds.`, 429));
       }
       next();
     }
@@ -90624,12 +90624,12 @@ var require_rateLimiter = __commonJS({
       res.setHeader("X-WhatsApp-RateLimit-Remaining", result.remaining);
       if (!result.allowed) {
         res.setHeader("Retry-After", result.resetTime);
-        return next(new AppError(`WhatsApp outbound message rate limit exceeded. Please wait ${result.resetTime} seconds.`, 429));
+        return next(new AppError2(`WhatsApp outbound message rate limit exceeded. Please wait ${result.resetTime} seconds.`, 429));
       }
       next();
     }
     module2.exports = {
-      generalRateLimiter,
+      generalRateLimiter: generalRateLimiter2,
       authRateLimiter,
       authLimiterInstance,
       publicTrackingRateLimiter,
@@ -93152,7 +93152,7 @@ var require_bootstrap_service = __commonJS({
         ]
       }
     ];
-    var BootstrapService2 = class {
+    var BootstrapService = class {
       /**
        * Bootstraps company, default roles, and super admin user
        */
@@ -93234,7 +93234,7 @@ var require_bootstrap_service = __commonJS({
         return { company, roles: roleMap, superAdmin };
       }
     };
-    module2.exports = BootstrapService2;
+    module2.exports = BootstrapService;
   }
 });
 
@@ -97321,11 +97321,11 @@ var require_auth_controller = __commonJS({
     var User = require_User();
     var UserSession = require_UserSession();
     var Company = require_Company();
-    var BootstrapService2 = require_bootstrap_service();
+    var BootstrapService = require_bootstrap_service();
     var TokenService = require_token_service();
     var AuditLogService = require_auditLog_service();
     var { SystemModule, AuditAction } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var db2 = require_db3();
     var AuthController = class {
       /**
@@ -97348,15 +97348,15 @@ var require_auth_controller = __commonJS({
             pincode
           } = req.body || {};
           if (!companyLegalName || !adminName || !email || !password) {
-            return next(new AppError("Company name, administrator name, email, and password are required", 400));
+            return next(new AppError2("Company name, administrator name, email, and password are required", 400));
           }
           if (typeof password !== "string" || password.length < 8) {
-            return next(new AppError("Password must be at least 8 characters long", 400));
+            return next(new AppError2("Password must be at least 8 characters long", 400));
           }
           const normalizedEmail = email.toLowerCase().trim();
           const existingUser = await User.findOne({ email: normalizedEmail });
           if (existingUser) {
-            return next(new AppError("An account with this email address already exists. Please log in.", 409));
+            return next(new AppError2("An account with this email address already exists. Please log in.", 409));
           }
           let gstin = (companyGstin || "").trim().toUpperCase();
           if (!gstin) {
@@ -97368,7 +97368,7 @@ var require_auth_controller = __commonJS({
             const randomHex = crypto4.randomBytes(2).toString("hex").toUpperCase();
             gstin = `${gstin.slice(0, 10)}${randomHex}Z1`;
           }
-          const { company, roles, superAdmin } = await BootstrapService2.bootstrapSystem({
+          const { company, roles, superAdmin } = await BootstrapService.bootstrapSystem({
             companyLegalName: companyLegalName.trim(),
             tradeName: tradeName ? tradeName.trim() : companyLegalName.trim(),
             companyGstin: gstin,
@@ -97434,10 +97434,10 @@ var require_auth_controller = __commonJS({
         try {
           const { email, password } = req.body || {};
           if (!email || !password) {
-            return next(new AppError("Email and password are required", 400));
+            return next(new AppError2("Email and password are required", 400));
           }
           if (typeof password !== "string" || password.length < 8) {
-            return next(new AppError("Password must be at least 8 characters long", 400));
+            return next(new AppError2("Password must be at least 8 characters long", 400));
           }
           const normalizedEmail = email.toLowerCase().trim();
           if (!db2.isConnected() || req.isDbDisconnected) {
@@ -97492,7 +97492,7 @@ var require_auth_controller = __commonJS({
           const ipAddress = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || "";
           const userAgent = req.headers["user-agent"] || "";
           if (!user) {
-            return next(new AppError("Invalid email or password", 401));
+            return next(new AppError2("Invalid email or password", 401));
           }
           if (!user.isActive) {
             await AuditLogService.log({
@@ -97504,7 +97504,7 @@ var require_auth_controller = __commonJS({
               ipAddress,
               userAgent
             });
-            return next(new AppError("Your account has been deactivated. Please contact your administrator.", 401));
+            return next(new AppError2("Your account has been deactivated. Please contact your administrator.", 401));
           }
           const isMatch = await user.comparePassword(password);
           if (!isMatch) {
@@ -97517,7 +97517,7 @@ var require_auth_controller = __commonJS({
               ipAddress,
               userAgent
             });
-            return next(new AppError("Invalid email or password", 401));
+            return next(new AppError2("Invalid email or password", 401));
           }
           const accessToken = TokenService.generateAccessToken(user);
           const rawRefreshToken = TokenService.generateRefreshToken();
@@ -97562,7 +97562,7 @@ var require_auth_controller = __commonJS({
         try {
           const rawRefreshToken = req.cookies && req.cookies.refreshToken || req.body && req.body.refreshToken;
           if (!rawRefreshToken) {
-            return next(new AppError("Refresh token required", 401));
+            return next(new AppError2("Refresh token required", 401));
           }
           const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
           const session = await UserSession.findOne({
@@ -97572,14 +97572,14 @@ var require_auth_controller = __commonJS({
           });
           if (!session) {
             TokenService.clearAuthCookies(res);
-            return next(new AppError("Invalid or expired refresh session. Please login again.", 401));
+            return next(new AppError2("Invalid or expired refresh session. Please login again.", 401));
           }
           const user = await User.findById(session.userId).populate("roleId").populate("companyId");
           if (!user || !user.isActive) {
             session.isRevoked = true;
             await session.save();
             TokenService.clearAuthCookies(res);
-            return next(new AppError("User account is invalid or deactivated.", 401));
+            return next(new AppError2("User account is invalid or deactivated.", 401));
           }
           session.isRevoked = true;
           await session.save();
@@ -97664,7 +97664,7 @@ var require_auth_controller = __commonJS({
         try {
           const { email } = req.body || {};
           if (!email) {
-            return next(new AppError("Email is required", 400));
+            return next(new AppError2("Email is required", 400));
           }
           const normalizedEmail = email.toLowerCase().trim();
           const user = await User.findOne({ email: normalizedEmail });
@@ -97721,10 +97721,10 @@ var require_auth_controller = __commonJS({
         try {
           const { token, newPassword } = req.body || {};
           if (!token || !newPassword) {
-            return next(new AppError("Reset token and new password are required", 400));
+            return next(new AppError2("Reset token and new password are required", 400));
           }
           if (newPassword.length < 8) {
-            return next(new AppError("Password must be at least 8 characters long", 400));
+            return next(new AppError2("Password must be at least 8 characters long", 400));
           }
           const hashedToken = crypto4.createHash("sha256").update(token).digest("hex");
           const user = await User.findOne({
@@ -97732,7 +97732,7 @@ var require_auth_controller = __commonJS({
             passwordResetExpires: { $gt: /* @__PURE__ */ new Date() }
           });
           if (!user) {
-            return next(new AppError("Invalid or expired password reset token", 400));
+            return next(new AppError2("Invalid or expired password reset token", 400));
           }
           user.passwordHash = newPassword;
           user.passwordResetToken = null;
@@ -97773,7 +97773,7 @@ var require_auth_middleware = __commonJS({
     var jwt = require_jsonwebtoken();
     var config2 = require_env();
     var User = require_User();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     async function authenticate(req, res, next) {
       try {
         let token = null;
@@ -97786,16 +97786,16 @@ var require_auth_middleware = __commonJS({
           token = req.query.token;
         }
         if (!token) {
-          return next(new AppError("Authentication required. Missing access token.", 401));
+          return next(new AppError2("Authentication required. Missing access token.", 401));
         }
         let decoded;
         try {
           decoded = jwt.verify(token, config2.jwtSecret);
         } catch (err) {
           if (err.name === "TokenExpiredError") {
-            return next(new AppError("Session expired. Please refresh your token.", 401));
+            return next(new AppError2("Session expired. Please refresh your token.", 401));
           }
-          return next(new AppError("Invalid authentication token.", 401));
+          return next(new AppError2("Invalid authentication token.", 401));
         }
         const db2 = require_db3();
         if (!db2.isConnected()) {
@@ -97839,13 +97839,13 @@ var require_auth_middleware = __commonJS({
         }
         const user = await User.findById(decoded.userId).populate("roleId").populate("companyId");
         if (!user) {
-          return next(new AppError("User account not found.", 401));
+          return next(new AppError2("User account not found.", 401));
         }
         if (!user.isActive) {
-          return next(new AppError("Your account has been deactivated. Please contact your administrator.", 401));
+          return next(new AppError2("Your account has been deactivated. Please contact your administrator.", 401));
         }
         if (!user.companyId || !user.companyId.isActive) {
-          return next(new AppError("Organization account is inactive or not found.", 403));
+          return next(new AppError2("Organization account is inactive or not found.", 403));
         }
         req.user = user;
         req.tenant = {
@@ -97859,7 +97859,7 @@ var require_auth_middleware = __commonJS({
     }
     function enforceTenantScope(req, res, next) {
       if (!req.tenant || !req.tenant.companyId) {
-        return next(new AppError("Tenant context missing. Cross-tenant access forbidden.", 403));
+        return next(new AppError2("Tenant context missing. Cross-tenant access forbidden.", 403));
       }
       next();
     }
@@ -97874,11 +97874,11 @@ var require_auth_middleware = __commonJS({
 var require_auth_routes = __commonJS({
   "apps/api/src/modules/auth/routes/auth.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var AuthController = require_auth_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { authRateLimiter } = require_rateLimiter();
-    var router = express.Router();
+    var router = express2.Router();
     router.post("/register", authRateLimiter, AuthController.register);
     router.post("/login", authRateLimiter, AuthController.login);
     router.post("/refresh", AuthController.refresh);
@@ -97898,7 +97898,7 @@ var require_user_controller = __commonJS({
     var Role = require_Role();
     var AuditLogService = require_auditLog_service();
     var { SystemModule, AuditAction, UserRole } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var UserController = class {
       /**
        * GET /api/v1/admin/users
@@ -97953,19 +97953,19 @@ var require_user_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const { name, email, password, phone, roleId } = req.body || {};
           if (!name || !email || !password || !roleId) {
-            return next(new AppError("Name, email, password, and roleId are required", 400));
+            return next(new AppError2("Name, email, password, and roleId are required", 400));
           }
           if (password.length < 8) {
-            return next(new AppError("Password must be at least 8 characters long", 400));
+            return next(new AppError2("Password must be at least 8 characters long", 400));
           }
           const normalizedEmail = email.toLowerCase().trim();
           const role = await Role.findOne({ _id: roleId, companyId });
           if (!role) {
-            return next(new AppError("Invalid role specified for this organization", 400));
+            return next(new AppError2("Invalid role specified for this organization", 400));
           }
           const existing = await User.findOne({ companyId, email: normalizedEmail });
           if (existing) {
-            return next(new AppError(`User with email '${normalizedEmail}' already exists in this organization`, 409));
+            return next(new AppError2(`User with email '${normalizedEmail}' already exists in this organization`, 409));
           }
           const newUser = await User.create({
             companyId,
@@ -98007,7 +98007,7 @@ var require_user_controller = __commonJS({
           const { name, phone, roleId } = req.body || {};
           const user = await User.findOne({ _id: targetUserId, companyId }).populate("roleId");
           if (!user) {
-            return next(new AppError("User not found", 404));
+            return next(new AppError2("User not found", 404));
           }
           const oldValues = {
             name: user.name,
@@ -98019,7 +98019,7 @@ var require_user_controller = __commonJS({
           if (roleId && roleId.toString() !== user.roleId._id.toString()) {
             const newRole = await Role.findOne({ _id: roleId, companyId });
             if (!newRole) {
-              return next(new AppError("Invalid role specified", 400));
+              return next(new AppError2("Invalid role specified", 400));
             }
             if (user.roleId.slug === UserRole.SUPER_ADMIN && newRole.slug !== UserRole.SUPER_ADMIN) {
               const superAdminRole = await Role.findOne({ companyId, slug: UserRole.SUPER_ADMIN });
@@ -98030,7 +98030,7 @@ var require_user_controller = __commonJS({
                 _id: { $ne: user._id }
               });
               if (otherSuperAdmins === 0) {
-                return next(new AppError("Cannot demote the last active Super Administrator.", 400));
+                return next(new AppError2("Cannot demote the last active Super Administrator.", 400));
               }
             }
             user.roleId = newRole._id;
@@ -98066,11 +98066,11 @@ var require_user_controller = __commonJS({
           const targetUserId = req.params.id;
           const { isActive } = req.body;
           if (typeof isActive !== "boolean") {
-            return next(new AppError("isActive boolean is required", 400));
+            return next(new AppError2("isActive boolean is required", 400));
           }
           const user = await User.findOne({ _id: targetUserId, companyId }).populate("roleId");
           if (!user) {
-            return next(new AppError("User not found", 404));
+            return next(new AppError2("User not found", 404));
           }
           if (!isActive && user.roleId.slug === UserRole.SUPER_ADMIN) {
             const superAdminRole = await Role.findOne({ companyId, slug: UserRole.SUPER_ADMIN });
@@ -98081,7 +98081,7 @@ var require_user_controller = __commonJS({
               _id: { $ne: user._id }
             });
             if (otherSuperAdmins === 0) {
-              return next(new AppError("Cannot deactivate the last active Super Administrator.", 400));
+              return next(new AppError2("Cannot deactivate the last active Super Administrator.", 400));
             }
           }
           const oldStatus = user.isActive;
@@ -98118,11 +98118,11 @@ var require_rbac_middleware = __commonJS({
   "apps/api/src/middleware/rbac.middleware.js"(exports2, module2) {
     "use strict";
     var { UserRole } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     function requirePermission(module3, action) {
       return (req, res, next) => {
         if (!req.user || !req.user.roleId) {
-          return next(new AppError("Unauthorized: No role assigned to this account.", 401));
+          return next(new AppError2("Unauthorized: No role assigned to this account.", 401));
         }
         const role = req.user.roleId;
         if (role.slug === UserRole.SUPER_ADMIN) {
@@ -98131,13 +98131,13 @@ var require_rbac_middleware = __commonJS({
         const permissionRule = role.permissions.find((p) => p.module === module3);
         if (!permissionRule) {
           return next(
-            new AppError(`Access denied: You do not have permission to access the '${module3}' module.`, 403)
+            new AppError2(`Access denied: You do not have permission to access the '${module3}' module.`, 403)
           );
         }
         const hasAction = permissionRule.actions.includes(action) || permissionRule.actions.includes("admin");
         if (!hasAction) {
           return next(
-            new AppError(`Access denied: You do not have '${action}' permission on '${module3}'.`, 403)
+            new AppError2(`Access denied: You do not have '${action}' permission on '${module3}'.`, 403)
           );
         }
         next();
@@ -98146,13 +98146,13 @@ var require_rbac_middleware = __commonJS({
     function requireRole(...allowedRoles) {
       return (req, res, next) => {
         if (!req.user || !req.user.roleId) {
-          return next(new AppError("Unauthorized: No role assigned.", 401));
+          return next(new AppError2("Unauthorized: No role assigned.", 401));
         }
         const userRoleSlug = req.user.roleId.slug;
         if (allowedRoles.includes(userRoleSlug)) {
           return next();
         }
-        return next(new AppError(`Access denied: Requires one of [${allowedRoles.join(", ")}] role.`, 403));
+        return next(new AppError2(`Access denied: Requires one of [${allowedRoles.join(", ")}] role.`, 403));
       };
     }
     module2.exports = {
@@ -98166,12 +98166,12 @@ var require_rbac_middleware = __commonJS({
 var require_user_routes = __commonJS({
   "apps/api/src/modules/users/routes/user.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var UserController = require_user_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get("/", requirePermission(SystemModule.USERS, "view"), UserController.listUsers);
     router.post("/", requirePermission(SystemModule.USERS, "add"), UserController.createUser);
@@ -98188,7 +98188,7 @@ var require_role_controller = __commonJS({
     var Role = require_Role();
     var AuditLogService = require_auditLog_service();
     var { SystemModule, AuditAction } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var RoleController = class {
       /**
        * GET /api/v1/admin/roles
@@ -98215,12 +98215,12 @@ var require_role_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const { name, description, permissions } = req.body || {};
           if (!name) {
-            return next(new AppError("Role name is required", 400));
+            return next(new AppError2("Role name is required", 400));
           }
           const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
           const existing = await Role.findOne({ companyId, slug });
           if (existing) {
-            return next(new AppError(`Role with slug '${slug}' already exists`, 409));
+            return next(new AppError2(`Role with slug '${slug}' already exists`, 409));
           }
           const role = await Role.create({
             companyId,
@@ -98258,7 +98258,7 @@ var require_role_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const role = await Role.findOne({ _id: req.params.id, companyId });
           if (!role) {
-            return next(new AppError("Role not found", 404));
+            return next(new AppError2("Role not found", 404));
           }
           res.status(200).json({
             success: true,
@@ -98279,12 +98279,12 @@ var require_role_controller = __commonJS({
 var require_role_routes = __commonJS({
   "apps/api/src/modules/roles/routes/role.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var RoleController = require_role_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get("/", requirePermission(SystemModule.ROLES, "view"), RoleController.listRoles);
     router.post("/", requirePermission(SystemModule.ROLES, "add"), RoleController.createRole);
@@ -98297,12 +98297,12 @@ var require_role_routes = __commonJS({
 var require_audit_routes = __commonJS({
   "apps/api/src/modules/audit/routes/audit.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var AuditLogService = require_auditLog_service();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get("/", requirePermission(SystemModule.AUDIT, "view"), async (req, res, next) => {
       try {
@@ -98700,7 +98700,7 @@ var require_customer_controller = __commonJS({
     var CustomerParty = require_CustomerParty();
     var auditLogService = require_auditLog_service();
     var { AuditAction } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var CustomerController = class {
       async list(req, res, next) {
         try {
@@ -98762,7 +98762,7 @@ var require_customer_controller = __commonJS({
             companyId: req.tenant.companyId
           });
           if (!customer) {
-            return next(new AppError("Customer party not found.", 404));
+            return next(new AppError2("Customer party not found.", 404));
           }
           res.status(200).json({
             success: true,
@@ -98789,7 +98789,7 @@ var require_customer_controller = __commonJS({
             creditLimitPaise
           } = req.body;
           if (!name || !name.trim()) {
-            return next(new AppError("Customer/Party name is required.", 400));
+            return next(new AppError2("Customer/Party name is required.", 400));
           }
           if (gstin && gstin.trim()) {
             const existing = await CustomerParty.findOne({
@@ -98797,7 +98797,7 @@ var require_customer_controller = __commonJS({
               gstin: gstin.trim().toUpperCase()
             });
             if (existing) {
-              return next(new AppError(`Party with GSTIN '${gstin}' already exists in your organization.`, 409));
+              return next(new AppError2(`Party with GSTIN '${gstin}' already exists in your organization.`, 409));
             }
           }
           const party = await CustomerParty.create({
@@ -98831,7 +98831,7 @@ var require_customer_controller = __commonJS({
           });
         } catch (err) {
           if (err.code === 11e3) {
-            return next(new AppError("Duplicate record constraint violated.", 409));
+            return next(new AppError2("Duplicate record constraint violated.", 409));
           }
           next(err);
         }
@@ -98842,7 +98842,7 @@ var require_customer_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const party = await CustomerParty.findOne({ _id: id, companyId });
           if (!party) {
-            return next(new AppError("Customer party not found.", 404));
+            return next(new AppError2("Customer party not found.", 404));
           }
           const oldValues = party.toObject();
           const allowedFields = [
@@ -98882,7 +98882,7 @@ var require_customer_controller = __commonJS({
           });
         } catch (err) {
           if (err.code === 11e3) {
-            return next(new AppError("Duplicate GSTIN or identifier constraint violated.", 409));
+            return next(new AppError2("Duplicate GSTIN or identifier constraint violated.", 409));
           }
           next(err);
         }
@@ -98893,7 +98893,7 @@ var require_customer_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const party = await CustomerParty.findOne({ _id: id, companyId });
           if (!party) {
-            return next(new AppError("Customer party not found.", 404));
+            return next(new AppError2("Customer party not found.", 404));
           }
           const Load = require_Load();
           const activeLoad = await Load.findOne({
@@ -98907,7 +98907,7 @@ var require_customer_controller = __commonJS({
             isActive: true
           });
           if (activeLoad) {
-            return next(new AppError(`Cannot deactivate party '${party.name}': currently associated with active consignment ${activeLoad.loadNumber}.`, 400));
+            return next(new AppError2(`Cannot deactivate party '${party.name}': currently associated with active consignment ${activeLoad.loadNumber}.`, 400));
           }
           party.isActive = false;
           await party.save();
@@ -98939,12 +98939,12 @@ var require_customer_controller = __commonJS({
 var require_customer_routes = __commonJS({
   "apps/api/src/modules/customers/routes/customer.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var customerController = require_customer_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get(
       "/",
@@ -99055,7 +99055,7 @@ var require_location_controller = __commonJS({
     var Location = require_Location();
     var auditLogService = require_auditLog_service();
     var { AuditAction } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var LocationController = class {
       async list(req, res, next) {
         try {
@@ -99114,7 +99114,7 @@ var require_location_controller = __commonJS({
             companyId: req.tenant.companyId
           }).populate("customerId", "name code");
           if (!location) {
-            return next(new AppError("Location not found.", 404));
+            return next(new AppError2("Location not found.", 404));
           }
           res.status(200).json({
             success: true,
@@ -99139,10 +99139,10 @@ var require_location_controller = __commonJS({
             customerId
           } = req.body;
           if (!name || !name.trim()) {
-            return next(new AppError("Location name is required.", 400));
+            return next(new AppError2("Location name is required.", 400));
           }
           if (!address || !address.city || !address.state) {
-            return next(new AppError("Address with City and State is required.", 400));
+            return next(new AppError2("Address with City and State is required.", 400));
           }
           const location = await Location.create({
             companyId,
@@ -99181,7 +99181,7 @@ var require_location_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const location = await Location.findOne({ _id: id, companyId });
           if (!location) {
-            return next(new AppError("Location not found.", 404));
+            return next(new AppError2("Location not found.", 404));
           }
           const oldValues = location.toObject();
           const allowedFields = [
@@ -99227,7 +99227,7 @@ var require_location_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const location = await Location.findOne({ _id: id, companyId });
           if (!location) {
-            return next(new AppError("Location not found.", 404));
+            return next(new AppError2("Location not found.", 404));
           }
           location.isActive = false;
           await location.save();
@@ -99259,12 +99259,12 @@ var require_location_controller = __commonJS({
 var require_location_routes = __commonJS({
   "apps/api/src/modules/locations/routes/location.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var locationController = require_location_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get(
       "/",
@@ -104191,7 +104191,7 @@ var require_storage_service = __commonJS({
     var fs = require("fs");
     var path = require("path");
     var crypto4 = require("crypto");
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var UPLOAD_ROOT = path.resolve(
       process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || "./uploads"
     );
@@ -104242,15 +104242,15 @@ var require_storage_service = __commonJS({
     };
     function validateFileSignature(buffer, mimeType, filenameOrExt) {
       if (!buffer || buffer.length === 0) {
-        throw new AppError("Uploaded file buffer is empty.", 400);
+        throw new AppError2("Uploaded file buffer is empty.", 400);
       }
       const ext = (filenameOrExt && filenameOrExt.startsWith(".") ? filenameOrExt : path.extname(filenameOrExt || "")).toLowerCase();
       if (DANGEROUS_EXTENSIONS.has(ext)) {
-        throw new AppError(`Security violation: File extension '${ext}' is strictly prohibited.`, 400);
+        throw new AppError2(`Security violation: File extension '${ext}' is strictly prohibited.`, 400);
       }
       const allowedExts = MIME_EXTENSION_MAP[mimeType];
       if (allowedExts && !allowedExts.includes(ext)) {
-        throw new AppError(
+        throw new AppError2(
           `File extension '${ext}' does not match declared MIME type '${mimeType}'. Expected: ${allowedExts.join(", ")}`,
           400
         );
@@ -104258,40 +104258,40 @@ var require_storage_service = __commonJS({
       if (mimeType === "application/pdf") {
         const header = buffer.slice(0, 4).toString("ascii");
         if (header !== "%PDF") {
-          throw new AppError("File signature mismatch: File claims to be PDF but lacks valid %PDF header.", 400);
+          throw new AppError2("File signature mismatch: File claims to be PDF but lacks valid %PDF header.", 400);
         }
       } else if (mimeType === "image/jpeg") {
         if (buffer.length < 3 || buffer[0] !== 255 || buffer[1] !== 216 || buffer[2] !== 255) {
-          throw new AppError("File signature mismatch: File claims to be JPEG but lacks valid SOI marker.", 400);
+          throw new AppError2("File signature mismatch: File claims to be JPEG but lacks valid SOI marker.", 400);
         }
       } else if (mimeType === "image/png") {
         if (buffer.length < 8 || buffer[0] !== 137 || buffer[1] !== 80 || buffer[2] !== 78 || buffer[3] !== 71 || buffer[4] !== 13 || buffer[5] !== 10 || buffer[6] !== 26 || buffer[7] !== 10) {
-          throw new AppError("File signature mismatch: File claims to be PNG but lacks valid PNG signature.", 400);
+          throw new AppError2("File signature mismatch: File claims to be PNG but lacks valid PNG signature.", 400);
         }
       } else if (mimeType === "image/webp") {
         if (buffer.length < 12 || buffer.slice(0, 4).toString("ascii") !== "RIFF" || buffer.slice(8, 12).toString("ascii") !== "WEBP") {
-          throw new AppError("File signature mismatch: File claims to be WEBP but lacks valid RIFF/WEBP header.", 400);
+          throw new AppError2("File signature mismatch: File claims to be WEBP but lacks valid RIFF/WEBP header.", 400);
         }
       } else if (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
         if (buffer.length < 4 || buffer[0] !== 80 || buffer[1] !== 75) {
-          throw new AppError("File signature mismatch: File claims to be XLSX spreadsheet but lacks ZIP/PK signature.", 400);
+          throw new AppError2("File signature mismatch: File claims to be XLSX spreadsheet but lacks ZIP/PK signature.", 400);
         }
       } else if (mimeType === "application/vnd.ms-excel") {
         const isOle = buffer.length >= 4 && buffer[0] === 208 && buffer[1] === 207 && buffer[2] === 17 && buffer[3] === 224;
         const isZip = buffer.length >= 2 && buffer[0] === 80 && buffer[1] === 75;
         if (!isOle && !isZip) {
-          throw new AppError("File signature mismatch: File claims to be Excel workbook but lacks valid signature.", 400);
+          throw new AppError2("File signature mismatch: File claims to be Excel workbook but lacks valid signature.", 400);
         }
       } else if (mimeType === "text/csv") {
         if (buffer.length >= 2 && buffer[0] === 77 && buffer[1] === 90) {
-          throw new AppError("Security violation: Executable binary (MZ header) disguised as CSV.", 400);
+          throw new AppError2("Security violation: Executable binary (MZ header) disguised as CSV.", 400);
         }
         if (buffer.length >= 4 && buffer[0] === 127 && buffer.slice(1, 4).toString("ascii") === "ELF") {
-          throw new AppError("Security violation: ELF executable disguised as CSV.", 400);
+          throw new AppError2("Security violation: ELF executable disguised as CSV.", 400);
         }
         for (let i = 0; i < Math.min(buffer.length, 512); i++) {
           if (buffer[i] === 0) {
-            throw new AppError("Security violation: Binary content with NUL bytes detected in CSV text file.", 400);
+            throw new AppError2("Security violation: Binary content with NUL bytes detected in CSV text file.", 400);
           }
         }
       }
@@ -104318,17 +104318,17 @@ var require_storage_service = __commonJS({
        */
       async saveFile({ buffer, originalName, mimeType, companyId, module: module3 = "documents" }) {
         if (!companyId) {
-          throw new AppError("Tenant company ID is required for storage isolation.", 400);
+          throw new AppError2("Tenant company ID is required for storage isolation.", 400);
         }
         if (!ALLOWED_MIME_TYPES.includes(mimeType)) {
-          throw new AppError(
+          throw new AppError2(
             `Invalid file format '${mimeType}'. Allowed formats: JPG, PNG, WEBP, PDF, XLSX, CSV.`,
             400
           );
         }
         if (buffer.length > this.maxFileSize) {
           const limitMb = Math.round(this.maxFileSize / (1024 * 1024));
-          throw new AppError(`File size exceeds the ${limitMb} MB maximum limit.`, 400);
+          throw new AppError2(`File size exceeds the ${limitMb} MB maximum limit.`, 400);
         }
         const ext = path.extname(originalName || "").toLowerCase() || ".bin";
         validateFileSignature(buffer, mimeType, ext);
@@ -104353,20 +104353,20 @@ var require_storage_service = __commonJS({
        */
       getFilePath(fileKey, companyId = null) {
         if (!fileKey || typeof fileKey !== "string") {
-          throw new AppError("Invalid file key provided.", 400);
+          throw new AppError2("Invalid file key provided.", 400);
         }
         const resolvedPath = path.resolve(this.root, fileKey);
         if (!resolvedPath.startsWith(this.root)) {
-          throw new AppError("Invalid path: Directory traversal detected.", 403);
+          throw new AppError2("Invalid path: Directory traversal detected.", 403);
         }
         if (companyId) {
           const tenantPrefix = path.resolve(this.root, "tenants", companyId.toString());
           if (!resolvedPath.startsWith(tenantPrefix)) {
-            throw new AppError("Access denied: Document does not belong to your organization.", 403);
+            throw new AppError2("Access denied: Document does not belong to your organization.", 403);
           }
         }
         if (!fs.existsSync(resolvedPath)) {
-          throw new AppError("The requested file was not found on the server.", 404);
+          throw new AppError2("The requested file was not found on the server.", 404);
         }
         return resolvedPath;
       }
@@ -104658,7 +104658,7 @@ var require_vehicle_controller = __commonJS({
     var storageService = require_storage_service();
     var auditLogService = require_auditLog_service();
     var { AuditAction, VehicleStatus, VehicleDocumentType } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var VehicleController = class {
       async list(req, res, next) {
         try {
@@ -104716,7 +104716,7 @@ var require_vehicle_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const vehicle = await Vehicle.findOne({ _id: id, companyId });
           if (!vehicle) {
-            return next(new AppError("Vehicle not found.", 404));
+            return next(new AppError2("Vehicle not found.", 404));
           }
           const documents = await VehicleDocument.find({
             vehicleId: id,
@@ -104755,12 +104755,12 @@ var require_vehicle_controller = __commonJS({
             status
           } = req.body;
           if (!plateNumber || !plateNumber.trim()) {
-            return next(new AppError("Vehicle registration plate number is required.", 400));
+            return next(new AppError2("Vehicle registration plate number is required.", 400));
           }
           const cleanPlate = plateNumber.trim().toUpperCase().replace(/\s+/g, "");
           const existing = await Vehicle.findOne({ companyId, plateNumber: cleanPlate });
           if (existing) {
-            return next(new AppError(`Vehicle with plate number '${cleanPlate}' already exists in your fleet.`, 409));
+            return next(new AppError2(`Vehicle with plate number '${cleanPlate}' already exists in your fleet.`, 409));
           }
           const vehicle = await Vehicle.create({
             companyId,
@@ -104795,7 +104795,7 @@ var require_vehicle_controller = __commonJS({
           });
         } catch (err) {
           if (err.code === 11e3) {
-            return next(new AppError("Duplicate vehicle plate number constraint violated.", 409));
+            return next(new AppError2("Duplicate vehicle plate number constraint violated.", 409));
           }
           next(err);
         }
@@ -104806,7 +104806,7 @@ var require_vehicle_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const vehicle = await Vehicle.findOne({ _id: id, companyId });
           if (!vehicle) {
-            return next(new AppError("Vehicle not found.", 404));
+            return next(new AppError2("Vehicle not found.", 404));
           }
           const oldValues = vehicle.toObject();
           const allowedFields = [
@@ -104833,7 +104833,7 @@ var require_vehicle_controller = __commonJS({
             if (cleanPlate !== vehicle.plateNumber) {
               const duplicate = await Vehicle.findOne({ companyId, plateNumber: cleanPlate });
               if (duplicate) {
-                return next(new AppError(`Vehicle plate '${cleanPlate}' already in use.`, 409));
+                return next(new AppError2(`Vehicle plate '${cleanPlate}' already in use.`, 409));
               }
               vehicle.plateNumber = cleanPlate;
             }
@@ -104865,7 +104865,7 @@ var require_vehicle_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const vehicle = await Vehicle.findOne({ _id: id, companyId });
           if (!vehicle) {
-            return next(new AppError("Vehicle not found.", 404));
+            return next(new AppError2("Vehicle not found.", 404));
           }
           const Trip = require_Trip();
           const activeTrip = await Trip.findOne({
@@ -104875,7 +104875,7 @@ var require_vehicle_controller = __commonJS({
             isActive: true
           });
           if (activeTrip) {
-            return next(new AppError(`Cannot deactivate vehicle ${vehicle.plateNumber}: currently assigned to active Trip ${activeTrip.tripNumber}.`, 400));
+            return next(new AppError2(`Cannot deactivate vehicle ${vehicle.plateNumber}: currently assigned to active Trip ${activeTrip.tripNumber}.`, 400));
           }
           vehicle.isActive = false;
           vehicle.status = VehicleStatus.INACTIVE;
@@ -104908,10 +104908,10 @@ var require_vehicle_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const vehicle = await Vehicle.findOne({ _id: id, companyId });
           if (!vehicle) {
-            return next(new AppError("Vehicle not found.", 404));
+            return next(new AppError2("Vehicle not found.", 404));
           }
           if (!req.file) {
-            return next(new AppError("Document file is required (PDF, JPG, PNG).", 400));
+            return next(new AppError2("Document file is required (PDF, JPG, PNG).", 400));
           }
           const {
             documentType,
@@ -104921,10 +104921,10 @@ var require_vehicle_controller = __commonJS({
             notes
           } = req.body;
           if (!documentType || !Object.values(VehicleDocumentType).includes(documentType)) {
-            return next(new AppError(`Invalid document type. Allowed: ${Object.values(VehicleDocumentType).join(", ")}`, 400));
+            return next(new AppError2(`Invalid document type. Allowed: ${Object.values(VehicleDocumentType).join(", ")}`, 400));
           }
           if (!expiryDate) {
-            return next(new AppError("Document expiry date is mandatory.", 400));
+            return next(new AppError2("Document expiry date is mandatory.", 400));
           }
           const storageResult = await storageService.saveFile({
             buffer: req.file.buffer,
@@ -104999,7 +104999,7 @@ var require_vehicle_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const doc = await VehicleDocument.findOne({ _id: docId, companyId });
           if (!doc) {
-            return next(new AppError("Document not found.", 404));
+            return next(new AppError2("Document not found.", 404));
           }
           doc.isActive = false;
           await doc.save();
@@ -105031,13 +105031,13 @@ var require_vehicle_controller = __commonJS({
 var require_vehicle_routes = __commonJS({
   "apps/api/src/modules/vehicles/routes/vehicle.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var multer = require_multer();
     var vehicleController = require_vehicle_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     var upload = multer({
       storage: multer.memoryStorage(),
       limits: { fileSize: 10 * 1024 * 1024 }
@@ -105300,7 +105300,7 @@ var require_driver_controller = __commonJS({
     var storageService = require_storage_service();
     var auditLogService = require_auditLog_service();
     var { AuditAction, DriverStatus, DriverDocumentType } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var DriverController = class {
       async list(req, res, next) {
         try {
@@ -105356,7 +105356,7 @@ var require_driver_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const driver = await Driver.findOne({ _id: id, companyId });
           if (!driver) {
-            return next(new AppError("Driver not found.", 404));
+            return next(new AppError2("Driver not found.", 404));
           }
           const documents = await DriverDocument.find({
             driverId: id,
@@ -105397,21 +105397,21 @@ var require_driver_controller = __commonJS({
             status
           } = req.body;
           if (!name || !name.trim()) {
-            return next(new AppError("Driver full name is required.", 400));
+            return next(new AppError2("Driver full name is required.", 400));
           }
           if (!phone || !phone.trim()) {
-            return next(new AppError("Driver contact phone number is required.", 400));
+            return next(new AppError2("Driver contact phone number is required.", 400));
           }
           if (!licenseNumber || !licenseNumber.trim()) {
-            return next(new AppError("Driving licence number is required.", 400));
+            return next(new AppError2("Driving licence number is required.", 400));
           }
           if (!licenseExpiryDate) {
-            return next(new AppError("Driving licence expiry date is required.", 400));
+            return next(new AppError2("Driving licence expiry date is required.", 400));
           }
           const cleanLicense = licenseNumber.trim().toUpperCase();
           const existing = await Driver.findOne({ companyId, licenseNumber: cleanLicense });
           if (existing) {
-            return next(new AppError(`Driver with licence number '${cleanLicense}' already exists.`, 409));
+            return next(new AppError2(`Driver with licence number '${cleanLicense}' already exists.`, 409));
           }
           const driver = await Driver.create({
             companyId,
@@ -105443,7 +105443,7 @@ var require_driver_controller = __commonJS({
           });
         } catch (err) {
           if (err.code === 11e3) {
-            return next(new AppError("Duplicate licence number constraint violated.", 409));
+            return next(new AppError2("Duplicate licence number constraint violated.", 409));
           }
           next(err);
         }
@@ -105454,7 +105454,7 @@ var require_driver_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const driver = await Driver.findOne({ _id: id, companyId });
           if (!driver) {
-            return next(new AppError("Driver not found.", 404));
+            return next(new AppError2("Driver not found.", 404));
           }
           const oldValues = driver.toObject();
           const allowedFields = [
@@ -105482,7 +105482,7 @@ var require_driver_controller = __commonJS({
             if (cleanLicense !== driver.licenseNumber) {
               const duplicate = await Driver.findOne({ companyId, licenseNumber: cleanLicense });
               if (duplicate) {
-                return next(new AppError(`Driving licence '${cleanLicense}' already in use.`, 409));
+                return next(new AppError2(`Driving licence '${cleanLicense}' already in use.`, 409));
               }
               driver.licenseNumber = cleanLicense;
             }
@@ -105514,7 +105514,7 @@ var require_driver_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const driver = await Driver.findOne({ _id: id, companyId });
           if (!driver) {
-            return next(new AppError("Driver not found.", 404));
+            return next(new AppError2("Driver not found.", 404));
           }
           const Trip = require_Trip();
           const activeTrip = await Trip.findOne({
@@ -105524,7 +105524,7 @@ var require_driver_controller = __commonJS({
             isActive: true
           });
           if (activeTrip) {
-            return next(new AppError(`Cannot deactivate driver ${driver.name}: currently assigned to active Trip ${activeTrip.tripNumber}.`, 400));
+            return next(new AppError2(`Cannot deactivate driver ${driver.name}: currently assigned to active Trip ${activeTrip.tripNumber}.`, 400));
           }
           driver.isActive = false;
           driver.status = DriverStatus.INACTIVE;
@@ -105557,10 +105557,10 @@ var require_driver_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const driver = await Driver.findOne({ _id: id, companyId });
           if (!driver) {
-            return next(new AppError("Driver not found.", 404));
+            return next(new AppError2("Driver not found.", 404));
           }
           if (!req.file) {
-            return next(new AppError("Document file is required (PDF, JPG, PNG).", 400));
+            return next(new AppError2("Document file is required (PDF, JPG, PNG).", 400));
           }
           const {
             documentType,
@@ -105570,7 +105570,7 @@ var require_driver_controller = __commonJS({
             notes
           } = req.body;
           if (!documentType || !Object.values(DriverDocumentType).includes(documentType)) {
-            return next(new AppError(`Invalid document type. Allowed: ${Object.values(DriverDocumentType).join(", ")}`, 400));
+            return next(new AppError2(`Invalid document type. Allowed: ${Object.values(DriverDocumentType).join(", ")}`, 400));
           }
           const storageResult = await storageService.saveFile({
             buffer: req.file.buffer,
@@ -105644,7 +105644,7 @@ var require_driver_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const doc = await DriverDocument.findOne({ _id: docId, companyId });
           if (!doc) {
-            return next(new AppError("Document not found.", 404));
+            return next(new AppError2("Document not found.", 404));
           }
           doc.isActive = false;
           await doc.save();
@@ -105676,13 +105676,13 @@ var require_driver_controller = __commonJS({
 var require_driver_routes = __commonJS({
   "apps/api/src/modules/drivers/routes/driver.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var multer = require_multer();
     var driverController = require_driver_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     var upload = multer({
       storage: multer.memoryStorage(),
       limits: { fileSize: 10 * 1024 * 1024 }
@@ -257877,7 +257877,7 @@ var require_document_controller = __commonJS({
     var Company = require_Company();
     var storageService = require_storage_service();
     var pdfService = require_pdf_service();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     function generateExpiringDocumentToken({ documentType, documentId, companyId, expiresInHours = 24 }) {
       const secret = process.env.JWT_SECRET || "doc_signing_secret_fleet_2026";
       const expiresAt = Date.now() + expiresInHours * 60 * 60 * 1e3;
@@ -257921,7 +257921,7 @@ var require_document_controller = __commonJS({
             doc = await VehicleDocument.findOne({ _id: id, companyId, isActive: true });
           }
           if (!doc) {
-            return next(new AppError("Document not found or access denied.", 404));
+            return next(new AppError2("Document not found or access denied.", 404));
           }
           const absolutePath = storageService.getFilePath(doc.fileKey, companyId);
           res.setHeader("Content-Type", doc.mimeType);
@@ -257949,50 +257949,50 @@ var require_document_controller = __commonJS({
           if (tokenQuery) {
             const tokenData = verifyExpiringDocumentToken(tokenQuery);
             if (!tokenData) {
-              throw new AppError("The document access link has expired or is invalid.", 401);
+              throw new AppError2("The document access link has expired or is invalid.", 401);
             }
             if (tokenData.documentType !== type.toLowerCase() || tokenData.documentId.toString() !== id.toString()) {
-              throw new AppError("Document token mismatch for requested resource.", 403);
+              throw new AppError2("Document token mismatch for requested resource.", 403);
             }
             resolvedCompanyId = tokenData.companyId;
           }
           if (!resolvedCompanyId) {
-            throw new AppError("Authentication or valid expiring document token required.", 401);
+            throw new AppError2("Authentication or valid expiring document token required.", 401);
           }
           const company = await Company.findById(resolvedCompanyId);
           if (!company) {
-            throw new AppError("Company organization not found.", 404);
+            throw new AppError2("Company organization not found.", 404);
           }
           const docTypeNorm = type.toLowerCase();
           let pdfBuffer = null;
           let filename = `${docTypeNorm}_${id}.pdf`;
           if (docTypeNorm === "lr") {
             const lr = await LrNumber.findOne({ _id: id, companyId: resolvedCompanyId, isActive: true }).populate("loadId").populate("vehicleId").populate("driverId").populate("consignorId").populate("consigneeId").populate("fromLocationId").populate("toLocationId");
-            if (!lr) throw new AppError("Lorry Receipt document not found.", 404);
+            if (!lr) throw new AppError2("Lorry Receipt document not found.", 404);
             filename = `LR_${lr.lrNumber}_${copy}.pdf`;
             pdfBuffer = await pdfService.generateLrPdf(lr, company, { copy });
           } else if (docTypeNorm === "bilty" || docTypeNorm === "bilties") {
             const bilty = await Bilty.findOne({ _id: id, companyId: resolvedCompanyId, isActive: true }).populate("lrId").populate("consignorId").populate("consigneeId");
-            if (!bilty) throw new AppError("Bilty consignment note not found.", 404);
+            if (!bilty) throw new AppError2("Bilty consignment note not found.", 404);
             filename = `Bilty_${bilty.biltyNumber}_${copy}.pdf`;
             pdfBuffer = await pdfService.generateBiltyPdf(bilty, company, { copy });
           } else if (docTypeNorm === "load" || docTypeNorm === "loading-slip") {
             const load = await Load.findOne({ _id: id, companyId: resolvedCompanyId, isActive: true }).populate("customerId").populate("consignorId").populate("consigneeId").populate("originLocationId").populate("destinationLocationId").populate("assignedVehicleId").populate("assignedDriverId");
-            if (!load) throw new AppError("Consignment load not found.", 404);
+            if (!load) throw new AppError2("Consignment load not found.", 404);
             filename = `LoadingSlip_${load.loadNumber}.pdf`;
             pdfBuffer = await pdfService.generateLoadingSlipPdf(load, company);
           } else if (docTypeNorm === "trip" || docTypeNorm === "trip-sheet") {
             const trip = await Trip.findOne({ _id: id, companyId: resolvedCompanyId, isActive: true }).populate("loadId").populate("vehicleId").populate("driverId").populate("stops.locationId");
-            if (!trip) throw new AppError("Trip record not found.", 404);
+            if (!trip) throw new AppError2("Trip record not found.", 404);
             filename = `TripSheet_${trip.tripNumber}_${copy}.pdf`;
             pdfBuffer = await pdfService.generateTripSheetPdf(trip, company, { copy });
           } else if (docTypeNorm === "settlement") {
             const trip = await Trip.findOne({ _id: id, companyId: resolvedCompanyId, isActive: true }).populate("loadId").populate("vehicleId").populate("driverId");
-            if (!trip) throw new AppError("Trip record not found.", 404);
+            if (!trip) throw new AppError2("Trip record not found.", 404);
             filename = `Settlement_${trip.tripNumber}_${copy}.pdf`;
             pdfBuffer = await pdfService.generateSettlementPdf(trip, company, { copy });
           } else {
-            throw new AppError(`Unsupported document type '${type}'.`, 400);
+            throw new AppError2(`Unsupported document type '${type}'.`, 400);
           }
           res.setHeader("Content-Type", "application/pdf");
           res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
@@ -258014,10 +258014,10 @@ var require_document_controller = __commonJS({
 var require_document_routes = __commonJS({
   "apps/api/src/modules/documents/routes/document.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var documentController = require_document_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var router = express.Router();
+    var router = express2.Router();
     var optionalAuth = (req, res, next) => {
       authenticate(req, res, (err) => {
         if (err) {
@@ -258267,7 +258267,7 @@ var require_compliance_controller = __commonJS({
     "use strict";
     var complianceService = require_compliance_service();
     var InAppNotification = require_InAppNotification();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var ComplianceController = class {
       async getOverview(req, res, next) {
         try {
@@ -258332,7 +258332,7 @@ var require_compliance_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const notification = await InAppNotification.findOne({ _id: id, companyId });
           if (!notification) {
-            return next(new AppError("Notification not found.", 404));
+            return next(new AppError2("Notification not found.", 404));
           }
           notification.isRead = true;
           notification.readAt = /* @__PURE__ */ new Date();
@@ -258371,12 +258371,12 @@ var require_compliance_controller = __commonJS({
 var require_compliance_routes = __commonJS({
   "apps/api/src/modules/compliance/routes/compliance.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var complianceController = require_compliance_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get(
       "/overview",
@@ -275912,8 +275912,8 @@ var require_saxes = __commonJS({
        *
        * @param handler The handler to set.
        */
-      on(name, handler) {
-        this[EVENT_NAME_TO_HANDLER_NAME[name]] = handler;
+      on(name, handler2) {
+        this[EVENT_NAME_TO_HANDLER_NAME[name]] = handler2;
       }
       /**
        * Unset an event handler.
@@ -275958,11 +275958,11 @@ var require_saxes = __commonJS({
        */
       fail(message) {
         const err = this.makeError(message);
-        const handler = this.errorHandler;
-        if (handler === void 0) {
+        const handler2 = this.errorHandler;
+        if (handler2 === void 0) {
           throw err;
         } else {
-          handler(err);
+          handler2(err);
         }
         return this;
       }
@@ -276976,20 +276976,20 @@ var require_saxes = __commonJS({
       // END OF STATE ENGINE METHODS
       handleTextInRoot() {
         let { i: start, forbiddenState } = this;
-        const { chunk, textHandler: handler } = this;
+        const { chunk, textHandler: handler2 } = this;
         scanLoop:
           while (true) {
             switch (this.getCode()) {
               case LESS: {
                 this.state = S_OPEN_WAKA;
-                if (handler !== void 0) {
+                if (handler2 !== void 0) {
                   const { text } = this;
                   const slice = chunk.slice(start, this.prevI);
                   if (text.length !== 0) {
-                    handler(text + slice);
+                    handler2(text + slice);
                     this.text = "";
                   } else if (slice.length !== 0) {
-                    handler(slice);
+                    handler2(slice);
                   }
                 }
                 forbiddenState = FORBIDDEN_START;
@@ -276998,7 +276998,7 @@ var require_saxes = __commonJS({
               case AMP:
                 this.state = S_ENTITY;
                 this.entityReturnState = S_TEXT;
-                if (handler !== void 0) {
+                if (handler2 !== void 0) {
                   this.text += chunk.slice(start, this.prevI);
                 }
                 forbiddenState = FORBIDDEN_START;
@@ -277024,7 +277024,7 @@ var require_saxes = __commonJS({
                 forbiddenState = FORBIDDEN_START;
                 break;
               case NL_LIKE:
-                if (handler !== void 0) {
+                if (handler2 !== void 0) {
                   this.text += `${chunk.slice(start, this.prevI)}
 `;
                 }
@@ -277032,7 +277032,7 @@ var require_saxes = __commonJS({
                 forbiddenState = FORBIDDEN_START;
                 break;
               case EOC:
-                if (handler !== void 0) {
+                if (handler2 !== void 0) {
                   this.text += chunk.slice(start);
                 }
                 break scanLoop;
@@ -277044,7 +277044,7 @@ var require_saxes = __commonJS({
       }
       handleTextOutsideRoot() {
         let { i: start } = this;
-        const { chunk, textHandler: handler } = this;
+        const { chunk, textHandler: handler2 } = this;
         let nonSpace = false;
         outRootLoop:
           while (true) {
@@ -277052,14 +277052,14 @@ var require_saxes = __commonJS({
             switch (code) {
               case LESS: {
                 this.state = S_OPEN_WAKA;
-                if (handler !== void 0) {
+                if (handler2 !== void 0) {
                   const { text } = this;
                   const slice = chunk.slice(start, this.prevI);
                   if (text.length !== 0) {
-                    handler(text + slice);
+                    handler2(text + slice);
                     this.text = "";
                   } else if (slice.length !== 0) {
-                    handler(slice);
+                    handler2(slice);
                   }
                 }
                 break outRootLoop;
@@ -277067,20 +277067,20 @@ var require_saxes = __commonJS({
               case AMP:
                 this.state = S_ENTITY;
                 this.entityReturnState = S_TEXT;
-                if (handler !== void 0) {
+                if (handler2 !== void 0) {
                   this.text += chunk.slice(start, this.prevI);
                 }
                 nonSpace = true;
                 break outRootLoop;
               case NL_LIKE:
-                if (handler !== void 0) {
+                if (handler2 !== void 0) {
                   this.text += `${chunk.slice(start, this.prevI)}
 `;
                 }
                 start = this.i;
                 break;
               case EOC:
-                if (handler !== void 0) {
+                if (handler2 !== void 0) {
                   this.text += chunk.slice(start);
                 }
                 break outRootLoop;
@@ -277310,12 +277310,12 @@ var require_saxes = __commonJS({
           this.text += "</>";
           return;
         }
-        const handler = this.closeTagHandler;
+        const handler2 = this.closeTagHandler;
         let l2 = tags.length;
         while (l2-- > 0) {
           const tag = this.tag = tags.pop();
           this.topNS = tag.ns;
-          handler === null || handler === void 0 ? void 0 : handler(tag);
+          handler2 === null || handler2 === void 0 ? void 0 : handler2(tag);
           if (tag.name === name) {
             break;
           }
@@ -293747,23 +293747,23 @@ var require_async = __commonJS({
           unsaturated: [],
           empty: []
         };
-        function on(event, handler) {
-          events[event].push(handler);
+        function on(event, handler2) {
+          events[event].push(handler2);
         }
-        function once2(event, handler) {
+        function once2(event, handler2) {
           const handleAndRemove = (...args) => {
             off(event, handleAndRemove);
-            handler(...args);
+            handler2(...args);
           };
           events[event].push(handleAndRemove);
         }
-        function off(event, handler) {
+        function off(event, handler2) {
           if (!event) return Object.keys(events).forEach((ev) => events[ev] = []);
-          if (!handler) return events[event] = [];
-          events[event] = events[event].filter((ev) => ev !== handler);
+          if (!handler2) return events[event] = [];
+          events[event] = events[event].filter((ev) => ev !== handler2);
         }
         function trigger(event, ...args) {
-          events[event].forEach((handler) => handler(...args));
+          events[event].forEach((handler2) => handler2(...args));
         }
         var processingScheduled = false;
         function _insert(data, insertAtFront, rejectOnError, callback) {
@@ -293832,8 +293832,8 @@ var require_async = __commonJS({
           }
           return false;
         }
-        const eventMethod = (name) => (handler) => {
-          if (!handler) {
+        const eventMethod = (name) => (handler2) => {
+          if (!handler2) {
             return new Promise((resolve, reject2) => {
               once2(name, (err, data) => {
                 if (err) return reject2(err);
@@ -293842,7 +293842,7 @@ var require_async = __commonJS({
             });
           }
           off(name);
-          on(name, handler);
+          on(name, handler2);
         };
         var isProcessing = false;
         var q = {
@@ -315185,7 +315185,7 @@ var require_debuggability = __commonJS({
       };
       Promise2.prototype._onCancel = function() {
       };
-      Promise2.prototype._setOnCancel = function(handler) {
+      Promise2.prototype._setOnCancel = function(handler2) {
         ;
       };
       Promise2.prototype._attachCancellationCallback = function(onCancel) {
@@ -315740,10 +315740,10 @@ var require_finally = __commonJS({
       var util = require_util4();
       var CancellationError = Promise2.CancellationError;
       var errorObj2 = util.errorObj;
-      function PassThroughHandlerContext(promise, type, handler) {
+      function PassThroughHandlerContext(promise, type, handler2) {
         this.promise = promise;
         this.type = type;
-        this.handler = handler;
+        this.handler = handler2;
         this.called = false;
         this.cancelPromise = null;
       }
@@ -315778,10 +315778,10 @@ var require_finally = __commonJS({
       }
       function finallyHandler(reasonOrValue) {
         var promise = this.promise;
-        var handler = this.handler;
+        var handler2 = this.handler;
         if (!this.called) {
           this.called = true;
-          var ret2 = this.isFinallyHandler() ? handler.call(promise._boundValue()) : handler.call(promise._boundValue(), reasonOrValue);
+          var ret2 = this.isFinallyHandler() ? handler2.call(promise._boundValue()) : handler2.call(promise._boundValue(), reasonOrValue);
           if (ret2 !== void 0) {
             promise._setReturnedNonUndefined();
             var maybePromise = tryConvertToPromise(ret2, promise);
@@ -315817,26 +315817,26 @@ var require_finally = __commonJS({
           return reasonOrValue;
         }
       }
-      Promise2.prototype._passThrough = function(handler, type, success, fail2) {
-        if (typeof handler !== "function") return this.then();
+      Promise2.prototype._passThrough = function(handler2, type, success, fail2) {
+        if (typeof handler2 !== "function") return this.then();
         return this._then(
           success,
           fail2,
           void 0,
-          new PassThroughHandlerContext(this, type, handler),
+          new PassThroughHandlerContext(this, type, handler2),
           void 0
         );
       };
-      Promise2.prototype.lastly = Promise2.prototype["finally"] = function(handler) {
+      Promise2.prototype.lastly = Promise2.prototype["finally"] = function(handler2) {
         return this._passThrough(
-          handler,
+          handler2,
           0,
           finallyHandler,
           finallyHandler
         );
       };
-      Promise2.prototype.tap = function(handler) {
-        return this._passThrough(handler, 1, finallyHandler);
+      Promise2.prototype.tap = function(handler2) {
+        return this._passThrough(handler2, 1, finallyHandler);
       };
       return PassThroughHandlerContext;
     };
@@ -316237,10 +316237,10 @@ var require_direct_resolve = __commonJS({
           );
         } else {
           var _reason = arguments[1];
-          var handler = function() {
+          var handler2 = function() {
             throw _reason;
           };
-          return this.caught(reason, handler);
+          return this.caught(reason, handler2);
         }
       };
       Promise2.prototype.catchReturn = function(value) {
@@ -316256,10 +316256,10 @@ var require_direct_resolve = __commonJS({
         } else {
           var _value = arguments[1];
           if (_value instanceof Promise2) _value.suppressUnhandledRejections();
-          var handler = function() {
+          var handler2 = function() {
             return _value;
           };
-          return this.caught(value, handler);
+          return this.caught(value, handler2);
         }
       };
     };
@@ -318361,22 +318361,22 @@ var require_promise = __commonJS({
         }
         var domain = getDomain();
         if (!((bitField & 50397184) === 0)) {
-          var handler, value, settler = target._settlePromiseCtx;
+          var handler2, value, settler = target._settlePromiseCtx;
           if ((bitField & 33554432) !== 0) {
             value = target._rejectionHandler0;
-            handler = didFulfill;
+            handler2 = didFulfill;
           } else if ((bitField & 16777216) !== 0) {
             value = target._fulfillmentHandler0;
-            handler = didReject;
+            handler2 = didReject;
             target._unsetRejectionIsUnhandled();
           } else {
             settler = target._settlePromiseLateCancellationObserver;
             value = new CancellationError("late cancellation observer");
             target._attachExtraTrace(value);
-            handler = didReject;
+            handler2 = didReject;
           }
           async.invoke(settler, target, {
-            handler: domain === null ? handler : typeof handler === "function" && util.domainBind(domain, handler),
+            handler: domain === null ? handler2 : typeof handler2 === "function" && util.domainBind(domain, handler2),
             promise,
             receiver,
             value
@@ -318557,7 +318557,7 @@ var require_promise = __commonJS({
           promise._rejectCallback(r, true);
         }
       };
-      Promise2.prototype._settlePromiseFromHandler = function(handler, receiver, value, promise) {
+      Promise2.prototype._settlePromiseFromHandler = function(handler2, receiver, value, promise) {
         var bitField = promise._bitField;
         if ((bitField & 65536) !== 0) return;
         promise._pushContext();
@@ -318567,10 +318567,10 @@ var require_promise = __commonJS({
             x = errorObj2;
             x.e = new TypeError2("cannot .spread() a non-array: " + util.classString(value));
           } else {
-            x = tryCatch2(handler).apply(this._boundValue(), value);
+            x = tryCatch2(handler2).apply(this._boundValue(), value);
           }
         } else {
-          x = tryCatch2(handler).call(receiver, value);
+          x = tryCatch2(handler2).call(receiver, value);
         }
         var promiseCreated = promise._popContext();
         bitField = promise._bitField;
@@ -318595,7 +318595,7 @@ var require_promise = __commonJS({
       Promise2.prototype._setFollowee = function(promise) {
         this._rejectionHandler0 = promise;
       };
-      Promise2.prototype._settlePromise = function(promise, handler, receiver, value) {
+      Promise2.prototype._settlePromise = function(promise, handler2, receiver, value) {
         var isPromise = promise instanceof Promise2;
         var bitField = this._bitField;
         var asyncGuaranteed = (bitField & 134217728) !== 0;
@@ -318603,10 +318603,10 @@ var require_promise = __commonJS({
           if (isPromise) promise._invokeInternalOnCancel();
           if (receiver instanceof PassThroughHandlerContext && receiver.isFinallyHandler()) {
             receiver.cancelPromise = promise;
-            if (tryCatch2(handler).call(receiver, value) === errorObj2) {
+            if (tryCatch2(handler2).call(receiver, value) === errorObj2) {
               promise._reject(errorObj2.e);
             }
-          } else if (handler === reflectHandler) {
+          } else if (handler2 === reflectHandler) {
             promise._fulfill(reflectHandler.call(receiver));
           } else if (receiver instanceof Proxyable) {
             receiver._promiseCancelled(promise);
@@ -318615,12 +318615,12 @@ var require_promise = __commonJS({
           } else {
             receiver.cancel();
           }
-        } else if (typeof handler === "function") {
+        } else if (typeof handler2 === "function") {
           if (!isPromise) {
-            handler.call(receiver, value, promise);
+            handler2.call(receiver, value, promise);
           } else {
             if (asyncGuaranteed) promise._setAsyncGuaranteed();
-            this._settlePromiseFromHandler(handler, receiver, value, promise);
+            this._settlePromiseFromHandler(handler2, receiver, value, promise);
           }
         } else if (receiver instanceof Proxyable) {
           if (!receiver._isResolved()) {
@@ -318640,15 +318640,15 @@ var require_promise = __commonJS({
         }
       };
       Promise2.prototype._settlePromiseLateCancellationObserver = function(ctx) {
-        var handler = ctx.handler;
+        var handler2 = ctx.handler;
         var promise = ctx.promise;
         var receiver = ctx.receiver;
         var value = ctx.value;
-        if (typeof handler === "function") {
+        if (typeof handler2 === "function") {
           if (!(promise instanceof Promise2)) {
-            handler.call(receiver, value, promise);
+            handler2.call(receiver, value, promise);
           } else {
-            this._settlePromiseFromHandler(handler, receiver, value, promise);
+            this._settlePromiseFromHandler(handler2, receiver, value, promise);
           }
         } else if (promise instanceof Promise2) {
           promise._reject(value);
@@ -318657,12 +318657,12 @@ var require_promise = __commonJS({
       Promise2.prototype._settlePromiseCtx = function(ctx) {
         this._settlePromise(ctx.promise, ctx.handler, ctx.receiver, ctx.value);
       };
-      Promise2.prototype._settlePromise0 = function(handler, value, bitField) {
+      Promise2.prototype._settlePromise0 = function(handler2, value, bitField) {
         var promise = this._promise0;
         var receiver = this._receiverAt(0);
         this._promise0 = void 0;
         this._receiver0 = void 0;
-        this._settlePromise(promise, handler, receiver, value);
+        this._settlePromise(promise, handler2, receiver, value);
       };
       Promise2.prototype._clearCallbackDataAtIndex = function(index) {
         var base = index * 4 - 4;
@@ -318702,20 +318702,20 @@ var require_promise = __commonJS({
       };
       Promise2.prototype._fulfillPromises = function(len, value) {
         for (var i = 1; i < len; i++) {
-          var handler = this._fulfillmentHandlerAt(i);
+          var handler2 = this._fulfillmentHandlerAt(i);
           var promise = this._promiseAt(i);
           var receiver = this._receiverAt(i);
           this._clearCallbackDataAtIndex(i);
-          this._settlePromise(promise, handler, receiver, value);
+          this._settlePromise(promise, handler2, receiver, value);
         }
       };
       Promise2.prototype._rejectPromises = function(len, reason) {
         for (var i = 1; i < len; i++) {
-          var handler = this._rejectionHandlerAt(i);
+          var handler2 = this._rejectionHandlerAt(i);
           var promise = this._promiseAt(i);
           var receiver = this._receiverAt(i);
           this._clearCallbackDataAtIndex(i);
-          this._settlePromise(promise, handler, receiver, reason);
+          this._settlePromise(promise, handler2, receiver, reason);
         }
       };
       Promise2.prototype._settlePromises = function() {
@@ -326905,14 +326905,14 @@ var require_iterate_stream = __commonJS({
     function once(eventEmitter, type) {
       return new Promise((resolve) => {
         let fired = false;
-        const handler = () => {
+        const handler2 = () => {
           if (!fired) {
             fired = true;
-            eventEmitter.removeListener(type, handler);
+            eventEmitter.removeListener(type, handler2);
             resolve();
           }
         };
-        eventEmitter.addListener(type, handler);
+        eventEmitter.addListener(type, handler2);
       });
     }
   }
@@ -328001,7 +328001,7 @@ var require_sequence_service = __commonJS({
   "apps/api/src/modules/sequences/services/sequence.service.js"(exports2, module2) {
     "use strict";
     var Counter = require_Counter();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var SequenceService = class {
       /**
        * Allocate the next atomic sequence number
@@ -328009,7 +328009,7 @@ var require_sequence_service = __commonJS({
        */
       async getNextSequence(companyId, entityType, prefix = "NUM", padding = 5) {
         if (!companyId) {
-          throw new AppError("Tenant company ID is required for sequence allocation.", 400);
+          throw new AppError2("Tenant company ID is required for sequence allocation.", 400);
         }
         const year = (/* @__PURE__ */ new Date()).getFullYear();
         const counter = await Counter.findOneAndUpdate(
@@ -328062,7 +328062,7 @@ var require_masterImportExport_service = __commonJS({
       StopStatus,
       LoadStatus
     } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     function sanitizeSpreadsheetValue(val) {
       if (val === null || val === void 0) return "";
       if (typeof val === "number" || typeof val === "boolean") return val;
@@ -328242,7 +328242,7 @@ var require_masterImportExport_service = __commonJS({
             ];
             break;
           default:
-            throw new AppError(`Unsupported template entity type '${entityType}'.`, 400);
+            throw new AppError2(`Unsupported template entity type '${entityType}'.`, 400);
         }
         worksheet.columns = columns;
         worksheet.getRow(1).eachCell((cell) => {
@@ -328269,7 +328269,7 @@ var require_masterImportExport_service = __commonJS({
        */
       async dryRunValidate(entityType, fileBuffer, companyId, userId = null) {
         if (!fileBuffer || !Buffer.isBuffer(fileBuffer) || fileBuffer.length === 0) {
-          throw new AppError("The uploaded file is empty or missing.", 400);
+          throw new AppError2("The uploaded file is empty or missing.", 400);
         }
         const workbook = new (getExcelJS()).Workbook();
         let isLoaded = false;
@@ -328288,12 +328288,12 @@ var require_masterImportExport_service = __commonJS({
             await workbook.csv.read(Readable.from(cleanBuffer));
             isLoaded = true;
           } catch (_2) {
-            throw new AppError("Unable to parse spreadsheet file. Please upload a valid, uncorrupted Excel (.xlsx) or CSV (.csv) file.", 400);
+            throw new AppError2("Unable to parse spreadsheet file. Please upload a valid, uncorrupted Excel (.xlsx) or CSV (.csv) file.", 400);
           }
         }
         const worksheet = workbook.worksheets[0];
         if (!worksheet) {
-          throw new AppError("The uploaded workbook contains no readable sheets.", 400);
+          throw new AppError2("The uploaded workbook contains no readable sheets.", 400);
         }
         const rows = [];
         const headers = [];
@@ -328320,10 +328320,10 @@ var require_masterImportExport_service = __commonJS({
           }
         });
         if (rows.length === 0) {
-          throw new AppError("The uploaded spreadsheet contains no data rows.", 400);
+          throw new AppError2("The uploaded spreadsheet contains no data rows.", 400);
         }
         if (rows.length > 5e3) {
-          throw new AppError(`Spreadsheet contains ${rows.length} data rows, which exceeds the maximum allowed batch limit of 5,000 rows. Please split the file into smaller batches.`, 400);
+          throw new AppError2(`Spreadsheet contains ${rows.length} data rows, which exceeds the maximum allowed batch limit of 5,000 rows. Please split the file into smaller batches.`, 400);
         }
         const makeError = (rowNumber, field, value, message) => ({
           row: rowNumber,
@@ -328741,12 +328741,12 @@ var require_masterImportExport_service = __commonJS({
             { new: false }
           );
           if (!stagedBatch) {
-            throw new AppError("Import batch was not found, has expired, or was already committed. Please upload and preview again.", 400);
+            throw new AppError2("Import batch was not found, has expired, or was already committed. Please upload and preview again.", 400);
           }
           recordsToImport = stagedBatch.validRecords;
         }
         if (!recordsToImport || !Array.isArray(recordsToImport) || recordsToImport.length === 0) {
-          throw new AppError("No valid records provided for confirmed import.", 400);
+          throw new AppError2("No valid records provided for confirmed import.", 400);
         }
         let inserted = [];
         const enriched = recordsToImport.map((r) => {
@@ -328819,7 +328819,7 @@ var require_masterImportExport_service = __commonJS({
             }
             break;
           default:
-            throw new AppError(`Unsupported import entity '${entityType}'.`, 400);
+            throw new AppError2(`Unsupported import entity '${entityType}'.`, 400);
         }
         await auditLogService.logAction({
           companyId,
@@ -328977,7 +328977,7 @@ var require_masterImportExport_service = __commonJS({
             ];
             break;
           default:
-            throw new AppError(`Unsupported export entity type '${entityType}'.`, 400);
+            throw new AppError2(`Unsupported export entity type '${entityType}'.`, 400);
         }
         const extractRow = (rec) => {
           const row = {};
@@ -329095,17 +329095,17 @@ var require_masterImportExport_service = __commonJS({
        */
       async getJobDownloadStream(jobId, companyId) {
         if (!mongoose.isValidObjectId(jobId)) {
-          throw new AppError("Export job not found or access denied.", 404);
+          throw new AppError2("Export job not found or access denied.", 404);
         }
         const job = await ExportJob.findOne({ _id: jobId, companyId });
         if (!job) {
-          throw new AppError("Export job not found or access denied.", 404);
+          throw new AppError2("Export job not found or access denied.", 404);
         }
         if (job.status !== "COMPLETED") {
-          throw new AppError(`Export job is currently ${job.status}. File is not yet ready.`, 400);
+          throw new AppError2(`Export job is currently ${job.status}. File is not yet ready.`, 400);
         }
         if (/* @__PURE__ */ new Date() > new Date(job.downloadExpiresAt)) {
-          throw new AppError("This export download has expired. Please initiate a new export.", 410);
+          throw new AppError2("This export download has expired. Please initiate a new export.", 410);
         }
         const filePath = storageService.getFilePath(job.fileKey, companyId);
         const contentType = job.format === "csv" ? "text/csv; charset=utf-8" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -329121,7 +329121,7 @@ var require_masterImportExport_service = __commonJS({
        */
       async createImportJob({ companyId, userId, entityType, fileBuffer, fileName = "import.xlsx" }) {
         if (!fileBuffer || !Buffer.isBuffer(fileBuffer) || fileBuffer.length === 0) {
-          throw new AppError("Import file is required.", 400);
+          throw new AppError2("Import file is required.", 400);
         }
         const job = new ExportJob({
           companyId,
@@ -329182,7 +329182,7 @@ var require_masterImportExport_controller = __commonJS({
     var ExportJob = require_ExportJob();
     var auditLogService = require_auditLog_service();
     var { SystemModule, AuditAction } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var MasterImportExportController = class {
       /**
        * 1. Download Blank/Sample Template
@@ -329212,7 +329212,7 @@ var require_masterImportExport_controller = __commonJS({
           const { entityType } = req.params;
           const companyId = req.tenant.companyId;
           if (!req.file) {
-            return next(new AppError("Spreadsheet file is required (.xlsx).", 400));
+            return next(new AppError2("Spreadsheet file is required (.xlsx).", 400));
           }
           const result = await masterImportExportService.dryRunValidate(
             entityType,
@@ -329238,7 +329238,7 @@ var require_masterImportExport_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const { batchId, validRecords } = req.body;
           if (!batchId && (!validRecords || !Array.isArray(validRecords) || validRecords.length === 0)) {
-            return next(new AppError("No import batchId or valid records supplied for confirmed import.", 400));
+            return next(new AppError2("No import batchId or valid records supplied for confirmed import.", 400));
           }
           const result = await masterImportExportService.confirmImport({
             entityType,
@@ -329300,7 +329300,7 @@ var require_masterImportExport_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const userId = req.user._id;
           if (!entityType) {
-            throw new AppError("entityType is required for export job.", 400);
+            throw new AppError2("entityType is required for export job.", 400);
           }
           const job = await masterImportExportService.createExportJob({
             companyId,
@@ -329344,11 +329344,11 @@ var require_masterImportExport_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const { id } = req.params;
           if (!mongoose.isValidObjectId(id)) {
-            throw new AppError("Job record not found.", 404);
+            throw new AppError2("Job record not found.", 404);
           }
           const job = await ExportJob.findOne({ _id: id, companyId }).populate("requestedBy", "name email");
           if (!job) {
-            throw new AppError("Job record not found.", 404);
+            throw new AppError2("Job record not found.", 404);
           }
           res.status(200).json({
             success: true,
@@ -329367,7 +329367,7 @@ var require_masterImportExport_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const { id } = req.params;
           if (!mongoose.isValidObjectId(id)) {
-            throw new AppError("Export job not found or access denied.", 404);
+            throw new AppError2("Export job not found or access denied.", 404);
           }
           const fileInfo = await masterImportExportService.getJobDownloadStream(id, companyId);
           res.setHeader("Content-Type", fileInfo.contentType);
@@ -329392,7 +329392,7 @@ var require_masterImportExport_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const userId = req.user._id;
           if (!req.file) {
-            return next(new AppError("Spreadsheet file is required (.xlsx or .csv).", 400));
+            return next(new AppError2("Spreadsheet file is required (.xlsx or .csv).", 400));
           }
           const result = await masterImportExportService.createImportJob({
             companyId,
@@ -329420,13 +329420,13 @@ var require_masterImportExport_controller = __commonJS({
 var require_masterImportExport_routes = __commonJS({
   "apps/api/src/modules/masterData/routes/masterImportExport.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var multer = require_multer();
     var masterImportExportController = require_masterImportExport_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     var upload = multer({
       storage: multer.memoryStorage(),
       limits: { fileSize: 15 * 1024 * 1024 }
@@ -329489,7 +329489,7 @@ var require_loadStatus_service = __commonJS({
   "apps/api/src/modules/loads/services/loadStatus.service.js"(exports2, module2) {
     "use strict";
     var { LoadStatus, LrStatus } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var ALLOWED_LOAD_TRANSITIONS = {
       [LoadStatus.CREATED]: [LoadStatus.ASSIGNED, LoadStatus.CANCELLED],
       [LoadStatus.ASSIGNED]: [LoadStatus.LOADING, LoadStatus.CREATED, LoadStatus.CANCELLED],
@@ -329517,7 +329517,7 @@ var require_loadStatus_service = __commonJS({
         if (currentStatus === targetStatus) return true;
         const allowed = ALLOWED_LOAD_TRANSITIONS[currentStatus] || [];
         if (!allowed.includes(targetStatus)) {
-          throw new AppError(
+          throw new AppError2(
             `Invalid status transition: Cannot change Load from '${currentStatus}' to '${targetStatus}'. Allowed: [${allowed.join(", ") || "None - Terminal state"}]`,
             400
           );
@@ -329528,7 +329528,7 @@ var require_loadStatus_service = __commonJS({
         if (currentStatus === targetStatus) return true;
         const allowed = ALLOWED_LR_TRANSITIONS[currentStatus] || [];
         if (!allowed.includes(targetStatus)) {
-          throw new AppError(
+          throw new AppError2(
             `Invalid status transition: Cannot change LR from '${currentStatus}' to '${targetStatus}'. Allowed: [${allowed.join(", ") || "None - Terminal state"}]`,
             400
           );
@@ -329599,11 +329599,11 @@ var require_eventBus_service = __commonJS({
        * @param {Function} handler Callback receiving the event object
        * @returns {Function} Unsubscribe function
        */
-      subscribe(companyId, handler) {
+      subscribe(companyId, handler2) {
         const channel = this._getChannel(companyId);
         const safeHandler = (event) => {
           try {
-            handler(event);
+            handler2(event);
           } catch (err) {
             console.error(`[EVENT_BUS] Error in event listener for ${channel}:`, err);
           }
@@ -329618,10 +329618,10 @@ var require_eventBus_service = __commonJS({
        * @param {Function} handler
        * @returns {Function} Unsubscribe function
        */
-      subscribeAll(handler) {
+      subscribeAll(handler2) {
         const safeHandler = (event) => {
           try {
-            handler(event);
+            handler2(event);
           } catch (err) {
             console.error("[EVENT_BUS] Error in wildcard event listener:", err);
           }
@@ -329666,7 +329666,7 @@ var require_load_controller = __commonJS({
     var pdfService = require_pdf_service();
     var eventBus = require_eventBus_service();
     var { AuditAction, LoadStatus, SystemModule } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var LoadController = class {
       async list(req, res, next) {
         try {
@@ -329719,7 +329719,7 @@ var require_load_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const load = await Load.findOne({ _id: id, companyId, isActive: true }).populate("customerId").populate("consignorId").populate("consigneeId").populate("assignedVehicleId").populate("assignedDriverId").populate("stops.locationId").populate("statusHistory.changedBy", "name email");
           if (!load) {
-            return next(new AppError("Load not found.", 404));
+            return next(new AppError2("Load not found.", 404));
           }
           res.status(200).json({
             success: true,
@@ -329748,7 +329748,7 @@ var require_load_controller = __commonJS({
             remarks
           } = req.body;
           if (!customerId || !consignorId || !consigneeId) {
-            return next(new AppError("Customer, Consignor, and Consignee are required.", 400));
+            return next(new AppError2("Customer, Consignor, and Consignee are required.", 400));
           }
           const partyIds = Array.from(new Set([customerId, consignorId, consigneeId].map((id) => id.toString())));
           const validPartiesCount = await CustomerParty.countDocuments({
@@ -329757,7 +329757,7 @@ var require_load_controller = __commonJS({
             isActive: true
           });
           if (validPartiesCount !== partyIds.length) {
-            return next(new AppError("One or more referenced parties (Customer, Consignor, Consignee) are invalid or belong to another organization.", 403));
+            return next(new AppError2("One or more referenced parties (Customer, Consignor, Consignee) are invalid or belong to another organization.", 403));
           }
           const directLocIds = [originLocationId, destinationLocationId].filter(Boolean);
           if (directLocIds.length > 0) {
@@ -329767,7 +329767,7 @@ var require_load_controller = __commonJS({
               isActive: true
             });
             if (validDirectLocs !== directLocIds.length) {
-              return next(new AppError("Referenced origin or destination location is invalid or belongs to another organization.", 403));
+              return next(new AppError2("Referenced origin or destination location is invalid or belongs to another organization.", 403));
             }
           }
           if (stops && stops.length > 0) {
@@ -329779,22 +329779,22 @@ var require_load_controller = __commonJS({
                 isActive: true
               });
               if (validLocationsCount !== stopLocationIds.length) {
-                return next(new AppError("One or more referenced stop locations are invalid or belong to another organization.", 403));
+                return next(new AppError2("One or more referenced stop locations are invalid or belong to another organization.", 403));
               }
             }
           }
           if (!totalWeightMt || parseFloat(totalWeightMt) <= 0) {
-            return next(new AppError("Total weight in Metric Tons (MT) is required and must be > 0.", 400));
+            return next(new AppError2("Total weight in Metric Tons (MT) is required and must be > 0.", 400));
           }
           const orderDate = /* @__PURE__ */ new Date();
           let expDelivery = null;
           if (expectedDeliveryDate) {
             expDelivery = new Date(expectedDeliveryDate);
             if (isNaN(expDelivery.getTime())) {
-              return next(new AppError("Invalid expectedDeliveryDate provided.", 400));
+              return next(new AppError2("Invalid expectedDeliveryDate provided.", 400));
             }
             if (expDelivery < orderDate) {
-              return next(new AppError("Expected delivery date cannot be before order creation date.", 400));
+              return next(new AppError2("Expected delivery date cannot be before order creation date.", 400));
             }
           }
           const baseFreight = Math.max(0, Math.round(Number(financials.baseFreightPaise) || 0));
@@ -329808,7 +329808,7 @@ var require_load_controller = __commonJS({
           const deduction = Math.max(0, Math.round(Number(financials.deductionPaise) || 0));
           const totalFreight = baseFreight + loading + unloading + detention + toll + handling + misc;
           if (advance + deduction > totalFreight && totalFreight > 0) {
-            return next(new AppError("Advance and deductions cannot exceed total freight amount.", 400));
+            return next(new AppError2("Advance and deductions cannot exceed total freight amount.", 400));
           }
           const loadNumber = await sequenceService.getNextSequence(companyId, "LOAD", "LD");
           const formattedStops = stops.map((s, idx) => ({
@@ -329898,7 +329898,7 @@ var require_load_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const load = await Load.findOne({ _id: id, companyId, isActive: true });
           if (!load) {
-            return next(new AppError("Load not found.", 404));
+            return next(new AppError2("Load not found.", 404));
           }
           if (status === LoadStatus.CANCELLED) {
             const Trip = require_Trip();
@@ -329909,7 +329909,7 @@ var require_load_controller = __commonJS({
               isActive: true
             });
             if (activeTrip) {
-              return next(new AppError(`Cannot cancel Load ${load.loadNumber}: Trip ${activeTrip.tripNumber} is currently in progress or delivered.`, 400));
+              return next(new AppError2(`Cannot cancel Load ${load.loadNumber}: Trip ${activeTrip.tripNumber} is currently in progress or delivered.`, 400));
             }
           }
           loadStatusService.validateLoadTransition(load.status, status);
@@ -329956,28 +329956,28 @@ var require_load_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const load = await Load.findOne({ _id: id, companyId, isActive: true });
           if (!load) {
-            return next(new AppError("Load not found.", 404));
+            return next(new AppError2("Load not found.", 404));
           }
           if (vehicleId) {
             const vehicle = await Vehicle.findOne({ _id: vehicleId, companyId, isActive: true });
             if (!vehicle) {
-              return next(new AppError("Selected vehicle not found in your fleet.", 404));
+              return next(new AppError2("Selected vehicle not found in your fleet.", 404));
             }
             if (vehicle.status === "OUT_OF_SERVICE" || vehicle.status === "UNDER_MAINTENANCE" || vehicle.status === "INACTIVE" || vehicle.status === "ON_TRIP") {
-              return next(new AppError(`Vehicle ${vehicle.plateNumber} is currently ${vehicle.status}. Cannot assign.`, 400));
+              return next(new AppError2(`Vehicle ${vehicle.plateNumber} is currently ${vehicle.status}. Cannot assign.`, 400));
             }
             load.assignedVehicleId = vehicle._id;
           }
           if (driverId) {
             const driver = await Driver.findOne({ _id: driverId, companyId, isActive: true });
             if (!driver) {
-              return next(new AppError("Selected driver not found.", 404));
+              return next(new AppError2("Selected driver not found.", 404));
             }
             if (driver.status === "ON_TRIP" || driver.status === "ON_LEAVE" || driver.status === "INACTIVE") {
-              return next(new AppError(`Driver ${driver.name} is currently ${driver.status}. Cannot assign.`, 400));
+              return next(new AppError2(`Driver ${driver.name} is currently ${driver.status}. Cannot assign.`, 400));
             }
             if (driver.licenseExpiryDate && new Date(driver.licenseExpiryDate) < /* @__PURE__ */ new Date()) {
-              return next(new AppError(`Driver ${driver.name}'s licence has expired. Cannot assign.`, 400));
+              return next(new AppError2(`Driver ${driver.name}'s licence has expired. Cannot assign.`, 400));
             }
             load.assignedDriverId = driver._id;
           }
@@ -330016,7 +330016,7 @@ var require_load_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const load = await Load.findOne({ _id: id, companyId, isActive: true }).populate("assignedVehicleId").populate("assignedDriverId").populate("stops.locationId");
           if (!load) {
-            return next(new AppError("Load not found.", 404));
+            return next(new AppError2("Load not found.", 404));
           }
           const copy = req.query.copy || "ORIGINAL";
           const pdfBuffer = await pdfService.generateLoadingSlipPdf(load, req.tenant.company, { copy });
@@ -330039,12 +330039,12 @@ var require_load_controller = __commonJS({
 var require_load_routes = __commonJS({
   "apps/api/src/modules/loads/routes/load.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var loadController = require_load_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get(
       "/",
@@ -330100,7 +330100,7 @@ var require_lr_controller = __commonJS({
     var auditLogService = require_auditLog_service();
     var pdfService = require_pdf_service();
     var { AuditAction, LrStatus, SystemModule } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var LrController = class {
       async list(req, res, next) {
         try {
@@ -330153,7 +330153,7 @@ var require_lr_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const lr = await LrNumber.findOne({ _id: id, companyId, isActive: true }).populate("loadId").populate("consignorId").populate("consigneeId").populate("vehicleId").populate("driverId").populate("fromLocationId").populate("toLocationId").populate("statusHistory.changedBy", "name email");
           if (!lr) {
-            return next(new AppError("Lorry Receipt not found.", 404));
+            return next(new AppError2("Lorry Receipt not found.", 404));
           }
           res.status(200).json({
             success: true,
@@ -330182,18 +330182,18 @@ var require_lr_controller = __commonJS({
             remarks
           } = req.body;
           if (!loadId) {
-            return next(new AppError("Linked Load ID is required to issue an LR.", 400));
+            return next(new AppError2("Linked Load ID is required to issue an LR.", 400));
           }
           const load = await Load.findOne({ _id: loadId, companyId, isActive: true });
           if (!load) {
-            return next(new AppError("Specified Load not found.", 404));
+            return next(new AppError2("Specified Load not found.", 404));
           }
           let assignedLrNumber;
           if (isManualNumber && customLrNumber) {
             assignedLrNumber = customLrNumber.trim().toUpperCase();
             const existing = await LrNumber.findOne({ companyId, lrNumber: assignedLrNumber });
             if (existing) {
-              return next(new AppError(`LR Number '${assignedLrNumber}' already exists for your company. Duplicate numbers are prohibited.`, 409));
+              return next(new AppError2(`LR Number '${assignedLrNumber}' already exists for your company. Duplicate numbers are prohibited.`, 409));
             }
           } else {
             assignedLrNumber = await sequenceService.getNextSequence(companyId, "LR", "LR");
@@ -330202,22 +330202,22 @@ var require_lr_controller = __commonJS({
             const partyIds = [consignorId, consigneeId].filter(Boolean);
             const count = await CustomerParty.countDocuments({ _id: { $in: partyIds }, companyId, isActive: true });
             if (count !== partyIds.length) {
-              return next(new AppError("Referenced Consignor or Consignee is invalid or belongs to another organization.", 403));
+              return next(new AppError2("Referenced Consignor or Consignee is invalid or belongs to another organization.", 403));
             }
           }
           if (vehicleId) {
             const v = await Vehicle.findOne({ _id: vehicleId, companyId, isActive: true });
-            if (!v) return next(new AppError("Referenced vehicle is invalid or belongs to another organization.", 403));
+            if (!v) return next(new AppError2("Referenced vehicle is invalid or belongs to another organization.", 403));
           }
           if (driverId) {
             const d = await Driver.findOne({ _id: driverId, companyId, isActive: true });
-            if (!d) return next(new AppError("Referenced driver is invalid or belongs to another organization.", 403));
+            if (!d) return next(new AppError2("Referenced driver is invalid or belongs to another organization.", 403));
           }
           if (fromLocationId || toLocationId) {
             const locIds = [fromLocationId, toLocationId].filter(Boolean);
             const count = await Location.countDocuments({ _id: { $in: locIds }, companyId, isActive: true });
             if (count !== locIds.length) {
-              return next(new AppError("Referenced location is invalid or belongs to another organization.", 403));
+              return next(new AppError2("Referenced location is invalid or belongs to another organization.", 403));
             }
           }
           const finalConsignorId = consignorId || load.consignorId;
@@ -330277,7 +330277,7 @@ var require_lr_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const lr = await LrNumber.findOne({ _id: id, companyId, isActive: true });
           if (!lr) {
-            return next(new AppError("Lorry Receipt not found.", 404));
+            return next(new AppError2("Lorry Receipt not found.", 404));
           }
           loadStatusService.validateLrTransition(lr.status, status);
           const oldStatus = lr.status;
@@ -330315,7 +330315,7 @@ var require_lr_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const lr = await LrNumber.findOne({ _id: id, companyId, isActive: true }).populate("loadId").populate("consignorId").populate("consigneeId").populate("vehicleId").populate("driverId");
           if (!lr) {
-            return next(new AppError("Lorry Receipt not found.", 404));
+            return next(new AppError2("Lorry Receipt not found.", 404));
           }
           const copy = req.query.copy || "ORIGINAL";
           const pdfBuffer = await pdfService.generateLrPdf(lr, req.tenant.company, { copy });
@@ -330338,12 +330338,12 @@ var require_lr_controller = __commonJS({
 var require_lr_routes = __commonJS({
   "apps/api/src/modules/lr/routes/lr.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var lrController = require_lr_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get(
       "/",
@@ -330385,7 +330385,7 @@ var require_bilty_controller = __commonJS({
     var auditLogService = require_auditLog_service();
     var pdfService = require_pdf_service();
     var { AuditAction, BiltyStatus, PaymentTerms, SystemModule } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var BiltyController = class {
       async list(req, res, next) {
         try {
@@ -330437,7 +330437,7 @@ var require_bilty_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const bilty = await Bilty.findOne({ _id: id, companyId, isActive: true }).populate("lrId").populate("loadId").populate("consignorId").populate("consigneeId").populate("fromLocationId").populate("toLocationId");
           if (!bilty) {
-            return next(new AppError("Consignment Bilty not found.", 404));
+            return next(new AppError2("Consignment Bilty not found.", 404));
           }
           res.status(200).json({
             success: true,
@@ -330459,28 +330459,28 @@ var require_bilty_controller = __commonJS({
             remarks
           } = req.body;
           if (!lrId) {
-            return next(new AppError("Valid Lorry Receipt (LR) ID is required to issue a Bilty.", 400));
+            return next(new AppError2("Valid Lorry Receipt (LR) ID is required to issue a Bilty.", 400));
           }
           const lr = await LrNumber.findOne({ _id: lrId, companyId, isActive: true });
           if (!lr) {
-            return next(new AppError("Linked Lorry Receipt not found.", 404));
+            return next(new AppError2("Linked Lorry Receipt not found.", 404));
           }
           const load = await Load.findOne({ _id: lr.loadId, companyId, isActive: true });
           if (!load) {
-            return next(new AppError("Underlying Consignment Load not found.", 404));
+            return next(new AppError2("Underlying Consignment Load not found.", 404));
           }
           const existingBilty = await Bilty.findOne({ lrId: lr._id, companyId, isActive: true });
           if (existingBilty) {
-            return next(new AppError(`Bilty '${existingBilty.biltyNumber}' has already been issued for this LR.`, 409));
+            return next(new AppError2(`Bilty '${existingBilty.biltyNumber}' has already been issued for this LR.`, 409));
           }
           const biltyNumber = await sequenceService.getNextSequence(companyId, "BILTY", "BL");
           const freightPaise = totalFreightPaise !== void 0 ? Math.round(Number(totalFreightPaise)) : load.financials?.totalFreightPaise || 0;
           const advPaise = advancePaise !== void 0 ? Math.round(Number(advancePaise)) : load.financials?.advancePaise || 0;
           if (freightPaise < 0 || advPaise < 0) {
-            return next(new AppError("Freight and advance amounts cannot be negative.", 400));
+            return next(new AppError2("Freight and advance amounts cannot be negative.", 400));
           }
           if (advPaise > freightPaise && freightPaise > 0) {
-            return next(new AppError("Advance amount cannot exceed total freight.", 400));
+            return next(new AppError2("Advance amount cannot exceed total freight.", 400));
           }
           const balPaise = Math.max(0, freightPaise - advPaise);
           const bilty = new Bilty({
@@ -330528,7 +330528,7 @@ var require_bilty_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const bilty = await Bilty.findOne({ _id: id, companyId, isActive: true }).populate("lrId").populate("loadId").populate("consignorId").populate("consigneeId");
           if (!bilty) {
-            return next(new AppError("Consignment Bilty not found.", 404));
+            return next(new AppError2("Consignment Bilty not found.", 404));
           }
           const copy = req.query.copy || "ORIGINAL";
           const pdfBuffer = await pdfService.generateBiltyPdf(bilty, req.tenant.company, { copy });
@@ -330551,12 +330551,12 @@ var require_bilty_controller = __commonJS({
 var require_bilty_routes = __commonJS({
   "apps/api/src/modules/bilties/routes/bilty.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var biltyController = require_bilty_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get(
       "/",
@@ -330587,7 +330587,7 @@ var require_tripStatus_service = __commonJS({
   "apps/api/src/modules/trips/services/tripStatus.service.js"(exports2, module2) {
     "use strict";
     var { TripStatus } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var ALLOWED_TRIP_TRANSITIONS = {
       [TripStatus.CREATED]: [TripStatus.VEHICLE_ASSIGNED, TripStatus.CANCELLED],
       [TripStatus.VEHICLE_ASSIGNED]: [TripStatus.LOADING, TripStatus.CREATED, TripStatus.CANCELLED],
@@ -330603,7 +330603,7 @@ var require_tripStatus_service = __commonJS({
         if (currentStatus === targetStatus) return true;
         const allowed = ALLOWED_TRIP_TRANSITIONS[currentStatus] || [];
         if (!allowed.includes(targetStatus)) {
-          throw new AppError(
+          throw new AppError2(
             `Invalid status transition: Cannot change Trip from '${currentStatus}' to '${targetStatus}'. Allowed transitions: [${allowed.join(", ") || "None - Terminal state"}]`,
             400
           );
@@ -330640,7 +330640,7 @@ var require_trip_controller = __commonJS({
       DriverStatus,
       LoadStatus
     } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var TripController = class {
       /**
        * 1. List Trips with Filtering, Search, and Pagination
@@ -330702,7 +330702,7 @@ var require_trip_controller = __commonJS({
           const { id } = req.params;
           const trip = await Trip.findOne({ _id: id, companyId, isActive: true }).populate("loadId").populate("vehicleId").populate("driverId").populate("stops.locationId").populate("statusHistory.changedBy", "name email");
           if (!trip) {
-            throw new AppError("Trip record not found", 404);
+            throw new AppError2("Trip record not found", 404);
           }
           res.status(200).json({
             success: true,
@@ -330732,36 +330732,36 @@ var require_trip_controller = __commonJS({
             stops: customStops
           } = req.body;
           if (!loadId || !vehicleId || !driverId) {
-            throw new AppError("loadId, vehicleId, and driverId are required.", 400);
+            throw new AppError2("loadId, vehicleId, and driverId are required.", 400);
           }
           const startDate = startDateTime ? new Date(startDateTime) : /* @__PURE__ */ new Date();
           if (isNaN(startDate.getTime())) {
-            throw new AppError("Invalid startDateTime provided.", 400);
+            throw new AppError2("Invalid startDateTime provided.", 400);
           }
           let expectedDelivery = null;
           if (expectedDeliveryDateTime) {
             expectedDelivery = new Date(expectedDeliveryDateTime);
             if (isNaN(expectedDelivery.getTime())) {
-              throw new AppError("Invalid expectedDeliveryDateTime provided.", 400);
+              throw new AppError2("Invalid expectedDeliveryDateTime provided.", 400);
             }
             if (expectedDelivery < startDate) {
-              throw new AppError("Expected delivery date cannot be earlier than trip start date.", 400);
+              throw new AppError2("Expected delivery date cannot be earlier than trip start date.", 400);
             }
           }
           const advancePaise = Math.max(0, parseInt(driverAdvancePaise, 10) || 0);
           const load = await Load.findOne({ _id: loadId, companyId, isActive: true });
           if (!load) {
-            throw new AppError("Specified load does not exist.", 404);
+            throw new AppError2("Specified load does not exist.", 404);
           }
           if (load.status === LoadStatus.CLOSED || load.status === LoadStatus.CANCELLED || load.status === LoadStatus.IN_TRANSIT || load.status === LoadStatus.PARTIALLY_DELIVERED || load.status === LoadStatus.DELIVERED) {
-            throw new AppError(`Cannot create trip for Load in ${load.status} status.`, 400);
+            throw new AppError2(`Cannot create trip for Load in ${load.status} status.`, 400);
           }
           const vehicle = await Vehicle.findOne({ _id: vehicleId, companyId, isActive: true });
           if (!vehicle) {
-            throw new AppError("Specified vehicle does not exist.", 404);
+            throw new AppError2("Specified vehicle does not exist.", 404);
           }
           if (vehicle.status === VehicleStatus.UNDER_MAINTENANCE || vehicle.status === VehicleStatus.OUT_OF_SERVICE || vehicle.status === VehicleStatus.INACTIVE) {
-            throw new AppError(
+            throw new AppError2(
               `Vehicle ${vehicle.plateNumber} is currently ${vehicle.status} and cannot be assigned to trips.`,
               400
             );
@@ -330781,23 +330781,23 @@ var require_trip_controller = __commonJS({
             isActive: true
           });
           if (activeVehicleTrip) {
-            throw new AppError(
+            throw new AppError2(
               `Vehicle ${vehicle.plateNumber} is already assigned to active Trip ${activeVehicleTrip.tripNumber}.`,
               400
             );
           }
           const driver = await Driver.findOne({ _id: driverId, companyId, isActive: true });
           if (!driver) {
-            throw new AppError("Specified driver does not exist.", 404);
+            throw new AppError2("Specified driver does not exist.", 404);
           }
           if (driver.status === DriverStatus.ON_LEAVE || driver.status === DriverStatus.INACTIVE) {
-            throw new AppError(
+            throw new AppError2(
               `Driver ${driver.name} is currently ${driver.status} and cannot be assigned.`,
               400
             );
           }
           if (driver.licenseExpiryDate && new Date(driver.licenseExpiryDate) < /* @__PURE__ */ new Date()) {
-            throw new AppError(
+            throw new AppError2(
               `Driver ${driver.name}'s driving licence expired on ${new Date(driver.licenseExpiryDate).toLocaleDateString("en-IN")}. Cannot dispatch.`,
               400
             );
@@ -330817,7 +330817,7 @@ var require_trip_controller = __commonJS({
             isActive: true
           });
           if (activeDriverTrip) {
-            throw new AppError(
+            throw new AppError2(
               `Driver ${driver.name} is already assigned to active Trip ${activeDriverTrip.tripNumber}.`,
               400
             );
@@ -330837,7 +330837,7 @@ var require_trip_controller = __commonJS({
             isActive: true
           });
           if (activeLoadTrip) {
-            throw new AppError(`Load ${load.loadNumber} is already assigned to active Trip ${activeLoadTrip.tripNumber}.`, 400);
+            throw new AppError2(`Load ${load.loadNumber} is already assigned to active Trip ${activeLoadTrip.tripNumber}.`, 400);
           }
           let tripStops = [];
           if (Array.isArray(customStops) && customStops.length > 0) {
@@ -330849,7 +330849,7 @@ var require_trip_controller = __commonJS({
                 isActive: true
               });
               if (validLocationsCount !== stopLocationIds.length) {
-                throw new AppError("One or more referenced stop locations are invalid or belong to another organization.", 403);
+                throw new AppError2("One or more referenced stop locations are invalid or belong to another organization.", 403);
               }
             }
             tripStops = customStops.map((s, idx) => ({
@@ -330891,8 +330891,8 @@ var require_trip_controller = __commonJS({
           );
           if (!reservedVehicle) {
             const v = await Vehicle.findOne({ _id: vehicleId, companyId, isActive: true });
-            if (!v) throw new AppError("Specified vehicle does not exist.", 404);
-            throw new AppError(`Vehicle ${v.plateNumber} is currently ${v.status} and cannot be assigned to trips.`, 400);
+            if (!v) throw new AppError2("Specified vehicle does not exist.", 404);
+            throw new AppError2(`Vehicle ${v.plateNumber} is currently ${v.status} and cannot be assigned to trips.`, 400);
           }
           const reservedDriver = await Driver.findOneAndUpdate(
             {
@@ -330907,8 +330907,8 @@ var require_trip_controller = __commonJS({
           if (!reservedDriver) {
             await Vehicle.findByIdAndUpdate(vehicleId, { status: vehicle.status || VehicleStatus.AVAILABLE });
             const d = await Driver.findOne({ _id: driverId, companyId, isActive: true });
-            if (!d) throw new AppError("Specified driver does not exist.", 404);
-            throw new AppError(`Driver ${d.name} is currently ${d.status} and cannot be assigned.`, 400);
+            if (!d) throw new AppError2("Specified driver does not exist.", 404);
+            throw new AppError2(`Driver ${d.name} is currently ${d.status} and cannot be assigned.`, 400);
           }
           const reservedLoad = await Load.findOneAndUpdate(
             {
@@ -330926,8 +330926,8 @@ var require_trip_controller = __commonJS({
               Driver.findByIdAndUpdate(driverId, { status: driver.status || DriverStatus.AVAILABLE })
             ]);
             const l2 = await Load.findOne({ _id: loadId, companyId, isActive: true });
-            if (!l2) throw new AppError("Specified load does not exist.", 404);
-            throw new AppError(`Cannot create trip for Load in ${l2.status} status.`, 400);
+            if (!l2) throw new AppError2("Specified load does not exist.", 404);
+            throw new AppError2(`Cannot create trip for Load in ${l2.status} status.`, 400);
           }
           const tripNumber = await sequenceService.getNextSequence(companyId, "TRIP", "TR");
           const grossFreightPaise = load.financials?.totalFreightPaise || 0;
@@ -331027,18 +331027,18 @@ var require_trip_controller = __commonJS({
           const { id } = req.params;
           const { status: targetStatus, reason = "" } = req.body;
           if (!targetStatus) {
-            throw new AppError("Target status is required.", 400);
+            throw new AppError2("Target status is required.", 400);
           }
           const trip = await Trip.findOne({ _id: id, companyId, isActive: true });
           if (!trip) {
-            throw new AppError("Trip record not found", 404);
+            throw new AppError2("Trip record not found", 404);
           }
           tripStatusService.validateTransition(trip.status, targetStatus);
           if (targetStatus === TripStatus.CLOSED) {
             const deliveryStops = trip.stops.filter((s) => s.stopType === StopType.DELIVERY);
             const incompleteStops = deliveryStops.filter((s) => s.status !== StopStatus.COMPLETED);
             if (incompleteStops.length > 0) {
-              throw new AppError(
+              throw new AppError2(
                 `Cannot close Trip: ${incompleteStops.length} delivery stop(s) are not yet COMPLETED.`,
                 400
               );
@@ -331049,7 +331049,7 @@ var require_trip_controller = __commonJS({
               isActive: true
             });
             if (podCount === 0) {
-              throw new AppError(
+              throw new AppError2(
                 "Cannot close Trip: At least one Proof of Delivery (POD) document must be uploaded and attached before final closure.",
                 400
               );
@@ -331127,21 +331127,21 @@ var require_trip_controller = __commonJS({
           } = req.body;
           const qty = parseInt(deliveredQuantity, 10);
           if (isNaN(qty) || qty <= 0) {
-            throw new AppError("Delivered quantity must be a positive integer.", 400);
+            throw new AppError2("Delivered quantity must be a positive integer.", 400);
           }
           const trip = await Trip.findOne({ _id: id, companyId, isActive: true });
           if (!trip) {
-            throw new AppError("Trip record not found", 404);
+            throw new AppError2("Trip record not found", 404);
           }
           const stop = trip.stops.id(stopId);
           if (!stop) {
-            throw new AppError("Specified stop not found in trip itinerary.", 404);
+            throw new AppError2("Specified stop not found in trip itinerary.", 404);
           }
           if (stop.status === StopStatus.COMPLETED && stop.pendingQuantity === 0) {
-            throw new AppError(`Stop sequence ${stop.sequence} is already fully completed. No pending quantity to deliver.`, 400);
+            throw new AppError2(`Stop sequence ${stop.sequence} is already fully completed. No pending quantity to deliver.`, 400);
           }
           if (qty > stop.pendingQuantity) {
-            throw new AppError(
+            throw new AppError2(
               `Delivered quantity (${qty}) exceeds pending quantity (${stop.pendingQuantity}). Over-delivery is not permitted.`,
               400
             );
@@ -331234,17 +331234,17 @@ var require_trip_controller = __commonJS({
           } = req.body;
           const amount = parseInt(amountPaise, 10);
           if (isNaN(amount) || amount <= 0) {
-            throw new AppError("Expense amount in Paise must be a positive integer.", 400);
+            throw new AppError2("Expense amount in Paise must be a positive integer.", 400);
           }
           if (!expenseType) {
-            throw new AppError("expenseType is required.", 400);
+            throw new AppError2("expenseType is required.", 400);
           }
           const trip = await Trip.findOne({ _id: id, companyId, isActive: true });
           if (!trip) {
-            throw new AppError("Trip record not found", 404);
+            throw new AppError2("Trip record not found", 404);
           }
           if (trip.status === TripStatus.CLOSED || trip.status === TripStatus.CANCELLED) {
-            throw new AppError(`Cannot add expense to Trip in ${trip.status} status. Trip accounting is finalized.`, 400);
+            throw new AppError2(`Cannot add expense to Trip in ${trip.status} status. Trip accounting is finalized.`, 400);
           }
           trip.expenses.push({
             expenseType,
@@ -331291,7 +331291,7 @@ var require_trip_controller = __commonJS({
           const { id } = req.params;
           const trip = await Trip.findOne({ _id: id, companyId, isActive: true });
           if (!trip) {
-            throw new AppError("Trip record not found", 404);
+            throw new AppError2("Trip record not found", 404);
           }
           if (trip.status === TripStatus.CLOSED) {
             return res.status(200).json({
@@ -331304,7 +331304,7 @@ var require_trip_controller = __commonJS({
           const deliveryStops = trip.stops.filter((s) => s.stopType === StopType.DELIVERY);
           const incompleteStops = deliveryStops.filter((s) => s.status !== StopStatus.COMPLETED);
           if (incompleteStops.length > 0) {
-            throw new AppError(
+            throw new AppError2(
               `Cannot close Trip: ${incompleteStops.length} delivery stop(s) are not yet COMPLETED.`,
               400
             );
@@ -331315,7 +331315,7 @@ var require_trip_controller = __commonJS({
             isActive: true
           });
           if (podCount === 0) {
-            throw new AppError(
+            throw new AppError2(
               "Cannot close Trip: At least one Proof of Delivery (POD) document must be uploaded and attached before final closure.",
               400
             );
@@ -331368,7 +331368,7 @@ var require_trip_controller = __commonJS({
           const { id } = req.params;
           const trip = await Trip.findOne({ _id: id, companyId, isActive: true }).populate("loadId").populate("vehicleId").populate("driverId").populate("stops.locationId");
           if (!trip) {
-            throw new AppError("Trip record not found", 404);
+            throw new AppError2("Trip record not found", 404);
           }
           const copy = req.query.copy || "ORIGINAL";
           const pdfBuffer = await pdfService.generateTripSheetPdf(trip, req.tenant.company || {}, { copy });
@@ -331389,7 +331389,7 @@ var require_trip_controller = __commonJS({
           const { id } = req.params;
           const trip = await Trip.findOne({ _id: id, companyId, isActive: true }).populate("loadId").populate("vehicleId").populate("driverId").populate("stops.locationId");
           if (!trip) {
-            throw new AppError("Trip record not found", 404);
+            throw new AppError2("Trip record not found", 404);
           }
           const copy = req.query.copy || "ORIGINAL";
           const pdfBuffer = await pdfService.generateSettlementPdf(trip, req.tenant.company || {}, { copy });
@@ -331538,7 +331538,7 @@ var require_publicTracking_service = __commonJS({
     var Location = require_Location();
     var ProofOfDelivery = require_ProofOfDelivery();
     var { resolveCoordinates } = require_geoCoordinates();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var PublicTrackingService = class {
       /**
        * Track a consignment by unguessable tracking token, LR number, Bilty number, or Load number
@@ -331548,7 +331548,7 @@ var require_publicTracking_service = __commonJS({
        */
       async trackConsignment(rawIdentifier, companyHint = null, ipAddress = null) {
         if (!rawIdentifier || typeof rawIdentifier !== "string" || !rawIdentifier.trim()) {
-          throw new AppError("Tracking identifier (Tracking Token, LR, Bilty, or Load number) is required.", 400);
+          throw new AppError2("Tracking identifier (Tracking Token, LR, Bilty, or Load number) is required.", 400);
         }
         const trimmed = rawIdentifier.trim();
         const identifier = trimmed.toUpperCase();
@@ -331578,7 +331578,7 @@ var require_publicTracking_service = __commonJS({
           }
         }
         if (!load) {
-          throw new AppError(`No consignment found matching tracking number '${identifier}'.`, 404);
+          throw new AppError2(`No consignment found matching tracking number '${identifier}'.`, 404);
         }
         if (!lr) {
           lr = await LrNumber.findOne({ loadId: load._id, isActive: true });
@@ -331730,7 +331730,7 @@ var require_publicTracking_controller = __commonJS({
     var publicTrackingService = require_publicTracking_service();
     var Trip = require_Trip();
     var { resolveCoordinates } = require_geoCoordinates();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var PublicTrackingController = class {
       /**
        * Public Consignment Lookup
@@ -331761,7 +331761,7 @@ var require_publicTracking_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const trip = await Trip.findOne({ _id: id, companyId, isActive: true }).populate("loadId").populate("vehicleId", "plateNumber vehicleType make model").populate("driverId", "fullName mobileNumber").populate("stops.locationId");
           if (!trip) {
-            throw new AppError("Trip not found or access denied.", 404);
+            throw new AppError2("Trip not found or access denied.", 404);
           }
           const stopsWithCoordinates = (trip.stops || []).map((s) => {
             const loc = s.locationId || {};
@@ -331804,12 +331804,12 @@ var require_publicTracking_controller = __commonJS({
 var require_trip_routes = __commonJS({
   "apps/api/src/modules/trips/routes/trip.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var tripController = require_trip_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get(
       "/",
@@ -331879,7 +331879,7 @@ var require_pod_controller = __commonJS({
     var auditLogService = require_auditLog_service();
     var eventBus = require_eventBus_service();
     var { AuditAction, PodStatus, SystemModule } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var PodController = class {
       /**
        * 1. List POD Records with Filtering & Pagination
@@ -331939,7 +331939,7 @@ var require_pod_controller = __commonJS({
           const { id } = req.params;
           const pod = await ProofOfDelivery.findOne({ _id: id, companyId, isActive: true }).populate("tripId").populate("loadId").populate("lrId").populate("verifiedBySupervisor", "name email");
           if (!pod) {
-            throw new AppError("Proof of Delivery record not found.", 404);
+            throw new AppError2("Proof of Delivery record not found.", 404);
           }
           res.status(200).json({
             success: true,
@@ -331958,7 +331958,7 @@ var require_pod_controller = __commonJS({
           const companyId = req.tenant.companyId;
           const userId = req.user.id;
           if (!req.file) {
-            throw new AppError("POD document file is required (PDF, JPG, PNG).", 400);
+            throw new AppError2("POD document file is required (PDF, JPG, PNG).", 400);
           }
           const {
             tripId,
@@ -331971,29 +331971,29 @@ var require_pod_controller = __commonJS({
             remarks = ""
           } = req.body;
           if (!tripId || !receiverName || !quantityDelivered) {
-            throw new AppError("tripId, receiverName, and quantityDelivered are required.", 400);
+            throw new AppError2("tripId, receiverName, and quantityDelivered are required.", 400);
           }
           const qty = parseInt(quantityDelivered, 10);
           if (isNaN(qty) || qty <= 0) {
-            throw new AppError("quantityDelivered must be a positive integer.", 400);
+            throw new AppError2("quantityDelivered must be a positive integer.", 400);
           }
           const trip = await Trip.findOne({ _id: tripId, companyId, isActive: true });
           if (!trip) {
-            throw new AppError("Specified Trip does not exist.", 404);
+            throw new AppError2("Specified Trip does not exist.", 404);
           }
           if (stopId) {
             const stop = trip.stops.id(stopId);
             if (!stop) {
-              throw new AppError("Specified stop does not belong to this trip itinerary.", 404);
+              throw new AppError2("Specified stop does not belong to this trip itinerary.", 404);
             }
           }
           if (loadId) {
             const load = await Load.findOne({ _id: loadId, companyId, isActive: true });
-            if (!load) throw new AppError("Specified Load does not exist or access denied.", 404);
+            if (!load) throw new AppError2("Specified Load does not exist or access denied.", 404);
           }
           if (lrId) {
             const lr = await LrNumber.findOne({ _id: lrId, companyId, isActive: true });
-            if (!lr) throw new AppError("Specified LR does not exist or access denied.", 404);
+            if (!lr) throw new AppError2("Specified LR does not exist or access denied.", 404);
           }
           const effectiveLoadId = loadId || trip.loadId;
           const saved = await storageService.saveFile({
@@ -332065,7 +332065,7 @@ var require_pod_controller = __commonJS({
           const { id } = req.params;
           const pod = await ProofOfDelivery.findOne({ _id: id, companyId, isActive: true });
           if (!pod) {
-            throw new AppError("Proof of Delivery record not found.", 404);
+            throw new AppError2("Proof of Delivery record not found.", 404);
           }
           const filePath = storageService.getFilePath(pod.fileKey, companyId);
           res.setHeader("Content-Type", pod.mimeType || "application/octet-stream");
@@ -332088,11 +332088,11 @@ var require_pod_controller = __commonJS({
           const { id } = req.params;
           const { status, remarks = "" } = req.body;
           if (!status || ![PodStatus.VERIFIED, PodStatus.REJECTED].includes(status)) {
-            throw new AppError("Status must be either 'VERIFIED' or 'REJECTED'.", 400);
+            throw new AppError2("Status must be either 'VERIFIED' or 'REJECTED'.", 400);
           }
           const pod = await ProofOfDelivery.findOne({ _id: id, companyId, isActive: true });
           if (!pod) {
-            throw new AppError("Proof of Delivery record not found.", 404);
+            throw new AppError2("Proof of Delivery record not found.", 404);
           }
           if (pod.status === status) {
             return res.status(200).json({
@@ -332149,13 +332149,13 @@ var require_pod_controller = __commonJS({
 var require_pod_routes = __commonJS({
   "apps/api/src/modules/pod/routes/pod.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var multer = require_multer();
     var podController = require_pod_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     var upload = multer({
       storage: multer.memoryStorage(),
       limits: { fileSize: 10 * 1024 * 1024 }
@@ -332578,7 +332578,7 @@ var require_whatsappTemplate_service = __commonJS({
   "apps/api/src/modules/whatsapp/services/whatsappTemplate.service.js"(exports2, module2) {
     "use strict";
     var { WhatsAppTemplateType } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var TEMPLATES = {
       [WhatsAppTemplateType.LOAD_CREATED]: {
         name: WhatsAppTemplateType.LOAD_CREATED,
@@ -332645,7 +332645,7 @@ Technofay Fleet Document Management`
     };
     function normalizePhoneNumber(rawPhone) {
       if (!rawPhone || typeof rawPhone !== "string") {
-        throw new AppError("Recipient phone number is required.", 400);
+        throw new AppError2("Recipient phone number is required.", 400);
       }
       const cleaned = rawPhone.trim().replace(/[\s\-\(\)]/g, "");
       const digits = cleaned.replace(/\D/g, "");
@@ -332661,7 +332661,7 @@ Technofay Fleet Document Management`
       if (cleaned.startsWith("+") && digits.length >= 7 && digits.length <= 15) {
         return `+${digits}`;
       }
-      throw new AppError(
+      throw new AppError2(
         `Invalid phone number '${rawPhone}'. Must be a valid 10-digit Indian mobile or E.164 international format.`,
         400
       );
@@ -332669,11 +332669,11 @@ Technofay Fleet Document Management`
     function renderTemplate(templateName, variables = {}) {
       const tpl = TEMPLATES[templateName];
       if (!tpl) {
-        throw new AppError(`Unsupported WhatsApp template '${templateName}'. Allowed: ${Object.keys(TEMPLATES).join(", ")}`, 400);
+        throw new AppError2(`Unsupported WhatsApp template '${templateName}'. Allowed: ${Object.keys(TEMPLATES).join(", ")}`, 400);
       }
       for (const reqVar of tpl.requiredVars) {
         if (!variables[reqVar] && variables[reqVar] !== 0) {
-          throw new AppError(`Missing required template variable '${reqVar}' for template '${templateName}'.`, 400);
+          throw new AppError2(`Missing required template variable '${reqVar}' for template '${templateName}'.`, 400);
         }
       }
       return tpl.render(variables);
@@ -333101,7 +333101,7 @@ var require_whatsapp_service = __commonJS({
       WhatsAppTemplateType
     } = require_shared2();
     var eventBusService = require_eventBus_service();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var processedWebhookSignatures = /* @__PURE__ */ new Map();
     var REPLAY_TTL_MS = 15 * 60 * 1e3;
     var cleanupReplayInterval = setInterval(() => {
@@ -333132,12 +333132,12 @@ var require_whatsapp_service = __commonJS({
        * 1. Send Pre-Approved Template Message
        */
       async sendMessage({ companyId, toPhone, recipientName = "", templateName, variables = {}, relatedEntity = null, userId = null, ipAddress = "" }) {
-        if (!companyId) throw new AppError("Tenant company ID is required.", 400);
+        if (!companyId) throw new AppError2("Tenant company ID is required.", 400);
         const normalizedPhone = normalizePhoneNumber(toPhone);
         const renderedMessage = renderTemplate(templateName, variables);
         const tenantConfig = await this.getTenantConfig(companyId);
         if (!tenantConfig.isEnabled) {
-          throw new AppError("WhatsApp notifications are disabled for this organization.", 400);
+          throw new AppError2("WhatsApp notifications are disabled for this organization.", 400);
         }
         const adapter = WhatsAppAdapterFactory.getAdapter(tenantConfig);
         const messageLog = new MessageLog({
@@ -333203,18 +333203,18 @@ var require_whatsapp_service = __commonJS({
        * 2. Send Document / PDF via WhatsApp
        */
       async sendDocument({ companyId, toPhone, recipientName = "", documentType, documentId, caption = "", userId = null, ipAddress = "" }) {
-        if (!companyId) throw new AppError("Tenant company ID is required.", 400);
+        if (!companyId) throw new AppError2("Tenant company ID is required.", 400);
         const normalizedPhone = normalizePhoneNumber(toPhone);
         let docRefNumber = "";
         let fileName = `${documentType.toLowerCase()}_${documentId}.pdf`;
         if (documentType.toUpperCase() === "LR") {
           const lr = await LrNumber.findOne({ _id: documentId, companyId });
-          if (!lr) throw new AppError("Lorry Receipt document not found.", 404);
+          if (!lr) throw new AppError2("Lorry Receipt document not found.", 404);
           docRefNumber = lr.lrNumber;
           fileName = `LR_${lr.lrNumber}.pdf`;
         } else if (documentType.toUpperCase() === "BILTY") {
           const bilty = await Bilty.findOne({ _id: documentId, companyId });
-          if (!bilty) throw new AppError("Bilty document not found.", 404);
+          if (!bilty) throw new AppError2("Bilty document not found.", 404);
           docRefNumber = bilty.biltyNumber;
           fileName = `Bilty_${bilty.biltyNumber}.pdf`;
         }
@@ -333298,8 +333298,8 @@ var require_whatsapp_service = __commonJS({
        * 3. Send Direct Custom Text Message
        */
       async sendCustomText({ companyId, toPhone, recipientName = "", message, relatedEntity = null, userId = null, ipAddress = "" }) {
-        if (!companyId) throw new AppError("Tenant company ID is required.", 400);
-        if (!message || !message.trim()) throw new AppError("Message body cannot be empty.", 400);
+        if (!companyId) throw new AppError2("Tenant company ID is required.", 400);
+        if (!message || !message.trim()) throw new AppError2("Message body cannot be empty.", 400);
         const normalizedPhone = normalizePhoneNumber(toPhone);
         const tenantConfig = await this.getTenantConfig(companyId);
         const adapter = WhatsAppAdapterFactory.getAdapter(tenantConfig);
@@ -333351,17 +333351,17 @@ var require_whatsapp_service = __commonJS({
       async retryFailedMessage(messageId, companyId, userId = null, ipAddress = "", force = false) {
         const messageLog = await MessageLog.findOne({ _id: messageId, companyId });
         if (!messageLog) {
-          throw new AppError("Message log record not found.", 404);
+          throw new AppError2("Message log record not found.", 404);
         }
         if (messageLog.status !== WhatsAppMessageStatus.FAILED) {
-          throw new AppError(`Cannot retry message with status '${messageLog.status}'. Only FAILED messages can be retried.`, 400);
+          throw new AppError2(`Cannot retry message with status '${messageLog.status}'. Only FAILED messages can be retried.`, 400);
         }
         if (messageLog.retryCount >= messageLog.maxRetries) {
-          throw new AppError(`Maximum retry limit of ${messageLog.maxRetries} attempts has been reached for this message.`, 400);
+          throw new AppError2(`Maximum retry limit of ${messageLog.maxRetries} attempts has been reached for this message.`, 400);
         }
         if (messageLog.retryCount > 0 && !force && messageLog.nextRetryAllowedAt && messageLog.nextRetryAllowedAt > /* @__PURE__ */ new Date()) {
           const waitSeconds = Math.ceil((messageLog.nextRetryAllowedAt.getTime() - Date.now()) / 1e3);
-          throw new AppError(`Exponential backoff active. Next retry allowed in ${waitSeconds} seconds.`, 429);
+          throw new AppError2(`Exponential backoff active. Next retry allowed in ${waitSeconds} seconds.`, 429);
         }
         messageLog.retryCount += 1;
         messageLog.lastAttemptAt = /* @__PURE__ */ new Date();
@@ -333429,7 +333429,7 @@ var require_whatsapp_service = __commonJS({
        */
       async handleWebhook({ signature, rawBody, payload, url }) {
         if (!signature) {
-          throw new AppError("Missing webhook signature header.", 401);
+          throw new AppError2("Missing webhook signature header.", 401);
         }
         const cleanSig = signature.trim();
         if (processedWebhookSignatures.has(cleanSig)) {
@@ -333437,7 +333437,7 @@ var require_whatsapp_service = __commonJS({
         }
         const providerMessageId = payload?.providerMessageId || payload?.data?.message?.id || payload?.messageId || payload?.id || payload?.MessageSid || payload?.SmsSid || payload?.entry?.[0]?.changes?.[0]?.value?.statuses?.[0]?.id;
         if (!providerMessageId) {
-          throw new AppError("Unable to extract providerMessageId from webhook payload.", 400);
+          throw new AppError2("Unable to extract providerMessageId from webhook payload.", 400);
         }
         const messageLog = await MessageLog.findOne({ providerMessageId });
         if (!messageLog) {
@@ -333454,7 +333454,7 @@ var require_whatsapp_service = __commonJS({
           webhookSecret: tenantConfig.webhookSecret || process.env.WHATSAPP_WEBHOOK_SECRET
         });
         if (!isValid) {
-          throw new AppError("Invalid webhook HMAC signature.", 401);
+          throw new AppError2("Invalid webhook HMAC signature.", 401);
         }
         processedWebhookSignatures.set(cleanSig, Date.now());
         const parsedEvent = adapter.parseWebhookEvent(payload);
@@ -333497,12 +333497,12 @@ var require_whatsapp_service = __commonJS({
        * Batch dispatch pre-approved template messages with queue semantics and rate limit resilience
        */
       async sendBatchMessages({ companyId, messages = [], userId = null, ipAddress = "" }) {
-        if (!companyId) throw new AppError("Tenant company ID is required.", 400);
+        if (!companyId) throw new AppError2("Tenant company ID is required.", 400);
         if (!Array.isArray(messages) || messages.length === 0) {
-          throw new AppError("Batch messages array must not be empty.", 400);
+          throw new AppError2("Batch messages array must not be empty.", 400);
         }
         if (messages.length > 100) {
-          throw new AppError("Batch size cannot exceed 100 messages per request.", 400);
+          throw new AppError2("Batch size cannot exceed 100 messages per request.", 400);
         }
         const results = [];
         let successful = 0;
@@ -333585,7 +333585,7 @@ var require_whatsapp_service = __commonJS({
       async getMessageById(messageId, companyId) {
         const message = await MessageLog.findOne({ _id: messageId, companyId }).populate("sentBy", "name email");
         if (!message) {
-          throw new AppError("Message log record not found.", 404);
+          throw new AppError2("Message log record not found.", 404);
         }
         return message;
       }
@@ -333639,7 +333639,7 @@ var require_whatsapp_controller = __commonJS({
     "use strict";
     var whatsappService = require_whatsapp_service();
     var { TEMPLATES } = require_whatsappTemplate_service();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var WhatsAppController = class {
       /**
        * 1. Send Pre-Approved Template Message
@@ -333648,8 +333648,8 @@ var require_whatsapp_controller = __commonJS({
         try {
           const companyId = req.tenant.companyId;
           const { toPhone, recipientName, templateName, variables, relatedEntity } = req.body;
-          if (!toPhone) throw new AppError("Recipient phone number is required.", 400);
-          if (!templateName) throw new AppError("Template name is required.", 400);
+          if (!toPhone) throw new AppError2("Recipient phone number is required.", 400);
+          if (!templateName) throw new AppError2("Template name is required.", 400);
           const messageLog = await whatsappService.sendMessage({
             companyId,
             toPhone,
@@ -333677,8 +333677,8 @@ var require_whatsapp_controller = __commonJS({
         try {
           const companyId = req.tenant.companyId;
           const { toPhone, recipientName, documentType, documentId, caption } = req.body;
-          if (!toPhone) throw new AppError("Recipient phone number is required.", 400);
-          if (!documentType || !documentId) throw new AppError("Document type and ID are required.", 400);
+          if (!toPhone) throw new AppError2("Recipient phone number is required.", 400);
+          if (!documentType || !documentId) throw new AppError2("Document type and ID are required.", 400);
           const messageLog = await whatsappService.sendDocument({
             companyId,
             toPhone,
@@ -333706,8 +333706,8 @@ var require_whatsapp_controller = __commonJS({
         try {
           const companyId = req.tenant.companyId;
           const { toPhone, recipientName, message, relatedEntity } = req.body;
-          if (!toPhone) throw new AppError("Recipient phone number is required.", 400);
-          if (!message) throw new AppError("Message text is required.", 400);
+          if (!toPhone) throw new AppError2("Recipient phone number is required.", 400);
+          if (!message) throw new AppError2("Message text is required.", 400);
           const messageLog = await whatsappService.sendCustomText({
             companyId,
             toPhone,
@@ -333908,8 +333908,8 @@ var require_whatsapp_controller = __commonJS({
 var require_whatsapp_routes = __commonJS({
   "apps/api/src/modules/whatsapp/routes/whatsapp.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
-    var router = express.Router();
+    var express2 = require_express2();
+    var router = express2.Router();
     var whatsappController = require_whatsapp_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
@@ -334644,10 +334644,10 @@ var require_dashboard_controller = __commonJS({
 var require_dashboard_routes = __commonJS({
   "apps/api/src/modules/dashboard/routes/dashboard.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var DashboardController = require_dashboard_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get("/metrics", DashboardController.getMetrics);
     router.get("/trends", DashboardController.getTrends);
@@ -334675,7 +334675,7 @@ var require_reports_service = __commonJS({
     var VehicleDocument = require_VehicleDocument();
     var DriverDocument = require_DriverDocument();
     var CustomerParty = require_CustomerParty();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     function sanitizeValue(val) {
       if (val === null || val === void 0) return "";
       if (typeof val === "number" || typeof val === "boolean") return val;
@@ -335237,7 +335237,7 @@ var require_reports_service = __commonJS({
             });
           });
         } else {
-          throw new AppError(`Unknown report type: ${reportType}`, 400);
+          throw new AppError2(`Unknown report type: ${reportType}`, 400);
         }
         sheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
         sheet.getRow(1).fill = {
@@ -335383,12 +335383,12 @@ var require_reports_controller = __commonJS({
 var require_reports_routes = __commonJS({
   "apps/api/src/modules/reports/routes/reports.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var ReportsController = require_reports_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get("/loads", requirePermission(SystemModule.REPORTS, "view"), ReportsController.getLoadsReport);
     router.get("/trips", requirePermission(SystemModule.REPORTS, "view"), ReportsController.getTripsReport);
@@ -335632,10 +335632,10 @@ var require_search_controller = __commonJS({
 var require_search_routes = __commonJS({
   "apps/api/src/modules/search/routes/search.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var SearchController = require_search_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get("/", SearchController.search);
     module2.exports = router;
@@ -335648,7 +335648,7 @@ var require_settings_service = __commonJS({
     "use strict";
     var Company = require_Company();
     var AuditLogService = require_auditLog_service();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var SettingsService = class {
       /**
        * Retrieves company profile and system settings
@@ -335657,7 +335657,7 @@ var require_settings_service = __commonJS({
       static async getSettings(companyId) {
         const company = await Company.findById(companyId);
         if (!company) {
-          throw new AppError("Organization not found", 404);
+          throw new AppError2("Organization not found", 404);
         }
         return {
           companyId: company._id,
@@ -335706,7 +335706,7 @@ var require_settings_service = __commonJS({
       static async updateSettings(companyId, updateData, actorId = null, ipAddress = "") {
         const company = await Company.findById(companyId);
         if (!company) {
-          throw new AppError("Organization not found", 404);
+          throw new AppError2("Organization not found", 404);
         }
         const oldValues = {
           legalName: company.legalName,
@@ -335720,7 +335720,7 @@ var require_settings_service = __commonJS({
           const gstinClean = updateData.gstin.trim().toUpperCase();
           const gstinRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
           if (!gstinRegex.test(gstinClean)) {
-            throw new AppError("Invalid GSTIN format. Must be a 15-character valid Indian GSTIN.", 400);
+            throw new AppError2("Invalid GSTIN format. Must be a 15-character valid Indian GSTIN.", 400);
           }
           company.gstin = gstinClean;
         }
@@ -335823,12 +335823,12 @@ var require_settings_controller = __commonJS({
 var require_settings_routes = __commonJS({
   "apps/api/src/modules/settings/routes/settings.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var SettingsController = require_settings_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get("/", requirePermission(SystemModule.SETTINGS, "view"), SettingsController.getSettings);
     router.patch("/", requirePermission(SystemModule.SETTINGS, "edit"), SettingsController.updateSettings);
@@ -335909,7 +335909,7 @@ var require_contact_controller = __commonJS({
   "apps/api/src/modules/contact/controllers/contact.controller.js"(exports2, module2) {
     "use strict";
     var ContactSubmission = require_ContactSubmission();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var ContactController = class {
       /**
        * POST /api/v1/contact
@@ -335926,17 +335926,17 @@ var require_contact_controller = __commonJS({
             });
           }
           if (!name || !name.trim()) {
-            throw new AppError("Name is required", 400);
+            throw new AppError2("Name is required", 400);
           }
           if (!email || !email.trim()) {
-            throw new AppError("Valid email address is required", 400);
+            throw new AppError2("Valid email address is required", 400);
           }
           const emailRegex = /^\S+@\S+\.\S+$/;
           if (!emailRegex.test(email.trim())) {
-            throw new AppError("Invalid email format", 400);
+            throw new AppError2("Invalid email format", 400);
           }
           if (!message || !message.trim()) {
-            throw new AppError("Inquiry message is required", 400);
+            throw new AppError2("Inquiry message is required", 400);
           }
           const ipAddress = req.ip || req.connection?.remoteAddress || "";
           const userAgent = req.headers["user-agent"] || "";
@@ -336005,12 +336005,12 @@ var require_contact_controller = __commonJS({
 var require_contact_routes = __commonJS({
   "apps/api/src/modules/contact/routes/contact.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var ContactController = require_contact_controller();
     var { authenticate } = require_auth_middleware();
     var { requireRole } = require_rbac_middleware();
     var { UserRole } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.post("/", ContactController.submitInquiry);
     router.get("/", authenticate, requireRole(UserRole.SUPER_ADMIN), ContactController.getInquiries);
     module2.exports = router;
@@ -336021,8 +336021,8 @@ var require_contact_routes = __commonJS({
 var require_publicTracking_routes = __commonJS({
   "apps/api/src/modules/tracking/routes/publicTracking.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
-    var router = express.Router();
+    var express2 = require_express2();
+    var router = express2.Router();
     var publicTrackingController = require_publicTracking_controller();
     var { publicTrackingRateLimiter } = require_rateLimiter();
     router.use(publicTrackingRateLimiter);
@@ -336161,7 +336161,7 @@ var require_maintenance_controller = __commonJS({
     var sequenceService = require_sequence_service();
     var auditLogService = require_auditLog_service();
     var { VehicleStatus, MaintenanceStatus, SystemModule, AuditAction } = require_shared2();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var pdfService = require_pdf_service();
     var MaintenanceController = class {
       /**
@@ -336188,11 +336188,11 @@ var require_maintenance_controller = __commonJS({
             technicianRemarks = "",
             supervisorNotes = ""
           } = req.body;
-          if (!vehicleId) throw new AppError("Vehicle ID is required", 400);
-          if (!scheduledDate) throw new AppError("Scheduled date is required", 400);
+          if (!vehicleId) throw new AppError2("Vehicle ID is required", 400);
+          if (!scheduledDate) throw new AppError2("Scheduled date is required", 400);
           const vehicle = await Vehicle.findOne({ _id: vehicleId, companyId, isActive: true });
           if (!vehicle) {
-            throw new AppError("Vehicle not found or does not belong to your company", 404);
+            throw new AppError2("Vehicle not found or does not belong to your company", 404);
           }
           const maintenanceNumber = await sequenceService.getNextSequence(companyId, "MAINTENANCE", "MNT", 4);
           const maintenance = await VehicleMaintenance.create({
@@ -336290,7 +336290,7 @@ var require_maintenance_controller = __commonJS({
           const { id } = req.params;
           const record = await VehicleMaintenance.findOne({ _id: id, companyId, isActive: true }).populate("vehicleId", "plateNumber vehicleType make model status capacityTonnage").populate("createdBy", "fullName email");
           if (!record) {
-            throw new AppError("Maintenance record not found", 404);
+            throw new AppError2("Maintenance record not found", 404);
           }
           res.status(200).json({
             success: true,
@@ -336312,11 +336312,11 @@ var require_maintenance_controller = __commonJS({
           const { id } = req.params;
           const { status, costPaise, invoiceNumber, technicianRemarks, completedDate } = req.body;
           if (!status || !Object.values(MaintenanceStatus).includes(status)) {
-            throw new AppError(`Invalid status '${status}'. Must be one of: ${Object.values(MaintenanceStatus).join(", ")}`, 400);
+            throw new AppError2(`Invalid status '${status}'. Must be one of: ${Object.values(MaintenanceStatus).join(", ")}`, 400);
           }
           const maintenance = await VehicleMaintenance.findOne({ _id: id, companyId, isActive: true });
           if (!maintenance) {
-            throw new AppError("Maintenance record not found", 404);
+            throw new AppError2("Maintenance record not found", 404);
           }
           const prevStatus = maintenance.status;
           maintenance.status = status;
@@ -336436,7 +336436,7 @@ var require_maintenance_controller = __commonJS({
           const { id } = req.params;
           const maintenance = await VehicleMaintenance.findOne({ _id: id, companyId, isActive: true }).populate("vehicleId");
           if (!maintenance) {
-            throw new AppError("Maintenance record not found", 404);
+            throw new AppError2("Maintenance record not found", 404);
           }
           const copy = req.query.copy || "ORIGINAL";
           const pdfBuffer = await pdfService.generateMaintenancePdf(maintenance, req.tenant.company || {}, { copy });
@@ -336457,12 +336457,12 @@ var require_maintenance_controller = __commonJS({
 var require_maintenance_routes = __commonJS({
   "apps/api/src/modules/maintenance/routes/maintenance.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var maintenanceController = require_maintenance_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
     var { requirePermission } = require_rbac_middleware();
     var { SystemModule, ActionPermission } = require_shared2();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get(
       "/stats",
@@ -336593,10 +336593,10 @@ data: ${JSON.stringify(event)}
 var require_event_routes = __commonJS({
   "apps/api/src/modules/events/routes/event.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var EventController = require_event_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var router = express.Router();
+    var router = express2.Router();
     router.use(authenticate, enforceTenantScope);
     router.get("/stream", EventController.stream);
     router.get("/status", EventController.getStatus);
@@ -336613,7 +336613,7 @@ var require_gps_service = __commonJS({
     var Trip = require_Trip();
     var { resolveCoordinates } = require_geoCoordinates();
     var eventBus = require_eventBus_service();
-    var { AppError } = require_errorHandler();
+    var { AppError: AppError2 } = require_errorHandler();
     var GpsService = class {
       /**
        * Returns honest hardware status for GPS providers
@@ -336653,7 +336653,7 @@ var require_gps_service = __commonJS({
         } = payload || {};
         const { companyHint = null, signature = null, secret = process.env.TELEMATICS_WEBHOOK_SECRET } = options;
         if (!deviceId || typeof deviceId !== "string" || !deviceId.trim()) {
-          throw new AppError("Telematics ping requires a valid deviceId.", 400);
+          throw new AppError2("Telematics ping requires a valid deviceId.", 400);
         }
         const cleanDeviceId = deviceId.trim();
         if (secret && signature) {
@@ -336662,39 +336662,39 @@ var require_gps_service = __commonJS({
           const sigBuf = Buffer.from(signature, "utf8");
           const expBuf = Buffer.from(expected, "utf8");
           if (sigBuf.length !== expBuf.length || !crypto4.timingSafeEqual(sigBuf, expBuf)) {
-            throw new AppError("Invalid telematics webhook signature.", 401);
+            throw new AppError2("Invalid telematics webhook signature.", 401);
           }
         }
         const lat = Number(latitude);
         const lng = Number(longitude);
         if (isNaN(lat) || isNaN(lng)) {
-          throw new AppError("Latitude and longitude must be valid numbers.", 400);
+          throw new AppError2("Latitude and longitude must be valid numbers.", 400);
         }
         if (lat < -90 || lat > 90) {
-          throw new AppError(`Latitude (${lat}) is out of permissible range [-90, 90].`, 400);
+          throw new AppError2(`Latitude (${lat}) is out of permissible range [-90, 90].`, 400);
         }
         if (lng < -180 || lng > 180) {
-          throw new AppError(`Longitude (${lng}) is out of permissible range [-180, 180].`, 400);
+          throw new AppError2(`Longitude (${lng}) is out of permissible range [-180, 180].`, 400);
         }
         if (lat === 0 && lng === 0) {
-          throw new AppError("Null Island GPS coordinates (0, 0) are invalid.", 400);
+          throw new AppError2("Null Island GPS coordinates (0, 0) are invalid.", 400);
         }
         if (!timestamp) {
-          throw new AppError("Telematics ping requires a valid timestamp.", 400);
+          throw new AppError2("Telematics ping requires a valid timestamp.", 400);
         }
         const pingDate = new Date(timestamp);
         if (isNaN(pingDate.getTime())) {
-          throw new AppError("Invalid telematics ping timestamp format.", 400);
+          throw new AppError2("Invalid telematics ping timestamp format.", 400);
         }
         const now = Date.now();
         const pingTime = pingDate.getTime();
         const oneHourMs = 60 * 60 * 1e3;
         const fiveMinutesMs = 5 * 60 * 1e3;
         if (now - pingTime > oneHourMs) {
-          throw new AppError("Telematics ping timestamp is older than allowed window (1 hour). Replay rejected.", 400);
+          throw new AppError2("Telematics ping timestamp is older than allowed window (1 hour). Replay rejected.", 400);
         }
         if (pingTime - now > fiveMinutesMs) {
-          throw new AppError("Telematics ping timestamp is in the future. Clock skew detected.", 400);
+          throw new AppError2("Telematics ping timestamp is in the future. Clock skew detected.", 400);
         }
         const vehicleQuery = {
           "telematics.deviceId": cleanDeviceId,
@@ -336705,12 +336705,12 @@ var require_gps_service = __commonJS({
         }
         const vehicle = await Vehicle.findOne(vehicleQuery);
         if (!vehicle) {
-          throw new AppError(`Unregistered or inactive telematics device: ${cleanDeviceId}`, 404);
+          throw new AppError2(`Unregistered or inactive telematics device: ${cleanDeviceId}`, 404);
         }
         if (vehicle.telematics?.lastPing?.recordedAt) {
           const existingTime = new Date(vehicle.telematics.lastPing.recordedAt).getTime();
           if (pingTime <= existingTime) {
-            throw new AppError(
+            throw new AppError2(
               `Telematics ping timestamp (${pingDate.toISOString()}) is older than or equal to current recorded location (${new Date(existingTime).toISOString()}). Out-of-order ping rejected.`,
               409
             );
@@ -336765,7 +336765,7 @@ var require_gps_service = __commonJS({
           isActive: true
         }).populate("currentTripId");
         if (!vehicle) {
-          throw new AppError("Vehicle record not found.", 404);
+          throw new AppError2("Vehicle record not found.", 404);
         }
         if (vehicle.telematics?.lastPing?.latitude !== null && vehicle.telematics?.lastPing?.latitude !== void 0 && vehicle.telematics?.lastPing?.recordedAt) {
           const pingAgeMs = Date.now() - new Date(vehicle.telematics.lastPing.recordedAt).getTime();
@@ -336899,10 +336899,10 @@ var require_telematics_controller = __commonJS({
 var require_telematics_routes = __commonJS({
   "apps/api/src/modules/telematics/routes/telematics.routes.js"(exports2, module2) {
     "use strict";
-    var express = require_express2();
+    var express2 = require_express2();
     var TelematicsController = require_telematics_controller();
     var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var router = express.Router();
+    var router = express2.Router();
     router.get("/status", TelematicsController.getStatus);
     router.post("/ping", TelematicsController.ingestPing);
     router.get(
@@ -336916,135 +336916,132 @@ var require_telematics_routes = __commonJS({
 });
 
 // apps/api/src/app.js
-var require_app = __commonJS({
-  "apps/api/src/app.js"(exports2, module2) {
-    "use strict";
-    var express = require_express2();
-    var cors = require_lib3();
-    var helmet = require_helmet();
-    var cookieParser = require_cookie_parser();
-    var config2 = require_env();
-    var db2 = require_db3();
-    var correlationIdMiddleware = require_correlationId();
-    var { generalRateLimiter } = require_rateLimiter();
-    var { errorHandler, AppError } = require_errorHandler();
-    var authRoutes = require_auth_routes();
-    var userRoutes = require_user_routes();
-    var roleRoutes = require_role_routes();
-    var auditRoutes = require_audit_routes();
-    var customerRoutes = require_customer_routes();
-    var locationRoutes = require_location_routes();
-    var vehicleRoutes = require_vehicle_routes();
-    var driverRoutes = require_driver_routes();
-    var documentRoutes = require_document_routes();
-    var complianceRoutes = require_compliance_routes();
-    var masterRoutes = require_masterImportExport_routes();
-    var loadRoutes = require_load_routes();
-    var lrRoutes = require_lr_routes();
-    var biltyRoutes = require_bilty_routes();
-    var tripRoutes = require_trip_routes();
-    var podRoutes = require_pod_routes();
-    var whatsappRoutes = require_whatsapp_routes();
-    var dashboardRoutes = require_dashboard_routes();
-    var reportsRoutes = require_reports_routes();
-    var searchRoutes = require_search_routes();
-    var settingsRoutes = require_settings_routes();
-    var contactRoutes = require_contact_routes();
-    var publicTrackingRoutes = require_publicTracking_routes();
-    var maintenanceRoutes = require_maintenance_routes();
-    var eventRoutes = require_event_routes();
-    var telematicsRoutes = require_telematics_routes();
-    var app2 = express();
-    app2.set("trust proxy", 1);
-    app2.use((req, res, next) => {
-      if (req.url.startsWith("/v1/")) {
-        req.url = "/api" + req.url;
-      }
-      next();
-    });
-    var allowedOrigins = new Set([
-      config2.clientUrl,
-      process.env.WEB_URL,
-      "https://techofay-fleet.vercel.app"
-    ].filter(Boolean));
-    if (process.env.CORS_ALLOWED_ORIGINS) {
-      process.env.CORS_ALLOWED_ORIGINS.split(",").forEach((o) => {
-        const trimmed = o.trim();
-        if (trimmed) allowedOrigins.add(trimmed);
-      });
+var express = require_express2();
+var cors = require_lib3();
+var helmet = require_helmet();
+var cookieParser = require_cookie_parser();
+var config = require_env();
+var db = require_db3();
+var correlationIdMiddleware = require_correlationId();
+var { generalRateLimiter } = require_rateLimiter();
+var { errorHandler, AppError } = require_errorHandler();
+var authRoutes = require_auth_routes();
+var userRoutes = require_user_routes();
+var roleRoutes = require_role_routes();
+var auditRoutes = require_audit_routes();
+var customerRoutes = require_customer_routes();
+var locationRoutes = require_location_routes();
+var vehicleRoutes = require_vehicle_routes();
+var driverRoutes = require_driver_routes();
+var documentRoutes = require_document_routes();
+var complianceRoutes = require_compliance_routes();
+var masterRoutes = require_masterImportExport_routes();
+var loadRoutes = require_load_routes();
+var lrRoutes = require_lr_routes();
+var biltyRoutes = require_bilty_routes();
+var tripRoutes = require_trip_routes();
+var podRoutes = require_pod_routes();
+var whatsappRoutes = require_whatsapp_routes();
+var dashboardRoutes = require_dashboard_routes();
+var reportsRoutes = require_reports_routes();
+var searchRoutes = require_search_routes();
+var settingsRoutes = require_settings_routes();
+var contactRoutes = require_contact_routes();
+var publicTrackingRoutes = require_publicTracking_routes();
+var maintenanceRoutes = require_maintenance_routes();
+var eventRoutes = require_event_routes();
+var telematicsRoutes = require_telematics_routes();
+var app = express();
+app.set("trust proxy", 1);
+app.use((req, res, next) => {
+  if (req.url.startsWith("/v1/")) {
+    req.url = "/api" + req.url;
+  }
+  next();
+});
+var allowedOrigins = new Set([
+  config.clientUrl,
+  process.env.WEB_URL,
+  "https://techofay-fleet.vercel.app"
+].filter(Boolean));
+if (process.env.CORS_ALLOWED_ORIGINS) {
+  process.env.CORS_ALLOWED_ORIGINS.split(",").forEach((o) => {
+    const trimmed = o.trim();
+    if (trimmed) allowedOrigins.add(trimmed);
+  });
+}
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "blob:", "https:"],
+      connectSrc: ["'self'", "https://*.vercel.app", "https://*.technofay.com", ...Array.from(allowedOrigins).filter(Boolean)],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: config.env === "production" ? [] : null
     }
-    app2.use(helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"],
-          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-          fontSrc: ["'self'", "https://fonts.gstatic.com"],
-          imgSrc: ["'self'", "data:", "blob:", "https:"],
-          connectSrc: ["'self'", "https://*.vercel.app", "https://*.technofay.com", ...Array.from(allowedOrigins).filter(Boolean)],
-          objectSrc: ["'none'"],
-          upgradeInsecureRequests: config2.env === "production" ? [] : null
-        }
-      },
-      crossOriginEmbedderPolicy: false
-    }));
-    app2.use(cors({
-      origin: (origin, callback) => {
-        if (!origin) {
-          return callback(null, true);
-        }
-        if (config2.env !== "production") {
-          if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
-            return callback(null, true);
-          }
-        }
-        if (allowedOrigins.has(origin)) {
-          return callback(null, true);
-        }
-        if (/^https:\/\/[a-zA-Z0-9_-]+\.vercel\.app$/i.test(origin)) {
-          return callback(null, true);
-        }
-        if (/^https:\/\/([a-zA-Z0-9_-]+\.)?technofay\.com$/i.test(origin)) {
-          return callback(null, true);
-        }
-        return callback(new Error("Blocked by CORS policy"));
-      },
-      credentials: true,
-      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization", "X-Correlation-ID", "X-Requested-With"]
-    }));
-    app2.use(express.json({
-      limit: "10mb",
-      verify: (req, res, buf) => {
-        req.rawBody = buf;
+  },
+  crossOriginEmbedderPolicy: false
+}));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+    if (config.env !== "production") {
+      if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+        return callback(null, true);
       }
-    }));
-    app2.use(express.urlencoded({
-      extended: true,
-      limit: "10mb",
-      verify: (req, res, buf) => {
-        req.rawBody = buf;
-      }
-    }));
-    app2.use(cookieParser(config2.cookieSecret));
-    app2.use((req, res, next) => {
-      if (req.url === "/dashboard" || req.url === "/login.html") {
-        return next();
-      }
-      if (req.url && !req.url.startsWith("/api")) {
-        if (req.url.startsWith("/v1")) {
-          req.url = `/api${req.url}`;
-        } else if (/^\/(auth|admin|customers|locations|vehicles|drivers|documents|compliance|master|loads|lr|bilties|trips|pod|whatsapp|dashboard|reports|search|contact|public|maintenance|events|telematics)\b/.test(req.url)) {
-          req.url = `/api/v1${req.url}`;
-        }
-      }
-      next();
-    });
-    app2.use(correlationIdMiddleware);
-    app2.get("/robots.txt", (req, res) => {
-      res.type("text/plain");
-      res.send(
-        `User-agent: *
+    }
+    if (allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+    if (/^https:\/\/[a-zA-Z0-9_-]+\.vercel\.app$/i.test(origin)) {
+      return callback(null, true);
+    }
+    if (/^https:\/\/([a-zA-Z0-9_-]+\.)?technofay\.com$/i.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Blocked by CORS policy"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Correlation-ID", "X-Requested-With"]
+}));
+app.use(express.json({
+  limit: "10mb",
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
+app.use(express.urlencoded({
+  extended: true,
+  limit: "10mb",
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
+app.use(cookieParser(config.cookieSecret));
+app.use((req, res, next) => {
+  if (req.url === "/dashboard" || req.url === "/login.html") {
+    return next();
+  }
+  if (req.url && !req.url.startsWith("/api")) {
+    if (req.url.startsWith("/v1")) {
+      req.url = `/api${req.url}`;
+    } else if (/^\/(auth|admin|customers|locations|vehicles|drivers|documents|compliance|master|loads|lr|bilties|trips|pod|whatsapp|dashboard|reports|search|contact|public|maintenance|events|telematics)\b/.test(req.url)) {
+      req.url = `/api/v1${req.url}`;
+    }
+  }
+  next();
+});
+app.use(correlationIdMiddleware);
+app.get("/robots.txt", (req, res) => {
+  res.type("text/plain");
+  res.send(
+    `User-agent: *
 Allow: /
 Allow: /login
 Allow: /track
@@ -337057,12 +337054,12 @@ Disallow: /documents/
 Disallow: /storage/
 
 Sitemap: https://transport.technofay.com/sitemap.xml`
-      );
-    });
-    app2.get("/sitemap.xml", (req, res) => {
-      res.type("application/xml");
-      res.send(
-        `<?xml version="1.0" encoding="UTF-8"?>
+  );
+});
+app.get("/sitemap.xml", (req, res) => {
+  res.type("application/xml");
+  res.send(
+    `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://transport.technofay.com/</loc>
@@ -337101,244 +337098,184 @@ Sitemap: https://transport.technofay.com/sitemap.xml`
     <priority>0.5</priority>
   </url>
 </urlset>`
-      );
-    });
-    app2.get("/dashboard", (req, res) => {
-      res.redirect(301, "/app/dashboard");
-    });
-    app2.get("/login.html", (req, res) => {
-      res.redirect(301, "/login");
-    });
-    app2.use("/api/", generalRateLimiter);
-    app2.get(["/api", "/api/", "/api/v1/health", "/v1/health", "/health"], (req, res) => {
-      res.status(200).json({
-        success: true,
-        statusCode: 200,
-        message: "Fleet Management API service is operational",
-        data: {
-          uptime: process.uptime(),
-          timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-          environment: config2.env,
-          version: "1.0.0"
-        }
-      });
-    });
-    app2.get(["/api/v1/ready", "/v1/ready", "/ready"], (req, res) => {
-      const isDbReady = db2.isConnected();
-      if (!isDbReady) {
-        return res.status(503).json({
-          success: false,
-          statusCode: 503,
-          error: "Service Unavailable",
-          message: "Database connection is not ready"
-        });
-      }
-      res.status(200).json({
-        success: true,
-        statusCode: 200,
-        message: "System is ready to receive requests",
-        data: {
-          database: "connected"
-        }
-      });
-    });
-    app2.get("/api/v1/system/seo-audit", (req, res) => {
-      res.status(200).json({
-        success: true,
-        statusCode: 200,
-        message: "20-Point Launch Checklist & SEO Audit Status",
-        data: {
-          checklistItemsVerified: 20,
-          totalItems: 20,
-          complianceRate: "100%",
-          renderingStrategy: "Client SPA with Pre-rendered Public Shells",
-          robotsTxt: "Configured & Active (/robots.txt)",
-          sitemapXml: "Configured & Active (/sitemap.xml)",
-          openGraph: "Configured in index.html and public routes",
-          schemaOrg: "LogisticsService JSON-LD structured data embedded",
-          auditTimestamp: (/* @__PURE__ */ new Date()).toISOString()
-        }
-      });
-    });
-    app2.get("/api/v1/docs", (req, res) => {
-      res.status(200).json({
-        openapi: "3.0.3",
-        info: {
-          title: "Technofay Fleet & Transport Management Platform API",
-          version: "1.0.0",
-          description: "Production MERN Transport Operations & Fleet API"
-        },
-        paths: {
-          "/api/v1/auth/login": { post: { summary: "User login with rate limiting & JWT session" } },
-          "/api/v1/auth/refresh": { post: { summary: "Rotate refresh token" } },
-          "/api/v1/auth/logout": { post: { summary: "Invalidate active session" } },
-          "/api/v1/auth/me": { get: { summary: "Retrieve current profile & permissions" } },
-          "/api/v1/contact": { post: { summary: "Submit public logistics inquiry with anti-spam check" } },
-          "/api/v1/admin/users": {
-            get: { summary: "List tenant users" },
-            post: { summary: "Provision new tenant user" }
-          },
-          "/api/v1/admin/roles": {
-            get: { summary: "List role definitions" },
-            post: { summary: "Create custom role" }
-          },
-          "/api/v1/admin/audit-logs": { get: { summary: "Query immutable operational audit trail" } }
-        }
-      });
-    });
-    var cachedDbPromise = null;
-    var isBootstrapped = false;
-    async function ensureDbConnected() {
-      if (db2.isConnected()) return;
-      if (!cachedDbPromise) {
-        cachedDbPromise = (async () => {
-          await db2.connectDatabase();
-          if (!isBootstrapped) {
-            try {
-              const BootstrapService2 = require_bootstrap_service();
-              await BootstrapService2.bootstrapSystem({
-                companyLegalName: "Techofay Global Logistics Pvt Ltd",
-                companyGstin: "24AAACT1234A1Z5",
-                adminEmail: process.env.BOOTSTRAP_ADMIN_EMAIL || "admin@technofay.com",
-                adminPassword: process.env.BOOTSTRAP_ADMIN_PASSWORD || "fleet2026_SecureAdmin!",
-                adminName: "Lead System Administrator"
-              });
-              isBootstrapped = true;
-            } catch (bootstrapErr) {
-              console.warn("[BOOTSTRAP] Serverless initial bootstrap note:", bootstrapErr.message);
-            }
-          }
-        })().catch((err) => {
-          cachedDbPromise = null;
-          throw err;
-        });
-      }
-      return cachedDbPromise;
+  );
+});
+app.get("/dashboard", (req, res) => {
+  res.redirect(301, "/app/dashboard");
+});
+app.get("/login.html", (req, res) => {
+  res.redirect(301, "/login");
+});
+app.use("/api/", generalRateLimiter);
+app.get(["/api", "/api/", "/api/v1/health", "/v1/health", "/health"], (req, res) => {
+  res.status(200).json({
+    success: true,
+    statusCode: 200,
+    message: "Fleet Management API service is operational",
+    data: {
+      uptime: process.uptime(),
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      environment: config.env,
+      version: "1.0.0"
     }
-    app2.use(async (req, res, next) => {
-      try {
-        await ensureDbConnected();
-        next();
-      } catch (error) {
-        console.error("[DB-CONNECTION-FAILURE]", error.message);
-        req.isDbDisconnected = true;
-        if (req.path.startsWith("/api/v1/auth") || req.path.startsWith("/api/v1/health") || req.path.startsWith("/api/v1/dashboard")) {
-          return next();
-        }
-        if (req.method === "GET") {
-          return res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: [],
-            pagination: { page: 1, limit: 25, totalPages: 0, totalCount: 0 }
+  });
+});
+app.get(["/api/v1/ready", "/v1/ready", "/ready"], (req, res) => {
+  const isDbReady = db.isConnected();
+  if (!isDbReady) {
+    return res.status(503).json({
+      success: false,
+      statusCode: 503,
+      error: "Service Unavailable",
+      message: "Database connection is not ready"
+    });
+  }
+  res.status(200).json({
+    success: true,
+    statusCode: 200,
+    message: "System is ready to receive requests",
+    data: {
+      database: "connected"
+    }
+  });
+});
+app.get("/api/v1/system/seo-audit", (req, res) => {
+  res.status(200).json({
+    success: true,
+    statusCode: 200,
+    message: "20-Point Launch Checklist & SEO Audit Status",
+    data: {
+      checklistItemsVerified: 20,
+      totalItems: 20,
+      complianceRate: "100%",
+      renderingStrategy: "Client SPA with Pre-rendered Public Shells",
+      robotsTxt: "Configured & Active (/robots.txt)",
+      sitemapXml: "Configured & Active (/sitemap.xml)",
+      openGraph: "Configured in index.html and public routes",
+      schemaOrg: "LogisticsService JSON-LD structured data embedded",
+      auditTimestamp: (/* @__PURE__ */ new Date()).toISOString()
+    }
+  });
+});
+app.get("/api/v1/docs", (req, res) => {
+  res.status(200).json({
+    openapi: "3.0.3",
+    info: {
+      title: "Technofay Fleet & Transport Management Platform API",
+      version: "1.0.0",
+      description: "Production MERN Transport Operations & Fleet API"
+    },
+    paths: {
+      "/api/v1/auth/login": { post: { summary: "User login with rate limiting & JWT session" } },
+      "/api/v1/auth/refresh": { post: { summary: "Rotate refresh token" } },
+      "/api/v1/auth/logout": { post: { summary: "Invalidate active session" } },
+      "/api/v1/auth/me": { get: { summary: "Retrieve current profile & permissions" } },
+      "/api/v1/contact": { post: { summary: "Submit public logistics inquiry with anti-spam check" } },
+      "/api/v1/admin/users": {
+        get: { summary: "List tenant users" },
+        post: { summary: "Provision new tenant user" }
+      },
+      "/api/v1/admin/roles": {
+        get: { summary: "List role definitions" },
+        post: { summary: "Create custom role" }
+      },
+      "/api/v1/admin/audit-logs": { get: { summary: "Query immutable operational audit trail" } }
+    }
+  });
+});
+var cachedDbPromise = null;
+var isBootstrapped = false;
+async function ensureDbConnected() {
+  if (db.isConnected()) return;
+  if (!cachedDbPromise) {
+    cachedDbPromise = (async () => {
+      await db.connectDatabase();
+      if (!isBootstrapped) {
+        try {
+          const BootstrapService = require_bootstrap_service();
+          await BootstrapService.bootstrapSystem({
+            companyLegalName: "Techofay Global Logistics Pvt Ltd",
+            companyGstin: "24AAACT1234A1Z5",
+            adminEmail: process.env.BOOTSTRAP_ADMIN_EMAIL || "admin@technofay.com",
+            adminPassword: process.env.BOOTSTRAP_ADMIN_PASSWORD || "fleet2026_SecureAdmin!",
+            adminName: "Lead System Administrator"
           });
+          isBootstrapped = true;
+        } catch (bootstrapErr) {
+          console.warn("[BOOTSTRAP] Serverless initial bootstrap note:", bootstrapErr.message);
         }
-        return res.status(503).json({
-          success: false,
-          statusCode: 503,
-          error: "Service Unavailable",
-          message: `Database connection unavailable: ${error.message}. Please configure a valid MONGODB_URI in Vercel project environment variables (Settings -> Environment Variables).`,
-          correlationId: req.id || "req_bootstrap",
-          timestamp: (/* @__PURE__ */ new Date()).toISOString()
-        });
       }
+    })().catch((err) => {
+      cachedDbPromise = null;
+      throw err;
     });
-    app2.use("/api/v1/auth", authRoutes);
-    app2.use("/api/v1/admin/users", userRoutes);
-    app2.use("/api/v1/admin/roles", roleRoutes);
-    app2.use("/api/v1/admin/audit-logs", auditRoutes);
-    app2.use("/api/v1/customers", customerRoutes);
-    app2.use("/api/v1/locations", locationRoutes);
-    app2.use("/api/v1/vehicles", vehicleRoutes);
-    app2.use("/api/v1/drivers", driverRoutes);
-    app2.use("/api/v1/documents", documentRoutes);
-    app2.use("/api/v1/compliance", complianceRoutes);
-    app2.use("/api/v1/master", masterRoutes);
-    app2.use("/api/v1/loads", loadRoutes);
-    app2.use("/api/v1/lr", lrRoutes);
-    app2.use("/api/v1/bilties", biltyRoutes);
-    app2.use("/api/v1/trips", tripRoutes);
-    app2.use("/api/v1/pod", podRoutes);
-    app2.use("/api/v1/whatsapp", whatsappRoutes);
-    app2.use("/api/v1/dashboard", dashboardRoutes);
-    app2.use("/api/v1/reports", reportsRoutes);
-    app2.use("/api/v1/search", searchRoutes);
-    app2.use("/api/v1/admin/settings", settingsRoutes);
-    app2.use("/api/v1/contact", contactRoutes);
-    app2.use("/api/v1/public/track", publicTrackingRoutes);
-    app2.use("/api/v1/maintenance", maintenanceRoutes);
-    app2.use("/api/v1/events", eventRoutes);
-    app2.use("/api/v1/telematics", telematicsRoutes);
-    app2.use("*", (req, res, next) => {
-      next(new AppError(`Cannot ${req.method} ${req.originalUrl}. Route not found.`, 404));
+  }
+  return cachedDbPromise;
+}
+app.use(async (req, res, next) => {
+  try {
+    await ensureDbConnected();
+    next();
+  } catch (error) {
+    console.error("[DB-CONNECTION-FAILURE]", error.message);
+    req.isDbDisconnected = true;
+    if (req.path.startsWith("/api/v1/auth") || req.path.startsWith("/api/v1/health") || req.path.startsWith("/api/v1/dashboard")) {
+      return next();
+    }
+    if (req.method === "GET") {
+      return res.status(200).json({
+        success: true,
+        statusCode: 200,
+        data: [],
+        pagination: { page: 1, limit: 25, totalPages: 0, totalCount: 0 }
+      });
+    }
+    return res.status(503).json({
+      success: false,
+      statusCode: 503,
+      error: "Service Unavailable",
+      message: `Database connection unavailable: ${error.message}. Please configure a valid MONGODB_URI in Vercel project environment variables (Settings -> Environment Variables).`,
+      correlationId: req.id || "req_bootstrap",
+      timestamp: (/* @__PURE__ */ new Date()).toISOString()
     });
-    app2.use(errorHandler);
-    var handler = (req, res) => {
-      return app2(req, res);
-    };
-    Object.setPrototypeOf(handler, app2);
-    module2.exports = handler;
-    module2.exports.default = handler;
   }
 });
-
-// apps/api/src/server.js
-var app = require_app();
-var config = require_env();
-var db = require_db3();
-var BootstrapService = require_bootstrap_service();
-async function startServer() {
-  try {
-    console.log(`[BOOT] Initializing Fleet & Transport API (${config.env})...`);
-    config.validateConfig();
-    const port = parseInt(process.env.PORT || config.port || 5e3, 10);
-    const host = process.env.HOST || "0.0.0.0";
-    const server = app.listen(port, host, () => {
-      console.log(`\u{1F680} Fleet API is listening on http://${host}:${port}`);
-      console.log(`\u{1F4D6} Health Check: http://${host}:${port}/api/v1/health`);
-      console.log(`\u{1F4D6} OpenAPI Docs: http://${host}:${port}/api/v1/docs`);
-    });
-    db.connectDatabase().then(async () => {
-      console.log("[DB] Database connected successfully.");
-      try {
-        await BootstrapService.bootstrapSystem({
-          companyLegalName: "Techofay Global Logistics Pvt Ltd",
-          companyGstin: "24AAACT1234A1Z5",
-          adminEmail: process.env.BOOTSTRAP_ADMIN_EMAIL || (config.env === "production" ? null : "admin@technofay.com"),
-          adminPassword: process.env.BOOTSTRAP_ADMIN_PASSWORD || (config.env === "production" ? null : "fleet2026_SecureAdmin!"),
-          adminName: "Lead System Administrator"
-        });
-      } catch (bootstrapErr) {
-        console.warn("[BOOTSTRAP] System bootstrap note:", bootstrapErr.message);
-      }
-    }).catch((dbErr) => {
-      console.warn("[DB-WARN] Initial MongoDB connection not available:", dbErr.message);
-      console.warn("[DB-WARN] API server running in resilient fallback mode for health, auth, and dashboard.");
-    });
-    const handleShutdown = async (signal) => {
-      console.log(`
-[SHUTDOWN] Received ${signal}. Gracefully stopping server...`);
-      server.close(async () => {
-        await db.disconnectDatabase();
-        console.log("[SHUTDOWN] Server closed gracefully.");
-        process.exit(0);
-      });
-      setTimeout(() => {
-        console.error("[SHUTDOWN] Forcefully shutting down after timeout.");
-        process.exit(1);
-      }, 5e3).unref();
-    };
-    process.on("SIGTERM", () => handleShutdown("SIGTERM"));
-    process.on("SIGINT", () => handleShutdown("SIGINT"));
-    return server;
-  } catch (error) {
-    console.error("[FATAL] Failed to start server:", error.message);
-    process.exit(1);
-  }
-}
-startServer();
-module.exports = app;
-module.exports.startServer = startServer;
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/admin/users", userRoutes);
+app.use("/api/v1/admin/roles", roleRoutes);
+app.use("/api/v1/admin/audit-logs", auditRoutes);
+app.use("/api/v1/customers", customerRoutes);
+app.use("/api/v1/locations", locationRoutes);
+app.use("/api/v1/vehicles", vehicleRoutes);
+app.use("/api/v1/drivers", driverRoutes);
+app.use("/api/v1/documents", documentRoutes);
+app.use("/api/v1/compliance", complianceRoutes);
+app.use("/api/v1/master", masterRoutes);
+app.use("/api/v1/loads", loadRoutes);
+app.use("/api/v1/lr", lrRoutes);
+app.use("/api/v1/bilties", biltyRoutes);
+app.use("/api/v1/trips", tripRoutes);
+app.use("/api/v1/pod", podRoutes);
+app.use("/api/v1/whatsapp", whatsappRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);
+app.use("/api/v1/reports", reportsRoutes);
+app.use("/api/v1/search", searchRoutes);
+app.use("/api/v1/admin/settings", settingsRoutes);
+app.use("/api/v1/contact", contactRoutes);
+app.use("/api/v1/public/track", publicTrackingRoutes);
+app.use("/api/v1/maintenance", maintenanceRoutes);
+app.use("/api/v1/events", eventRoutes);
+app.use("/api/v1/telematics", telematicsRoutes);
+app.use("*", (req, res, next) => {
+  next(new AppError(`Cannot ${req.method} ${req.originalUrl}. Route not found.`, 404));
+});
+app.use(errorHandler);
+var handler = (req, res) => {
+  return app(req, res);
+};
+Object.setPrototypeOf(handler, app);
+module.exports = handler;
+module.exports.default = handler;
 /*! Bundled license information:
 
 depd/index.js:
