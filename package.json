@@ -28,7 +28,7 @@
     "type-check": "tsc --project apps/web/tsconfig.json",
     "build:api": "npx esbuild apps/api/src/app.js --bundle --platform=node --target=node18 --outfile=api/index.js && npx esbuild apps/api/src/app.js --bundle --platform=node --target=node18 --outfile=apps/api/index.js",
     "build:web": "npm --prefix apps/web run build",
-    "build": "npm run build:api && npm run build:web && node -e \"require('fs').cpSync('apps/web/dist', 'dist', {recursive: true})\""
+    "build": "npm --prefix apps/web run build"
   },
   "keywords": [
     "mern",
