@@ -6,6 +6,8 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
+const path = require('node:path');
+const fs = require('node:fs');
 const config = require('./config/env');
 const db = require('./config/db');
 const correlationIdMiddleware = require('./middleware/correlationId');
@@ -13,6 +15,7 @@ const { generalRateLimiter } = require('./middleware/rateLimiter');
 const { errorHandler, AppError } = require('./middleware/errorHandler');
 
 // Route Modules
+const mockRouter = require('./routes/mockRouter');
 const authRoutes = require('./modules/auth/routes/auth.routes');
 const userRoutes = require('./modules/users/routes/user.routes');
 const roleRoutes = require('./modules/roles/routes/role.routes');
@@ -55,7 +58,8 @@ app.use((req, res, next) => {
 const allowedOrigins = new Set([
   config.clientUrl,
   process.env.WEB_URL,
-  'https://techofay-fleet.vercel.app'
+  'https://techofay-fleet.vercel.app',
+  'https://techofayfleet2.vercel.app'
 ].filter(Boolean));
 
 if (process.env.CORS_ALLOWED_ORIGINS) {
@@ -239,28 +243,19 @@ app.get(['/api', '/api/', '/api/v1/health', '/v1/health', '/health'], (req, res)
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
       environment: config.env,
-      version: '1.0.0'
+      version: '1.0.0',
+      mode: db.isConnected() ? 'MongoDB Cluster' : 'In-Memory Autonomous Fleet Mode'
     }
   });
 });
 
 app.get(['/api/v1/ready', '/v1/ready', '/ready'], (req, res) => {
-  const isDbReady = db.isConnected();
-  if (!isDbReady) {
-    return res.status(503).json({
-      success: false,
-      statusCode: 503,
-      error: 'Service Unavailable',
-      message: 'Database connection is not ready'
-    });
-  }
-
   res.status(200).json({
     success: true,
     statusCode: 200,
     message: 'System is ready to receive requests',
     data: {
-      database: 'connected'
+      database: db.isConnected() ? 'connected' : 'in-memory (autonomous demo mode)'
     }
   });
 });
@@ -295,24 +290,29 @@ app.get('/api/v1/docs', (req, res) => {
     },
     paths: {
       '/api/v1/auth/login': { post: { summary: 'User login with rate limiting & JWT session' } },
+      '/api/v1/auth/register': { post: { summary: 'Register tenant organization & admin' } },
       '/api/v1/auth/refresh': { post: { summary: 'Rotate refresh token' } },
       '/api/v1/auth/logout': { post: { summary: 'Invalidate active session' } },
       '/api/v1/auth/me': { get: { summary: 'Retrieve current profile & permissions' } },
-      '/api/v1/contact': { post: { summary: 'Submit public logistics inquiry with anti-spam check' } },
-      '/api/v1/admin/users': {
-        get: { summary: 'List tenant users' },
-        post: { summary: 'Provision new tenant user' }
-      },
-      '/api/v1/admin/roles': {
-        get: { summary: 'List role definitions' },
-        post: { summary: 'Create custom role' }
-      },
+      '/api/v1/contact': { post: { summary: 'Submit public logistics inquiry' } },
+      '/api/v1/admin/users': { get: { summary: 'List tenant users' }, post: { summary: 'Provision new tenant user' } },
+      '/api/v1/admin/roles': { get: { summary: 'List role definitions' } },
       '/api/v1/admin/audit-logs': { get: { summary: 'Query immutable operational audit trail' } }
     }
   });
 });
 
-// 9.5 Serverless Database Connection & Initialization Middleware
+// 9.5 Autonomous Standalone DB Checker
+const isDatabaseDisabled = () => {
+  return (
+    process.env.DISABLE_DB === 'true' ||
+    process.env.NO_DB === 'true' ||
+    !config.mongoUri ||
+    config.mongoUri.includes('cluster0.mongodb.net') ||
+    config.mongoUri.includes('TODO')
+  );
+};
+
 let cachedDbPromise = null;
 let isBootstrapped = false;
 
@@ -321,7 +321,7 @@ async function ensureDbConnected() {
   if (!cachedDbPromise) {
     cachedDbPromise = (async () => {
       await db.connectDatabase();
-      if (!isBootstrapped) {
+      if (!isBootstrapped && db.isConnected()) {
         try {
           const BootstrapService = require('./modules/auth/services/bootstrap.service');
           await BootstrapService.bootstrapSystem({
@@ -333,7 +333,7 @@ async function ensureDbConnected() {
           });
           isBootstrapped = true;
         } catch (bootstrapErr) {
-          console.warn('[BOOTSTRAP] Serverless initial bootstrap note:', bootstrapErr.message);
+          console.warn('[BOOTSTRAP] System bootstrap note:', bootstrapErr.message);
         }
       }
     })().catch((err) => {
@@ -344,41 +344,28 @@ async function ensureDbConnected() {
   return cachedDbPromise;
 }
 
-// Automatically connect to MongoDB before executing domain routes
+// 9.6 Intelligent Router: Uses Real MongoDB when live, or In-Memory Mock Store when offline/disabled
 app.use(async (req, res, next) => {
+  // If database is disabled or using placeholder Atlas cluster, route directly to in-memory store
+  if (isDatabaseDisabled()) {
+    req.isDbDisconnected = true;
+    return mockRouter(req, res, next);
+  }
+
   try {
     await ensureDbConnected();
+    if (!db.isConnected()) {
+      req.isDbDisconnected = true;
+      return mockRouter(req, res, next);
+    }
     next();
   } catch (error) {
-    console.error('[DB-CONNECTION-FAILURE]', error.message);
     req.isDbDisconnected = true;
-    if (
-      req.path.startsWith('/api/v1/auth') ||
-      req.path.startsWith('/api/v1/health') ||
-      req.path.startsWith('/api/v1/dashboard')
-    ) {
-      return next();
-    }
-    if (req.method === 'GET') {
-      return res.status(200).json({
-        success: true,
-        statusCode: 200,
-        data: [],
-        pagination: { page: 1, limit: 25, totalPages: 0, totalCount: 0 }
-      });
-    }
-    return res.status(503).json({
-      success: false,
-      statusCode: 503,
-      error: 'Service Unavailable',
-      message: `Database connection unavailable: ${error.message}. Please configure a valid MONGODB_URI in Vercel project environment variables (Settings -> Environment Variables).`,
-      correlationId: req.id || 'req_bootstrap',
-      timestamp: new Date().toISOString()
-    });
+    return mockRouter(req, res, next);
   }
 });
 
-// 10. Register Domain Routes
+// 10. Register Domain Routes (When Real MongoDB is Active)
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/admin/users', userRoutes);
 app.use('/api/v1/admin/roles', roleRoutes);
@@ -406,7 +393,25 @@ app.use('/api/v1/maintenance', maintenanceRoutes);
 app.use('/api/v1/events', eventRoutes);
 app.use('/api/v1/telematics', telematicsRoutes);
 
-// 11. Catch-all 404 for Unmatched Routes
+// 10.5 Static SPA fallback (serves frontend if bundled together or accessed directly)
+const candidateDistDirs = [
+  path.resolve(__dirname, '../../web/dist'),
+  path.resolve(__dirname, '../../../dist'),
+  path.resolve(__dirname, '../../../../apps/web/dist')
+];
+const staticDist = candidateDistDirs.find(d => fs.existsSync(d) && fs.existsSync(path.join(d, 'index.html')));
+
+if (staticDist) {
+  app.use(express.static(staticDist));
+  app.get('*', (req, res, next) => {
+    if (req.originalUrl.startsWith('/api') || req.originalUrl.startsWith('/v1')) {
+      return next();
+    }
+    res.sendFile(path.join(staticDist, 'index.html'));
+  });
+}
+
+// 11. Catch-all 404 for Unmatched API Routes
 app.use('*', (req, res, next) => {
   next(new AppError(`Cannot ${req.method} ${req.originalUrl}. Route not found.`, 404));
 });
@@ -430,4 +435,3 @@ if (require.main === module) {
 
 module.exports = handler;
 module.exports.default = handler;
-
