@@ -2209,7 +2209,10 @@ router.post('/contact', (req, res) => {
 });
 
 // Wildcard fallback for any other sub-routes: return 200 with empty array/object
-router.all('*', (req, res) => {
+router.all('*', (req, res, next) => {
+  if (req.originalUrl && !req.originalUrl.startsWith('/api') && !req.originalUrl.startsWith('/v1')) {
+    return next();
+  }
   if (req.method === 'GET') {
     return ok(res, [], 'Autonomous In-Memory Demo Mode');
   }

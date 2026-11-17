@@ -30,6 +30,7 @@ import { MaintenancePage } from './pages/MaintenancePage';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { analytics } from './lib/analytics';
 
 function AppContent() {
@@ -161,7 +162,9 @@ function AppContent() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
         <main style={{ flex: 1, overflowY: 'auto' }}>
-          {renderCurrentView()}
+          <ErrorBoundary fallbackTitle="Unable to render requested page">
+            {renderCurrentView()}
+          </ErrorBoundary>
         </main>
       </div>
 

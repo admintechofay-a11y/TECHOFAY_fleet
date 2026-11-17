@@ -346,6 +346,11 @@ async function ensureDbConnected() {
 
 // 9.6 Intelligent Router: Uses Real MongoDB when live, or In-Memory Mock Store when offline/disabled
 app.use(async (req, res, next) => {
+  // Pass non-API routes (frontend SPA pages like /app/*, /login, /register, and static assets) to static fallthrough
+  if (!req.url.startsWith('/api') && !req.url.startsWith('/v1')) {
+    return next();
+  }
+
   // If database is disabled or using placeholder Atlas cluster, route directly to in-memory store
   if (isDatabaseDisabled()) {
     req.isDbDisconnected = true;
@@ -446,9 +451,14 @@ app.get(['/api/v1/bts/memo/:id', '/api/bts/memo/:id', '/v1/bts/memo/:id', '/bts/
 
 // 10.5 Static SPA fallback (serves frontend if bundled together or accessed directly)
 const candidateDistDirs = [
+  path.resolve(__dirname, './dist'),
+  path.resolve(__dirname, '../dist'),
+  path.resolve(__dirname, '../web/dist'),
+  path.resolve(__dirname, '../../apps/web/dist'),
   path.resolve(__dirname, '../../web/dist'),
   path.resolve(__dirname, '../../../dist'),
-  path.resolve(__dirname, '../../../../apps/web/dist')
+  path.resolve(process.cwd(), 'apps/web/dist'),
+  path.resolve(process.cwd(), 'dist')
 ];
 const staticDist = candidateDistDirs.find(d => fs.existsSync(d) && fs.existsSync(path.join(d, 'index.html')));
 
