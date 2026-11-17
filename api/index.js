@@ -254190,9 +254190,15 @@ var require_mockRouter = __commonJS({
       const amount = parseFloat(req.body?.amountRupees || (req.body?.amountPaise ? req.body.amountPaise / 100 : "5000"));
       const newExpense = {
         _id: "exp_" + Date.now(),
-        category: req.body?.expenseType || req.body?.category || "FUEL",
+        category: req.body?.expenseType || req.body?.category || "DIESEL",
+        expenseType: req.body?.expenseType || req.body?.category || "DIESEL",
         amount,
-        notes: req.body?.description || req.body?.notes || "Route expense"
+        amountPaise: Math.round(amount * 100),
+        amountRupees: amount,
+        paidBy: req.body?.paidBy || "DRIVER",
+        notes: req.body?.description || req.body?.notes || "Route expense",
+        description: req.body?.description || req.body?.notes || "Route expense",
+        createdAt: (/* @__PURE__ */ new Date()).toISOString()
       };
       if (!trip.expenses) trip.expenses = [];
       trip.expenses.push(newExpense);
@@ -254642,9 +254648,11 @@ var require_mockRouter = __commonJS({
       }, `Dry run validation completed for ${entity}: All rows passed compliance checks`);
     });
     router.post("/master/confirm/:entity", (req, res) => {
+      const count = req.body?.validRecords && req.body.validRecords.length || 5;
       return ok(res, {
-        committedCount: 5,
-        message: "Successfully imported 5 records into workspace"
+        committedCount: count,
+        importedCount: count,
+        message: `Successfully imported ${count} records into workspace`
       });
     });
     router.post("/master/jobs/export", (req, res) => {
@@ -254853,13 +254861,14 @@ ${jobId},${job.entityType || "bulk"},COMPLETED,${(/* @__PURE__ */ new Date()).to
     });
     router.post("/admin/users", (req, res) => {
       const b = req.body || {};
+      const roleObj = mockStore2.roles.find((r) => r._id === b.roleId || r.slug === b.role) || mockStore2.roles[1];
       const newUser = {
         _id: "usr_" + crypto4.randomBytes(6).toString("hex"),
         name: b.name || "Staff User",
         email: (b.email || "staff@barkattempo.com").trim().toLowerCase(),
         phone: b.phone || "93776 10333",
-        role: b.role || "TRANSPORT_MANAGER",
-        roleId: mockStore2.roles[1],
+        role: roleObj?.slug || b.role || "TRANSPORT_MANAGER",
+        roleId: roleObj || mockStore2.roles[1],
         companyId: mockStore2.tenant,
         isActive: true,
         createdAt: /* @__PURE__ */ new Date()
@@ -254878,20 +254887,39 @@ ${jobId},${job.entityType || "bulk"},COMPLETED,${(/* @__PURE__ */ new Date()).to
     });
     router.get("/admin/audit-logs", (req, res) => {
       const sampleLogs = [
-        { _id: "aud_1", actorName: "BTS Administrator", action: "ORGANIZATION_REGISTERED", module: "AUTH", timestamp: new Date(Date.now() - 36e5).toISOString() },
-        { _id: "aud_2", actorName: "BTS Administrator", action: "LOGIN_SUCCESS", module: "AUTH", timestamp: (/* @__PURE__ */ new Date()).toISOString() }
+        {
+          _id: "aud_1",
+          actorName: "BTS Administrator",
+          actorId: { name: "BTS Administrator", email: "barkattemposervice@gmail.com" },
+          action: "ORGANIZATION_INITIALIZED",
+          module: "AUTH",
+          ipAddress: "127.0.0.1",
+          createdAt: new Date(Date.now() - 36e5).toISOString()
+        },
+        {
+          _id: "aud_2",
+          actorName: "BTS Administrator",
+          actorId: { name: "BTS Administrator", email: "barkattemposervice@gmail.com" },
+          action: "LOGIN_SUCCESS",
+          module: "AUTH",
+          ipAddress: "127.0.0.1",
+          createdAt: (/* @__PURE__ */ new Date()).toISOString()
+        }
       ];
       return paginated(res, { data: sampleLogs, pagination: { page: 1, limit: 20, total: 2, totalPages: 1 } });
     });
     router.get("/admin/settings", (req, res) => {
       return ok(res, mockStore2.settings);
     });
-    router.put("/admin/settings", (req, res) => {
-      mockStore2.settings = { ...mockStore2.settings, ...req.body };
-      return ok(res, mockStore2.settings, "Settings updated");
+    router.all(["/admin/settings"], (req, res, next) => {
+      if (req.method === "PUT" || req.method === "PATCH") {
+        mockStore2.settings = { ...mockStore2.settings, ...req.body };
+        return ok(res, mockStore2.settings, "Settings updated successfully");
+      }
+      next();
     });
-    router.get("/public/track/:trackingId", (req, res) => {
-      const tid = req.params.trackingId.toUpperCase();
+    router.get(["/public/track", "/public/track/:trackingId"], (req, res) => {
+      const tid = (req.params.trackingId || req.query.q || req.query.lr || req.query.load || "TRP-2026-003").toUpperCase();
       const trip = mockStore2.trips[1] || mockStore2.trips[0];
       const load = mockStore2.loads[1] || mockStore2.loads[0];
       const trackingPayload = {

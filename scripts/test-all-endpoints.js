@@ -123,9 +123,11 @@ async function runTests() {
     { method: 'get', url: '/api/v1/admin/roles', check: res => res.status === 200 && res.body.data.length > 0 },
     { method: 'get', url: '/api/v1/admin/audit-logs', check: res => res.status === 200 && (res.body.data.items || []).length > 0 },
     { method: 'get', url: '/api/v1/admin/settings', check: res => res.status === 200 && res.body.data.defaultCurrency === 'INR' },
+    { method: 'patch', url: '/api/v1/admin/settings', body: { legalName: 'Barkat Tempo Service' }, check: res => res.status === 200 && res.body.data.legalName === 'Barkat Tempo Service' },
 
     // Public
     { method: 'get', url: '/api/v1/public/track/TRP-2026-003', check: res => res.status === 200 && res.body.data.trackingNumber === 'TRP-2026-003' },
+    { method: 'get', url: '/api/v1/public/track?q=LD-2026-0002', check: res => res.status === 200 && res.body.data.trackingNumber === 'LD-2026-0002' },
     { method: 'post', url: '/api/v1/contact', body: { message: 'Inquiry' }, check: res => res.status === 200 },
 
     // Search, Export & Documents

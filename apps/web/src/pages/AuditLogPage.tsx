@@ -11,7 +11,7 @@ export function AuditLogPage() {
         setIsLoading(true);
         const res = await apiRequest('/admin/audit-logs');
         if (res && res.data) {
-          setLogs(res.data);
+          setLogs(Array.isArray(res.data) ? res.data : (res.data.items || []));
         }
       } catch (e) {
         // Ignored

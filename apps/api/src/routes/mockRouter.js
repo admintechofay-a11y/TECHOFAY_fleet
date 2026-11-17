@@ -1128,9 +1128,15 @@ router.post('/trips/:id/expenses', (req, res) => {
   const amount = parseFloat(req.body?.amountRupees || (req.body?.amountPaise ? req.body.amountPaise / 100 : '5000'));
   const newExpense = {
     _id: 'exp_' + Date.now(),
-    category: req.body?.expenseType || req.body?.category || 'FUEL',
+    category: req.body?.expenseType || req.body?.category || 'DIESEL',
+    expenseType: req.body?.expenseType || req.body?.category || 'DIESEL',
     amount,
-    notes: req.body?.description || req.body?.notes || 'Route expense'
+    amountPaise: Math.round(amount * 100),
+    amountRupees: amount,
+    paidBy: req.body?.paidBy || 'DRIVER',
+    notes: req.body?.description || req.body?.notes || 'Route expense',
+    description: req.body?.description || req.body?.notes || 'Route expense',
+    createdAt: new Date().toISOString()
   };
   
   if (!trip.expenses) trip.expenses = [];
@@ -1640,9 +1646,11 @@ router.post('/master/dry-run/:entity', upload.single('file'), (req, res) => {
 });
 
 router.post('/master/confirm/:entity', (req, res) => {
+  const count = (req.body?.validRecords && req.body.validRecords.length) || 5;
   return ok(res, {
-    committedCount: 5,
-    message: 'Successfully imported 5 records into workspace'
+    committedCount: count,
+    importedCount: count,
+    message: `Successfully imported ${count} records into workspace`
   });
 });
 
@@ -1876,13 +1884,14 @@ router.get('/admin/users', (req, res) => {
 
 router.post('/admin/users', (req, res) => {
   const b = req.body || {};
+  const roleObj = mockStore.roles.find((r) => r._id === b.roleId || r.slug === b.role) || mockStore.roles[1];
   const newUser = {
     _id: 'usr_' + crypto.randomBytes(6).toString('hex'),
     name: b.name || 'Staff User',
     email: (b.email || 'staff@barkattempo.com').trim().toLowerCase(),
     phone: b.phone || '93776 10333',
-    role: b.role || 'TRANSPORT_MANAGER',
-    roleId: mockStore.roles[1],
+    role: roleObj?.slug || b.role || 'TRANSPORT_MANAGER',
+    roleId: roleObj || mockStore.roles[1],
     companyId: mockStore.tenant,
     isActive: true,
     createdAt: new Date()
@@ -1904,8 +1913,24 @@ router.get('/admin/roles', (req, res) => {
 
 router.get('/admin/audit-logs', (req, res) => {
   const sampleLogs = [
-    { _id: 'aud_1', actorName: 'BTS Administrator', action: 'ORGANIZATION_REGISTERED', module: 'AUTH', timestamp: new Date(Date.now() - 3600000).toISOString() },
-    { _id: 'aud_2', actorName: 'BTS Administrator', action: 'LOGIN_SUCCESS', module: 'AUTH', timestamp: new Date().toISOString() }
+    {
+      _id: 'aud_1',
+      actorName: 'BTS Administrator',
+      actorId: { name: 'BTS Administrator', email: 'barkattemposervice@gmail.com' },
+      action: 'ORGANIZATION_INITIALIZED',
+      module: 'AUTH',
+      ipAddress: '127.0.0.1',
+      createdAt: new Date(Date.now() - 3600000).toISOString()
+    },
+    {
+      _id: 'aud_2',
+      actorName: 'BTS Administrator',
+      actorId: { name: 'BTS Administrator', email: 'barkattemposervice@gmail.com' },
+      action: 'LOGIN_SUCCESS',
+      module: 'AUTH',
+      ipAddress: '127.0.0.1',
+      createdAt: new Date().toISOString()
+    }
   ];
   return paginated(res, { data: sampleLogs, pagination: { page: 1, limit: 20, total: 2, totalPages: 1 } });
 });
@@ -1914,16 +1939,19 @@ router.get('/admin/settings', (req, res) => {
   return ok(res, mockStore.settings);
 });
 
-router.put('/admin/settings', (req, res) => {
-  mockStore.settings = { ...mockStore.settings, ...req.body };
-  return ok(res, mockStore.settings, 'Settings updated');
+router.all(['/admin/settings'], (req, res, next) => {
+  if (req.method === 'PUT' || req.method === 'PATCH') {
+    mockStore.settings = { ...mockStore.settings, ...req.body };
+    return ok(res, mockStore.settings, 'Settings updated successfully');
+  }
+  next();
 });
 
 // ==========================================
 // 17. PUBLIC TRACKING & INQUIRIES
 // ==========================================
-router.get('/public/track/:trackingId', (req, res) => {
-  const tid = req.params.trackingId.toUpperCase();
+router.get(['/public/track', '/public/track/:trackingId'], (req, res) => {
+  const tid = (req.params.trackingId || req.query.q || req.query.lr || req.query.load || 'TRP-2026-003').toUpperCase();
   const trip = mockStore.trips[1] || mockStore.trips[0];
   const load = mockStore.loads[1] || mockStore.loads[0];
 
