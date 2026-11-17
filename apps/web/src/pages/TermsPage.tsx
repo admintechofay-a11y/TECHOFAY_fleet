@@ -11,9 +11,9 @@ export const TermsPage: React.FC<TermsPageProps> = ({ onNavigateHome }) => {
         {/* Navigation Bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span style={{ fontSize: '1.75rem' }}>🚚</span>
+            <img src="/bts-logo.png" alt="BTS" style={{ height: 32, objectFit: 'contain' }} />
             <span style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em', color: 'var(--accent-cyan)' }}>
-              TECHNOFAY FLEET OS
+              BARKAT TEMPO SERVICE
             </span>
           </div>
           {onNavigateHome && (
@@ -42,7 +42,7 @@ export const TermsPage: React.FC<TermsPageProps> = ({ onNavigateHome }) => {
               1. Platform Usage &amp; Eligibility
             </h2>
             <p>
-              The Technofay Fleet Management Platform is provided for licensed commercial transport operators, fleet owners, freight forwarders, and authorized logistics personnel. Authorized users must maintain active credentials and comply with statutory road safety and transport regulations.
+              The Barkat Tempo Service Fleet Management Platform is provided for licensed commercial transport operators, fleet owners, freight forwarders, and authorized logistics personnel. Authorized users must maintain active credentials and comply with statutory road safety and transport regulations.
             </p>
           </section>
 

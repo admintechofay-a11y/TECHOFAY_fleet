@@ -26,17 +26,16 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
 
   // Quick Demo Autofill for testing
   const handleFillDemo = () => {
-    const randomSuffix = Math.floor(100 + Math.random() * 900);
-    setCompanyLegalName(`Garuda Express Logistics Pvt Ltd`);
-    setTradeName(`Garuda Logistics ${randomSuffix}`);
-    setCompanyGstin(`24AABCG${randomSuffix}A1Z5`);
-    setAdminName(`Vikramaditya Rao`);
-    setEmail(`fleet.director.${randomSuffix}@garudalogistics.com`);
-    setPhone(`+91 98251 ${randomSuffix}12`);
-    setCity('Surat');
+    setCompanyLegalName(`Barkat Tempo Service`);
+    setTradeName(`Barkat Tempo Service`);
+    setCompanyGstin(`24AAACT1234A1Z5`);
+    setAdminName(`Barkat Partner`);
+    setEmail(`barkattemposervice@gmail.com`);
+    setPhone(`+91 93776 10333`);
+    setCity('Vadodara');
     setState('Gujarat');
-    setPassword('Technofay@2026!');
-    setConfirmPassword('Technofay@2026!');
+    setPassword('Barkat@2026!');
+    setConfirmPassword('Barkat@2026!');
     setError(null);
   };
 
@@ -131,25 +130,19 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
         <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <div
             style={{
-              width: '56px',
-              height: '56px',
-              borderRadius: '14px',
-              background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-              margin: '0 auto 1rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '1.8rem',
-              boxShadow: 'var(--shadow-glow)'
+              marginBottom: '1rem'
             }}
           >
-            🚚
+            <img src="/bts-logo.png" alt="BTS" style={{ height: 48, objectFit: 'contain' }} />
           </div>
           <h1 style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: 0 }}>
             Register Your Fleet
           </h1>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.35rem' }}>
-            Set up your organization workspace on Technofay Haulage OS
+            Set up your organization workspace on Barkat Tempo Service Fleet OS
           </p>
 
           {/* Quick Demo Fill Helper */}
@@ -421,7 +414,7 @@ export function RegisterPage({ onNavigate }: RegisterPageProps) {
               style={{ marginTop: '0.2rem', cursor: 'pointer' }}
             />
             <label htmlFor="terms-check" style={{ fontSize: '0.775rem', color: 'var(--text-secondary)', lineHeight: 1.4, cursor: 'pointer' }}>
-              I agree to Technofay Fleet Management{' '}
+              I agree to Barkat Tempo Service Fleet Management{' '}
               <button
                 type="button"
                 onClick={() => onNavigate && onNavigate('/terms')}

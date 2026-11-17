@@ -144,13 +144,13 @@ export const WhatsAppPage: React.FC = () => {
       return (
         `📄 *Official ${documentType} Consignment Document*\n\n` +
         (customCaption ? `${customCaption}\n\n` : `Attached document file: ${documentType}_${documentId || 'REF1001'}.pdf\n\n`) +
-        `Technofay Fleet Document Management`
+        `Barkat Tempo Service Document Management`
       );
     }
 
     if (selectedTemplate === 'LOAD_CREATED') {
       return (
-        `🚚 *Technofay Logistics Update*\n\n` +
+        `🚚 *Barkat Tempo Service Logistics Update*\n\n` +
         `Dear Customer,\nA new consignment load *${templateVars.loadNumber || 'LD-2026-XXXXX'}* has been registered.\n` +
         `📍 *Origin:* ${templateVars.originCity || 'Origin Hub'}\n` +
         `🏁 *Destination:* ${templateVars.destCity || 'Destination'}\n` +
@@ -163,9 +163,9 @@ export const WhatsAppPage: React.FC = () => {
         `🚛 *Trip Dispatched - On The Move*\n\n` +
         `Trip *${templateVars.tripNumber || 'TR-2026-0001'}* (Load ${templateVars.loadNumber || 'LD-2026-0001'}) has been dispatched!\n` +
         `🚚 *Vehicle Plate:* ${templateVars.vehiclePlate || 'MH12AB1234'}\n` +
-        `👤 *Assigned Driver:* ${templateVars.driverName || 'Driver Name'} (📞 ${templateVars.driverPhone || '+91 98000 00000'})\n` +
+        `👤 *Assigned Driver:* ${templateVars.driverName || 'Driver Name'} (📞 ${templateVars.driverPhone || '+91 93776 10333'})\n` +
         `📍 *Route:* ${templateVars.originCity || 'Origin'} ➔ ${templateVars.destCity || 'Destination'}\n\n` +
-        `Technofay Fleet Dispatch Management`
+        `Barkat Tempo Service Dispatch Management`
       );
     }
     if (selectedTemplate === 'IN_TRANSIT') {
@@ -173,8 +173,8 @@ export const WhatsAppPage: React.FC = () => {
         `📍 *Consignment In Transit*\n\n` +
         `Load *${templateVars.loadNumber || 'LD-2026-0001'}* is currently on route to *${templateVars.destCity || 'Destination'}*.\n` +
         `Expected Arrival: *${templateVars.expectedDate || 'Today 6:00 PM'}*.\n` +
-        `Driver Contact: ${templateVars.driverPhone || '+91 98000 00000'}.\n\n` +
-        `Technofay Fleet Operations`
+        `Driver Contact: ${templateVars.driverPhone || '+91 93776 10333'}.\n\n` +
+        `Barkat Tempo Service Fleet Operations`
       );
     }
     if (selectedTemplate === 'DELIVERY_COMPLETED') {
@@ -191,7 +191,7 @@ export const WhatsAppPage: React.FC = () => {
       `Please find attached official ${templateVars.documentType || 'LR'} *${templateVars.documentNumber || 'LR-2026-0001'}* for Load *${templateVars.loadNumber || 'LD-2026-0001'}*.\n` +
       `Vehicle: ${templateVars.vehiclePlate || 'MH12AB1234'}\n` +
       `Freight: INR ${templateVars.totalFreightRupees || '45000'}.\n\n` +
-      `Technofay Fleet Document Management`
+      `Barkat Tempo Service Document Management`
     );
   };
 
@@ -689,7 +689,7 @@ export const WhatsAppPage: React.FC = () => {
                 🚚
               </div>
               <div>
-                <div style={{ fontSize: '14px', fontWeight: '700' }}>Technofay Fleet Support</div>
+                <div style={{ fontSize: '14px', fontWeight: '700' }}>Barkat Tempo Service Support</div>
                 <div style={{ fontSize: '11px', color: '#94A3B8' }}>Verified WhatsApp Business Account</div>
               </div>
             </div>

@@ -59,25 +59,19 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div
             style={{
-              width: '54px',
-              height: '54px',
-              borderRadius: '14px',
-              background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-              margin: '0 auto 1rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '1.8rem',
-              boxShadow: 'var(--shadow-glow)'
+              marginBottom: '1rem'
             }}
           >
-            🚚
+            <img src="/bts-logo.png" alt="BTS" style={{ height: 48, objectFit: 'contain' }} />
           </div>
           <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Technofay Fleet OS
+            Barkat Tempo Service
           </h1>
           <p style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-            Enterprise Transport & Logistics Management
+            Daily Tempo & Heavy Transport Service
           </p>
         </div>
 
@@ -108,7 +102,7 @@ export function LoginPage({ onNavigatePublic }: { onNavigatePublic?: (path: stri
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. dispatcher@technofay.com"
+              placeholder="e.g. barkattemposervice@gmail.com"
               className="input-field"
               required
               autoFocus

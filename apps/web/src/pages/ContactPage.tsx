@@ -61,9 +61,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateHome }) => {
         {/* Navigation Bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span style={{ fontSize: '1.75rem' }}>🚚</span>
+            <img src="/bts-logo.png" alt="BTS" style={{ height: 32, objectFit: 'contain' }} />
             <span style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em', color: 'var(--accent-cyan)' }}>
-              TECHNOFAY FLEET OS
+              BARKAT TEMPO SERVICE
             </span>
           </div>
           {onNavigateHome && (

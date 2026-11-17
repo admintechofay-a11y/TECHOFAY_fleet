@@ -211,7 +211,7 @@ export function UsersAdminPage() {
                   type="email"
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  placeholder="e.g. ramesh@technofay.com"
+                  placeholder="e.g. staff@barkattempo.com"
                   className="input-field"
                   required
                 />

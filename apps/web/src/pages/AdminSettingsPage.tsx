@@ -243,7 +243,7 @@ export const AdminSettingsPage: React.FC = () => {
                   required
                   value={formData.legalName}
                   onChange={(e) => setFormData({ ...formData, legalName: e.target.value })}
-                  placeholder="e.g. Technofay Transport Solutions Pvt Ltd"
+                  placeholder="e.g. Barkat Tempo Service"
                   style={{
                     width: '100%',
                     padding: '0.65rem 0.85rem',
@@ -264,7 +264,7 @@ export const AdminSettingsPage: React.FC = () => {
                   type="text"
                   value={formData.tradeName}
                   onChange={(e) => setFormData({ ...formData, tradeName: e.target.value })}
-                  placeholder="e.g. Technofay Logistics"
+                  placeholder="e.g. Barkat Tempo Service"
                   style={{
                     width: '100%',
                     padding: '0.65rem 0.85rem',
@@ -334,7 +334,7 @@ export const AdminSettingsPage: React.FC = () => {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="ops@technofay.com"
+                    placeholder="barkattemposervice@gmail.com"
                     style={{
                       width: '100%',
                       padding: '0.65rem 0.85rem',

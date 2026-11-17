@@ -11,9 +11,9 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ onNavigateHome }) => {
         {/* Navigation Bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span style={{ fontSize: '1.75rem' }}>🚚</span>
+            <img src="/bts-logo.png" alt="BTS" style={{ height: 32, objectFit: 'contain' }} />
             <span style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em', color: 'var(--accent-cyan)' }}>
-              TECHNOFAY FLEET OS
+              BARKAT TEMPO SERVICE
             </span>
           </div>
           {onNavigateHome && (
@@ -42,7 +42,7 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ onNavigateHome }) => {
               1. Information We Collect
             </h2>
             <p>
-              Technofay Transport Solutions Pvt Ltd operates the Technofay Fleet Management Platform. We collect and process operational haulage records essential for transport execution, statutory consignment compliance, and road safety:
+              Barkat Tempo Service operates the Barkat Tempo Service Fleet Management Platform. We collect and process operational haulage records essential for transport execution, statutory consignment compliance, and road safety:
             </p>
             <ul style={{ paddingLeft: '1.5rem', marginTop: '0.5rem' }}>
               <li><strong>Transport Entity Data:</strong> Consignor and consignee corporate names, registered business addresses, and GSTIN numbers.</li>
@@ -84,7 +84,7 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ onNavigateHome }) => {
               5. Contact &amp; Grievance Officer
             </h2>
             <p>
-              For privacy inquiries, data access requests, or regulatory audits, contact our Grievance Officer at <a href="mailto:privacy@technofay.com" style={{ color: 'var(--accent-cyan)' }}>privacy@technofay.com</a> or via our official contact channel.
+              For privacy inquiries, data access requests, or regulatory audits, contact our Grievance Officer at <a href="mailto:barkattemposervice@gmail.com" style={{ color: 'var(--accent-cyan)' }}>barkattemposervice@gmail.com</a> or via our official contact channel.
             </p>
           </section>
         </div>

@@ -118,13 +118,9 @@ export const PublicTrackingPage: React.FC = () => {
       <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-600 flex items-center justify-center text-white shadow-md">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
+            <img src="/bts-logo.png" alt="BTS" style={{ height: 38, objectFit: 'contain' }} />
             <div>
-              <span className="font-extrabold text-lg tracking-tight text-slate-900">Techofay</span>
+              <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900">Barkat Tempo Service</span>
               <span className="ml-1 text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-semibold border border-blue-200">
                 Track & Trace
               </span>
@@ -417,7 +413,7 @@ export const PublicTrackingPage: React.FC = () => {
       {/* Public Footer */}
       <footer className="bg-white border-t border-slate-200 mt-12 py-8 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-4">
-          <p>© {new Date().getFullYear()} Techofay Fleet & Transport Platform. Consignment Tracking Portal.</p>
+          <p>© {new Date().getFullYear()} Barkat Tempo Service. Consignment Tracking Portal.</p>
           <div className="flex items-center gap-4 font-medium">
             <a href="/privacy" className="hover:text-blue-600 transition-colors">Privacy Policy</a>
             <a href="/terms" className="hover:text-blue-600 transition-colors">Terms of Service</a>

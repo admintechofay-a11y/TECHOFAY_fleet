@@ -94693,8 +94693,8 @@ var require_mockDataStore = __commonJS({
         fuelType: "DIESEL",
         status: "AVAILABLE",
         isActive: true,
-        ownerName: "Garuda Express Logistics Pvt Ltd",
-        ownerPhone: "+91 98251 12345",
+        ownerName: "Barkat Tempo Service",
+        ownerPhone: "93776 10333",
         currentLocation: "Ahmedabad Central Hub",
         documents: [
           { _id: "doc_v1_rc", documentType: "RC", documentNumber: "GJ01-2024-RC-9812", expiryDate: "2039-03-15", status: "VERIFIED" },
@@ -94716,8 +94716,8 @@ var require_mockDataStore = __commonJS({
         fuelType: "DIESEL",
         status: "ON_TRIP",
         isActive: true,
-        ownerName: "Garuda Express Logistics Pvt Ltd",
-        ownerPhone: "+91 98251 12345",
+        ownerName: "Barkat Tempo Service",
+        ownerPhone: "93776 10333",
         currentLocation: "In Transit: Surat - Mumbai Highway",
         documents: [
           { _id: "doc_v2_rc", documentType: "RC", documentNumber: "MH12-2023-RC-5541", expiryDate: "2038-08-20", status: "VERIFIED" },
@@ -94778,8 +94778,8 @@ var require_mockDataStore = __commonJS({
         fuelType: "DIESEL",
         status: "UNDER_MAINTENANCE",
         isActive: true,
-        ownerName: "Garuda Express Logistics Pvt Ltd",
-        ownerPhone: "+91 98251 12345",
+        ownerName: "Barkat Tempo Service",
+        ownerPhone: "93776 10333",
         currentLocation: "Ahmedabad Authorized Workshop",
         documents: [],
         createdAt: /* @__PURE__ */ new Date("2026-01-20T16:00:00.000Z")
@@ -94859,6 +94859,7 @@ var require_mockDataStore = __commonJS({
       {
         _id: "671e3b0f27d7a87e3cbb0030",
         companyId: defaultTenant._id,
+        name: "Reliance Industries Limited",
         legalName: "Reliance Industries Limited",
         tradeName: "Reliance Petrochemicals Hazira",
         gstin: "24AAACR1234A1Z1",
@@ -94875,6 +94876,7 @@ var require_mockDataStore = __commonJS({
       {
         _id: "671e3b0f27d7a87e3cbb0031",
         companyId: defaultTenant._id,
+        name: "Adani Wilmar Limited",
         legalName: "Adani Wilmar Limited",
         tradeName: "Adani Wilmar Mundra Port",
         gstin: "24AAACA5678B1Z2",
@@ -94891,6 +94893,7 @@ var require_mockDataStore = __commonJS({
       {
         _id: "671e3b0f27d7a87e3cbb0032",
         companyId: defaultTenant._id,
+        name: "Tata Steel Limited",
         legalName: "Tata Steel Limited",
         tradeName: "Tata Steel Tubes Division",
         gstin: "27AAACT9012C1Z3",
@@ -94907,6 +94910,7 @@ var require_mockDataStore = __commonJS({
       {
         _id: "671e3b0f27d7a87e3cbb0033",
         companyId: defaultTenant._id,
+        name: "UltraTech Cement Limited",
         legalName: "UltraTech Cement Limited",
         tradeName: "UltraTech Kovaya Works",
         gstin: "24AAACU3456D1Z4",
@@ -94923,6 +94927,7 @@ var require_mockDataStore = __commonJS({
       {
         _id: "671e3b0f27d7a87e3cbb0034",
         companyId: defaultTenant._id,
+        name: "Asian Paints Limited",
         legalName: "Asian Paints Limited",
         tradeName: "Asian Paints Industrial Center",
         gstin: "27AAACA7890E1Z5",
@@ -95009,29 +95014,93 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0050",
         companyId: defaultTenant._id,
         loadNumber: "LD-2026-0001",
-        customerId: defaultCustomers[0]._id,
+        orderDate: "2026-01-20T08:00:00.000Z",
+        customerId: {
+          _id: defaultCustomers[0]._id,
+          name: defaultCustomers[0].legalName,
+          legalName: defaultCustomers[0].legalName,
+          tradeName: defaultCustomers[0].tradeName,
+          phone: defaultCustomers[0].phone
+        },
         customer: defaultCustomers[0],
-        consignorId: defaultCustomers[0]._id,
-        consigneeId: defaultCustomers[4]._id,
+        consignorId: {
+          _id: defaultCustomers[0]._id,
+          name: defaultCustomers[0].legalName,
+          legalName: defaultCustomers[0].legalName,
+          phone: defaultCustomers[0].phone
+        },
+        consigneeId: {
+          _id: defaultCustomers[4]._id,
+          name: defaultCustomers[4].legalName,
+          legalName: defaultCustomers[4].legalName,
+          phone: defaultCustomers[4].phone
+        },
         consignorName: "Reliance Industries Limited",
         consigneeName: "Asian Paints Limited",
         originLocationId: defaultLocations[0]._id,
         originCity: "Ahmedabad, GJ",
+        origin: "Ahmedabad, GJ",
         destinationLocationId: defaultLocations[2]._id,
         destinationCity: "Mumbai JNPT, MH",
+        destination: "Mumbai JNPT, MH",
         cargoType: "Polymers & Petrochemicals",
         packageType: "JUMBO_BAGS",
+        totalWeightMt: 32.5,
         weightMt: 32.5,
+        totalQuantity: 65,
         quantity: 65,
         unit: "BAGS",
         freightAmount: 68500,
         advancePaid: 35e3,
         balanceDue: 33500,
+        financials: {
+          baseFreightRupees: 68500,
+          totalFreightRupees: 68500,
+          advanceRupees: 35e3,
+          balanceRupees: 33500,
+          baseFreightPaise: 685e4,
+          totalFreightPaise: 685e4,
+          advancePaise: 35e5,
+          balancePaise: 335e4
+        },
         status: "DELIVERED",
-        assignedVehicleId: defaultVehicles[0]._id,
+        assignedVehicleId: {
+          _id: defaultVehicles[0]._id,
+          plateNumber: defaultVehicles[0].plateNumber,
+          vehicleType: defaultVehicles[0].vehicleType,
+          capacityTonnage: defaultVehicles[0].capacityTonnage,
+          status: defaultVehicles[0].status
+        },
         assignedVehiclePlate: defaultVehicles[0].plateNumber,
-        assignedDriverId: defaultDrivers[0]._id,
+        vehiclePlate: defaultVehicles[0].plateNumber,
+        assignedDriverId: {
+          _id: defaultDrivers[0]._id,
+          name: defaultDrivers[0].name,
+          phone: defaultDrivers[0].phone,
+          licenseNumber: defaultDrivers[0].licenseNumber
+        },
         assignedDriverName: defaultDrivers[0].name,
+        driverName: defaultDrivers[0].name,
+        stops: [
+          {
+            _id: "stp_ld1_1",
+            sequence: 1,
+            stopType: "PICKUP",
+            locationId: { _id: defaultLocations[0]._id, name: defaultLocations[0].name, city: defaultLocations[0].city, address: defaultLocations[0].address },
+            allocatedQuantity: 65,
+            allocatedWeightMt: 32.5,
+            status: "COMPLETED"
+          },
+          {
+            _id: "stp_ld1_2",
+            sequence: 2,
+            stopType: "DELIVERY",
+            locationId: { _id: defaultLocations[2]._id, name: defaultLocations[2].name, city: defaultLocations[2].city, address: defaultLocations[2].address },
+            allocatedQuantity: 65,
+            allocatedWeightMt: 32.5,
+            status: "COMPLETED"
+          }
+        ],
         gtaGstRate: 5,
         gtaGstAmount: 3425,
         sacCode: "9965",
@@ -95041,29 +95110,93 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0051",
         companyId: defaultTenant._id,
         loadNumber: "LD-2026-0002",
-        customerId: defaultCustomers[1]._id,
+        orderDate: "2026-01-22T09:30:00.000Z",
+        customerId: {
+          _id: defaultCustomers[1]._id,
+          name: defaultCustomers[1].legalName,
+          legalName: defaultCustomers[1].legalName,
+          tradeName: defaultCustomers[1].tradeName,
+          phone: defaultCustomers[1].phone
+        },
         customer: defaultCustomers[1],
-        consignorId: defaultCustomers[1]._id,
-        consigneeId: defaultCustomers[3]._id,
+        consignorId: {
+          _id: defaultCustomers[1]._id,
+          name: defaultCustomers[1].legalName,
+          legalName: defaultCustomers[1].legalName,
+          phone: defaultCustomers[1].phone
+        },
+        consigneeId: {
+          _id: defaultCustomers[3]._id,
+          name: defaultCustomers[3].legalName,
+          legalName: defaultCustomers[3].legalName,
+          phone: defaultCustomers[3].phone
+        },
         consignorName: "Adani Wilmar Limited",
         consigneeName: "UltraTech Cement Limited",
         originLocationId: defaultLocations[1]._id,
         originCity: "Mundra Port, GJ",
+        origin: "Mundra Port, GJ",
         destinationLocationId: defaultLocations[4]._id,
         destinationCity: "Pune Chakan, MH",
+        destination: "Pune Chakan, MH",
         cargoType: "Refined Edible Bulk Oils",
         packageType: "BARRELS",
+        totalWeightMt: 28,
         weightMt: 28,
+        totalQuantity: 140,
         quantity: 140,
         unit: "DRUMS",
         freightAmount: 84e3,
         advancePaid: 45e3,
         balanceDue: 39e3,
+        financials: {
+          baseFreightRupees: 84e3,
+          totalFreightRupees: 84e3,
+          advanceRupees: 45e3,
+          balanceRupees: 39e3,
+          baseFreightPaise: 84e5,
+          totalFreightPaise: 84e5,
+          advancePaise: 45e5,
+          balancePaise: 39e5
+        },
         status: "IN_TRANSIT",
-        assignedVehicleId: defaultVehicles[1]._id,
+        assignedVehicleId: {
+          _id: defaultVehicles[1]._id,
+          plateNumber: defaultVehicles[1].plateNumber,
+          vehicleType: defaultVehicles[1].vehicleType,
+          capacityTonnage: defaultVehicles[1].capacityTonnage,
+          status: defaultVehicles[1].status
+        },
         assignedVehiclePlate: defaultVehicles[1].plateNumber,
-        assignedDriverId: defaultDrivers[1]._id,
+        vehiclePlate: defaultVehicles[1].plateNumber,
+        assignedDriverId: {
+          _id: defaultDrivers[1]._id,
+          name: defaultDrivers[1].name,
+          phone: defaultDrivers[1].phone,
+          licenseNumber: defaultDrivers[1].licenseNumber
+        },
         assignedDriverName: defaultDrivers[1].name,
+        driverName: defaultDrivers[1].name,
+        stops: [
+          {
+            _id: "stp_ld2_1",
+            sequence: 1,
+            stopType: "PICKUP",
+            locationId: { _id: defaultLocations[1]._id, name: defaultLocations[1].name, city: defaultLocations[1].city, address: defaultLocations[1].address },
+            allocatedQuantity: 140,
+            allocatedWeightMt: 28,
+            status: "COMPLETED"
+          },
+          {
+            _id: "stp_ld2_2",
+            sequence: 2,
+            stopType: "DELIVERY",
+            locationId: { _id: defaultLocations[4]._id, name: defaultLocations[4].name, city: defaultLocations[4].city, address: defaultLocations[4].address },
+            allocatedQuantity: 140,
+            allocatedWeightMt: 28,
+            status: "IN_TRANSIT"
+          }
+        ],
         gtaGstRate: 5,
         gtaGstAmount: 4200,
         sacCode: "9965",
@@ -95073,29 +95206,93 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0052",
         companyId: defaultTenant._id,
         loadNumber: "LD-2026-0003",
-        customerId: defaultCustomers[2]._id,
+        orderDate: "2026-01-23T11:00:00.000Z",
+        customerId: {
+          _id: defaultCustomers[2]._id,
+          name: defaultCustomers[2].legalName,
+          legalName: defaultCustomers[2].legalName,
+          tradeName: defaultCustomers[2].tradeName,
+          phone: defaultCustomers[2].phone
+        },
         customer: defaultCustomers[2],
-        consignorId: defaultCustomers[2]._id,
-        consigneeId: defaultCustomers[0]._id,
+        consignorId: {
+          _id: defaultCustomers[2]._id,
+          name: defaultCustomers[2].legalName,
+          legalName: defaultCustomers[2].legalName,
+          phone: defaultCustomers[2].phone
+        },
+        consigneeId: {
+          _id: defaultCustomers[0]._id,
+          name: defaultCustomers[0].legalName,
+          legalName: defaultCustomers[0].legalName,
+          phone: defaultCustomers[0].phone
+        },
         consignorName: "Tata Steel Limited",
         consigneeName: "Reliance Industries Limited",
         originLocationId: defaultLocations[0]._id,
         originCity: "Ahmedabad Hub, GJ",
+        origin: "Ahmedabad Hub, GJ",
         destinationLocationId: defaultLocations[3]._id,
         destinationCity: "Delhi NCR Bilaspur, HR",
+        destination: "Delhi NCR Bilaspur, HR",
         cargoType: "Hot Rolled Steel Coils",
         packageType: "BUNDLES",
+        totalWeightMt: 42,
         weightMt: 42,
+        totalQuantity: 8,
         quantity: 8,
         unit: "COILS",
         freightAmount: 125e3,
         advancePaid: 6e4,
         balanceDue: 65e3,
+        financials: {
+          baseFreightRupees: 125e3,
+          totalFreightRupees: 125e3,
+          advanceRupees: 6e4,
+          balanceRupees: 65e3,
+          baseFreightPaise: 125e5,
+          totalFreightPaise: 125e5,
+          advancePaise: 6e6,
+          balancePaise: 65e5
+        },
         status: "IN_TRANSIT",
-        assignedVehicleId: defaultVehicles[2]._id,
+        assignedVehicleId: {
+          _id: defaultVehicles[2]._id,
+          plateNumber: defaultVehicles[2].plateNumber,
+          vehicleType: defaultVehicles[2].vehicleType,
+          capacityTonnage: defaultVehicles[2].capacityTonnage,
+          status: defaultVehicles[2].status
+        },
         assignedVehiclePlate: defaultVehicles[2].plateNumber,
-        assignedDriverId: defaultDrivers[2]._id,
+        vehiclePlate: defaultVehicles[2].plateNumber,
+        assignedDriverId: {
+          _id: defaultDrivers[2]._id,
+          name: defaultDrivers[2].name,
+          phone: defaultDrivers[2].phone,
+          licenseNumber: defaultDrivers[2].licenseNumber
+        },
         assignedDriverName: defaultDrivers[2].name,
+        driverName: defaultDrivers[2].name,
+        stops: [
+          {
+            _id: "stp_ld3_1",
+            sequence: 1,
+            stopType: "PICKUP",
+            locationId: { _id: defaultLocations[0]._id, name: defaultLocations[0].name, city: defaultLocations[0].city, address: defaultLocations[0].address },
+            allocatedQuantity: 8,
+            allocatedWeightMt: 42,
+            status: "COMPLETED"
+          },
+          {
+            _id: "stp_ld3_2",
+            sequence: 2,
+            stopType: "DELIVERY",
+            locationId: { _id: defaultLocations[3]._id, name: defaultLocations[3].name, city: defaultLocations[3].city, address: defaultLocations[3].address },
+            allocatedQuantity: 8,
+            allocatedWeightMt: 42,
+            status: "IN_TRANSIT"
+          }
+        ],
         gtaGstRate: 5,
         gtaGstAmount: 6250,
         sacCode: "9965",
@@ -95105,29 +95302,93 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0053",
         companyId: defaultTenant._id,
         loadNumber: "LD-2026-0004",
-        customerId: defaultCustomers[3]._id,
+        orderDate: "2026-01-24T14:15:00.000Z",
+        customerId: {
+          _id: defaultCustomers[3]._id,
+          name: defaultCustomers[3].legalName,
+          legalName: defaultCustomers[3].legalName,
+          tradeName: defaultCustomers[3].tradeName,
+          phone: defaultCustomers[3].phone
+        },
         customer: defaultCustomers[3],
-        consignorId: defaultCustomers[3]._id,
-        consigneeId: defaultCustomers[4]._id,
+        consignorId: {
+          _id: defaultCustomers[3]._id,
+          name: defaultCustomers[3].legalName,
+          legalName: defaultCustomers[3].legalName,
+          phone: defaultCustomers[3].phone
+        },
+        consigneeId: {
+          _id: defaultCustomers[4]._id,
+          name: defaultCustomers[4].legalName,
+          legalName: defaultCustomers[4].legalName,
+          phone: defaultCustomers[4].phone
+        },
         consignorName: "UltraTech Cement Limited",
         consigneeName: "Asian Paints Limited",
         originLocationId: defaultLocations[0]._id,
         originCity: "Amreli Works, GJ",
+        origin: "Amreli Works, GJ",
         destinationLocationId: defaultLocations[0]._id,
         destinationCity: "Ahmedabad Yard, GJ",
+        destination: "Ahmedabad Yard, GJ",
         cargoType: "Packaged Grade 53 Cement",
         packageType: "PALLETS",
+        totalWeightMt: 35,
         weightMt: 35,
+        totalQuantity: 700,
         quantity: 700,
         unit: "BAGS",
         freightAmount: 42e3,
         advancePaid: 2e4,
         balanceDue: 22e3,
+        financials: {
+          baseFreightRupees: 42e3,
+          totalFreightRupees: 42e3,
+          advanceRupees: 2e4,
+          balanceRupees: 22e3,
+          baseFreightPaise: 42e5,
+          totalFreightPaise: 42e5,
+          advancePaise: 2e6,
+          balancePaise: 22e5
+        },
         status: "VEHICLE_ASSIGNED",
-        assignedVehicleId: defaultVehicles[3]._id,
+        assignedVehicleId: {
+          _id: defaultVehicles[3]._id,
+          plateNumber: defaultVehicles[3].plateNumber,
+          vehicleType: defaultVehicles[3].vehicleType,
+          capacityTonnage: defaultVehicles[3].capacityTonnage,
+          status: defaultVehicles[3].status
+        },
         assignedVehiclePlate: defaultVehicles[3].plateNumber,
-        assignedDriverId: defaultDrivers[3]._id,
+        vehiclePlate: defaultVehicles[3].plateNumber,
+        assignedDriverId: {
+          _id: defaultDrivers[3]._id,
+          name: defaultDrivers[3].name,
+          phone: defaultDrivers[3].phone,
+          licenseNumber: defaultDrivers[3].licenseNumber
+        },
         assignedDriverName: defaultDrivers[3].name,
+        driverName: defaultDrivers[3].name,
+        stops: [
+          {
+            _id: "stp_ld4_1",
+            sequence: 1,
+            stopType: "PICKUP",
+            locationId: { _id: defaultLocations[0]._id, name: "Amreli Works Logistics Gate", city: "Amreli", address: "Amreli Works, Gujarat" },
+            allocatedQuantity: 700,
+            allocatedWeightMt: 35,
+            status: "PENDING"
+          },
+          {
+            _id: "stp_ld4_2",
+            sequence: 2,
+            stopType: "DELIVERY",
+            locationId: { _id: defaultLocations[0]._id, name: defaultLocations[0].name, city: defaultLocations[0].city, address: defaultLocations[0].address },
+            allocatedQuantity: 700,
+            allocatedWeightMt: 35,
+            status: "PENDING"
+          }
+        ],
         gtaGstRate: 5,
         gtaGstAmount: 2100,
         sacCode: "9965",
@@ -95137,25 +95398,76 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0054",
         companyId: defaultTenant._id,
         loadNumber: "LD-2026-0005",
-        customerId: defaultCustomers[0]._id,
+        orderDate: "2026-01-25T16:00:00.000Z",
+        customerId: {
+          _id: defaultCustomers[0]._id,
+          name: defaultCustomers[0].legalName,
+          legalName: defaultCustomers[0].legalName,
+          tradeName: defaultCustomers[0].tradeName,
+          phone: defaultCustomers[0].phone
+        },
         customer: defaultCustomers[0],
-        consignorId: defaultCustomers[0]._id,
-        consigneeId: defaultCustomers[1]._id,
+        consignorId: {
+          _id: defaultCustomers[0]._id,
+          name: defaultCustomers[0].legalName,
+          legalName: defaultCustomers[0].legalName,
+          phone: defaultCustomers[0].phone
+        },
+        consigneeId: {
+          _id: defaultCustomers[1]._id,
+          name: defaultCustomers[1].legalName,
+          legalName: defaultCustomers[1].legalName,
+          phone: defaultCustomers[1].phone
+        },
         consignorName: "Reliance Industries Limited",
         consigneeName: "Adani Wilmar Limited",
         originLocationId: defaultLocations[0]._id,
         originCity: "Surat Hazira, GJ",
+        origin: "Surat Hazira, GJ",
         destinationLocationId: defaultLocations[2]._id,
         destinationCity: "Mumbai Port, MH",
+        destination: "Mumbai Port, MH",
         cargoType: "Chemical Intermediate Drums",
         packageType: "BARRELS",
+        totalWeightMt: 24,
         weightMt: 24,
+        totalQuantity: 120,
         quantity: 120,
         unit: "DRUMS",
         freightAmount: 38e3,
         advancePaid: 0,
         balanceDue: 38e3,
+        financials: {
+          baseFreightRupees: 38e3,
+          totalFreightRupees: 38e3,
+          advanceRupees: 0,
+          balanceRupees: 38e3,
+          baseFreightPaise: 38e5,
+          totalFreightPaise: 38e5,
+          advancePaise: 0,
+          balancePaise: 38e5
+        },
         status: "CREATED",
+        stops: [
+          {
+            _id: "stp_ld5_1",
+            sequence: 1,
+            stopType: "PICKUP",
+            locationId: { _id: defaultLocations[0]._id, name: "Hazira Chemical Gate", city: "Surat", address: "Hazira Manufacturing Division" },
+            allocatedQuantity: 120,
+            allocatedWeightMt: 24,
+            status: "PENDING"
+          },
+          {
+            _id: "stp_ld5_2",
+            sequence: 2,
+            stopType: "DELIVERY",
+            locationId: { _id: defaultLocations[2]._id, name: defaultLocations[2].name, city: defaultLocations[2].city, address: defaultLocations[2].address },
+            allocatedQuantity: 120,
+            allocatedWeightMt: 24,
+            status: "PENDING"
+          }
+        ],
         gtaGstRate: 5,
         gtaGstAmount: 1900,
         sacCode: "9965",
@@ -95168,12 +95480,41 @@ var require_mockDataStore = __commonJS({
         companyId: defaultTenant._id,
         biltyNumber: "BL-2026-00101",
         lrNumber: "LR-2026-00101",
-        loadId: defaultLoads[0]._id,
+        loadId: {
+          _id: defaultLoads[0]._id,
+          loadNumber: defaultLoads[0].loadNumber
+        },
         loadNumber: defaultLoads[0].loadNumber,
+        lrId: {
+          _id: "671e3b0f27d7a87e3cbb0060",
+          lrNumber: "LR-2026-00101"
+        },
+        vehicleId: {
+          _id: defaultVehicles[0]._id,
+          plateNumber: defaultVehicles[0].plateNumber,
+          vehicleType: defaultVehicles[0].vehicleType
+        },
         vehiclePlate: defaultVehicles[0].plateNumber,
+        driverId: {
+          _id: defaultDrivers[0]._id,
+          name: defaultDrivers[0].name,
+          phone: defaultDrivers[0].phone
+        },
         driverName: defaultDrivers[0].name,
         driverPhone: defaultDrivers[0].phone,
+        consignorId: {
+          _id: defaultCustomers[0]._id,
+          name: defaultCustomers[0].legalName,
+          phone: defaultCustomers[0].phone,
+          gstin: defaultCustomers[0].gstin
+        },
         consignor: defaultCustomers[0].legalName,
+        consigneeId: {
+          _id: defaultCustomers[4]._id,
+          name: defaultCustomers[4].legalName,
+          phone: defaultCustomers[4].phone,
+          gstin: defaultCustomers[4].gstin
+        },
         consignee: defaultCustomers[4].legalName,
         consignorGstin: defaultCustomers[0].gstin,
         consigneeGstin: defaultCustomers[4].gstin,
@@ -95197,12 +95538,41 @@ var require_mockDataStore = __commonJS({
         companyId: defaultTenant._id,
         biltyNumber: "BL-2026-00102",
         lrNumber: "LR-2026-00102",
-        loadId: defaultLoads[1]._id,
+        loadId: {
+          _id: defaultLoads[1]._id,
+          loadNumber: defaultLoads[1].loadNumber
+        },
         loadNumber: defaultLoads[1].loadNumber,
+        lrId: {
+          _id: "671e3b0f27d7a87e3cbb0061",
+          lrNumber: "LR-2026-00102"
+        },
+        vehicleId: {
+          _id: defaultVehicles[1]._id,
+          plateNumber: defaultVehicles[1].plateNumber,
+          vehicleType: defaultVehicles[1].vehicleType
+        },
         vehiclePlate: defaultVehicles[1].plateNumber,
+        driverId: {
+          _id: defaultDrivers[1]._id,
+          name: defaultDrivers[1].name,
+          phone: defaultDrivers[1].phone
+        },
         driverName: defaultDrivers[1].name,
         driverPhone: defaultDrivers[1].phone,
+        consignorId: {
+          _id: defaultCustomers[1]._id,
+          name: defaultCustomers[1].legalName,
+          phone: defaultCustomers[1].phone,
+          gstin: defaultCustomers[1].gstin
+        },
         consignor: defaultCustomers[1].legalName,
+        consigneeId: {
+          _id: defaultCustomers[3]._id,
+          name: defaultCustomers[3].legalName,
+          phone: defaultCustomers[3].phone,
+          gstin: defaultCustomers[3].gstin
+        },
         consignee: defaultCustomers[3].legalName,
         consignorGstin: defaultCustomers[1].gstin,
         consigneeGstin: defaultCustomers[3].gstin,
@@ -95226,12 +95596,41 @@ var require_mockDataStore = __commonJS({
         companyId: defaultTenant._id,
         biltyNumber: "BL-2026-00103",
         lrNumber: "LR-2026-00103",
-        loadId: defaultLoads[2]._id,
+        loadId: {
+          _id: defaultLoads[2]._id,
+          loadNumber: defaultLoads[2].loadNumber
+        },
         loadNumber: defaultLoads[2].loadNumber,
+        lrId: {
+          _id: "671e3b0f27d7a87e3cbb0062",
+          lrNumber: "LR-2026-00103"
+        },
+        vehicleId: {
+          _id: defaultVehicles[2]._id,
+          plateNumber: defaultVehicles[2].plateNumber,
+          vehicleType: defaultVehicles[2].vehicleType
+        },
         vehiclePlate: defaultVehicles[2].plateNumber,
+        driverId: {
+          _id: defaultDrivers[2]._id,
+          name: defaultDrivers[2].name,
+          phone: defaultDrivers[2].phone
+        },
         driverName: defaultDrivers[2].name,
         driverPhone: defaultDrivers[2].phone,
+        consignorId: {
+          _id: defaultCustomers[2]._id,
+          name: defaultCustomers[2].legalName,
+          phone: defaultCustomers[2].phone,
+          gstin: defaultCustomers[2].gstin
+        },
         consignor: defaultCustomers[2].legalName,
+        consigneeId: {
+          _id: defaultCustomers[0]._id,
+          name: defaultCustomers[0].legalName,
+          phone: defaultCustomers[0].phone,
+          gstin: defaultCustomers[0].gstin
+        },
         consignee: defaultCustomers[0].legalName,
         consignorGstin: defaultCustomers[2].gstin,
         consigneeGstin: defaultCustomers[0].gstin,
@@ -95256,11 +95655,24 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0070",
         companyId: defaultTenant._id,
         tripNumber: "TRP-2026-001",
-        loadId: defaultLoads[0]._id,
+        loadId: {
+          _id: defaultLoads[0]._id,
+          loadNumber: defaultLoads[0].loadNumber
+        },
         loadNumber: defaultLoads[0].loadNumber,
-        vehicleId: defaultVehicles[0]._id,
+        vehicleId: {
+          _id: defaultVehicles[0]._id,
+          plateNumber: defaultVehicles[0].plateNumber,
+          vehicleType: defaultVehicles[0].vehicleType,
+          capacityTonnage: defaultVehicles[0].capacityTonnage
+        },
         vehiclePlate: defaultVehicles[0].plateNumber,
-        driverId: defaultDrivers[0]._id,
+        driverId: {
+          _id: defaultDrivers[0]._id,
+          name: defaultDrivers[0].name,
+          phone: defaultDrivers[0].phone,
+          licenseNumber: defaultDrivers[0].licenseNumber
+        },
         driverName: defaultDrivers[0].name,
         driverPhone: defaultDrivers[0].phone,
         origin: "Ahmedabad, Gujarat",
@@ -95269,6 +95681,28 @@ var require_mockDataStore = __commonJS({
         odometerStart: 142100,
         odometerEnd: 142640,
         totalDistanceKm: 540,
+        stops: [
+          {
+            _id: "trp_stp_1_1",
+            sequence: 1,
+            stopType: "PICKUP",
+            locationName: "Ahmedabad Central Transport Hub",
+            status: "COMPLETED",
+            allocatedQuantity: 65,
+            deliveredQuantity: 65,
+            allocatedWeightMt: 32.5
+          },
+          {
+            _id: "trp_stp_1_2",
+            sequence: 2,
+            stopType: "DELIVERY",
+            locationName: "Nhava Sheva JNPT Port Yard",
+            status: "COMPLETED",
+            allocatedQuantity: 65,
+            deliveredQuantity: 65,
+            allocatedWeightMt: 32.5
+          }
+        ],
         expenses: [
           { _id: "exp_1", category: "FUEL", amount: 14200, notes: "HPCL Highway Pump Vadodara" },
           { _id: "exp_2", category: "TOLL", amount: 2850, notes: "Fastag Automatic Deductions NH-48" },
@@ -95282,11 +95716,24 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0071",
         companyId: defaultTenant._id,
         tripNumber: "TRP-2026-002",
-        loadId: defaultLoads[1]._id,
+        loadId: {
+          _id: defaultLoads[1]._id,
+          loadNumber: defaultLoads[1].loadNumber
+        },
         loadNumber: defaultLoads[1].loadNumber,
-        vehicleId: defaultVehicles[1]._id,
+        vehicleId: {
+          _id: defaultVehicles[1]._id,
+          plateNumber: defaultVehicles[1].plateNumber,
+          vehicleType: defaultVehicles[1].vehicleType,
+          capacityTonnage: defaultVehicles[1].capacityTonnage
+        },
         vehiclePlate: defaultVehicles[1].plateNumber,
-        driverId: defaultDrivers[1]._id,
+        driverId: {
+          _id: defaultDrivers[1]._id,
+          name: defaultDrivers[1].name,
+          phone: defaultDrivers[1].phone,
+          licenseNumber: defaultDrivers[1].licenseNumber
+        },
         driverName: defaultDrivers[1].name,
         driverPhone: defaultDrivers[1].phone,
         origin: "Mundra Port, Gujarat",
@@ -95295,6 +95742,28 @@ var require_mockDataStore = __commonJS({
         odometerStart: 98450,
         totalDistanceKm: 890,
         currentLocation: "NH-48 Near Navsari Bypass, Speed: 62 km/h",
+        stops: [
+          {
+            _id: "trp_stp_2_1",
+            sequence: 1,
+            stopType: "PICKUP",
+            locationName: "Mundra Port Container Terminal",
+            status: "COMPLETED",
+            allocatedQuantity: 140,
+            deliveredQuantity: 140,
+            allocatedWeightMt: 28
+          },
+          {
+            _id: "trp_stp_2_2",
+            sequence: 2,
+            stopType: "DELIVERY",
+            locationName: "Pune Chakan Auto Corridor Hub",
+            status: "PENDING",
+            allocatedQuantity: 140,
+            deliveredQuantity: 0,
+            allocatedWeightMt: 28
+          }
+        ],
         expenses: [
           { _id: "exp_4", category: "FUEL", amount: 18400, notes: "IOCL Mundra Exit" },
           { _id: "exp_5", category: "TOLL", amount: 3100, notes: "Fastag Samakhiyali Toll" }
@@ -95306,11 +95775,24 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0072",
         companyId: defaultTenant._id,
         tripNumber: "TRP-2026-003",
-        loadId: defaultLoads[2]._id,
+        loadId: {
+          _id: defaultLoads[2]._id,
+          loadNumber: defaultLoads[2].loadNumber
+        },
         loadNumber: defaultLoads[2].loadNumber,
-        vehicleId: defaultVehicles[2]._id,
+        vehicleId: {
+          _id: defaultVehicles[2]._id,
+          plateNumber: defaultVehicles[2].plateNumber,
+          vehicleType: defaultVehicles[2].vehicleType,
+          capacityTonnage: defaultVehicles[2].capacityTonnage
+        },
         vehiclePlate: defaultVehicles[2].plateNumber,
-        driverId: defaultDrivers[2]._id,
+        driverId: {
+          _id: defaultDrivers[2]._id,
+          name: defaultDrivers[2].name,
+          phone: defaultDrivers[2].phone,
+          licenseNumber: defaultDrivers[2].licenseNumber
+        },
         driverName: defaultDrivers[2].name,
         driverPhone: defaultDrivers[2].phone,
         origin: "Ahmedabad, Gujarat",
@@ -95319,6 +95801,28 @@ var require_mockDataStore = __commonJS({
         odometerStart: 72100,
         totalDistanceKm: 950,
         currentLocation: "NH-48 Near Jaipur Express Corridor, Speed: 58 km/h",
+        stops: [
+          {
+            _id: "trp_stp_3_1",
+            sequence: 1,
+            stopType: "PICKUP",
+            locationName: "Ahmedabad Central Transport Hub",
+            status: "COMPLETED",
+            allocatedQuantity: 8,
+            deliveredQuantity: 8,
+            allocatedWeightMt: 42
+          },
+          {
+            _id: "trp_stp_3_2",
+            sequence: 2,
+            stopType: "DELIVERY",
+            locationName: "Delhi NCR Logistics Center",
+            status: "PENDING",
+            allocatedQuantity: 8,
+            deliveredQuantity: 0,
+            allocatedWeightMt: 42
+          }
+        ],
         expenses: [
           { _id: "exp_6", category: "FUEL", amount: 22e3, notes: "BPCL Himatnagar Bypass" }
         ],
@@ -95331,30 +95835,49 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0080",
         companyId: defaultTenant._id,
         podNumber: "POD-2026-0001",
-        loadId: defaultLoads[0]._id,
+        loadId: {
+          _id: defaultLoads[0]._id,
+          loadNumber: defaultLoads[0].loadNumber
+        },
         loadNumber: defaultLoads[0].loadNumber,
-        tripId: defaultTrips[0]._id,
-        tripNumber: defaultTrips[0].tripNumber,
+        tripId: {
+          _id: "671e3b0f27d7a87e3cbb0070",
+          tripNumber: "TRP-2026-001"
+        },
+        tripNumber: "TRP-2026-001",
         status: "VERIFIED",
         receivedBy: "Gaurav Mehta (Warehouse Manager)",
         receiverPhone: "+91 98200 11990",
+        quantityDelivered: 65,
         deliveredAt: /* @__PURE__ */ new Date("2026-01-21T17:30:00.000Z"),
         verifiedAt: /* @__PURE__ */ new Date("2026-01-21T19:00:00.000Z"),
         verifiedBy: "Lead System Administrator",
         remarks: "Goods delivered in sound condition. Clean receipt stamped without shortage or damage.",
         documentUrl: "/storage/demo/pod_signed_0001.pdf",
+        fileName: "pod_LD_2026_0001.pdf",
         createdAt: /* @__PURE__ */ new Date("2026-01-21T17:45:00.000Z")
       },
       {
         _id: "671e3b0f27d7a87e3cbb0081",
         companyId: defaultTenant._id,
         podNumber: "POD-2026-0002",
-        loadId: defaultLoads[1]._id,
+        loadId: {
+          _id: defaultLoads[1]._id,
+          loadNumber: defaultLoads[1].loadNumber
+        },
         loadNumber: defaultLoads[1].loadNumber,
-        tripId: defaultTrips[1]._id,
-        tripNumber: defaultTrips[1].tripNumber,
-        status: "PENDING_SUBMISSION",
-        remarks: "Consignment in transit to Pune Chakan. Driver will capture signed POD upon gate in.",
+        tripId: {
+          _id: "671e3b0f27d7a87e3cbb0071",
+          tripNumber: "TRP-2026-002"
+        },
+        tripNumber: "TRP-2026-002",
+        status: "PENDING_VERIFICATION",
+        quantityDelivered: 140,
+        receivedBy: "Ketan Trivedi (Security Gate)",
+        receiverPhone: "+91 98250 77662",
+        remarks: "Consignment received at gate. Awaiting warehouse stamp verification.",
+        documentUrl: "/storage/demo/pod_signed_0002.pdf",
+        fileName: "pod_LD_2026_0002.pdf",
         createdAt: /* @__PURE__ */ new Date("2026-01-22T10:30:00.000Z")
       }
     ];
@@ -95363,12 +95886,27 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0090",
         companyId: defaultTenant._id,
         maintenanceNumber: "MAINT-2026-001",
-        vehicleId: defaultVehicles[4]._id,
+        vehicleId: {
+          _id: defaultVehicles[4]._id,
+          plateNumber: defaultVehicles[4].plateNumber,
+          vehicleType: defaultVehicles[4].vehicleType,
+          make: defaultVehicles[4].make,
+          model: defaultVehicles[4].model,
+          status: defaultVehicles[4].status
+        },
         vehiclePlate: defaultVehicles[4].plateNumber,
+        serviceType: "SCHEDULED_SERVICE",
         maintenanceType: "SCHEDULED_SERVICE",
-        serviceCenter: "Mahindra Trucks Authorized Workshop Narol",
+        priority: "HIGH",
+        serviceCenter: {
+          name: "Mahindra Trucks Authorized Workshop Narol",
+          city: "Ahmedabad",
+          contactPhone: "+91 98251 00112"
+        },
         cost: 18500,
+        costPaise: 185e4,
         odometer: 64200,
+        odometerReadingKm: 64200,
         status: "IN_PROGRESS",
         description: "Engine oil replacement, fuel filter overhaul, transmission fluid check and brake adjustment.",
         scheduledDate: "2026-01-25",
@@ -95378,14 +95916,30 @@ var require_mockDataStore = __commonJS({
         _id: "671e3b0f27d7a87e3cbb0091",
         companyId: defaultTenant._id,
         maintenanceNumber: "MAINT-2026-002",
-        vehicleId: defaultVehicles[0]._id,
+        vehicleId: {
+          _id: defaultVehicles[0]._id,
+          plateNumber: defaultVehicles[0].plateNumber,
+          vehicleType: defaultVehicles[0].vehicleType,
+          make: defaultVehicles[0].make,
+          model: defaultVehicles[0].model,
+          status: defaultVehicles[0].status
+        },
         vehiclePlate: defaultVehicles[0].plateNumber,
+        serviceType: "PREVENTIVE",
         maintenanceType: "PREVENTIVE",
-        serviceCenter: "Tata Commercial Service Hub Sanand",
+        priority: "MEDIUM",
+        serviceCenter: {
+          name: "Tata Commercial Service Hub Sanand",
+          city: "Ahmedabad",
+          contactPhone: "+91 98251 00334"
+        },
         cost: 12400,
+        costPaise: 124e4,
         odometer: 141e3,
+        odometerReadingKm: 141e3,
         status: "COMPLETED",
         description: "Heavy duty brake pad replacement and wheel alignment inspection.",
+        scheduledDate: "2026-01-18",
         completedDate: "2026-01-18",
         createdAt: /* @__PURE__ */ new Date("2026-01-17T09:00:00.000Z")
       }
@@ -95415,6 +95969,13 @@ var require_mockDataStore = __commonJS({
           if (val !== void 0 && val !== null && val !== "") {
             items = items.filter((item) => {
               if (item[key] === void 0) return false;
+              if (Array.isArray(val)) {
+                return val.map((v) => String(v).toLowerCase()).includes(String(item[key]).toLowerCase());
+              }
+              if (typeof val === "string" && val.includes(",")) {
+                const list = val.split(",").map((v) => v.trim().toLowerCase());
+                return list.includes(String(item[key]).toLowerCase());
+              }
               return String(item[key]).toLowerCase() === String(val).toLowerCase();
             });
           }
@@ -95556,23 +96117,23 @@ var require_mockDataStore = __commonJS({
       }) {
         const newTenantId = "cmp_" + crypto4.randomBytes(6).toString("hex");
         const newUserId = "usr_" + crypto4.randomBytes(6).toString("hex");
-        const cleanLegal = (companyLegalName || "Technofay Fleet Logistics").trim();
+        const cleanLegal = (companyLegalName || "Barkat Tempo Service").trim();
         const cleanTrade = (tradeName || cleanLegal).trim();
-        const cleanEmail = (email || "admin@technofay.com").trim().toLowerCase();
+        const cleanEmail = (email || "barkattemposervice@gmail.com").trim().toLowerCase();
         this.tenant = {
           _id: newTenantId,
           legalName: cleanLegal,
           tradeName: cleanTrade,
-          gstin: (companyGstin || "24AAACG1234A1Z5").trim().toUpperCase(),
+          gstin: (companyGstin || "24AAACT1234A1Z5").trim().toUpperCase(),
           status: "ACTIVE",
           isActive: true,
-          phone: phone || "+91 98251 12345",
+          phone: phone || "93776 10333",
           email: cleanEmail,
           address: {
-            street: "Transport Hub Complex",
-            city: city || "Ahmedabad",
+            street: "Shri Rang Market, Near Shri Rang Tyre Shop, N.H.No.-8, Golden Chokdi",
+            city: city || "Vadodara",
             state: state || "Gujarat",
-            pincode: "380001",
+            pincode: "390022",
             country: "IN"
           },
           settings: { ...defaultTenant.settings },
@@ -95619,8 +96180,8 @@ var require_mockDataStore = __commonJS({
           user = {
             _id: "usr_" + crypto4.randomBytes(6).toString("hex"),
             name: cleanEmail.split("@")[0].replace(/[._]/g, " ").toUpperCase() || "Administrator",
-            email: cleanEmail || "admin@technofay.com",
-            phone: "+91 98251 12345",
+            email: cleanEmail || "barkattemposervice@gmail.com",
+            phone: "93776 10333",
             role: "SUPER_ADMIN",
             roleId: defaultRoles[0],
             companyId: this.tenant,
@@ -248021,6 +248582,4628 @@ var require_pdf_service = __commonJS({
   }
 });
 
+// node_modules/busboy/lib/utils.js
+var require_utils9 = __commonJS({
+  "node_modules/busboy/lib/utils.js"(exports2, module2) {
+    "use strict";
+    function parseContentType(str) {
+      if (str.length === 0)
+        return;
+      const params = /* @__PURE__ */ Object.create(null);
+      let i = 0;
+      for (; i < str.length; ++i) {
+        const code = str.charCodeAt(i);
+        if (TOKEN[code] !== 1) {
+          if (code !== 47 || i === 0)
+            return;
+          break;
+        }
+      }
+      if (i === str.length)
+        return;
+      const type = str.slice(0, i).toLowerCase();
+      const subtypeStart = ++i;
+      for (; i < str.length; ++i) {
+        const code = str.charCodeAt(i);
+        if (TOKEN[code] !== 1) {
+          if (i === subtypeStart)
+            return;
+          if (parseContentTypeParams(str, i, params) === void 0)
+            return;
+          break;
+        }
+      }
+      if (i === subtypeStart)
+        return;
+      const subtype = str.slice(subtypeStart, i).toLowerCase();
+      return { type, subtype, params };
+    }
+    function parseContentTypeParams(str, i, params) {
+      while (i < str.length) {
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (code !== 32 && code !== 9)
+            break;
+        }
+        if (i === str.length)
+          break;
+        if (str.charCodeAt(i++) !== 59)
+          return;
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (code !== 32 && code !== 9)
+            break;
+        }
+        if (i === str.length)
+          return;
+        let name;
+        const nameStart = i;
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (TOKEN[code] !== 1) {
+            if (code !== 61)
+              return;
+            break;
+          }
+        }
+        if (i === str.length)
+          return;
+        name = str.slice(nameStart, i);
+        ++i;
+        if (i === str.length)
+          return;
+        let value = "";
+        let valueStart;
+        if (str.charCodeAt(i) === 34) {
+          valueStart = ++i;
+          let escaping = false;
+          for (; i < str.length; ++i) {
+            const code = str.charCodeAt(i);
+            if (code === 92) {
+              if (escaping) {
+                valueStart = i;
+                escaping = false;
+              } else {
+                value += str.slice(valueStart, i);
+                escaping = true;
+              }
+              continue;
+            }
+            if (code === 34) {
+              if (escaping) {
+                valueStart = i;
+                escaping = false;
+                continue;
+              }
+              value += str.slice(valueStart, i);
+              break;
+            }
+            if (escaping) {
+              valueStart = i - 1;
+              escaping = false;
+            }
+            if (QDTEXT[code] !== 1)
+              return;
+          }
+          if (i === str.length)
+            return;
+          ++i;
+        } else {
+          valueStart = i;
+          for (; i < str.length; ++i) {
+            const code = str.charCodeAt(i);
+            if (TOKEN[code] !== 1) {
+              if (i === valueStart)
+                return;
+              break;
+            }
+          }
+          value = str.slice(valueStart, i);
+        }
+        name = name.toLowerCase();
+        if (params[name] === void 0)
+          params[name] = value;
+      }
+      return params;
+    }
+    function parseDisposition(str, defDecoder) {
+      if (str.length === 0)
+        return;
+      const params = /* @__PURE__ */ Object.create(null);
+      let i = 0;
+      for (; i < str.length; ++i) {
+        const code = str.charCodeAt(i);
+        if (TOKEN[code] !== 1) {
+          if (parseDispositionParams(str, i, params, defDecoder) === void 0)
+            return;
+          break;
+        }
+      }
+      const type = str.slice(0, i).toLowerCase();
+      return { type, params };
+    }
+    function parseDispositionParams(str, i, params, defDecoder) {
+      while (i < str.length) {
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (code !== 32 && code !== 9)
+            break;
+        }
+        if (i === str.length)
+          break;
+        if (str.charCodeAt(i++) !== 59)
+          return;
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (code !== 32 && code !== 9)
+            break;
+        }
+        if (i === str.length)
+          return;
+        let name;
+        const nameStart = i;
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (TOKEN[code] !== 1) {
+            if (code === 61)
+              break;
+            return;
+          }
+        }
+        if (i === str.length)
+          return;
+        let value = "";
+        let valueStart;
+        let charset;
+        name = str.slice(nameStart, i);
+        if (name.charCodeAt(name.length - 1) === 42) {
+          const charsetStart = ++i;
+          for (; i < str.length; ++i) {
+            const code = str.charCodeAt(i);
+            if (CHARSET[code] !== 1) {
+              if (code !== 39)
+                return;
+              break;
+            }
+          }
+          if (i === str.length)
+            return;
+          charset = str.slice(charsetStart, i);
+          ++i;
+          for (; i < str.length; ++i) {
+            const code = str.charCodeAt(i);
+            if (code === 39)
+              break;
+          }
+          if (i === str.length)
+            return;
+          ++i;
+          if (i === str.length)
+            return;
+          valueStart = i;
+          let encode = 0;
+          for (; i < str.length; ++i) {
+            const code = str.charCodeAt(i);
+            if (EXTENDED_VALUE[code] !== 1) {
+              if (code === 37) {
+                let hexUpper;
+                let hexLower;
+                if (i + 2 < str.length && (hexUpper = HEX_VALUES[str.charCodeAt(i + 1)]) !== -1 && (hexLower = HEX_VALUES[str.charCodeAt(i + 2)]) !== -1) {
+                  const byteVal = (hexUpper << 4) + hexLower;
+                  value += str.slice(valueStart, i);
+                  value += String.fromCharCode(byteVal);
+                  i += 2;
+                  valueStart = i + 1;
+                  if (byteVal >= 128)
+                    encode = 2;
+                  else if (encode === 0)
+                    encode = 1;
+                  continue;
+                }
+                return;
+              }
+              break;
+            }
+          }
+          value += str.slice(valueStart, i);
+          value = convertToUTF8(value, charset, encode);
+          if (value === void 0)
+            return;
+        } else {
+          ++i;
+          if (i === str.length)
+            return;
+          if (str.charCodeAt(i) === 34) {
+            valueStart = ++i;
+            let escaping = false;
+            for (; i < str.length; ++i) {
+              const code = str.charCodeAt(i);
+              if (code === 92) {
+                if (escaping) {
+                  valueStart = i;
+                  escaping = false;
+                } else {
+                  value += str.slice(valueStart, i);
+                  escaping = true;
+                }
+                continue;
+              }
+              if (code === 34) {
+                if (escaping) {
+                  valueStart = i;
+                  escaping = false;
+                  continue;
+                }
+                value += str.slice(valueStart, i);
+                break;
+              }
+              if (escaping) {
+                valueStart = i - 1;
+                escaping = false;
+              }
+              if (QDTEXT[code] !== 1)
+                return;
+            }
+            if (i === str.length)
+              return;
+            ++i;
+          } else {
+            valueStart = i;
+            for (; i < str.length; ++i) {
+              const code = str.charCodeAt(i);
+              if (TOKEN[code] !== 1) {
+                if (i === valueStart)
+                  return;
+                break;
+              }
+            }
+            value = str.slice(valueStart, i);
+          }
+          value = defDecoder(value, 2);
+          if (value === void 0)
+            return;
+        }
+        name = name.toLowerCase();
+        if (params[name] === void 0)
+          params[name] = value;
+      }
+      return params;
+    }
+    function getDecoder(charset) {
+      let lc;
+      while (true) {
+        switch (charset) {
+          case "utf-8":
+          case "utf8":
+            return decoders.utf8;
+          case "latin1":
+          case "ascii":
+          case "us-ascii":
+          case "iso-8859-1":
+          case "iso8859-1":
+          case "iso88591":
+          case "iso_8859-1":
+          case "windows-1252":
+          case "iso_8859-1:1987":
+          case "cp1252":
+          case "x-cp1252":
+            return decoders.latin1;
+          case "utf16le":
+          case "utf-16le":
+          case "ucs2":
+          case "ucs-2":
+            return decoders.utf16le;
+          case "base64":
+            return decoders.base64;
+          default:
+            if (lc === void 0) {
+              lc = true;
+              charset = charset.toLowerCase();
+              continue;
+            }
+            return decoders.other.bind(charset);
+        }
+      }
+    }
+    var decoders = {
+      utf8: (data, hint) => {
+        if (data.length === 0)
+          return "";
+        if (typeof data === "string") {
+          if (hint < 2)
+            return data;
+          data = Buffer.from(data, "latin1");
+        }
+        return data.utf8Slice(0, data.length);
+      },
+      latin1: (data, hint) => {
+        if (data.length === 0)
+          return "";
+        if (typeof data === "string")
+          return data;
+        return data.latin1Slice(0, data.length);
+      },
+      utf16le: (data, hint) => {
+        if (data.length === 0)
+          return "";
+        if (typeof data === "string")
+          data = Buffer.from(data, "latin1");
+        return data.ucs2Slice(0, data.length);
+      },
+      base64: (data, hint) => {
+        if (data.length === 0)
+          return "";
+        if (typeof data === "string")
+          data = Buffer.from(data, "latin1");
+        return data.base64Slice(0, data.length);
+      },
+      other: (data, hint) => {
+        if (data.length === 0)
+          return "";
+        if (typeof data === "string")
+          data = Buffer.from(data, "latin1");
+        try {
+          const decoder = new TextDecoder(exports2);
+          return decoder.decode(data);
+        } catch {
+        }
+      }
+    };
+    function convertToUTF8(data, charset, hint) {
+      const decode = getDecoder(charset);
+      if (decode)
+        return decode(data, hint);
+    }
+    function basename(path2) {
+      if (typeof path2 !== "string")
+        return "";
+      for (let i = path2.length - 1; i >= 0; --i) {
+        switch (path2.charCodeAt(i)) {
+          case 47:
+          case 92:
+            path2 = path2.slice(i + 1);
+            return path2 === ".." || path2 === "." ? "" : path2;
+        }
+      }
+      return path2 === ".." || path2 === "." ? "" : path2;
+    }
+    var TOKEN = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ];
+    var QDTEXT = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ];
+    var CHARSET = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ];
+    var EXTENDED_VALUE = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ];
+    var HEX_VALUES = [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ];
+    module2.exports = {
+      basename,
+      convertToUTF8,
+      getDecoder,
+      parseContentType,
+      parseDisposition
+    };
+  }
+});
+
+// node_modules/streamsearch/lib/sbmh.js
+var require_sbmh = __commonJS({
+  "node_modules/streamsearch/lib/sbmh.js"(exports2, module2) {
+    "use strict";
+    function memcmp(buf1, pos1, buf2, pos2, num) {
+      for (let i = 0; i < num; ++i) {
+        if (buf1[pos1 + i] !== buf2[pos2 + i])
+          return false;
+      }
+      return true;
+    }
+    var SBMH = class {
+      constructor(needle, cb) {
+        if (typeof cb !== "function")
+          throw new Error("Missing match callback");
+        if (typeof needle === "string")
+          needle = Buffer.from(needle);
+        else if (!Buffer.isBuffer(needle))
+          throw new Error(`Expected Buffer for needle, got ${typeof needle}`);
+        const needleLen = needle.length;
+        this.maxMatches = Infinity;
+        this.matches = 0;
+        this._cb = cb;
+        this._lookbehindSize = 0;
+        this._needle = needle;
+        this._bufPos = 0;
+        this._lookbehind = Buffer.allocUnsafe(needleLen);
+        this._occ = [
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen
+        ];
+        if (needleLen > 1) {
+          for (let i = 0; i < needleLen - 1; ++i)
+            this._occ[needle[i]] = needleLen - 1 - i;
+        }
+      }
+      reset() {
+        this.matches = 0;
+        this._lookbehindSize = 0;
+        this._bufPos = 0;
+      }
+      push(chunk, pos) {
+        let result;
+        if (!Buffer.isBuffer(chunk))
+          chunk = Buffer.from(chunk, "latin1");
+        const chunkLen = chunk.length;
+        this._bufPos = pos || 0;
+        while (result !== chunkLen && this.matches < this.maxMatches)
+          result = feed(this, chunk);
+        return result;
+      }
+      destroy() {
+        const lbSize = this._lookbehindSize;
+        if (lbSize)
+          this._cb(false, this._lookbehind, 0, lbSize, false);
+        this.reset();
+      }
+    };
+    function feed(self2, data) {
+      const len = data.length;
+      const needle = self2._needle;
+      const needleLen = needle.length;
+      let pos = -self2._lookbehindSize;
+      const lastNeedleCharPos = needleLen - 1;
+      const lastNeedleChar = needle[lastNeedleCharPos];
+      const end = len - needleLen;
+      const occ = self2._occ;
+      const lookbehind = self2._lookbehind;
+      if (pos < 0) {
+        while (pos < 0 && pos <= end) {
+          const nextPos = pos + lastNeedleCharPos;
+          const ch = nextPos < 0 ? lookbehind[self2._lookbehindSize + nextPos] : data[nextPos];
+          if (ch === lastNeedleChar && matchNeedle(self2, data, pos, lastNeedleCharPos)) {
+            self2._lookbehindSize = 0;
+            ++self2.matches;
+            if (pos > -self2._lookbehindSize)
+              self2._cb(true, lookbehind, 0, self2._lookbehindSize + pos, false);
+            else
+              self2._cb(true, void 0, 0, 0, true);
+            return self2._bufPos = pos + needleLen;
+          }
+          pos += occ[ch];
+        }
+        while (pos < 0 && !matchNeedle(self2, data, pos, len - pos))
+          ++pos;
+        if (pos < 0) {
+          const bytesToCutOff = self2._lookbehindSize + pos;
+          if (bytesToCutOff > 0) {
+            self2._cb(false, lookbehind, 0, bytesToCutOff, false);
+          }
+          self2._lookbehindSize -= bytesToCutOff;
+          lookbehind.copy(lookbehind, 0, bytesToCutOff, self2._lookbehindSize);
+          lookbehind.set(data, self2._lookbehindSize);
+          self2._lookbehindSize += len;
+          self2._bufPos = len;
+          return len;
+        }
+        self2._cb(false, lookbehind, 0, self2._lookbehindSize, false);
+        self2._lookbehindSize = 0;
+      }
+      pos += self2._bufPos;
+      const firstNeedleChar = needle[0];
+      while (pos <= end) {
+        const ch = data[pos + lastNeedleCharPos];
+        if (ch === lastNeedleChar && data[pos] === firstNeedleChar && memcmp(needle, 0, data, pos, lastNeedleCharPos)) {
+          ++self2.matches;
+          if (pos > 0)
+            self2._cb(true, data, self2._bufPos, pos, true);
+          else
+            self2._cb(true, void 0, 0, 0, true);
+          return self2._bufPos = pos + needleLen;
+        }
+        pos += occ[ch];
+      }
+      while (pos < len) {
+        if (data[pos] !== firstNeedleChar || !memcmp(data, pos, needle, 0, len - pos)) {
+          ++pos;
+          continue;
+        }
+        data.copy(lookbehind, 0, pos, len);
+        self2._lookbehindSize = len - pos;
+        break;
+      }
+      if (pos > 0)
+        self2._cb(false, data, self2._bufPos, pos < len ? pos : len, true);
+      self2._bufPos = len;
+      return len;
+    }
+    function matchNeedle(self2, data, pos, len) {
+      const lb = self2._lookbehind;
+      const lbSize = self2._lookbehindSize;
+      const needle = self2._needle;
+      for (let i = 0; i < len; ++i, ++pos) {
+        const ch = pos < 0 ? lb[lbSize + pos] : data[pos];
+        if (ch !== needle[i])
+          return false;
+      }
+      return true;
+    }
+    module2.exports = SBMH;
+  }
+});
+
+// node_modules/busboy/lib/types/multipart.js
+var require_multipart = __commonJS({
+  "node_modules/busboy/lib/types/multipart.js"(exports2, module2) {
+    "use strict";
+    var { Readable, Writable } = require("stream");
+    var StreamSearch = require_sbmh();
+    var {
+      basename,
+      convertToUTF8,
+      getDecoder,
+      parseContentType,
+      parseDisposition
+    } = require_utils9();
+    var BUF_CRLF = Buffer.from("\r\n");
+    var BUF_CR = Buffer.from("\r");
+    var BUF_DASH = Buffer.from("-");
+    function noop() {
+    }
+    var MAX_HEADER_PAIRS = 2e3;
+    var MAX_HEADER_SIZE = 16 * 1024;
+    var HPARSER_NAME = 0;
+    var HPARSER_PRE_OWS = 1;
+    var HPARSER_VALUE = 2;
+    var HeaderParser = class {
+      constructor(cb) {
+        this.header = /* @__PURE__ */ Object.create(null);
+        this.pairCount = 0;
+        this.byteCount = 0;
+        this.state = HPARSER_NAME;
+        this.name = "";
+        this.value = "";
+        this.crlf = 0;
+        this.cb = cb;
+      }
+      reset() {
+        this.header = /* @__PURE__ */ Object.create(null);
+        this.pairCount = 0;
+        this.byteCount = 0;
+        this.state = HPARSER_NAME;
+        this.name = "";
+        this.value = "";
+        this.crlf = 0;
+      }
+      push(chunk, pos, end) {
+        let start = pos;
+        while (pos < end) {
+          switch (this.state) {
+            case HPARSER_NAME: {
+              let done = false;
+              for (; pos < end; ++pos) {
+                if (this.byteCount === MAX_HEADER_SIZE)
+                  return -1;
+                ++this.byteCount;
+                const code = chunk[pos];
+                if (TOKEN[code] !== 1) {
+                  if (code !== 58)
+                    return -1;
+                  this.name += chunk.latin1Slice(start, pos);
+                  if (this.name.length === 0)
+                    return -1;
+                  ++pos;
+                  done = true;
+                  this.state = HPARSER_PRE_OWS;
+                  break;
+                }
+              }
+              if (!done) {
+                this.name += chunk.latin1Slice(start, pos);
+                break;
+              }
+            }
+            case HPARSER_PRE_OWS: {
+              let done = false;
+              for (; pos < end; ++pos) {
+                if (this.byteCount === MAX_HEADER_SIZE)
+                  return -1;
+                ++this.byteCount;
+                const code = chunk[pos];
+                if (code !== 32 && code !== 9) {
+                  start = pos;
+                  done = true;
+                  this.state = HPARSER_VALUE;
+                  break;
+                }
+              }
+              if (!done)
+                break;
+            }
+            case HPARSER_VALUE:
+              switch (this.crlf) {
+                case 0:
+                  for (; pos < end; ++pos) {
+                    if (this.byteCount === MAX_HEADER_SIZE)
+                      return -1;
+                    ++this.byteCount;
+                    const code = chunk[pos];
+                    if (FIELD_VCHAR[code] !== 1) {
+                      if (code !== 13)
+                        return -1;
+                      ++this.crlf;
+                      break;
+                    }
+                  }
+                  this.value += chunk.latin1Slice(start, pos++);
+                  break;
+                case 1:
+                  if (this.byteCount === MAX_HEADER_SIZE)
+                    return -1;
+                  ++this.byteCount;
+                  if (chunk[pos++] !== 10)
+                    return -1;
+                  ++this.crlf;
+                  break;
+                case 2: {
+                  if (this.byteCount === MAX_HEADER_SIZE)
+                    return -1;
+                  ++this.byteCount;
+                  const code = chunk[pos];
+                  if (code === 32 || code === 9) {
+                    start = pos;
+                    this.crlf = 0;
+                  } else {
+                    if (++this.pairCount < MAX_HEADER_PAIRS) {
+                      this.name = this.name.toLowerCase();
+                      if (this.header[this.name] === void 0)
+                        this.header[this.name] = [this.value];
+                      else
+                        this.header[this.name].push(this.value);
+                    }
+                    if (code === 13) {
+                      ++this.crlf;
+                      ++pos;
+                    } else {
+                      start = pos;
+                      this.crlf = 0;
+                      this.state = HPARSER_NAME;
+                      this.name = "";
+                      this.value = "";
+                    }
+                  }
+                  break;
+                }
+                case 3: {
+                  if (this.byteCount === MAX_HEADER_SIZE)
+                    return -1;
+                  ++this.byteCount;
+                  if (chunk[pos++] !== 10)
+                    return -1;
+                  const header = this.header;
+                  this.reset();
+                  this.cb(header);
+                  return pos;
+                }
+              }
+              break;
+          }
+        }
+        return pos;
+      }
+    };
+    var FileStream = class extends Readable {
+      constructor(opts, owner) {
+        super(opts);
+        this.truncated = false;
+        this._readcb = null;
+        this.once("end", () => {
+          this._read();
+          if (--owner._fileEndsLeft === 0 && owner._finalcb) {
+            const cb = owner._finalcb;
+            owner._finalcb = null;
+            process.nextTick(cb);
+          }
+        });
+      }
+      _read(n) {
+        const cb = this._readcb;
+        if (cb) {
+          this._readcb = null;
+          cb();
+        }
+      }
+    };
+    var ignoreData = {
+      push: (chunk, pos) => {
+      },
+      destroy: () => {
+      }
+    };
+    function callAndUnsetCb(self2, err) {
+      const cb = self2._writecb;
+      self2._writecb = null;
+      if (err)
+        self2.destroy(err);
+      else if (cb)
+        cb();
+    }
+    function nullDecoder(val, hint) {
+      return val;
+    }
+    var Multipart = class extends Writable {
+      constructor(cfg) {
+        const streamOpts = {
+          autoDestroy: true,
+          emitClose: true,
+          highWaterMark: typeof cfg.highWaterMark === "number" ? cfg.highWaterMark : void 0
+        };
+        super(streamOpts);
+        if (!cfg.conType.params || typeof cfg.conType.params.boundary !== "string")
+          throw new Error("Multipart: Boundary not found");
+        const boundary = cfg.conType.params.boundary;
+        const paramDecoder = typeof cfg.defParamCharset === "string" && cfg.defParamCharset ? getDecoder(cfg.defParamCharset) : nullDecoder;
+        const defCharset = cfg.defCharset || "utf8";
+        const preservePath = cfg.preservePath;
+        const fileOpts = {
+          autoDestroy: true,
+          emitClose: true,
+          highWaterMark: typeof cfg.fileHwm === "number" ? cfg.fileHwm : void 0
+        };
+        const limits = cfg.limits;
+        const fieldSizeLimit = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : 1 * 1024 * 1024;
+        const fileSizeLimit = limits && typeof limits.fileSize === "number" ? limits.fileSize : Infinity;
+        const filesLimit = limits && typeof limits.files === "number" ? limits.files : Infinity;
+        const fieldsLimit = limits && typeof limits.fields === "number" ? limits.fields : Infinity;
+        const partsLimit = limits && typeof limits.parts === "number" ? limits.parts : Infinity;
+        let parts = -1;
+        let fields = 0;
+        let files = 0;
+        let skipPart = false;
+        this._fileEndsLeft = 0;
+        this._fileStream = void 0;
+        this._complete = false;
+        let fileSize = 0;
+        let field;
+        let fieldSize = 0;
+        let partCharset;
+        let partEncoding;
+        let partType;
+        let partName;
+        let partTruncated = false;
+        let hitFilesLimit = false;
+        let hitFieldsLimit = false;
+        this._hparser = null;
+        const hparser = new HeaderParser((header) => {
+          this._hparser = null;
+          skipPart = false;
+          partType = "text/plain";
+          partCharset = defCharset;
+          partEncoding = "7bit";
+          partName = void 0;
+          partTruncated = false;
+          let filename;
+          if (!header["content-disposition"]) {
+            skipPart = true;
+            return;
+          }
+          const disp = parseDisposition(
+            header["content-disposition"][0],
+            paramDecoder
+          );
+          if (!disp || disp.type !== "form-data") {
+            skipPart = true;
+            return;
+          }
+          if (disp.params) {
+            if (disp.params.name)
+              partName = disp.params.name;
+            if (disp.params["filename*"])
+              filename = disp.params["filename*"];
+            else if (disp.params.filename)
+              filename = disp.params.filename;
+            if (filename !== void 0 && !preservePath)
+              filename = basename(filename);
+          }
+          if (header["content-type"]) {
+            const conType = parseContentType(header["content-type"][0]);
+            if (conType) {
+              partType = `${conType.type}/${conType.subtype}`;
+              if (conType.params && typeof conType.params.charset === "string")
+                partCharset = conType.params.charset.toLowerCase();
+            }
+          }
+          if (header["content-transfer-encoding"])
+            partEncoding = header["content-transfer-encoding"][0].toLowerCase();
+          if (partType === "application/octet-stream" || filename !== void 0) {
+            if (files === filesLimit) {
+              if (!hitFilesLimit) {
+                hitFilesLimit = true;
+                this.emit("filesLimit");
+              }
+              skipPart = true;
+              return;
+            }
+            ++files;
+            if (this.listenerCount("file") === 0) {
+              skipPart = true;
+              return;
+            }
+            fileSize = 0;
+            this._fileStream = new FileStream(fileOpts, this);
+            ++this._fileEndsLeft;
+            this.emit(
+              "file",
+              partName,
+              this._fileStream,
+              {
+                filename,
+                encoding: partEncoding,
+                mimeType: partType
+              }
+            );
+          } else {
+            if (fields === fieldsLimit) {
+              if (!hitFieldsLimit) {
+                hitFieldsLimit = true;
+                this.emit("fieldsLimit");
+              }
+              skipPart = true;
+              return;
+            }
+            ++fields;
+            if (this.listenerCount("field") === 0) {
+              skipPart = true;
+              return;
+            }
+            field = [];
+            fieldSize = 0;
+          }
+        });
+        let matchPostBoundary = 0;
+        const ssCb = (isMatch, data, start, end, isDataSafe) => {
+          retrydata:
+            while (data) {
+              if (this._hparser !== null) {
+                const ret2 = this._hparser.push(data, start, end);
+                if (ret2 === -1) {
+                  this._hparser = null;
+                  hparser.reset();
+                  this.emit("error", new Error("Malformed part header"));
+                  break;
+                }
+                start = ret2;
+              }
+              if (start === end)
+                break;
+              if (matchPostBoundary !== 0) {
+                if (matchPostBoundary === 1) {
+                  switch (data[start]) {
+                    case 45:
+                      matchPostBoundary = 2;
+                      ++start;
+                      break;
+                    case 13:
+                      matchPostBoundary = 3;
+                      ++start;
+                      break;
+                    default:
+                      matchPostBoundary = 0;
+                  }
+                  if (start === end)
+                    return;
+                }
+                if (matchPostBoundary === 2) {
+                  matchPostBoundary = 0;
+                  if (data[start] === 45) {
+                    this._complete = true;
+                    this._bparser = ignoreData;
+                    return;
+                  }
+                  const writecb = this._writecb;
+                  this._writecb = noop;
+                  ssCb(false, BUF_DASH, 0, 1, false);
+                  this._writecb = writecb;
+                } else if (matchPostBoundary === 3) {
+                  matchPostBoundary = 0;
+                  if (data[start] === 10) {
+                    ++start;
+                    if (parts >= partsLimit)
+                      break;
+                    this._hparser = hparser;
+                    if (start === end)
+                      break;
+                    continue retrydata;
+                  } else {
+                    const writecb = this._writecb;
+                    this._writecb = noop;
+                    ssCb(false, BUF_CR, 0, 1, false);
+                    this._writecb = writecb;
+                  }
+                }
+              }
+              if (!skipPart) {
+                if (this._fileStream) {
+                  let chunk;
+                  const actualLen = Math.min(end - start, fileSizeLimit - fileSize);
+                  if (!isDataSafe) {
+                    chunk = Buffer.allocUnsafe(actualLen);
+                    data.copy(chunk, 0, start, start + actualLen);
+                  } else {
+                    chunk = data.slice(start, start + actualLen);
+                  }
+                  fileSize += chunk.length;
+                  if (fileSize === fileSizeLimit) {
+                    if (chunk.length > 0)
+                      this._fileStream.push(chunk);
+                    this._fileStream.emit("limit");
+                    this._fileStream.truncated = true;
+                    skipPart = true;
+                  } else if (!this._fileStream.push(chunk)) {
+                    if (this._writecb)
+                      this._fileStream._readcb = this._writecb;
+                    this._writecb = null;
+                  }
+                } else if (field !== void 0) {
+                  let chunk;
+                  const actualLen = Math.min(
+                    end - start,
+                    fieldSizeLimit - fieldSize
+                  );
+                  if (!isDataSafe) {
+                    chunk = Buffer.allocUnsafe(actualLen);
+                    data.copy(chunk, 0, start, start + actualLen);
+                  } else {
+                    chunk = data.slice(start, start + actualLen);
+                  }
+                  fieldSize += actualLen;
+                  field.push(chunk);
+                  if (fieldSize === fieldSizeLimit) {
+                    skipPart = true;
+                    partTruncated = true;
+                  }
+                }
+              }
+              break;
+            }
+          if (isMatch) {
+            matchPostBoundary = 1;
+            if (this._fileStream) {
+              this._fileStream.push(null);
+              this._fileStream = null;
+            } else if (field !== void 0) {
+              let data2;
+              switch (field.length) {
+                case 0:
+                  data2 = "";
+                  break;
+                case 1:
+                  data2 = convertToUTF8(field[0], partCharset, 0);
+                  break;
+                default:
+                  data2 = convertToUTF8(
+                    Buffer.concat(field, fieldSize),
+                    partCharset,
+                    0
+                  );
+              }
+              field = void 0;
+              fieldSize = 0;
+              this.emit(
+                "field",
+                partName,
+                data2,
+                {
+                  nameTruncated: false,
+                  valueTruncated: partTruncated,
+                  encoding: partEncoding,
+                  mimeType: partType
+                }
+              );
+            }
+            if (++parts === partsLimit)
+              this.emit("partsLimit");
+          }
+        };
+        this._bparser = new StreamSearch(`\r
+--${boundary}`, ssCb);
+        this._writecb = null;
+        this._finalcb = null;
+        this.write(BUF_CRLF);
+      }
+      static detect(conType) {
+        return conType.type === "multipart" && conType.subtype === "form-data";
+      }
+      _write(chunk, enc, cb) {
+        this._writecb = cb;
+        this._bparser.push(chunk, 0);
+        if (this._writecb)
+          callAndUnsetCb(this);
+      }
+      _destroy(err, cb) {
+        this._hparser = null;
+        this._bparser = ignoreData;
+        if (!err)
+          err = checkEndState(this);
+        const fileStream = this._fileStream;
+        if (fileStream) {
+          this._fileStream = null;
+          fileStream.destroy(err);
+        }
+        cb(err);
+      }
+      _final(cb) {
+        this._bparser.destroy();
+        if (!this._complete)
+          return cb(new Error("Unexpected end of form"));
+        if (this._fileEndsLeft)
+          this._finalcb = finalcb.bind(null, this, cb);
+        else
+          finalcb(this, cb);
+      }
+    };
+    function finalcb(self2, cb, err) {
+      if (err)
+        return cb(err);
+      err = checkEndState(self2);
+      cb(err);
+    }
+    function checkEndState(self2) {
+      if (self2._hparser)
+        return new Error("Malformed part header");
+      const fileStream = self2._fileStream;
+      if (fileStream) {
+        self2._fileStream = null;
+        fileStream.destroy(new Error("Unexpected end of file"));
+      }
+      if (!self2._complete)
+        return new Error("Unexpected end of form");
+    }
+    var TOKEN = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ];
+    var FIELD_VCHAR = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ];
+    module2.exports = Multipart;
+  }
+});
+
+// node_modules/busboy/lib/types/urlencoded.js
+var require_urlencoded3 = __commonJS({
+  "node_modules/busboy/lib/types/urlencoded.js"(exports2, module2) {
+    "use strict";
+    var { Writable } = require("stream");
+    var { getDecoder } = require_utils9();
+    var URLEncoded = class extends Writable {
+      constructor(cfg) {
+        const streamOpts = {
+          autoDestroy: true,
+          emitClose: true,
+          highWaterMark: typeof cfg.highWaterMark === "number" ? cfg.highWaterMark : void 0
+        };
+        super(streamOpts);
+        let charset = cfg.defCharset || "utf8";
+        if (cfg.conType.params && typeof cfg.conType.params.charset === "string")
+          charset = cfg.conType.params.charset;
+        this.charset = charset;
+        const limits = cfg.limits;
+        this.fieldSizeLimit = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : 1 * 1024 * 1024;
+        this.fieldsLimit = limits && typeof limits.fields === "number" ? limits.fields : Infinity;
+        this.fieldNameSizeLimit = limits && typeof limits.fieldNameSize === "number" ? limits.fieldNameSize : 100;
+        this._inKey = true;
+        this._keyTrunc = false;
+        this._valTrunc = false;
+        this._bytesKey = 0;
+        this._bytesVal = 0;
+        this._fields = 0;
+        this._key = "";
+        this._val = "";
+        this._byte = -2;
+        this._lastPos = 0;
+        this._encode = 0;
+        this._decoder = getDecoder(charset);
+      }
+      static detect(conType) {
+        return conType.type === "application" && conType.subtype === "x-www-form-urlencoded";
+      }
+      _write(chunk, enc, cb) {
+        if (this._fields >= this.fieldsLimit)
+          return cb();
+        let i = 0;
+        const len = chunk.length;
+        this._lastPos = 0;
+        if (this._byte !== -2) {
+          i = readPctEnc(this, chunk, i, len);
+          if (i === -1)
+            return cb(new Error("Malformed urlencoded form"));
+          if (i >= len)
+            return cb();
+          if (this._inKey)
+            ++this._bytesKey;
+          else
+            ++this._bytesVal;
+        }
+        main:
+          while (i < len) {
+            if (this._inKey) {
+              i = skipKeyBytes(this, chunk, i, len);
+              while (i < len) {
+                switch (chunk[i]) {
+                  case 61:
+                    if (this._lastPos < i)
+                      this._key += chunk.latin1Slice(this._lastPos, i);
+                    this._lastPos = ++i;
+                    this._key = this._decoder(this._key, this._encode);
+                    this._encode = 0;
+                    this._inKey = false;
+                    continue main;
+                  case 38:
+                    if (this._lastPos < i)
+                      this._key += chunk.latin1Slice(this._lastPos, i);
+                    this._lastPos = ++i;
+                    this._key = this._decoder(this._key, this._encode);
+                    this._encode = 0;
+                    if (this._bytesKey > 0) {
+                      this.emit(
+                        "field",
+                        this._key,
+                        "",
+                        {
+                          nameTruncated: this._keyTrunc,
+                          valueTruncated: false,
+                          encoding: this.charset,
+                          mimeType: "text/plain"
+                        }
+                      );
+                    }
+                    this._key = "";
+                    this._val = "";
+                    this._keyTrunc = false;
+                    this._valTrunc = false;
+                    this._bytesKey = 0;
+                    this._bytesVal = 0;
+                    if (++this._fields >= this.fieldsLimit) {
+                      this.emit("fieldsLimit");
+                      return cb();
+                    }
+                    continue;
+                  case 43:
+                    if (this._lastPos < i)
+                      this._key += chunk.latin1Slice(this._lastPos, i);
+                    this._key += " ";
+                    this._lastPos = i + 1;
+                    break;
+                  case 37:
+                    if (this._encode === 0)
+                      this._encode = 1;
+                    if (this._lastPos < i)
+                      this._key += chunk.latin1Slice(this._lastPos, i);
+                    this._lastPos = i + 1;
+                    this._byte = -1;
+                    i = readPctEnc(this, chunk, i + 1, len);
+                    if (i === -1)
+                      return cb(new Error("Malformed urlencoded form"));
+                    if (i >= len)
+                      return cb();
+                    ++this._bytesKey;
+                    i = skipKeyBytes(this, chunk, i, len);
+                    continue;
+                }
+                ++i;
+                ++this._bytesKey;
+                i = skipKeyBytes(this, chunk, i, len);
+              }
+              if (this._lastPos < i)
+                this._key += chunk.latin1Slice(this._lastPos, i);
+            } else {
+              i = skipValBytes(this, chunk, i, len);
+              while (i < len) {
+                switch (chunk[i]) {
+                  case 38:
+                    if (this._lastPos < i)
+                      this._val += chunk.latin1Slice(this._lastPos, i);
+                    this._lastPos = ++i;
+                    this._inKey = true;
+                    this._val = this._decoder(this._val, this._encode);
+                    this._encode = 0;
+                    if (this._bytesKey > 0 || this._bytesVal > 0) {
+                      this.emit(
+                        "field",
+                        this._key,
+                        this._val,
+                        {
+                          nameTruncated: this._keyTrunc,
+                          valueTruncated: this._valTrunc,
+                          encoding: this.charset,
+                          mimeType: "text/plain"
+                        }
+                      );
+                    }
+                    this._key = "";
+                    this._val = "";
+                    this._keyTrunc = false;
+                    this._valTrunc = false;
+                    this._bytesKey = 0;
+                    this._bytesVal = 0;
+                    if (++this._fields >= this.fieldsLimit) {
+                      this.emit("fieldsLimit");
+                      return cb();
+                    }
+                    continue main;
+                  case 43:
+                    if (this._lastPos < i)
+                      this._val += chunk.latin1Slice(this._lastPos, i);
+                    this._val += " ";
+                    this._lastPos = i + 1;
+                    break;
+                  case 37:
+                    if (this._encode === 0)
+                      this._encode = 1;
+                    if (this._lastPos < i)
+                      this._val += chunk.latin1Slice(this._lastPos, i);
+                    this._lastPos = i + 1;
+                    this._byte = -1;
+                    i = readPctEnc(this, chunk, i + 1, len);
+                    if (i === -1)
+                      return cb(new Error("Malformed urlencoded form"));
+                    if (i >= len)
+                      return cb();
+                    ++this._bytesVal;
+                    i = skipValBytes(this, chunk, i, len);
+                    continue;
+                }
+                ++i;
+                ++this._bytesVal;
+                i = skipValBytes(this, chunk, i, len);
+              }
+              if (this._lastPos < i)
+                this._val += chunk.latin1Slice(this._lastPos, i);
+            }
+          }
+        cb();
+      }
+      _final(cb) {
+        if (this._byte !== -2)
+          return cb(new Error("Malformed urlencoded form"));
+        if (!this._inKey || this._bytesKey > 0 || this._bytesVal > 0) {
+          if (this._inKey)
+            this._key = this._decoder(this._key, this._encode);
+          else
+            this._val = this._decoder(this._val, this._encode);
+          this.emit(
+            "field",
+            this._key,
+            this._val,
+            {
+              nameTruncated: this._keyTrunc,
+              valueTruncated: this._valTrunc,
+              encoding: this.charset,
+              mimeType: "text/plain"
+            }
+          );
+        }
+        cb();
+      }
+    };
+    function readPctEnc(self2, chunk, pos, len) {
+      if (pos >= len)
+        return len;
+      if (self2._byte === -1) {
+        const hexUpper = HEX_VALUES[chunk[pos++]];
+        if (hexUpper === -1)
+          return -1;
+        if (hexUpper >= 8)
+          self2._encode = 2;
+        if (pos < len) {
+          const hexLower = HEX_VALUES[chunk[pos++]];
+          if (hexLower === -1)
+            return -1;
+          if (self2._inKey)
+            self2._key += String.fromCharCode((hexUpper << 4) + hexLower);
+          else
+            self2._val += String.fromCharCode((hexUpper << 4) + hexLower);
+          self2._byte = -2;
+          self2._lastPos = pos;
+        } else {
+          self2._byte = hexUpper;
+        }
+      } else {
+        const hexLower = HEX_VALUES[chunk[pos++]];
+        if (hexLower === -1)
+          return -1;
+        if (self2._inKey)
+          self2._key += String.fromCharCode((self2._byte << 4) + hexLower);
+        else
+          self2._val += String.fromCharCode((self2._byte << 4) + hexLower);
+        self2._byte = -2;
+        self2._lastPos = pos;
+      }
+      return pos;
+    }
+    function skipKeyBytes(self2, chunk, pos, len) {
+      if (self2._bytesKey > self2.fieldNameSizeLimit) {
+        if (!self2._keyTrunc) {
+          if (self2._lastPos < pos)
+            self2._key += chunk.latin1Slice(self2._lastPos, pos - 1);
+        }
+        self2._keyTrunc = true;
+        for (; pos < len; ++pos) {
+          const code = chunk[pos];
+          if (code === 61 || code === 38)
+            break;
+          ++self2._bytesKey;
+        }
+        self2._lastPos = pos;
+      }
+      return pos;
+    }
+    function skipValBytes(self2, chunk, pos, len) {
+      if (self2._bytesVal > self2.fieldSizeLimit) {
+        if (!self2._valTrunc) {
+          if (self2._lastPos < pos)
+            self2._val += chunk.latin1Slice(self2._lastPos, pos - 1);
+        }
+        self2._valTrunc = true;
+        for (; pos < len; ++pos) {
+          if (chunk[pos] === 38)
+            break;
+          ++self2._bytesVal;
+        }
+        self2._lastPos = pos;
+      }
+      return pos;
+    }
+    var HEX_VALUES = [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ];
+    module2.exports = URLEncoded;
+  }
+});
+
+// node_modules/busboy/lib/index.js
+var require_lib10 = __commonJS({
+  "node_modules/busboy/lib/index.js"(exports2, module2) {
+    "use strict";
+    var { parseContentType } = require_utils9();
+    function getInstance(cfg) {
+      const headers = cfg.headers;
+      const conType = parseContentType(headers["content-type"]);
+      if (!conType)
+        throw new Error("Malformed content type");
+      for (const type of TYPES) {
+        const matched = type.detect(conType);
+        if (!matched)
+          continue;
+        const instanceCfg = {
+          limits: cfg.limits,
+          headers,
+          conType,
+          highWaterMark: void 0,
+          fileHwm: void 0,
+          defCharset: void 0,
+          defParamCharset: void 0,
+          preservePath: false
+        };
+        if (cfg.highWaterMark)
+          instanceCfg.highWaterMark = cfg.highWaterMark;
+        if (cfg.fileHwm)
+          instanceCfg.fileHwm = cfg.fileHwm;
+        instanceCfg.defCharset = cfg.defCharset;
+        instanceCfg.defParamCharset = cfg.defParamCharset;
+        instanceCfg.preservePath = cfg.preservePath;
+        return new type(instanceCfg);
+      }
+      throw new Error(`Unsupported content type: ${headers["content-type"]}`);
+    }
+    var TYPES = [
+      require_multipart(),
+      require_urlencoded3()
+    ].filter(function(typemod) {
+      return typeof typemod.detect === "function";
+    });
+    module2.exports = (cfg) => {
+      if (typeof cfg !== "object" || cfg === null)
+        cfg = {};
+      if (typeof cfg.headers !== "object" || cfg.headers === null || typeof cfg.headers["content-type"] !== "string") {
+        throw new Error("Missing Content-Type");
+      }
+      return getInstance(cfg);
+    };
+  }
+});
+
+// node_modules/append-field/lib/parse-path.js
+var require_parse_path = __commonJS({
+  "node_modules/append-field/lib/parse-path.js"(exports2, module2) {
+    var reFirstKey = /^[^\[]*/;
+    var reDigitPath = /^\[(\d+)\]/;
+    var reNormalPath = /^\[([^\]]+)\]/;
+    function parsePath(key) {
+      function failure() {
+        return [{ type: "object", key, last: true }];
+      }
+      var firstKey = reFirstKey.exec(key)[0];
+      if (!firstKey) return failure();
+      var len = key.length;
+      var pos = firstKey.length;
+      var tail = { type: "object", key: firstKey };
+      var steps = [tail];
+      while (pos < len) {
+        var m;
+        if (key[pos] === "[" && key[pos + 1] === "]") {
+          pos += 2;
+          tail.append = true;
+          if (pos !== len) return failure();
+          continue;
+        }
+        m = reDigitPath.exec(key.substring(pos));
+        if (m !== null) {
+          pos += m[0].length;
+          tail.nextType = "array";
+          tail = { type: "array", key: parseInt(m[1], 10) };
+          steps.push(tail);
+          continue;
+        }
+        m = reNormalPath.exec(key.substring(pos));
+        if (m !== null) {
+          pos += m[0].length;
+          tail.nextType = "object";
+          tail = { type: "object", key: m[1] };
+          steps.push(tail);
+          continue;
+        }
+        return failure();
+      }
+      tail.last = true;
+      return steps;
+    }
+    module2.exports = parsePath;
+  }
+});
+
+// node_modules/append-field/lib/set-value.js
+var require_set_value = __commonJS({
+  "node_modules/append-field/lib/set-value.js"(exports2, module2) {
+    function valueType(value) {
+      if (value === void 0) return "undefined";
+      if (Array.isArray(value)) return "array";
+      if (typeof value === "object") return "object";
+      return "scalar";
+    }
+    function setLastValue(context, step, currentValue, entryValue) {
+      switch (valueType(currentValue)) {
+        case "undefined":
+          if (step.append) {
+            context[step.key] = [entryValue];
+          } else {
+            context[step.key] = entryValue;
+          }
+          break;
+        case "array":
+          context[step.key].push(entryValue);
+          break;
+        case "object":
+          return setLastValue(currentValue, { type: "object", key: "", last: true }, currentValue[""], entryValue);
+        case "scalar":
+          context[step.key] = [context[step.key], entryValue];
+          break;
+      }
+      return context;
+    }
+    function setValue(context, step, currentValue, entryValue) {
+      if (step.last) return setLastValue(context, step, currentValue, entryValue);
+      var obj2;
+      switch (valueType(currentValue)) {
+        case "undefined":
+          if (step.nextType === "array") {
+            context[step.key] = [];
+          } else {
+            context[step.key] = /* @__PURE__ */ Object.create(null);
+          }
+          return context[step.key];
+        case "object":
+          return context[step.key];
+        case "array":
+          if (step.nextType === "array") {
+            return currentValue;
+          }
+          obj2 = /* @__PURE__ */ Object.create(null);
+          context[step.key] = obj2;
+          currentValue.forEach(function(item, i) {
+            if (item !== void 0) obj2["" + i] = item;
+          });
+          return obj2;
+        case "scalar":
+          obj2 = /* @__PURE__ */ Object.create(null);
+          obj2[""] = currentValue;
+          context[step.key] = obj2;
+          return obj2;
+      }
+    }
+    module2.exports = setValue;
+  }
+});
+
+// node_modules/append-field/index.js
+var require_append_field = __commonJS({
+  "node_modules/append-field/index.js"(exports2, module2) {
+    var parsePath = require_parse_path();
+    var setValue = require_set_value();
+    function appendField(store, key, value) {
+      var steps = parsePath(key);
+      steps.reduce(function(context, step) {
+        return setValue(context, step, context[step.key], value);
+      }, store);
+    }
+    module2.exports = appendField;
+  }
+});
+
+// node_modules/multer/lib/counter.js
+var require_counter = __commonJS({
+  "node_modules/multer/lib/counter.js"(exports2, module2) {
+    var EventEmitter = require("events").EventEmitter;
+    function Counter() {
+      EventEmitter.call(this);
+      this.value = 0;
+    }
+    Counter.prototype = Object.create(EventEmitter.prototype);
+    Counter.prototype.increment = function increment() {
+      this.value++;
+    };
+    Counter.prototype.decrement = function decrement() {
+      if (--this.value === 0) this.emit("zero");
+    };
+    Counter.prototype.isZero = function isZero() {
+      return this.value === 0;
+    };
+    Counter.prototype.onceZero = function onceZero(fn) {
+      if (this.isZero()) return fn();
+      this.once("zero", fn);
+    };
+    module2.exports = Counter;
+  }
+});
+
+// node_modules/multer/lib/multer-error.js
+var require_multer_error = __commonJS({
+  "node_modules/multer/lib/multer-error.js"(exports2, module2) {
+    var util = require("util");
+    var errorMessages = {
+      LIMIT_PART_COUNT: "Too many parts",
+      LIMIT_FILE_SIZE: "File too large",
+      LIMIT_FILE_COUNT: "Too many files",
+      LIMIT_FIELD_KEY: "Field name too long",
+      LIMIT_FIELD_VALUE: "Field value too long",
+      LIMIT_FIELD_COUNT: "Too many fields",
+      LIMIT_UNEXPECTED_FILE: "Unexpected file field",
+      MISSING_FIELD_NAME: "Field name missing",
+      LIMIT_FIELD_NESTING: "Field name nesting too deep",
+      LIMIT_FIELD_ARRAY_INDEX: "Field name array index too large",
+      STREAM_DESTROYED: "File stream was destroyed",
+      INVALID_FIELD_NAME: "Invalid field name"
+    };
+    function MulterError(code, field, filename) {
+      Error.captureStackTrace(this, this.constructor);
+      this.name = this.constructor.name;
+      this.message = errorMessages[code] || `Unknown error: ${code}`;
+      this.code = code;
+      if (field) this.field = field;
+      if (filename) this.filename = filename;
+    }
+    util.inherits(MulterError, Error);
+    module2.exports = MulterError;
+  }
+});
+
+// node_modules/multer/lib/file-appender.js
+var require_file_appender = __commonJS({
+  "node_modules/multer/lib/file-appender.js"(exports2, module2) {
+    function arrayRemove(arr, item) {
+      var idx = arr.indexOf(item);
+      if (~idx) arr.splice(idx, 1);
+    }
+    function FileAppender(strategy, req) {
+      this.strategy = strategy;
+      this.req = req;
+      switch (strategy) {
+        case "NONE":
+          break;
+        case "VALUE":
+          break;
+        case "ARRAY":
+          req.files = [];
+          break;
+        case "OBJECT":
+          req.files = /* @__PURE__ */ Object.create(null);
+          break;
+        default:
+          throw new Error("Unknown file strategy: " + strategy);
+      }
+    }
+    FileAppender.prototype.insertPlaceholder = function(file) {
+      var placeholder = {
+        fieldname: file.fieldname
+      };
+      switch (this.strategy) {
+        case "NONE":
+          break;
+        case "VALUE":
+          break;
+        case "ARRAY":
+          this.req.files.push(placeholder);
+          break;
+        case "OBJECT":
+          if (this.req.files[file.fieldname]) {
+            this.req.files[file.fieldname].push(placeholder);
+          } else {
+            this.req.files[file.fieldname] = [placeholder];
+          }
+          break;
+      }
+      return placeholder;
+    };
+    FileAppender.prototype.removePlaceholder = function(placeholder) {
+      switch (this.strategy) {
+        case "NONE":
+          break;
+        case "VALUE":
+          break;
+        case "ARRAY":
+          arrayRemove(this.req.files, placeholder);
+          break;
+        case "OBJECT": {
+          var files = this.req.files[placeholder.fieldname];
+          if (!files) break;
+          arrayRemove(files, placeholder);
+          if (files.length === 0) delete this.req.files[placeholder.fieldname];
+          break;
+        }
+      }
+    };
+    FileAppender.prototype.replacePlaceholder = function(placeholder, file) {
+      if (this.strategy === "VALUE") {
+        this.req.file = file;
+        return;
+      }
+      delete placeholder.fieldname;
+      Object.assign(placeholder, file);
+    };
+    module2.exports = FileAppender;
+  }
+});
+
+// node_modules/multer/lib/remove-uploaded-files.js
+var require_remove_uploaded_files = __commonJS({
+  "node_modules/multer/lib/remove-uploaded-files.js"(exports2, module2) {
+    function removeUploadedFiles(uploadedFiles, remove, cb) {
+      var length = uploadedFiles.length;
+      var errors = [];
+      if (length === 0) return cb(null, errors);
+      function handleFile(idx) {
+        var file = uploadedFiles[idx];
+        remove(file, function(err) {
+          if (err) {
+            err.file = file;
+            err.field = file.fieldname;
+            errors.push(err);
+          }
+          if (idx < length - 1) {
+            setImmediate(function() {
+              handleFile(idx + 1);
+            });
+          } else {
+            cb(null, errors);
+          }
+        });
+      }
+      handleFile(0);
+    }
+    module2.exports = removeUploadedFiles;
+  }
+});
+
+// node_modules/multer/lib/validate-limits.js
+var require_validate_limits = __commonJS({
+  "node_modules/multer/lib/validate-limits.js"(exports2, module2) {
+    function validateLimits(limits) {
+      Object.keys(limits).forEach(function(key) {
+        var value = limits[key];
+        if (value == null) return;
+        if (Number.isInteger(value) && value >= 0 || value === Infinity) return;
+        throw new TypeError("Expected limits." + key + " to be a non-negative integer or Infinity");
+      });
+    }
+    module2.exports = validateLimits;
+  }
+});
+
+// node_modules/multer/lib/make-middleware.js
+var require_make_middleware = __commonJS({
+  "node_modules/multer/lib/make-middleware.js"(exports2, module2) {
+    var is = require_type_is();
+    var AsyncResource = require("async_hooks").AsyncResource;
+    var Busboy = require_lib10();
+    var appendField = require_append_field();
+    var Counter = require_counter();
+    var MulterError = require_multer_error();
+    var FileAppender = require_file_appender();
+    var removeUploadedFiles = require_remove_uploaded_files();
+    var validateLimits = require_validate_limits();
+    var DEFAULT_FIELD_SIZE = 1024 * 1024;
+    function exceedsArrayIndexLimit(fieldname, limit) {
+      if (!/^[^[]+(?:\[[^\]]+\])*(?:\[\])?$/.test(fieldname)) return false;
+      var pattern = /\[(\d+)\]/g;
+      var match;
+      while ((match = pattern.exec(fieldname)) !== null) {
+        if (Number(match[1]) > limit) return true;
+      }
+      return false;
+    }
+    function drainStream(stream) {
+      stream.on("readable", () => {
+        while (stream.read() !== null) {
+        }
+      });
+    }
+    function decodeFormDataName(str) {
+      return str.replace(/%0A|%0D|%22/gi, function(match) {
+        switch (match.toUpperCase()) {
+          case "%0A":
+            return "\n";
+          case "%0D":
+            return "\r";
+          default:
+            return '"';
+        }
+      });
+    }
+    function defaultStreamHandler(req, busboy) {
+      req.pipe(busboy);
+    }
+    function makeMiddleware(setup) {
+      return function multerMiddleware(req, res, next) {
+        var resource = new AsyncResource("multer");
+        var originalNext = next;
+        next = function(err) {
+          resource.runInAsyncScope(originalNext, null, err);
+        };
+        if (!is(req, ["multipart"])) return next();
+        var options = setup();
+        var limits = options.limits;
+        if (typeof limits === "function") {
+          try {
+            limits = limits(req);
+            if (limits) validateLimits(limits);
+          } catch (err) {
+            return next(err);
+          }
+        }
+        var busboyLimits = {};
+        var key;
+        for (key in limits) {
+          busboyLimits[key] = limits[key];
+        }
+        var fieldSize = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : DEFAULT_FIELD_SIZE;
+        if (isFinite(fieldSize)) {
+          busboyLimits.fieldSize = fieldSize + 1;
+        }
+        if (limits && typeof limits.fileSize === "number" && isFinite(limits.fileSize)) {
+          busboyLimits.fileSize = limits.fileSize + 1;
+        }
+        if (limits && typeof limits.parts === "number" && isFinite(limits.parts)) {
+          busboyLimits.parts = limits.parts + 1;
+        }
+        var storage = options.storage;
+        var fileFilter = options.fileFilter;
+        var fileStrategy = options.fileStrategy;
+        var preservePath = options.preservePath;
+        var defParamCharset = options.defParamCharset;
+        var defCharset = options.defCharset;
+        var highWaterMark = options.highWaterMark;
+        var fileHwm = options.fileHwm;
+        var streamHandler = options.streamHandler || defaultStreamHandler;
+        req.body = /* @__PURE__ */ Object.create(null);
+        var busboy;
+        var appender = null;
+        var isDone = false;
+        var readFinished = false;
+        var errorOccured = false;
+        var abortCleanupDone = false;
+        var abortRemovedFiles = /* @__PURE__ */ new Set();
+        var pendingWrites = new Counter();
+        var uploadedFiles = [];
+        var pendingFiles = [];
+        function done(err) {
+          var called = false;
+          function onFinished() {
+            if (called) return;
+            called = true;
+            next(err);
+          }
+          if (isDone) return;
+          isDone = true;
+          if (busboy) {
+            req.unpipe(busboy);
+            setImmediate(() => {
+              busboy.removeAllListeners();
+              busboy.on("error", function() {
+              });
+            });
+          }
+          drainStream(req);
+          req.resume();
+          if (err && req.readable && !req.destroyed) {
+            req.once("end", onFinished);
+            req.once("error", onFinished);
+            req.once("close", onFinished);
+            return;
+          }
+          next(err);
+        }
+        function indicateDone() {
+          if (readFinished && pendingWrites.isZero() && !errorOccured) done();
+        }
+        function abortWithError(uploadError, skipPendingWait) {
+          if (errorOccured) return;
+          errorOccured = true;
+          function finishAbort() {
+            abortCleanupDone = true;
+            function remove(file, cb) {
+              storage._removeFile(req, file, cb);
+            }
+            var pendingToRemove = pendingFiles.filter(function(f) {
+              return f.path;
+            });
+            pendingToRemove.forEach(function(f) {
+              abortRemovedFiles.add(f);
+            });
+            var filesToRemove = uploadedFiles.concat(pendingToRemove);
+            pendingFiles = [];
+            removeUploadedFiles(filesToRemove, remove, function(err, storageErrors) {
+              if (err) return done(err);
+              uploadError.storageErrors = storageErrors;
+              done(uploadError);
+            });
+          }
+          if (skipPendingWait) {
+            finishAbort();
+          } else {
+            pendingWrites.onceZero(finishAbort);
+          }
+        }
+        function abortWithCode(code, optionalField, optionalFilename) {
+          abortWithError(new MulterError(code, optionalField, optionalFilename));
+        }
+        function handleRequestFailure(err) {
+          if (isDone) return;
+          if (busboy) {
+            req.unpipe(busboy);
+            busboy.destroy(err);
+          }
+          abortWithError(err, true);
+        }
+        req.on("error", function(err) {
+          handleRequestFailure(err || new Error("Request error"));
+        });
+        req.on("aborted", function() {
+          handleRequestFailure(new Error("Request aborted"));
+        });
+        req.on("close", function() {
+          if (req.readableEnded) return;
+          handleRequestFailure(new Error("Request closed"));
+        });
+        try {
+          busboy = Busboy({
+            headers: req.headers,
+            limits: busboyLimits,
+            preservePath,
+            defParamCharset,
+            defCharset,
+            highWaterMark,
+            fileHwm
+          });
+        } catch (err) {
+          return next(err);
+        }
+        appender = new FileAppender(fileStrategy, req);
+        busboy.on("field", function(fieldname, value, { nameTruncated, valueTruncated }) {
+          if (fieldname == null) return abortWithCode("MISSING_FIELD_NAME");
+          var rawFieldname = fieldname;
+          fieldname = decodeFormDataName(fieldname);
+          if (nameTruncated) return abortWithCode("LIMIT_FIELD_KEY");
+          if (valueTruncated) return abortWithCode("LIMIT_FIELD_VALUE", fieldname);
+          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNameSize")) {
+            if (rawFieldname.length > limits.fieldNameSize) return abortWithCode("LIMIT_FIELD_KEY");
+          }
+          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNestingDepth")) {
+            if (fieldname.split("[").length - 1 > limits.fieldNestingDepth) return abortWithCode("LIMIT_FIELD_NESTING", fieldname);
+          }
+          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldArrayIndexLimit")) {
+            if (exceedsArrayIndexLimit(fieldname, limits.fieldArrayIndexLimit)) {
+              return abortWithCode("LIMIT_FIELD_ARRAY_INDEX", fieldname);
+            }
+          }
+          try {
+            appendField(req.body, fieldname, value);
+          } catch {
+            return abortWithCode("INVALID_FIELD_NAME", fieldname);
+          }
+        });
+        busboy.on("file", function(fieldname, fileStream, { filename, encoding, mimeType }) {
+          var pendingWritesIncremented = false;
+          var aborting = false;
+          var accepted = false;
+          var fileSizeLimitReached = false;
+          var originalname = filename && decodeFormDataName(filename);
+          function decrementPendingWrites() {
+            if (!pendingWritesIncremented) return;
+            pendingWritesIncremented = false;
+            pendingWrites.decrement();
+          }
+          fileStream.on("error", function(err) {
+            decrementPendingWrites();
+            abortWithError(err);
+          });
+          fileStream.on("limit", function() {
+            fileSizeLimitReached = true;
+            if (accepted) {
+              aborting = true;
+              abortWithCode("LIMIT_FILE_SIZE", fieldname, originalname);
+            }
+          });
+          if (fieldname == null) return abortWithCode("MISSING_FIELD_NAME");
+          var rawFieldname = fieldname;
+          fieldname = decodeFormDataName(fieldname);
+          if (!filename) return fileStream.resume();
+          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNameSize")) {
+            if (rawFieldname.length > limits.fieldNameSize) return abortWithCode("LIMIT_FIELD_KEY");
+          }
+          var file = {
+            fieldname,
+            originalname,
+            encoding,
+            mimetype: mimeType
+          };
+          var placeholder = appender.insertPlaceholder(file);
+          fileFilter(req, file, function(err, includeFile) {
+            if (errorOccured) {
+              appender.removePlaceholder(placeholder);
+              return fileStream.resume();
+            }
+            if (err) {
+              appender.removePlaceholder(placeholder);
+              return abortWithError(err);
+            }
+            if (!includeFile) {
+              appender.removePlaceholder(placeholder);
+              return fileStream.resume();
+            }
+            if (fileSizeLimitReached) {
+              appender.removePlaceholder(placeholder);
+              return abortWithCode("LIMIT_FILE_SIZE", fieldname, originalname);
+            }
+            accepted = true;
+            pendingWritesIncremented = true;
+            pendingWrites.increment();
+            Object.defineProperty(file, "stream", {
+              configurable: true,
+              enumerable: false,
+              value: fileStream
+            });
+            pendingFiles.push(file);
+            storage._handleFile(req, file, function(err2, info) {
+              var idx = pendingFiles.indexOf(file);
+              if (idx !== -1) pendingFiles.splice(idx, 1);
+              if (aborting) {
+                appender.removePlaceholder(placeholder);
+                if (!err2) uploadedFiles.push({ ...file, ...info });
+                return decrementPendingWrites();
+              }
+              if (err2) {
+                appender.removePlaceholder(placeholder);
+                decrementPendingWrites();
+                return abortWithError(err2);
+              }
+              var fileInfo = { ...file, ...info };
+              if (abortCleanupDone) {
+                if (abortRemovedFiles.has(file)) {
+                  appender.removePlaceholder(placeholder);
+                  decrementPendingWrites();
+                  return;
+                }
+                return storage._removeFile(req, fileInfo, function() {
+                  appender.removePlaceholder(placeholder);
+                  decrementPendingWrites();
+                });
+              }
+              appender.replacePlaceholder(placeholder, fileInfo);
+              uploadedFiles.push(fileInfo);
+              decrementPendingWrites();
+              indicateDone();
+            });
+          });
+        });
+        busboy.on("error", function(err) {
+          abortWithError(err);
+        });
+        busboy.on("partsLimit", function() {
+          abortWithCode("LIMIT_PART_COUNT");
+        });
+        busboy.on("filesLimit", function() {
+          abortWithCode("LIMIT_FILE_COUNT");
+        });
+        busboy.on("fieldsLimit", function() {
+          abortWithCode("LIMIT_FIELD_COUNT");
+        });
+        busboy.on("close", function() {
+          readFinished = true;
+          indicateDone();
+        });
+        streamHandler(req, busboy);
+      };
+    }
+    module2.exports = makeMiddleware;
+  }
+});
+
+// node_modules/multer/storage/disk.js
+var require_disk = __commonJS({
+  "node_modules/multer/storage/disk.js"(exports2, module2) {
+    var fs2 = require("fs");
+    var os = require("os");
+    var path2 = require("path");
+    var crypto4 = require("crypto");
+    var pipeline = require("stream").pipeline;
+    var MulterError = require_multer_error();
+    var openStreams = /* @__PURE__ */ new WeakMap();
+    var flushingFiles = /* @__PURE__ */ new WeakMap();
+    function endFlush(file) {
+      var flush = flushingFiles.get(file);
+      if (!flush) return;
+      flushingFiles.delete(file);
+      if (flush.onClosed) flush.onClosed();
+    }
+    function getFilename(req, file, cb) {
+      crypto4.randomBytes(16, function(err, raw) {
+        cb(err, err ? void 0 : raw.toString("hex"));
+      });
+    }
+    function getDestination(req, file, cb) {
+      cb(null, os.tmpdir());
+    }
+    function DiskStorage(opts) {
+      opts = opts || {};
+      this.getFilename = opts.filename || getFilename;
+      this.flush = opts.flush;
+      if (typeof opts.destination === "string") {
+        fs2.mkdirSync(opts.destination, { recursive: true });
+        this.getDestination = function($0, $1, cb) {
+          cb(null, opts.destination);
+        };
+      } else {
+        this.getDestination = opts.destination || getDestination;
+      }
+    }
+    DiskStorage.prototype._handleFile = function _handleFile(req, file, cb) {
+      var that = this;
+      that.getDestination(req, file, function(err, destination) {
+        if (err) return cb(err);
+        that.getFilename(req, file, function(err2, filename) {
+          if (err2) return cb(err2);
+          var finalPath = path2.join(destination, filename);
+          if (file.stream.destroyed) return cb(new MulterError("STREAM_DESTROYED"));
+          var outStream = fs2.createWriteStream(finalPath);
+          file.path = finalPath;
+          openStreams.set(file, outStream);
+          outStream.once("close", function() {
+            openStreams.delete(file);
+          });
+          if (that.flush) flushingFiles.set(file, {});
+          pipeline(file.stream, outStream, function(err3) {
+            if (err3) {
+              endFlush(file);
+              return cb(err3);
+            }
+            var done = function(err4) {
+              if (err4) return cb(err4);
+              cb(null, {
+                destination,
+                filename,
+                path: finalPath,
+                size: outStream.bytesWritten
+              });
+            };
+            if (!that.flush) return done();
+            fs2.open(finalPath, "r+", function(err4, fd) {
+              if (err4) {
+                endFlush(file);
+                return done(err4);
+              }
+              fs2.fsync(fd, function(syncErr) {
+                fs2.close(fd, function(closeErr) {
+                  endFlush(file);
+                  done(syncErr || closeErr);
+                });
+              });
+            });
+          });
+        });
+      });
+    };
+    DiskStorage.prototype._removeFile = function _removeFile(req, file, cb) {
+      var path3 = file.path;
+      delete file.destination;
+      delete file.filename;
+      delete file.path;
+      function unlink() {
+        var flush = flushingFiles.get(file);
+        if (!flush) return fs2.unlink(path3, cb);
+        flush.onClosed = function() {
+          fs2.unlink(path3, cb);
+        };
+      }
+      var outStream = openStreams.get(file);
+      if (!outStream) return unlink();
+      if (outStream.closed) return unlink();
+      function onReleased() {
+        outStream.removeListener("close", onReleased);
+        outStream.removeListener("error", onReleased);
+        unlink();
+      }
+      outStream.once("close", onReleased);
+      outStream.once("error", onReleased);
+      outStream.destroy();
+    };
+    module2.exports = function(opts) {
+      return new DiskStorage(opts);
+    };
+  }
+});
+
+// node_modules/multer/storage/memory.js
+var require_memory = __commonJS({
+  "node_modules/multer/storage/memory.js"(exports2, module2) {
+    function MemoryStorage(opts) {
+    }
+    MemoryStorage.prototype._handleFile = function _handleFile(req, file, cb) {
+      var chunks = [];
+      file.stream.on("data", function(chunk) {
+        chunks.push(chunk);
+      });
+      file.stream.on("end", function() {
+        var buffer = Buffer.concat(chunks);
+        cb(null, {
+          buffer,
+          size: buffer.length
+        });
+      });
+    };
+    MemoryStorage.prototype._removeFile = function _removeFile(req, file, cb) {
+      delete file.buffer;
+      cb(null);
+    };
+    module2.exports = function(opts) {
+      return new MemoryStorage(opts);
+    };
+  }
+});
+
+// node_modules/multer/index.js
+var require_multer = __commonJS({
+  "node_modules/multer/index.js"(exports2, module2) {
+    var makeMiddleware = require_make_middleware();
+    var diskStorage = require_disk();
+    var memoryStorage = require_memory();
+    var MulterError = require_multer_error();
+    var validateLimits = require_validate_limits();
+    function allowAll(req, file, cb) {
+      cb(null, true);
+    }
+    function Multer(options) {
+      if (options.storage) {
+        this.storage = options.storage;
+      } else if (options.dest) {
+        this.storage = diskStorage({ destination: options.dest });
+      } else {
+        this.storage = memoryStorage();
+      }
+      if (options.limits && typeof options.limits !== "function") validateLimits(options.limits);
+      this.limits = options.limits;
+      this.preservePath = options.preservePath;
+      this.defParamCharset = options.defParamCharset || "latin1";
+      this.defCharset = options.defCharset;
+      this.highWaterMark = options.highWaterMark;
+      this.fileHwm = options.fileHwm;
+      this.fileFilter = options.fileFilter || allowAll;
+      if (options.streamHandler !== void 0 && typeof options.streamHandler !== "function") {
+        throw new TypeError("Expected streamHandler to be a function");
+      }
+      this.streamHandler = options.streamHandler;
+    }
+    Multer.prototype._makeMiddleware = function(fields, fileStrategy) {
+      function setup() {
+        var fileFilter = this.fileFilter;
+        var filesLeft = /* @__PURE__ */ Object.create(null);
+        fields.forEach(function(field) {
+          if (typeof field.maxCount === "number") {
+            filesLeft[field.name] = field.maxCount;
+          } else {
+            filesLeft[field.name] = Infinity;
+          }
+        });
+        function wrappedFileFilter(req, file, cb) {
+          if ((filesLeft[file.fieldname] || 0) <= 0) {
+            return cb(new MulterError("LIMIT_UNEXPECTED_FILE", file.fieldname, file.originalname));
+          }
+          filesLeft[file.fieldname] -= 1;
+          var settled = false;
+          fileFilter(req, file, function(err, includeFile) {
+            if (!settled) {
+              settled = true;
+              if (err || !includeFile) filesLeft[file.fieldname] += 1;
+            }
+            cb(err, includeFile);
+          });
+        }
+        return {
+          limits: this.limits,
+          preservePath: this.preservePath,
+          defParamCharset: this.defParamCharset,
+          defCharset: this.defCharset,
+          highWaterMark: this.highWaterMark,
+          fileHwm: this.fileHwm,
+          streamHandler: this.streamHandler,
+          storage: this.storage,
+          fileFilter: wrappedFileFilter,
+          fileStrategy
+        };
+      }
+      return makeMiddleware(setup.bind(this));
+    };
+    Multer.prototype.single = function(name) {
+      return this._makeMiddleware([{ name, maxCount: 1 }], "VALUE");
+    };
+    Multer.prototype.array = function(name, maxCount) {
+      return this._makeMiddleware([{ name, maxCount }], "ARRAY");
+    };
+    Multer.prototype.fields = function(fields) {
+      return this._makeMiddleware(fields, "OBJECT");
+    };
+    Multer.prototype.none = function() {
+      return this._makeMiddleware([], "NONE");
+    };
+    Multer.prototype.any = function() {
+      function setup() {
+        return {
+          limits: this.limits,
+          preservePath: this.preservePath,
+          defParamCharset: this.defParamCharset,
+          defCharset: this.defCharset,
+          highWaterMark: this.highWaterMark,
+          fileHwm: this.fileHwm,
+          streamHandler: this.streamHandler,
+          storage: this.storage,
+          fileFilter: this.fileFilter,
+          fileStrategy: "ARRAY"
+        };
+      }
+      return makeMiddleware(setup.bind(this));
+    };
+    function multer(options) {
+      if (options === void 0) {
+        return new Multer({});
+      }
+      if (typeof options === "object" && options !== null) {
+        return new Multer(options);
+      }
+      throw new TypeError("Expected object for argument options");
+    }
+    module2.exports = multer;
+    module2.exports.diskStorage = diskStorage;
+    module2.exports.memoryStorage = memoryStorage;
+    module2.exports.MulterError = MulterError;
+  }
+});
+
 // apps/api/src/routes/mockRouter.js
 var require_mockRouter = __commonJS({
   "apps/api/src/routes/mockRouter.js"(exports2, module2) {
@@ -248030,6 +253213,9 @@ var require_mockRouter = __commonJS({
     var mockStore2 = require_mockDataStore();
     var TokenService = require_token_service();
     var btsDocsService2 = require_btsDocs_service();
+    var pdfService = require_pdf_service();
+    var multer = require_multer();
+    var upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
     var router = express2.Router();
     var ok = (res, data, message = "Success", statusCode = 200) => {
       return res.status(statusCode).json({
@@ -248040,12 +253226,23 @@ var require_mockRouter = __commonJS({
       });
     };
     var paginated = (res, result, message = "Success") => {
+      const items = Array.isArray(result) ? result : result.data || [];
+      const pagination = result.pagination || {
+        page: 1,
+        limit: items.length || 20,
+        total: items.length,
+        totalPages: 1
+      };
       return res.status(200).json({
         success: true,
         statusCode: 200,
         message,
-        data: result.data,
-        pagination: result.pagination
+        data: {
+          items,
+          pagination
+        },
+        items,
+        pagination
       });
     };
     router.use((req, res, next) => {
@@ -248058,6 +253255,72 @@ var require_mockRouter = __commonJS({
       }
       next();
     });
+    if (!mockStore2.whatsappMessages) {
+      mockStore2.whatsappMessages = [
+        {
+          _id: "wa_msg_101",
+          recipientPhone: "+91 98200 11990",
+          recipientName: "Gaurav Mehta (Asian Paints)",
+          templateName: "DELIVERY_COMPLETED",
+          messageType: "TEMPLATE",
+          renderedMessage: "\u2705 Consignment Delivered Successfully. Load LD-2026-0001 has arrived at Mumbai JNPT. Proof of Delivery verified.",
+          documentFileName: "BTS-Loading-Receipt-LD-2026-0001.pdf",
+          provider: "META_WHATSAPP_CLOUD",
+          providerMessageId: "wamid.HBgMOTE5ODIwMDExOTkwFQIAERgSRjQ2OTg0M0IxMjM0NTY3OAA=",
+          status: "DELIVERED",
+          retryCount: 0,
+          maxRetries: 3,
+          deliveredAt: new Date(Date.now() - 36e5).toISOString(),
+          createdAt: new Date(Date.now() - 36e5).toISOString(),
+          relatedEntity: { entityType: "LOAD", referenceNumber: "LD-2026-0001" }
+        },
+        {
+          _id: "wa_msg_102",
+          recipientPhone: "+91 98250 77662",
+          recipientName: "Ketan Trivedi (Adani Wilmar)",
+          templateName: "LOAD_DISPATCHED",
+          messageType: "TEMPLATE",
+          renderedMessage: "\u{1F69A} Barkat Tempo Service: Consignment LD-2026-0002 dispatched via MH12CD5678. Driver: Vikram Singh.",
+          provider: "META_WHATSAPP_CLOUD",
+          providerMessageId: "wamid.HBgMOTE5ODIwMDExOTkwFQIAERgSRjQ2OTg0M0IxMjM0NTY3OUI=",
+          status: "DELIVERED",
+          retryCount: 0,
+          maxRetries: 3,
+          deliveredAt: new Date(Date.now() - 72e5).toISOString(),
+          createdAt: new Date(Date.now() - 72e5).toISOString(),
+          relatedEntity: { entityType: "TRIP", referenceNumber: "TRP-2026-002" }
+        }
+      ];
+    }
+    if (!mockStore2.complianceNotifications) {
+      mockStore2.complianceNotifications = [
+        {
+          _id: "notif_1",
+          title: "Vehicle Insurance Expiring Soon",
+          message: "Comprehensive Commercial Insurance for MH12CD5678 expires in 17 days (2026-11-15). Renew promptly to avoid transit penalties.",
+          severity: "WARNING",
+          entityType: "VEHICLE",
+          referenceNumber: "MH12CD5678",
+          daysLeft: 17,
+          isRead: false,
+          createdAt: (/* @__PURE__ */ new Date()).toISOString()
+        },
+        {
+          _id: "notif_2",
+          title: "Fitness Certificate Verification Valid",
+          message: "Fitness certification for GJ01AB1234 is verified and valid for 62 days.",
+          severity: "INFO",
+          entityType: "VEHICLE",
+          referenceNumber: "GJ01AB1234",
+          daysLeft: 62,
+          isRead: true,
+          createdAt: new Date(Date.now() - 864e5).toISOString()
+        }
+      ];
+    }
+    if (!mockStore2.bulkJobs) {
+      mockStore2.bulkJobs = [];
+    }
     router.post("/auth/register", (req, res) => {
       const result = mockStore2.registerOrganization(req.body || {});
       TokenService.setAuthCookies(res, result.accessToken, result.rawRefreshToken);
@@ -248122,10 +253385,10 @@ var require_mockRouter = __commonJS({
           ...rawMetrics.pod
         },
         whatsapp: {
-          total: 48,
-          success: 47,
-          failed: 1,
-          deliveryRate: 98,
+          total: mockStore2.whatsappMessages.length,
+          success: mockStore2.whatsappMessages.filter((m) => m.status === "DELIVERED").length,
+          failed: 0,
+          deliveryRate: 100,
           ...rawMetrics.whatsapp
         }
       };
@@ -248140,11 +253403,11 @@ var require_mockRouter = __commonJS({
         d.setDate(d.getDate() - i);
         trends.push({
           date: d.toISOString().split("T")[0],
-          loadCount: Math.floor(4 + Math.random() * 5),
-          freight: Math.floor(12e4 + Math.random() * 8e4),
-          weightMt: Math.floor(90 + Math.random() * 60),
-          tripCount: Math.floor(3 + Math.random() * 4),
-          expenses: Math.floor(25e3 + Math.random() * 15e3)
+          loadCount: Math.floor(4 + i % 3),
+          freight: Math.floor(12e4 + i * 15e3),
+          weightMt: Math.floor(90 + i * 12),
+          tripCount: Math.floor(3 + i % 2),
+          expenses: Math.floor(25e3 + i * 3e3)
         });
       }
       return ok(res, trends, "Trend series loaded");
@@ -248173,7 +253436,7 @@ var require_mockRouter = __commonJS({
     router.get("/telematics/status", (req, res) => {
       return ok(res, {
         isConfigured: true,
-        provider: "Technofay Virtual GPS Telematics Engine (AIS-140)",
+        provider: "BTS Virtual GPS Telematics Engine (AIS-140)",
         status: "CONFIGURED",
         supportedProtocols: ["AIS-140", "Teltonika FMB", "Concox", "OBD-II"],
         dependencyMessage: "Virtual GPS telematics is running with high precision."
@@ -248188,7 +253451,7 @@ var require_mockRouter = __commonJS({
       return paginated(res, result);
     });
     router.get("/vehicles/:id", (req, res) => {
-      const vehicle = mockStore2.vehicles.find((v) => v._id === req.params.id);
+      const vehicle = mockStore2.vehicles.find((v) => v._id === req.params.id || v.plateNumber === req.params.id);
       if (!vehicle) return res.status(404).json({ success: false, message: "Vehicle not found" });
       return ok(res, vehicle);
     });
@@ -248215,7 +253478,13 @@ var require_mockRouter = __commonJS({
       mockStore2.vehicles.unshift(newVehicle);
       return ok(res, newVehicle, "Vehicle registered successfully", 201);
     });
-    router.put("/vehicles/:id", (req, res) => {
+    router.put(["/vehicles/:id", "/vehicles/:id/status"], (req, res) => {
+      const idx = mockStore2.vehicles.findIndex((v) => v._id === req.params.id);
+      if (idx === -1) return res.status(404).json({ success: false, message: "Vehicle not found" });
+      mockStore2.vehicles[idx] = { ...mockStore2.vehicles[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
+      return ok(res, mockStore2.vehicles[idx], "Vehicle updated");
+    });
+    router.patch(["/vehicles/:id", "/vehicles/:id/status"], (req, res) => {
       const idx = mockStore2.vehicles.findIndex((v) => v._id === req.params.id);
       if (idx === -1) return res.status(404).json({ success: false, message: "Vehicle not found" });
       mockStore2.vehicles[idx] = { ...mockStore2.vehicles[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
@@ -248225,19 +253494,25 @@ var require_mockRouter = __commonJS({
       mockStore2.vehicles = mockStore2.vehicles.filter((v) => v._id !== req.params.id);
       return ok(res, null, "Vehicle deleted");
     });
-    router.post("/vehicles/:id/documents", (req, res) => {
+    router.post("/vehicles/:id/documents", upload.single("file"), (req, res) => {
       const vehicle = mockStore2.vehicles.find((v) => v._id === req.params.id);
       if (!vehicle) return res.status(404).json({ success: false, message: "Vehicle not found" });
+      const b = req.body || {};
+      const originalFileName = req.file ? req.file.originalname : (b.documentType || "DOC") + "_file.pdf";
       const newDoc = {
         _id: "doc_" + crypto4.randomBytes(6).toString("hex"),
-        documentType: req.body?.documentType || "RC",
-        documentNumber: req.body?.documentNumber || "DOC-" + Date.now(),
-        expiryDate: req.body?.expiryDate || "2028-12-31",
+        documentType: b.documentType || "RC",
+        documentNumber: b.documentNumber || "DOC-" + Date.now(),
+        issueDate: b.issueDate || (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
+        expiryDate: b.expiryDate || "2028-12-31",
         status: "VERIFIED",
+        originalFileName,
+        fileSize: req.file ? req.file.size : 45e3,
+        notes: b.notes || "",
         createdAt: /* @__PURE__ */ new Date()
       };
       if (!vehicle.documents) vehicle.documents = [];
-      vehicle.documents.push(newDoc);
+      vehicle.documents.unshift(newDoc);
       return ok(res, newDoc, "Document uploaded and verified", 201);
     });
     router.get("/drivers", (req, res) => {
@@ -248258,7 +253533,7 @@ var require_mockRouter = __commonJS({
         _id: "drv_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
         name: b.name || "New Commercial Driver",
-        phone: b.phone || "+91 98251 00000",
+        phone: b.phone || "93776 10333",
         licenseNumber: (b.licenseNumber || "GJ01-2022-998877").trim().toUpperCase(),
         licenseExpiry: b.licenseExpiry || "2038-12-31",
         status: "AVAILABLE",
@@ -248276,12 +253551,36 @@ var require_mockRouter = __commonJS({
       mockStore2.drivers[idx] = { ...mockStore2.drivers[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
       return ok(res, mockStore2.drivers[idx], "Driver updated");
     });
+    router.patch("/drivers/:id", (req, res) => {
+      const idx = mockStore2.drivers.findIndex((d) => d._id === req.params.id);
+      if (idx === -1) return res.status(404).json({ success: false, message: "Driver not found" });
+      mockStore2.drivers[idx] = { ...mockStore2.drivers[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
+      return ok(res, mockStore2.drivers[idx], "Driver updated");
+    });
     router.delete("/drivers/:id", (req, res) => {
       mockStore2.drivers = mockStore2.drivers.filter((d) => d._id !== req.params.id);
       return ok(res, null, "Driver removed");
     });
-    router.post("/drivers/:id/documents", (req, res) => {
-      return ok(res, { _id: "doc_drv_" + Date.now(), status: "VERIFIED" }, "Driver document attached", 201);
+    router.post("/drivers/:id/documents", upload.single("file"), (req, res) => {
+      const driver = mockStore2.drivers.find((d) => d._id === req.params.id);
+      if (!driver) return res.status(404).json({ success: false, message: "Driver not found" });
+      const b = req.body || {};
+      const originalFileName = req.file ? req.file.originalname : (b.documentType || "DOC") + "_file.pdf";
+      const newDoc = {
+        _id: "doc_" + crypto4.randomBytes(6).toString("hex"),
+        documentType: b.documentType || "DRIVING_LICENCE",
+        documentNumber: b.documentNumber || "DL-" + Date.now(),
+        issueDate: b.issueDate || (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
+        expiryDate: b.expiryDate || "2035-05-14",
+        status: "VERIFIED",
+        originalFileName,
+        fileSize: req.file ? req.file.size : 52e3,
+        notes: b.notes || "",
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      if (!driver.documents) driver.documents = [];
+      driver.documents.unshift(newDoc);
+      return ok(res, newDoc, "Driver document attached successfully", 201);
     });
     router.get("/customers", (req, res) => {
       const { page, limit, search, type } = req.query;
@@ -248297,18 +253596,20 @@ var require_mockRouter = __commonJS({
     });
     router.post("/customers", (req, res) => {
       const b = req.body || {};
+      const name = b.name || b.legalName || "New Commercial Client Ltd";
       const newCustomer = {
         _id: "cust_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
-        legalName: b.legalName || "New Commercial Client Ltd",
-        tradeName: b.tradeName || b.legalName || "Commercial Client",
+        name,
+        legalName: name,
+        tradeName: b.tradeName || name,
         gstin: (b.gstin || "24AAACT9999Z1Z5").trim().toUpperCase(),
         pan: b.pan || (b.gstin ? b.gstin.slice(2, 12) : "AAACT9999Z"),
         type: b.type || "CONSIGNOR",
         contactPerson: b.contactPerson || "Dispatch Officer",
         email: b.email || "dispatch@client.com",
-        phone: b.phone || "+91 98250 00000",
-        billingAddress: b.billingAddress || { street: "Industrial Estate", city: "Ahmedabad", state: "Gujarat", pincode: "382405", country: "IN" },
+        phone: b.phone || "93776 10333",
+        billingAddress: b.billingAddress || { street: "Industrial Estate", city: "Vadodara", state: "Gujarat", pincode: "390022", country: "IN" },
         creditPeriodDays: parseInt(b.creditPeriodDays || "30", 10),
         isActive: true,
         createdAt: /* @__PURE__ */ new Date()
@@ -248343,12 +253644,12 @@ var require_mockRouter = __commonJS({
         companyId: mockStore2.tenant._id,
         name: b.name || "New Logistics Terminal",
         code: b.code || "LOC-" + Math.floor(100 + Math.random() * 900),
-        city: b.city || "Ahmedabad",
+        city: b.city || "Vadodara",
         state: b.state || "Gujarat",
-        address: b.address || "National Highway 48",
-        pincode: b.pincode || "382405",
+        address: b.address || "National Highway 48, Golden Chokdi",
+        pincode: b.pincode || "390022",
         hubType: b.hubType || "CENTRAL_HUB",
-        coordinates: b.coordinates || { lat: 23.0225, lng: 72.5714 },
+        coordinates: b.coordinates || { lat: 22.3072, lng: 73.1812 },
         isActive: true,
         createdAt: /* @__PURE__ */ new Date()
       };
@@ -248363,36 +253664,120 @@ var require_mockRouter = __commonJS({
       return paginated(res, result);
     });
     router.get("/loads/:id", (req, res) => {
-      const load = mockStore2.loads.find((l2) => l2._id === req.params.id);
+      const load = mockStore2.loads.find((l2) => l2._id === req.params.id || l2.loadNumber === req.params.id);
       if (!load) return res.status(404).json({ success: false, message: "Load not found" });
       return ok(res, load);
     });
     router.post("/loads", (req, res) => {
       const b = req.body || {};
       const loadNum = "LD-2026-" + String(mockStore2.loads.length + 1).padStart(4, "0");
-      const freight = parseFloat(b.freightAmount || "45000");
-      const advance = parseFloat(b.advancePaid || "20000");
+      const customer = mockStore2.customers.find((c) => c._id === b.customerId) || mockStore2.customers[0];
+      const consignor = mockStore2.customers.find((c) => c._id === (b.consignorId || b.customerId)) || customer;
+      const consignee = mockStore2.customers.find((c) => c._id === (b.consigneeId || b.customerId)) || mockStore2.customers[4] || customer;
+      const f = b.financials || {};
+      const basePaise = f.baseFreightPaise || Math.round((parseFloat(b.freightAmount) || 45e3) * 100);
+      const loadingPaise = f.loadingPaise || 0;
+      const unloadingPaise = f.unloadingPaise || 0;
+      const detentionPaise = f.detentionPaise || 0;
+      const tollPaise = f.tollPaise || 0;
+      const handlingPaise = f.handlingPaise || 0;
+      const miscPaise = f.miscChargePaise || 0;
+      const advancePaise = f.advancePaise || Math.round((parseFloat(b.advancePaid) || 2e4) * 100);
+      const deductionPaise = f.deductionPaise || 0;
+      const totalPaise = basePaise + loadingPaise + unloadingPaise + detentionPaise + tollPaise + handlingPaise + miscPaise;
+      const balancePaise = Math.max(0, totalPaise - advancePaise - deductionPaise);
+      const weight = parseFloat(b.totalWeightMt || b.weightMt || "25.0");
+      const qty = parseInt(b.totalQuantity || b.quantity || "50", 10);
+      const stops = Array.isArray(b.stops) && b.stops.length > 0 ? b.stops.map((s, idx) => {
+        const loc = mockStore2.locations.find((l2) => l2._id === s.locationId) || { name: s.locationName || "Hub", city: "Vadodara", address: "NH-48" };
+        return {
+          _id: "stp_" + Date.now() + "_" + idx,
+          sequence: s.sequence || idx + 1,
+          stopType: s.stopType || (idx === 0 ? "PICKUP" : "DELIVERY"),
+          locationId: loc,
+          locationName: loc.name,
+          allocatedQuantity: s.allocatedQuantity || qty,
+          allocatedWeightMt: s.allocatedWeightMt || weight,
+          status: "PENDING"
+        };
+      }) : [
+        {
+          _id: "stp_" + Date.now() + "_1",
+          sequence: 1,
+          stopType: "PICKUP",
+          locationId: mockStore2.locations[0],
+          locationName: mockStore2.locations[0]?.name || "Vadodara Hub",
+          allocatedQuantity: qty,
+          allocatedWeightMt: weight,
+          status: "PENDING"
+        },
+        {
+          _id: "stp_" + Date.now() + "_2",
+          sequence: 2,
+          stopType: "DELIVERY",
+          locationId: mockStore2.locations[2] || mockStore2.locations[0],
+          locationName: mockStore2.locations[2]?.name || "Mumbai Terminal",
+          allocatedQuantity: qty,
+          allocatedWeightMt: weight,
+          status: "PENDING"
+        }
+      ];
       const newLoad = {
         _id: "ld_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
         loadNumber: loadNum,
-        customerId: b.customerId || mockStore2.customers[0]._id,
-        customer: mockStore2.customers.find((c) => c._id === b.customerId) || mockStore2.customers[0],
-        consignorName: b.consignorName || "Reliance Industries Limited",
-        consigneeName: b.consigneeName || "Asian Paints Limited",
-        originCity: b.originCity || "Ahmedabad, Gujarat",
-        destinationCity: b.destinationCity || "Mumbai, Maharashtra",
-        cargoType: b.cargoType || "Industrial Goods",
+        orderDate: (/* @__PURE__ */ new Date()).toISOString(),
+        customerId: {
+          _id: customer._id,
+          name: customer.legalName,
+          legalName: customer.legalName,
+          phone: customer.phone
+        },
+        customer,
+        consignorId: {
+          _id: consignor._id,
+          name: consignor.legalName,
+          legalName: consignor.legalName,
+          phone: consignor.phone
+        },
+        consigneeId: {
+          _id: consignee._id,
+          name: consignee.legalName,
+          legalName: consignee.legalName,
+          phone: consignee.phone
+        },
+        consignorName: consignor.legalName,
+        consigneeName: consignee.legalName,
+        originCity: b.originCity || stops[0]?.locationName || "Vadodara, GJ",
+        origin: b.originCity || stops[0]?.locationName || "Vadodara, GJ",
+        destinationCity: b.destinationCity || stops[stops.length - 1]?.locationName || "Mumbai, MH",
+        destination: b.destinationCity || stops[stops.length - 1]?.locationName || "Mumbai, MH",
+        cargoType: b.cargoType || "Industrial Consignment Goods",
         packageType: b.packageType || "PALLETS",
-        weightMt: parseFloat(b.weightMt || "25.0"),
-        freightAmount: freight,
-        advancePaid: advance,
-        balanceDue: Math.max(0, freight - advance),
+        totalWeightMt: weight,
+        weightMt: weight,
+        totalQuantity: qty,
+        quantity: qty,
+        unit: b.packageType || "PALLETS",
+        freightAmount: totalPaise / 100,
+        advancePaid: advancePaise / 100,
+        balanceDue: balancePaise / 100,
+        financials: {
+          baseFreightPaise: basePaise,
+          totalFreightPaise: totalPaise,
+          advancePaise,
+          balancePaise,
+          baseFreightRupees: basePaise / 100,
+          totalFreightRupees: totalPaise / 100,
+          advanceRupees: advancePaise / 100,
+          balanceRupees: balancePaise / 100
+        },
         status: b.assignedVehicleId ? "VEHICLE_ASSIGNED" : "CREATED",
         assignedVehiclePlate: b.assignedVehiclePlate || "",
         assignedDriverName: b.assignedDriverName || "",
+        stops,
         gtaGstRate: 5,
-        gtaGstAmount: Math.round(freight * 0.05),
+        gtaGstAmount: Math.round(totalPaise / 100 * 0.05),
         sacCode: "9965",
         createdAt: /* @__PURE__ */ new Date()
       };
@@ -248405,11 +253790,57 @@ var require_mockRouter = __commonJS({
       mockStore2.loads[idx] = { ...mockStore2.loads[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
       return ok(res, mockStore2.loads[idx], "Load updated");
     });
-    router.post("/loads/:id/status", (req, res) => {
+    router.patch("/loads/:id", (req, res) => {
+      const idx = mockStore2.loads.findIndex((l2) => l2._id === req.params.id);
+      if (idx === -1) return res.status(404).json({ success: false, message: "Load not found" });
+      mockStore2.loads[idx] = { ...mockStore2.loads[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
+      return ok(res, mockStore2.loads[idx], "Load updated");
+    });
+    router.delete("/loads/:id", (req, res) => {
+      mockStore2.loads = mockStore2.loads.filter((l2) => l2._id !== req.params.id);
+      return ok(res, null, "Load deleted");
+    });
+    router.post(["/loads/:id/status", "/loads/:id/transition"], (req, res) => {
       const load = mockStore2.loads.find((l2) => l2._id === req.params.id);
       if (!load) return res.status(404).json({ success: false, message: "Load not found" });
       load.status = req.body?.status || load.status;
       return ok(res, load, `Load status transitioned to ${load.status}`);
+    });
+    router.patch("/loads/:id/status", (req, res) => {
+      const load = mockStore2.loads.find((l2) => l2._id === req.params.id);
+      if (!load) return res.status(404).json({ success: false, message: "Load not found" });
+      load.status = req.body?.status || load.status;
+      return ok(res, load, `Load status transitioned to ${load.status}`);
+    });
+    router.post("/loads/:id/assign", (req, res) => {
+      const load = mockStore2.loads.find((l2) => l2._id === req.params.id);
+      if (!load) return res.status(404).json({ success: false, message: "Load not found" });
+      const { vehicleId, driverId } = req.body || {};
+      const vehicle = mockStore2.vehicles.find((v) => v._id === vehicleId);
+      const driver = mockStore2.drivers.find((d) => d._id === driverId);
+      if (vehicle) {
+        load.assignedVehicleId = {
+          _id: vehicle._id,
+          plateNumber: vehicle.plateNumber,
+          vehicleType: vehicle.vehicleType,
+          capacityTonnage: vehicle.capacityTonnage
+        };
+        load.assignedVehiclePlate = vehicle.plateNumber;
+        load.vehiclePlate = vehicle.plateNumber;
+        vehicle.status = "ON_TRIP";
+      }
+      if (driver) {
+        load.assignedDriverId = {
+          _id: driver._id,
+          name: driver.name,
+          phone: driver.phone
+        };
+        load.assignedDriverName = driver.name;
+        load.driverName = driver.name;
+        driver.status = "ON_TRIP";
+      }
+      load.status = "VEHICLE_ASSIGNED";
+      return ok(res, load, "Vehicle and driver assigned to load");
     });
     router.get(["/loads/:id/pdf", "/loads/:id/loading-slip"], async (req, res) => {
       try {
@@ -248418,20 +253849,21 @@ var require_mockRouter = __commonJS({
         const pdfBuffer = isMemo ? await btsDocsService2.generateMemoPdf({
           memoNumber: load.loadNumber || req.params.id,
           date: load.createdAt,
-          fromStation: load.origin,
-          toStation: load.destination,
-          vehicleNumber: load.vehiclePlate,
-          driverName: load.driverName
+          fromStation: load.origin || load.originCity,
+          toStation: load.destination || load.destinationCity,
+          vehicleNumber: load.vehiclePlate || load.assignedVehiclePlate,
+          driverName: load.driverName || load.assignedDriverName
         }) : await btsDocsService2.generateLoadingReceiptPdf({
           lrNumber: load.loadNumber || req.params.id,
           date: load.createdAt,
-          vehicleNumber: load.vehiclePlate,
-          toStation: load.destination,
-          weight: load.weightMt ? `${load.weightMt} MT` : void 0,
+          vehicleNumber: load.vehiclePlate || load.assignedVehiclePlate,
+          toStation: load.destination || load.destinationCity,
+          weight: load.totalWeightMt || load.weightMt ? `${load.totalWeightMt || load.weightMt} MT` : void 0,
           freightAmount: load.freightAmount,
-          advanceAmount: load.advanceAmount,
-          balanceAmount: load.balanceAmount,
-          consignee: { name: load.consignee || load.customerName, city: load.destination }
+          advanceAmount: load.advancePaid || load.advanceAmount,
+          balanceAmount: load.balanceDue || load.balanceAmount,
+          consignee: { name: load.consigneeName || load.customerName, city: load.destinationCity || load.destination },
+          consignor: { name: load.consignorName, city: load.originCity || load.origin }
         });
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", `inline; filename="BTS-${isMemo ? "Memo" : "Loading-Receipt"}-${req.params.id}.pdf"`);
@@ -248447,26 +253879,33 @@ var require_mockRouter = __commonJS({
       return paginated(res, result);
     });
     router.get("/bilties/:id", (req, res) => {
-      const bilty = mockStore2.bilties.find((b) => b._id === req.params.id);
+      const bilty = mockStore2.bilties.find((b) => b._id === req.params.id || b.biltyNumber === req.params.id);
       if (!bilty) return res.status(404).json({ success: false, message: "Bilty not found" });
       return ok(res, bilty);
     });
     router.post("/bilties", (req, res) => {
       const b = req.body || {};
       const num = "BL-2026-" + String(mockStore2.bilties.length + 101);
+      const lrNum = b.lrNumber || "LR-2026-" + String(mockStore2.bilties.length + 101);
       const freight = parseFloat(b.freightAmount || "65000");
       const advance = parseFloat(b.advanceAmount || "30000");
       const newBilty = {
         _id: "bl_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
         biltyNumber: num,
-        lrNumber: "LR-2026-" + String(mockStore2.bilties.length + 101),
+        lrNumber: lrNum,
         loadNumber: b.loadNumber || "LD-2026-0001",
+        loadId: { _id: "ld_demo", loadNumber: b.loadNumber || "LD-2026-0001" },
+        lrId: { _id: "lr_demo", lrNumber: lrNum },
         vehiclePlate: b.vehiclePlate || "GJ01AB1234",
+        vehicleId: { plateNumber: b.vehiclePlate || "GJ01AB1234", vehicleType: "Heavy Commercial Vehicle (HCV)" },
         driverName: b.driverName || "Ramesh Patel",
+        driverId: { name: b.driverName || "Ramesh Patel", phone: "93776 10333" },
         consignor: b.consignor || "Reliance Industries Limited",
+        consignorId: { name: b.consignor || "Reliance Industries Limited", phone: "93776 10333" },
         consignee: b.consignee || "Asian Paints Limited",
-        origin: b.origin || "Ahmedabad Hub",
+        consigneeId: { name: b.consignee || "Asian Paints Limited", phone: "93776 10333" },
+        origin: b.origin || "Ahmedabad Central Hub",
         destination: b.destination || "Mumbai Nhava Sheva",
         goodsDescription: b.goodsDescription || "Industrial Consignment",
         weightMt: parseFloat(b.weightMt || "28.0"),
@@ -248482,10 +253921,65 @@ var require_mockRouter = __commonJS({
       mockStore2.bilties.unshift(newBilty);
       return ok(res, newBilty, "Bilty generated successfully", 201);
     });
+    router.patch(["/bilties/:id/status", "/bilties/:id"], (req, res) => {
+      const b = mockStore2.bilties.find((item) => item._id === req.params.id);
+      if (!b) return res.status(404).json({ success: false, message: "Bilty not found" });
+      if (req.body?.status) b.status = req.body.status;
+      return ok(res, b, `Bilty status updated to ${b.status}`);
+    });
     router.get("/lr", (req, res) => {
       const { page, limit, search } = req.query;
       const result = mockStore2.query(mockStore2.bilties, { search, page, limit, sortField: "createdAt", sortOrder: -1 });
       return paginated(res, result);
+    });
+    router.get("/lr/:id", (req, res) => {
+      const lr = mockStore2.bilties.find((b) => b._id === req.params.id || b.lrNumber === req.params.id);
+      if (!lr) return res.status(404).json({ success: false, message: "LR not found" });
+      return ok(res, lr);
+    });
+    router.post("/lr", (req, res) => {
+      const b = req.body || {};
+      const lrNum = b.lrNumber || "LR-2026-" + String(mockStore2.bilties.length + 101);
+      const blNum = "BL-2026-" + String(mockStore2.bilties.length + 101);
+      const freight = parseFloat(b.freightAmount || b.freightRate || "65000");
+      const advance = parseFloat(b.advanceAmount || "30000");
+      const newLr = {
+        _id: "lr_" + crypto4.randomBytes(6).toString("hex"),
+        companyId: mockStore2.tenant._id,
+        lrNumber: lrNum,
+        biltyNumber: blNum,
+        loadNumber: b.loadNumber || "LD-2026-0001",
+        loadId: { _id: "ld_demo", loadNumber: b.loadNumber || "LD-2026-0001" },
+        lrId: { _id: "lr_demo", lrNumber: lrNum },
+        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
+        vehicleId: { plateNumber: b.vehiclePlate || "GJ01AB1234", vehicleType: "Heavy Commercial Vehicle (HCV)" },
+        driverName: b.driverName || "Ramesh Patel",
+        driverId: { name: b.driverName || "Ramesh Patel", phone: "93776 10333" },
+        consignor: b.consignor || "Reliance Industries Limited",
+        consignorId: { name: b.consignor || "Reliance Industries Limited", phone: "93776 10333" },
+        consignee: b.consignee || "Asian Paints Limited",
+        consigneeId: { name: b.consignee || "Asian Paints Limited", phone: "93776 10333" },
+        origin: b.origin || "Vadodara Central Hub",
+        destination: b.destination || "Mumbai Nhava Sheva",
+        goodsDescription: b.goodsDescription || "Commercial Consignment",
+        weightMt: parseFloat(b.weightMt || "28.0"),
+        freightAmount: freight,
+        advanceAmount: advance,
+        balanceAmount: Math.max(0, freight - advance),
+        gstRate: 5,
+        gstAmount: Math.round(freight * 0.05),
+        gstPayableBy: "CONSIGNOR",
+        status: "IN_TRANSIT",
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.bilties.unshift(newLr);
+      return ok(res, newLr, "LR created successfully", 201);
+    });
+    router.patch(["/lr/:id/status", "/lr/:id"], (req, res) => {
+      const lr = mockStore2.bilties.find((item) => item._id === req.params.id);
+      if (!lr) return res.status(404).json({ success: false, message: "LR not found" });
+      if (req.body?.status) lr.status = req.body.status;
+      return ok(res, lr, `LR status updated to ${lr.status}`);
     });
     router.get("/bilties/:id/pdf", async (req, res) => {
       try {
@@ -248557,45 +254051,155 @@ var require_mockRouter = __commonJS({
       return paginated(res, result);
     });
     router.get("/trips/:id", (req, res) => {
-      const trip = mockStore2.trips.find((t) => t._id === req.params.id);
+      const trip = mockStore2.trips.find((t) => t._id === req.params.id || t.tripNumber === req.params.id);
       if (!trip) return res.status(404).json({ success: false, message: "Trip not found" });
       return ok(res, trip);
     });
     router.post("/trips", (req, res) => {
       const b = req.body || {};
+      const load = mockStore2.loads.find((l2) => l2._id === b.loadId) || mockStore2.loads[0];
+      const vehicle = mockStore2.vehicles.find((v) => v._id === b.vehicleId) || mockStore2.vehicles[0];
+      const driver = mockStore2.drivers.find((d) => d._id === b.driverId) || mockStore2.drivers[0];
+      const tripNumber = "TRP-2026-" + String(mockStore2.trips.length + 1).padStart(3, "0");
+      const stops = load && Array.isArray(load.stops) && load.stops.length > 0 ? load.stops.map((s, idx) => ({
+        _id: "trp_stp_" + Date.now() + "_" + idx,
+        sequence: s.sequence || idx + 1,
+        stopType: s.stopType || (idx === 0 ? "PICKUP" : "DELIVERY"),
+        locationName: s.locationId?.name || s.locationName || "Transit Hub",
+        status: idx === 0 ? "COMPLETED" : "PENDING",
+        allocatedQuantity: s.allocatedQuantity || 50,
+        deliveredQuantity: idx === 0 ? s.allocatedQuantity || 50 : 0,
+        allocatedWeightMt: s.allocatedWeightMt || 25
+      })) : [
+        {
+          _id: "trp_stp_" + Date.now() + "_1",
+          sequence: 1,
+          stopType: "PICKUP",
+          locationName: "Vadodara Central Logistics Hub",
+          status: "COMPLETED",
+          allocatedQuantity: 50,
+          deliveredQuantity: 50,
+          allocatedWeightMt: 25
+        },
+        {
+          _id: "trp_stp_" + Date.now() + "_2",
+          sequence: 2,
+          stopType: "DELIVERY",
+          locationName: "Destination Hub",
+          status: "PENDING",
+          allocatedQuantity: 50,
+          deliveredQuantity: 0,
+          allocatedWeightMt: 25
+        }
+      ];
       const newTrip = {
         _id: "trp_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
-        tripNumber: "TRP-2026-" + String(mockStore2.trips.length + 1).padStart(3, "0"),
-        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
-        driverName: b.driverName || "Ramesh Patel",
-        driverPhone: b.driverPhone || "+91 98251 11223",
-        origin: b.origin || "Ahmedabad, Gujarat",
-        destination: b.destination || "Mumbai, Maharashtra",
+        tripNumber,
+        loadId: {
+          _id: load._id,
+          loadNumber: load.loadNumber
+        },
+        loadNumber: load.loadNumber,
+        vehicleId: {
+          _id: vehicle._id,
+          plateNumber: vehicle.plateNumber,
+          vehicleType: vehicle.vehicleType,
+          capacityTonnage: vehicle.capacityTonnage
+        },
+        vehiclePlate: vehicle.plateNumber,
+        driverId: {
+          _id: driver._id,
+          name: driver.name,
+          phone: driver.phone,
+          licenseNumber: driver.licenseNumber
+        },
+        driverName: driver.name,
+        driverPhone: driver.phone,
+        origin: load.originCity || "Vadodara, Gujarat",
+        destination: load.destinationCity || "Mumbai, Maharashtra",
         status: "IN_TRANSIT",
         odometerStart: parseInt(b.odometerStart || "140000", 10),
-        totalExpenses: 0,
+        totalDistanceKm: 480,
+        currentLocation: "NH-48 Golden Chokdi Outbound, Speed: 54 km/h",
+        driverAdvancePaise: b.driverAdvancePaise || 15e5,
+        stops,
         expenses: [],
+        totalExpenses: 0,
         startedAt: /* @__PURE__ */ new Date()
       };
+      vehicle.status = "ON_TRIP";
+      driver.status = "ON_TRIP";
+      load.status = "IN_TRANSIT";
       mockStore2.trips.unshift(newTrip);
       return ok(res, newTrip, "Trip dispatched successfully", 201);
+    });
+    router.patch("/trips/:id/status", (req, res) => {
+      const trip = mockStore2.trips.find((t) => t._id === req.params.id);
+      if (!trip) return res.status(404).json({ success: false, message: "Trip not found" });
+      trip.status = req.body?.status || trip.status;
+      return ok(res, trip, `Trip status updated to ${trip.status}`);
+    });
+    router.post("/trips/:id/status", (req, res) => {
+      const trip = mockStore2.trips.find((t) => t._id === req.params.id);
+      if (!trip) return res.status(404).json({ success: false, message: "Trip not found" });
+      trip.status = req.body?.status || trip.status;
+      return ok(res, trip, `Trip status updated to ${trip.status}`);
+    });
+    router.post("/trips/:id/stops/:stopId/deliver", (req, res) => {
+      const trip = mockStore2.trips.find((t) => t._id === req.params.id);
+      if (!trip) return res.status(404).json({ success: false, message: "Trip not found" });
+      const stop = (trip.stops || []).find((s) => s._id === req.params.stopId);
+      if (stop) {
+        stop.status = "COMPLETED";
+        stop.deliveredQuantity = req.body?.deliveredQuantity || stop.allocatedQuantity || 1;
+        stop.receiverName = req.body?.receiverName || "Gate Incharge";
+        stop.receiverPhone = req.body?.receiverPhone || "";
+        stop.deliveredAt = (/* @__PURE__ */ new Date()).toISOString();
+      }
+      const pendingDeliveries = (trip.stops || []).filter((s) => s.stopType === "DELIVERY" && s.status !== "COMPLETED");
+      if (pendingDeliveries.length === 0) {
+        trip.status = "DELIVERED";
+      }
+      return ok(res, trip, "Stop delivery confirmed successfully");
+    });
+    router.post("/trips/:id/close", (req, res) => {
+      const trip = mockStore2.trips.find((t) => t._id === req.params.id);
+      if (!trip) return res.status(404).json({ success: false, message: "Trip not found" });
+      trip.status = "CLOSED";
+      trip.completedAt = /* @__PURE__ */ new Date();
+      if (Array.isArray(trip.stops)) {
+        trip.stops.forEach((s) => {
+          s.status = "COMPLETED";
+          if (!s.deliveredQuantity) s.deliveredQuantity = s.allocatedQuantity || 1;
+        });
+      }
+      if (trip.vehicleId?._id) {
+        const v = mockStore2.vehicles.find((item) => item._id === trip.vehicleId._id);
+        if (v) v.status = "AVAILABLE";
+      }
+      if (trip.driverId?._id) {
+        const d = mockStore2.drivers.find((item) => item._id === trip.driverId._id);
+        if (d) d.status = "AVAILABLE";
+      }
+      return ok(res, trip, "Trip closed and settled successfully");
     });
     router.post("/trips/:id/expenses", (req, res) => {
       const trip = mockStore2.trips.find((t) => t._id === req.params.id);
       if (!trip) return res.status(404).json({ success: false, message: "Trip not found" });
+      const amount = parseFloat(req.body?.amountRupees || (req.body?.amountPaise ? req.body.amountPaise / 100 : "5000"));
       const newExpense = {
         _id: "exp_" + Date.now(),
-        category: req.body?.category || "FUEL",
-        amount: parseFloat(req.body?.amount || "5000"),
-        notes: req.body?.notes || "Highway expense"
+        category: req.body?.expenseType || req.body?.category || "FUEL",
+        amount,
+        notes: req.body?.description || req.body?.notes || "Route expense"
       };
       if (!trip.expenses) trip.expenses = [];
       trip.expenses.push(newExpense);
       trip.totalExpenses = trip.expenses.reduce((s, e) => s + (e.amount || 0), 0);
       return ok(res, trip, "Expense recorded", 201);
     });
-    router.get(["/trips/:id/pdf", "/trips/:id/sheet"], async (req, res) => {
+    router.get(["/trips/:id/pdf", "/trips/:id/sheet", "/trips/:id/tripsheet", "/trips/:id/settlement"], async (req, res) => {
       try {
         const trip = mockStore2.trips.find((t) => t._id === req.params.id || t.tripNumber === req.params.id) || {};
         const pdfBuffer = await btsDocsService2.generateMemoPdf({
@@ -248603,9 +254207,9 @@ var require_mockRouter = __commonJS({
           date: trip.startedAt || trip.createdAt,
           fromStation: trip.origin,
           toStation: trip.destination,
-          vehicleNumber: trip.vehiclePlate,
-          driverName: trip.driverName,
-          phoneNo: trip.driverPhone,
+          vehicleNumber: trip.vehiclePlate || trip.vehicleId?.plateNumber,
+          driverName: trip.driverName || trip.driverId?.name,
+          phoneNo: trip.driverPhone || trip.driverId?.phone,
           ownerName: "Barkat Tempo Service",
           transporterName: "Barkat Tempo Service",
           driverAdvance: 33e3,
@@ -248629,8 +254233,8 @@ var require_mockRouter = __commonJS({
           toStation: record.destination,
           weight: record.weightMt ? `${record.weightMt} MT` : void 0,
           freightAmount: record.freightAmount,
-          advanceAmount: record.advanceAmount,
-          balanceAmount: record.balanceAmount,
+          advanceAmount: record.advanceAmount || record.advancePaid,
+          balanceAmount: record.balanceAmount || record.balanceDue,
           consignee: { name: record.consignee || record.customerName, city: record.destination },
           consignor: { name: record.consignor, city: record.origin }
         });
@@ -248649,9 +254253,9 @@ var require_mockRouter = __commonJS({
           date: trip.startedAt || trip.createdAt,
           fromStation: trip.origin,
           toStation: trip.destination,
-          vehicleNumber: trip.vehiclePlate,
-          driverName: trip.driverName,
-          phoneNo: trip.driverPhone
+          vehicleNumber: trip.vehiclePlate || trip.vehicleId?.plateNumber,
+          driverName: trip.driverName || trip.driverId?.name,
+          phoneNo: trip.driverPhone || trip.driverId?.phone
         });
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", `inline; filename="BTS-Memo-${req.params.id}.pdf"`);
@@ -248667,28 +254271,130 @@ var require_mockRouter = __commonJS({
       const result = mockStore2.query(mockStore2.pods, { filter, search, page, limit, sortField: "createdAt", sortOrder: -1 });
       return paginated(res, result);
     });
-    router.post("/pod", (req, res) => {
+    router.post("/pod", upload.single("file"), (req, res) => {
       const b = req.body || {};
+      const trip = mockStore2.trips.find((t) => t._id === b.tripId) || mockStore2.trips[0];
+      const originalFileName = req.file ? req.file.originalname : b.fileName || "pod_signed_receipt.pdf";
       const newPod = {
         _id: "pod_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
         podNumber: "POD-2026-" + String(mockStore2.pods.length + 1).padStart(4, "0"),
-        loadNumber: b.loadNumber || "LD-2026-0001",
-        status: "SUBMITTED",
-        receivedBy: b.receivedBy || "Consignee Gate In Charge",
-        remarks: b.remarks || "Signed consignment copy received",
-        createdAt: /* @__PURE__ */ new Date()
+        loadId: trip?.loadId || { _id: "ld_demo", loadNumber: "LD-2026-0001" },
+        loadNumber: trip?.loadNumber || "LD-2026-0001",
+        tripId: trip ? { _id: trip._id, tripNumber: trip.tripNumber } : { _id: "trp_demo", tripNumber: "TRP-2026-001" },
+        tripNumber: trip?.tripNumber || "TRP-2026-001",
+        status: "PENDING_VERIFICATION",
+        quantityDelivered: parseInt(b.quantityDelivered || "1", 10),
+        receivedBy: b.receiverName || b.receivedBy || "Consignee Gate In Charge",
+        receiverPhone: b.receiverPhone || "",
+        remarks: b.remarks || "Signed consignment copy received at delivery destination.",
+        fileName: originalFileName,
+        fileSize: req.file ? req.file.size : 124e3,
+        mimeType: req.file ? req.file.mimetype : "application/pdf",
+        createdAt: (/* @__PURE__ */ new Date()).toISOString()
       };
       mockStore2.pods.unshift(newPod);
-      return ok(res, newPod, "POD submitted", 201);
+      return ok(res, newPod, "POD submitted successfully", 201);
     });
-    router.post("/pod/:id/verify", (req, res) => {
+    router.post(["/pod/:id/verify", "/pod/:id/verify-direct"], (req, res) => {
       const pod = mockStore2.pods.find((p) => p._id === req.params.id);
       if (!pod) return res.status(404).json({ success: false, message: "POD not found" });
-      pod.status = "VERIFIED";
+      pod.status = req.body?.status === "REJECTED" ? "REJECTED" : "VERIFIED";
       pod.verifiedAt = /* @__PURE__ */ new Date();
-      pod.verifiedBy = "Lead System Administrator";
-      return ok(res, pod, "POD verified and confirmed");
+      pod.verifiedBy = "BTS System Administrator";
+      pod.remarks = req.body?.remarks || pod.remarks;
+      return ok(res, pod, "POD verification processed successfully");
+    });
+    router.get("/pod/:id/download", async (req, res) => {
+      try {
+        const pod = mockStore2.pods.find((p) => p._id === req.params.id) || {};
+        const pdfBuffer = await btsDocsService2.generateLoadingReceiptPdf({
+          lrNumber: pod.podNumber || "POD-2026",
+          date: pod.createdAt || /* @__PURE__ */ new Date(),
+          vehicleNumber: "GJ-01-AB-1234",
+          toStation: "Mumbai Nhava Sheva",
+          weight: "32.5 MT",
+          freightAmount: 68500,
+          advanceAmount: 35e3,
+          balanceAmount: 33500,
+          consignee: { name: pod.receivedBy || "Consignee Manager", city: "Mumbai" }
+        });
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename="BTS-POD-${req.params.id}.pdf"`);
+        return res.send(pdfBuffer);
+      } catch (err) {
+        return res.status(500).json({ success: false, message: err.message });
+      }
+    });
+    router.get("/documents/:id/download", async (req, res) => {
+      try {
+        const docId = req.params.id;
+        let foundDoc = null;
+        let ownerName = "Barkat Tempo Service";
+        for (const v of mockStore2.vehicles) {
+          const d = (v.documents || []).find((doc) => doc._id === docId);
+          if (d) {
+            foundDoc = d;
+            ownerName = `Vehicle ${v.plateNumber}`;
+            break;
+          }
+        }
+        if (!foundDoc) {
+          for (const drv of mockStore2.drivers) {
+            const d = (drv.documents || []).find((doc) => doc._id === docId);
+            if (d) {
+              foundDoc = d;
+              ownerName = `Driver ${drv.name}`;
+              break;
+            }
+          }
+        }
+        const pdfBuffer = await btsDocsService2.generateLoadingReceiptPdf({
+          lrNumber: foundDoc?.documentNumber || docId,
+          date: foundDoc?.expiryDate || /* @__PURE__ */ new Date(),
+          vehicleNumber: ownerName,
+          toStation: "Gujarat RTO Compliance Records",
+          weight: "Compliance Document",
+          freightAmount: 0,
+          advanceAmount: 0,
+          balanceAmount: 0,
+          consignee: { name: ownerName, city: "Vadodara" }
+        });
+        const filename = foundDoc?.originalFileName || `BTS_Doc_${docId}.pdf`;
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+        return res.send(pdfBuffer);
+      } catch (err) {
+        return res.status(500).json({ success: false, message: err.message });
+      }
+    });
+    router.get("/compliance/overview", (req, res) => {
+      return ok(res, {
+        documents: { total: 12, valid: 11, expiringSoon: 1, expired: 0 },
+        drivers: { total: 5, valid: 5, expiringSoon: 0, expired: 0 }
+      });
+    });
+    router.get("/compliance/notifications", (req, res) => {
+      return ok(res, {
+        items: mockStore2.complianceNotifications,
+        pagination: { page: 1, limit: 50, total: mockStore2.complianceNotifications.length, totalPages: 1 }
+      });
+    });
+    router.post("/compliance/scan", (req, res) => {
+      return ok(res, {
+        scannedVehicleDocuments: 12,
+        scannedDrivers: 5,
+        notificationsCreated: 1
+      }, "Regulatory audit scan complete");
+    });
+    router.patch("/compliance/notifications/:id/read", (req, res) => {
+      const notif = mockStore2.complianceNotifications.find((n) => n._id === req.params.id);
+      if (notif) notif.isRead = true;
+      return ok(res, notif, "Notification marked as read");
+    });
+    router.post("/compliance/notifications/read-all", (req, res) => {
+      mockStore2.complianceNotifications.forEach((n) => n.isRead = true);
+      return ok(res, null, "All notifications marked as read");
     });
     router.get("/compliance", (req, res) => {
       return ok(res, {
@@ -248699,41 +254405,86 @@ var require_mockRouter = __commonJS({
         ]
       });
     });
+    router.get("/maintenance/stats", (req, res) => {
+      const scheduledCount = mockStore2.maintenance.filter((m) => m.status === "SCHEDULED").length;
+      const inProgressCount = mockStore2.maintenance.filter((m) => m.status === "IN_PROGRESS").length;
+      const completedThisMonth = mockStore2.maintenance.filter((m) => m.status === "COMPLETED").length;
+      const totalCostThisMonthRupees = mockStore2.maintenance.reduce((sum, m) => sum + (m.cost || (m.costPaise ? m.costPaise / 100 : 0)), 0);
+      return ok(res, {
+        scheduledCount,
+        inProgressCount,
+        completedThisMonth,
+        overdueCount: 0,
+        totalCostThisMonthRupees
+      });
+    });
     router.get("/maintenance", (req, res) => {
-      const { page, limit, search } = req.query;
-      const result = mockStore2.query(mockStore2.maintenance, { search, page, limit, sortField: "createdAt", sortOrder: -1 });
+      const { page, limit, search, status } = req.query;
+      const filter = {};
+      if (status) filter.status = status;
+      const result = mockStore2.query(mockStore2.maintenance, { filter, search, page, limit, sortField: "createdAt", sortOrder: -1 });
       return paginated(res, result);
     });
     router.post("/maintenance", (req, res) => {
       const b = req.body || {};
+      const vehicle = mockStore2.vehicles.find((v) => v._id === b.vehicleId) || mockStore2.vehicles[0];
+      const costRupees = b.costRupees ? parseFloat(b.costRupees) : b.costPaise ? b.costPaise / 100 : 1e4;
       const newMaint = {
         _id: "maint_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
         maintenanceNumber: "MAINT-2026-" + String(mockStore2.maintenance.length + 1).padStart(3, "0"),
-        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
-        maintenanceType: b.maintenanceType || "PREVENTIVE",
-        serviceCenter: b.serviceCenter || "Authorized Commercial Service Center",
-        cost: parseFloat(b.cost || "10000"),
-        status: "IN_PROGRESS",
-        description: b.description || "General maintenance servicing",
+        vehicleId: {
+          _id: vehicle._id,
+          plateNumber: vehicle.plateNumber,
+          vehicleType: vehicle.vehicleType,
+          make: vehicle.make,
+          model: vehicle.model,
+          status: vehicle.status
+        },
+        vehiclePlate: vehicle.plateNumber,
+        serviceType: b.serviceType || "GENERAL_SERVICE",
+        maintenanceType: b.serviceType || "GENERAL_SERVICE",
+        priority: b.priority || "MEDIUM",
+        serviceCenter: {
+          name: b.serviceCenter?.name || b.serviceCenterName || "BTS Workshop Baroda",
+          city: b.serviceCenter?.city || b.serviceCenterCity || "Vadodara",
+          contactPhone: "93776 10333"
+        },
+        cost: costRupees,
+        costPaise: Math.round(costRupees * 100),
+        status: "SCHEDULED",
+        description: b.technicianRemarks || b.description || "General maintenance inspection",
         scheduledDate: b.scheduledDate || (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
         createdAt: /* @__PURE__ */ new Date()
       };
       mockStore2.maintenance.unshift(newMaint);
-      return ok(res, newMaint, "Maintenance record created", 201);
+      return ok(res, newMaint, "Maintenance scheduled successfully", 201);
+    });
+    router.patch("/maintenance/:id/status", (req, res) => {
+      const m = mockStore2.maintenance.find((item) => item._id === req.params.id);
+      if (!m) return res.status(404).json({ success: false, message: "Maintenance record not found" });
+      m.status = req.body?.status || m.status;
+      if (req.body?.invoiceNumber) m.invoiceNumber = req.body.invoiceNumber;
+      if (req.body?.costPaise) {
+        m.costPaise = req.body.costPaise;
+        m.cost = req.body.costPaise / 100;
+      }
+      if (req.body?.technicianRemarks) m.technicianRemarks = req.body.technicianRemarks;
+      if (m.status === "COMPLETED") m.completedDate = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+      return ok(res, m, `Maintenance status updated to ${m.status}`);
     });
     router.get("/maintenance/:id/job-card", async (req, res) => {
       try {
         const m = mockStore2.maintenance.find((item) => item._id === req.params.id) || {
           _id: req.params.id,
-          vehiclePlate: "GJ-06-AX-8912",
+          maintenanceNumber: "MAINT-2026-001",
+          vehiclePlate: "GJ01AB1234",
           serviceType: "PREVENTIVE",
           costPaise: 45e4,
-          serviceCenter: "BTS Workshop Baroda",
+          serviceCenter: { name: "BTS Workshop Baroda", city: "Vadodara" },
           description: "Periodic inspection and scheduled maintenance",
           createdAt: /* @__PURE__ */ new Date()
         };
-        const pdfService = require_pdf_service();
         const pdfBuffer = await pdfService.generateMaintenancePdf(m, mockStore2.tenant);
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", `inline; filename="BTS-JobCard-${req.params.id}.pdf"`);
@@ -248741,6 +254492,360 @@ var require_mockRouter = __commonJS({
       } catch (err) {
         return res.status(500).json({ success: false, message: err.message });
       }
+    });
+    router.get("/whatsapp/config", (req, res) => {
+      return ok(res, {
+        provider: "META_WHATSAPP_CLOUD",
+        isEnabled: true,
+        senderNumber: "+91 93776 10333",
+        phoneNumberId: "BTS_WA_PROD_01",
+        hasApiKey: true,
+        maskedApiKey: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u20221033",
+        hasApiSecret: true,
+        maskedApiSecret: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u20223266",
+        hasWebhookSecret: true,
+        maskedWebhookSecret: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u20222012"
+      });
+    });
+    router.put("/whatsapp/config", (req, res) => {
+      return ok(res, {
+        provider: req.body?.provider || "META_WHATSAPP_CLOUD",
+        isEnabled: req.body?.isEnabled ?? true,
+        senderNumber: req.body?.senderNumber || "+91 93776 10333",
+        phoneNumberId: req.body?.phoneNumberId || "BTS_WA_PROD_01",
+        hasApiKey: true,
+        maskedApiKey: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u20221033",
+        hasApiSecret: true,
+        maskedApiSecret: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u20223266",
+        hasWebhookSecret: true,
+        maskedWebhookSecret: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u20222012"
+      }, "WhatsApp configuration updated successfully");
+    });
+    router.get("/whatsapp/messages", (req, res) => {
+      const { status, search } = req.query;
+      let list = [...mockStore2.whatsappMessages];
+      if (status) {
+        list = list.filter((m) => m.status === status);
+      }
+      if (search) {
+        const q = search.toLowerCase();
+        list = list.filter((m) => m.recipientPhone.includes(q) || m.recipientName && m.recipientName.toLowerCase().includes(q));
+      }
+      return ok(res, list);
+    });
+    router.post("/whatsapp/send", (req, res) => {
+      const b = req.body || {};
+      const newMsg = {
+        _id: "wa_msg_" + Date.now(),
+        recipientPhone: b.toPhone || "+91 93776 10333",
+        recipientName: b.recipientName || "Commercial Client",
+        templateName: b.templateName || "LOAD_CREATED",
+        messageType: "TEMPLATE",
+        renderedMessage: `Barkat Tempo Service: Consignment notification for ${b.variables?.loadNumber || "Load"} sent.`,
+        provider: "META_WHATSAPP_CLOUD",
+        providerMessageId: "wamid." + crypto4.randomBytes(12).toString("hex"),
+        status: "DELIVERED",
+        retryCount: 0,
+        maxRetries: 3,
+        deliveredAt: (/* @__PURE__ */ new Date()).toISOString(),
+        createdAt: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      mockStore2.whatsappMessages.unshift(newMsg);
+      return ok(res, newMsg, "WhatsApp template notification dispatched successfully", 201);
+    });
+    router.post("/whatsapp/send-document", (req, res) => {
+      const b = req.body || {};
+      const newMsg = {
+        _id: "wa_doc_" + Date.now(),
+        recipientPhone: b.toPhone || "+91 93776 10333",
+        recipientName: b.recipientName || "Consignee Officer",
+        templateName: "DOCUMENT_SHARE",
+        messageType: "DOCUMENT",
+        renderedMessage: b.caption || "Barkat Tempo Service: Official consignment document attached.",
+        documentFileName: `BTS-${b.documentType || "Doc"}-${b.documentId || "REF"}.pdf`,
+        provider: "META_WHATSAPP_CLOUD",
+        providerMessageId: "wamid." + crypto4.randomBytes(12).toString("hex"),
+        status: "DELIVERED",
+        retryCount: 0,
+        maxRetries: 3,
+        deliveredAt: (/* @__PURE__ */ new Date()).toISOString(),
+        createdAt: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      mockStore2.whatsappMessages.unshift(newMsg);
+      return ok(res, newMsg, "Document PDF dispatched via WhatsApp", 201);
+    });
+    router.post("/whatsapp/send-custom", (req, res) => {
+      const b = req.body || {};
+      const newMsg = {
+        _id: "wa_custom_" + Date.now(),
+        recipientPhone: b.toPhone || "+91 93776 10333",
+        recipientName: b.recipientName || "Contact",
+        messageType: "CUSTOM_TEXT",
+        renderedMessage: b.message || "Barkat Tempo Service fleet dispatch notice.",
+        provider: "META_WHATSAPP_CLOUD",
+        providerMessageId: "wamid." + crypto4.randomBytes(12).toString("hex"),
+        status: "DELIVERED",
+        retryCount: 0,
+        maxRetries: 3,
+        deliveredAt: (/* @__PURE__ */ new Date()).toISOString(),
+        createdAt: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      mockStore2.whatsappMessages.unshift(newMsg);
+      return ok(res, newMsg, "Custom WhatsApp message dispatched successfully", 201);
+    });
+    router.post("/whatsapp/retry/:id", (req, res) => {
+      const msg = mockStore2.whatsappMessages.find((m) => m._id === req.params.id);
+      if (msg) {
+        msg.status = "DELIVERED";
+        msg.retryCount = (msg.retryCount || 0) + 1;
+        msg.deliveredAt = (/* @__PURE__ */ new Date()).toISOString();
+      }
+      return ok(res, msg, "Message resent successfully");
+    });
+    router.get("/master/jobs", (req, res) => {
+      return ok(res, mockStore2.bulkJobs || []);
+    });
+    router.get("/master/template/:entity", (req, res) => {
+      const entity = req.params.entity;
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", `attachment; filename="${entity}_template.csv"`);
+      let csv = "Id,Code,Name,Status\n";
+      if (entity === "loads") {
+        csv = "loadNumber,customerId,originCity,destinationCity,packageType,totalWeightMt,totalQuantity,freightRupees\nLD-2026-9001,cust_1,Vadodara,Mumbai,PALLETS,25,50,45000\n";
+      } else if (entity === "vehicles") {
+        csv = "plateNumber,vehicleType,category,make,model,year,capacityTonnage\nGJ06AB1122,Heavy Commercial Vehicle (HCV),OWNED,Tata Motors,Signa,2024,35\n";
+      } else if (entity === "drivers") {
+        csv = "name,phone,licenseNumber,experienceYears,bloodGroup\nDriver Name,+91 93776 10333,GJ01-2024-9988,8,B+\n";
+      } else if (entity === "customers") {
+        csv = "legalName,tradeName,gstin,phone,city,state\nCommercial Corp Ltd,Commercial Corp,24AAACT1234A1Z5,+91 93776 10333,Vadodara,Gujarat\n";
+      }
+      return res.send(csv);
+    });
+    router.post("/master/dry-run/:entity", upload.single("file"), (req, res) => {
+      const entity = req.params.entity;
+      const fileName = req.file?.originalname || "import.xlsx";
+      const fileSize = req.file?.size || 0;
+      return ok(res, {
+        batchId: "batch_" + Date.now(),
+        fileName,
+        fileSize,
+        validRowsCount: 5,
+        invalidRowsCount: 0,
+        validRecords: [
+          { row: 1, identifier: "REC-001", status: "VALID" },
+          { row: 2, identifier: "REC-002", status: "VALID" },
+          { row: 3, identifier: "REC-003", status: "VALID" },
+          { row: 4, identifier: "REC-004", status: "VALID" },
+          { row: 5, identifier: "REC-005", status: "VALID" }
+        ],
+        errors: []
+      }, `Dry run validation completed for ${entity}: All rows passed compliance checks`);
+    });
+    router.post("/master/confirm/:entity", (req, res) => {
+      return ok(res, {
+        committedCount: 5,
+        message: "Successfully imported 5 records into workspace"
+      });
+    });
+    router.post("/master/jobs/export", (req, res) => {
+      const jobId = "job_" + Date.now();
+      const entity = req.body?.entity || "loads";
+      const format = req.body?.format || "xlsx";
+      const job = {
+        _id: jobId,
+        entityType: entity,
+        format,
+        status: "COMPLETED",
+        downloadUrl: `/master/export/${entity}?format=${format}`,
+        fileName: `BTS_${entity}_export.${format}`,
+        createdAt: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      mockStore2.bulkJobs.unshift(job);
+      return ok(res, job, "Export job completed successfully");
+    });
+    router.get(["/master/export/:entity", "/master/jobs/export/:entity"], (req, res) => {
+      const entity = (req.params.entity || "loads").toLowerCase();
+      const format = (req.query.format || "xlsx").toLowerCase();
+      let rows = [];
+      let headers = [];
+      const filename = `BTS_${entity}_export.${format}`;
+      if (entity === "customers") {
+        headers = ["ID", "Name", "PartyType", "GSTIN", "PAN", "Phone", "Email", "City", "State"];
+        rows = mockStore2.customers.map((c) => [
+          c._id,
+          `"${c.legalName || c.name || ""}"`,
+          c.partyType || "CUSTOMER",
+          c.gstin || "",
+          c.pan || "",
+          c.phone || c.primaryContact?.phone || "",
+          c.email || c.primaryContact?.email || "",
+          `"${c.city || c.billingAddress?.city || ""}"`,
+          `"${c.state || c.billingAddress?.state || ""}"`
+        ]);
+      } else if (entity === "vehicles") {
+        headers = ["ID", "PlateNumber", "Type", "Category", "CapacityTonnage", "Make", "Model", "Status", "OwnerName"];
+        rows = mockStore2.vehicles.map((v) => [
+          v._id,
+          v.plateNumber,
+          `"${v.vehicleType || ""}"`,
+          v.category || "OWNED",
+          v.capacityTonnage || 0,
+          v.make || "",
+          v.model || "",
+          v.status,
+          `"${v.ownerName || ""}"`
+        ]);
+      } else if (entity === "drivers") {
+        headers = ["ID", "Name", "Phone", "LicenseNumber", "LicenseExpiry", "Status"];
+        rows = mockStore2.drivers.map((d) => [
+          d._id,
+          `"${d.name || ""}"`,
+          d.phone || "",
+          d.licenseNumber || "",
+          d.licenseExpiry || "",
+          d.status
+        ]);
+      } else if (entity === "locations") {
+        headers = ["ID", "Name", "Code", "LocationType", "City", "State", "ContactPerson", "Phone"];
+        rows = mockStore2.locations.map((l2) => [
+          l2._id,
+          `"${l2.name || ""}"`,
+          l2.code || "",
+          l2.locationType || "PICKUP",
+          `"${l2.city || l2.address?.city || ""}"`,
+          `"${l2.state || l2.address?.state || ""}"`,
+          `"${l2.contactPerson || ""}"`,
+          l2.contactPhone || ""
+        ]);
+      } else if (entity === "loads") {
+        headers = ["LoadNumber", "Customer", "Origin", "Destination", "WeightMT", "FreightRupees", "Status"];
+        rows = mockStore2.loads.map((l2) => [
+          l2.loadNumber,
+          `"${l2.customerId?.name || l2.consignorName || ""}"`,
+          `"${l2.originCity || ""}"`,
+          `"${l2.destinationCity || ""}"`,
+          l2.weightMt || 0,
+          l2.freightAmount || 0,
+          l2.status
+        ]);
+      } else if (entity === "trips") {
+        headers = ["TripNumber", "Vehicle", "Driver", "Origin", "Destination", "ExpensesRupees", "Status"];
+        rows = mockStore2.trips.map((t) => [
+          t.tripNumber,
+          t.vehiclePlate,
+          `"${t.driverName || ""}"`,
+          `"${t.origin || ""}"`,
+          `"${t.destination || ""}"`,
+          t.totalExpenses || 0,
+          t.status
+        ]);
+      } else {
+        headers = ["ID", "Name", "Status"];
+        rows = [["1", entity, "ACTIVE"]];
+      }
+      const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+      res.setHeader("Content-Type", format === "csv" ? "text/csv" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+      return res.send(csvContent);
+    });
+    router.get("/master/jobs/:id/download", (req, res) => {
+      const jobId = req.params.id;
+      const job = mockStore2.bulkJobs.find((j) => j._id === jobId) || { entityType: "export", format: "xlsx" };
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", `attachment; filename="BTS_Job_${jobId}.${job.format || "csv"}"`);
+      return res.send(`Job ID,Entity,Status,Date
+${jobId},${job.entityType || "bulk"},COMPLETED,${(/* @__PURE__ */ new Date()).toISOString()}`);
+    });
+    router.get("/reports/loads", (req, res) => {
+      return ok(res, {
+        data: mockStore2.loads,
+        summary: {
+          totalLoads: mockStore2.loads.length,
+          totalFreightRupees: mockStore2.loads.reduce((s, l2) => s + (l2.freightAmount || 0), 0),
+          totalWeightMt: mockStore2.loads.reduce((s, l2) => s + (l2.weightMt || 0), 0),
+          deliveredLoads: mockStore2.loads.filter((l2) => l2.status === "DELIVERED").length
+        },
+        meta: {
+          page: 1,
+          limit: 25,
+          total: mockStore2.loads.length,
+          totalPages: 1
+        }
+      });
+    });
+    router.get("/reports/trips", (req, res) => {
+      return ok(res, {
+        data: mockStore2.trips,
+        summary: {
+          totalTrips: mockStore2.trips.length,
+          inTransitTrips: mockStore2.trips.filter((t) => t.status === "IN_TRANSIT").length,
+          completedTrips: mockStore2.trips.filter((t) => t.status === "CLOSED").length,
+          totalExpenseRupees: mockStore2.trips.reduce((s, t) => s + (t.totalExpenses || 0), 0)
+        },
+        meta: {
+          page: 1,
+          limit: 25,
+          total: mockStore2.trips.length,
+          totalPages: 1
+        }
+      });
+    });
+    router.get(["/reports/freight", "/reports/financials"], (req, res) => {
+      const totalBilled = mockStore2.loads.reduce((s, l2) => s + (l2.freightAmount || 0), 0);
+      const totalAdvance = mockStore2.loads.reduce((s, l2) => s + (l2.advancePaid || 0), 0);
+      const totalBalance = mockStore2.loads.reduce((s, l2) => s + (l2.balanceDue || 0), 0);
+      const freightRows = mockStore2.loads.map((l2) => ({
+        _id: l2._id,
+        loadNumber: l2.loadNumber,
+        customerName: l2.customerId?.name || l2.consignorName || "Customer",
+        totalFreightRupees: l2.freightAmount,
+        advanceRupees: l2.advancePaid,
+        balanceRupees: l2.balanceDue,
+        status: l2.status,
+        date: l2.createdAt
+      }));
+      return ok(res, {
+        data: freightRows,
+        summary: {
+          totalBilledRupees: totalBilled,
+          advanceReceivedRupees: totalAdvance,
+          balancePendingRupees: totalBalance
+        }
+      });
+    });
+    router.get("/reports/compliance", (req, res) => {
+      const docs = [
+        { _id: "cmp_1", type: "VEHICLE", entityName: "MH12CD5678", docType: "INSURANCE", expiryDate: "2026-11-15", daysLeft: 17, status: "EXPIRING_SOON" },
+        { _id: "cmp_2", type: "VEHICLE", entityName: "GJ01AB1234", docType: "FITNESS", expiryDate: "2026-12-30", daysLeft: 62, status: "VALID" },
+        { _id: "cmp_3", type: "DRIVER", entityName: "Ramesh Patel", docType: "DRIVING_LICENCE", expiryDate: "2035-05-14", daysLeft: 3098, status: "VALID" }
+      ];
+      return ok(res, {
+        data: docs,
+        summary: {
+          totalDocs: docs.length,
+          validDocs: 2,
+          expiringDocs: 1,
+          expiredDocs: 0
+        }
+      });
+    });
+    router.get("/reports/vehicles", (req, res) => {
+      return ok(res, mockStore2.vehicles);
+    });
+    router.get("/reports/export/:type", (req, res) => {
+      const reportType = req.params.type;
+      const format = req.query.format || "csv";
+      res.setHeader("Content-Type", format === "csv" ? "text/csv" : "application/octet-stream");
+      res.setHeader("Content-Disposition", `attachment; filename="BTS_${reportType}_report.${format}"`);
+      let csv = "ID,Reference,Party,Status,Date\n";
+      if (reportType === "loads") {
+        csv = "LoadNumber,Customer,Origin,Destination,WeightMT,FreightRupees,Status\n" + mockStore2.loads.map((l2) => `${l2.loadNumber},"${l2.customerId?.name || ""}","${l2.originCity}","${l2.destinationCity}",${l2.weightMt},${l2.freightAmount},${l2.status}`).join("\n");
+      } else if (reportType === "trips") {
+        csv = "TripNumber,Vehicle,Driver,Origin,Destination,ExpensesRupees,Status\n" + mockStore2.trips.map((t) => `${t.tripNumber},${t.vehiclePlate},"${t.driverName}","${t.origin}","${t.destination}",${t.totalExpenses},${t.status}`).join("\n");
+      } else {
+        csv = "Item,Value\nTotalBilled,100000\nTotalAdvance,50000\nTotalBalance,50000\n";
+      }
+      return res.send(csv);
     });
     router.get("/admin/users", (req, res) => {
       const safeUsers = mockStore2.users.map((u) => typeof u.toSafeObject === "function" ? u.toSafeObject() : u);
@@ -248751,8 +254856,8 @@ var require_mockRouter = __commonJS({
       const newUser = {
         _id: "usr_" + crypto4.randomBytes(6).toString("hex"),
         name: b.name || "Staff User",
-        email: (b.email || "staff@technofay.com").trim().toLowerCase(),
-        phone: b.phone || "+91 98251 00000",
+        email: (b.email || "staff@barkattempo.com").trim().toLowerCase(),
+        phone: b.phone || "93776 10333",
         role: b.role || "TRANSPORT_MANAGER",
         roleId: mockStore2.roles[1],
         companyId: mockStore2.tenant,
@@ -248762,13 +254867,19 @@ var require_mockRouter = __commonJS({
       mockStore2.users.push(newUser);
       return ok(res, newUser, "User created", 201);
     });
+    router.patch("/admin/users/:id/status", (req, res) => {
+      const u = mockStore2.users.find((user) => user._id === req.params.id);
+      if (!u) return res.status(404).json({ success: false, message: "User not found" });
+      if (req.body?.isActive !== void 0) u.isActive = req.body.isActive;
+      return ok(res, u, "User status updated");
+    });
     router.get("/admin/roles", (req, res) => {
       return ok(res, mockStore2.roles);
     });
     router.get("/admin/audit-logs", (req, res) => {
       const sampleLogs = [
-        { _id: "aud_1", actorName: "Vikramaditya Rao", action: "ORGANIZATION_REGISTERED", module: "AUTH", timestamp: new Date(Date.now() - 36e5).toISOString() },
-        { _id: "aud_2", actorName: "Vikramaditya Rao", action: "LOGIN_SUCCESS", module: "AUTH", timestamp: (/* @__PURE__ */ new Date()).toISOString() }
+        { _id: "aud_1", actorName: "BTS Administrator", action: "ORGANIZATION_REGISTERED", module: "AUTH", timestamp: new Date(Date.now() - 36e5).toISOString() },
+        { _id: "aud_2", actorName: "BTS Administrator", action: "LOGIN_SUCCESS", module: "AUTH", timestamp: (/* @__PURE__ */ new Date()).toISOString() }
       ];
       return paginated(res, { data: sampleLogs, pagination: { page: 1, limit: 20, total: 2, totalPages: 1 } });
     });
@@ -248779,40 +254890,202 @@ var require_mockRouter = __commonJS({
       mockStore2.settings = { ...mockStore2.settings, ...req.body };
       return ok(res, mockStore2.settings, "Settings updated");
     });
-    router.get("/reports/loads", (req, res) => {
-      return ok(res, {
-        totalLoads: mockStore2.loads.length,
-        totalFreight: mockStore2.loads.reduce((s, l2) => s + (l2.freightAmount || 0), 0),
-        totalWeightMt: mockStore2.loads.reduce((s, l2) => s + (l2.weightMt || 0), 0),
-        items: mockStore2.loads
-      });
-    });
-    router.get("/reports/financials", (req, res) => {
-      const m = mockStore2.getMetrics();
-      return ok(res, m.financials);
-    });
-    router.get("/reports/vehicles", (req, res) => {
-      return ok(res, mockStore2.vehicles);
-    });
-    router.get("/reports/trips", (req, res) => {
-      return ok(res, mockStore2.trips);
-    });
     router.get("/public/track/:trackingId", (req, res) => {
       const tid = req.params.trackingId.toUpperCase();
-      const trip = mockStore2.trips[1];
-      return ok(res, {
+      const trip = mockStore2.trips[1] || mockStore2.trips[0];
+      const load = mockStore2.loads[1] || mockStore2.loads[0];
+      const trackingPayload = {
         trackingNumber: tid,
-        status: trip.status,
-        origin: trip.origin,
-        destination: trip.destination,
-        currentLocation: trip.currentLocation,
-        vehiclePlate: trip.vehiclePlate,
-        startedAt: trip.startedAt,
-        estimatedDelivery: new Date(Date.now() + 432e5).toISOString()
+        lrNumber: tid.startsWith("LR") ? tid : "LR-2026-00102",
+        biltyNumber: tid.startsWith("BL") ? tid : "BL-2026-00102",
+        loadNumber: load.loadNumber || "LD-2026-0002",
+        tripNumber: trip.tripNumber || "TRP-2026-002",
+        currentStatus: trip.status || "IN_TRANSIT",
+        statusLabel: trip.status === "CLOSED" || trip.status === "DELIVERED" ? "Delivered" : "In Transit",
+        materialType: load.cargoType || "Refined Industrial Bulk Consignment",
+        totalQuantity: load.totalQuantity || 140,
+        totalWeightMt: load.totalWeightMt || 28,
+        parties: {
+          consignor: load.consignorName || "Adani Wilmar Limited",
+          consignee: load.consigneeName || "UltraTech Cement Limited"
+        },
+        vehicle: {
+          type: trip.vehicleId?.vehicleType || "Multi-Axle Truck",
+          maskedPlateNumber: trip.vehiclePlate || "MH12CD5678"
+        },
+        pickupDate: trip.startedAt || (/* @__PURE__ */ new Date()).toISOString(),
+        expectedDeliveryDate: new Date(Date.now() + 432e5).toISOString(),
+        milestones: [
+          {
+            code: "ORDER_PLACED",
+            title: "Consignment Created",
+            description: "Load registered and scheduled for dispatch at Barkat Tempo Service",
+            status: "COMPLETED",
+            timestamp: new Date(Date.now() - 864e5).toISOString()
+          },
+          {
+            code: "VEHICLE_ASSIGNED",
+            title: "Vehicle & Driver Assigned",
+            description: `Vehicle ${trip.vehiclePlate} and Driver ${trip.driverName} allocated`,
+            status: "COMPLETED",
+            timestamp: new Date(Date.now() - 54e6).toISOString()
+          },
+          {
+            code: "IN_TRANSIT",
+            title: "Outbound On-Road Transit",
+            description: "Consignment in transit across NH-48 commercial corridor",
+            status: "IN_PROGRESS",
+            timestamp: new Date(Date.now() - 216e5).toISOString()
+          },
+          {
+            code: "DELIVERED",
+            title: "Destination Delivery",
+            description: "Arrival at destination warehouse and POD stamp authentication",
+            status: trip.status === "CLOSED" ? "COMPLETED" : "PENDING",
+            timestamp: trip.status === "CLOSED" ? (/* @__PURE__ */ new Date()).toISOString() : null
+          }
+        ],
+        waypoints: [
+          {
+            sequence: 1,
+            name: "Mundra Port Logistics Terminal, Gujarat",
+            city: "Mundra",
+            state: "Gujarat",
+            stopType: "PICKUP",
+            status: "COMPLETED",
+            coordinates: { lat: 22.8398, lng: 69.7042 }
+          },
+          {
+            sequence: 2,
+            name: "Pune Chakan Auto Corridor Terminal, Maharashtra",
+            city: "Pune",
+            state: "Maharashtra",
+            stopType: "DELIVERY",
+            status: trip.status === "CLOSED" ? "COMPLETED" : "PENDING",
+            coordinates: { lat: 18.7512, lng: 73.8541 }
+          }
+        ],
+        podVerified: trip.status === "CLOSED",
+        podNumber: trip.status === "CLOSED" ? "POD-2026-0001" : null,
+        podReceiver: trip.status === "CLOSED" ? "Gaurav Mehta" : null,
+        telematics: {
+          isLiveGps: true,
+          locationSource: "TELEMATICS_GPS",
+          coordinates: { lat: 20.9467, lng: 72.952 },
+          speedKmph: 62,
+          lastSeenAt: (/* @__PURE__ */ new Date()).toISOString(),
+          disclaimer: "Live AIS-140 GPS telematics feed from vehicle on-board unit."
+        },
+        lastUpdated: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      return ok(res, trackingPayload);
+    });
+    router.get("/search", (req, res) => {
+      const start = Date.now();
+      const q = String(req.query.q || "").trim().toLowerCase();
+      if (!q) {
+        return ok(res, { results: [], executionTimeMs: 0 });
+      }
+      const results = [];
+      mockStore2.loads.forEach((l2) => {
+        if (l2.loadNumber?.toLowerCase().includes(q) || l2.customerId?.name?.toLowerCase().includes(q) || l2.consignorName?.toLowerCase().includes(q) || l2.consigneeName?.toLowerCase().includes(q) || l2.originCity?.toLowerCase().includes(q) || l2.destinationCity?.toLowerCase().includes(q)) {
+          results.push({
+            id: l2._id,
+            type: "LOAD",
+            title: `Consignment ${l2.loadNumber}`,
+            subtitle: `${l2.customerId?.name || l2.consignorName || "Customer"} \u2022 ${l2.originCity || "Origin"} \u2192 ${l2.destinationCity || "Dest"} (${l2.weightMt || 0} MT)`,
+            status: l2.status,
+            url: "/app/loads"
+          });
+        }
       });
+      (mockStore2.bilties || []).forEach((b) => {
+        if (b.lrNumber?.toLowerCase().includes(q) || b.eWayBillNumber?.toLowerCase().includes(q)) {
+          results.push({
+            id: b._id,
+            type: "LR",
+            title: `Lorry Receipt ${b.lrNumber}`,
+            subtitle: `E-Way Bill: ${b.eWayBillNumber || "N/A"} \u2022 Status: ${b.status || "ISSUED"}`,
+            status: b.status || "ISSUED",
+            url: "/app/lr"
+          });
+        }
+        if (b.biltyNumber?.toLowerCase().includes(q) || b.remarks?.toLowerCase().includes(q)) {
+          results.push({
+            id: b._id,
+            type: "BILTY",
+            title: `Bilty Note ${b.biltyNumber}`,
+            subtitle: `Terms: ${b.paymentTerms || "TO_PAY"} \u2022 \u20B9${((b.financials?.totalFreightPaise || (b.freightAmount ? b.freightAmount * 100 : 0)) / 100).toLocaleString("en-IN")}`,
+            status: b.status || "ISSUED",
+            url: "/app/bilties"
+          });
+        }
+      });
+      mockStore2.trips.forEach((t) => {
+        if (t.tripNumber?.toLowerCase().includes(q) || t.vehiclePlate?.toLowerCase().includes(q) || t.driverName?.toLowerCase().includes(q) || t.origin?.toLowerCase().includes(q) || t.destination?.toLowerCase().includes(q)) {
+          results.push({
+            id: t._id,
+            type: "TRIP",
+            title: `Trip ${t.tripNumber}`,
+            subtitle: `${t.vehiclePlate} (${t.driverName}) \u2022 ${t.origin || ""} \u2192 ${t.destination || ""}`,
+            status: t.status,
+            url: "/app/trips"
+          });
+        }
+      });
+      mockStore2.vehicles.forEach((v) => {
+        if (v.plateNumber?.toLowerCase().includes(q) || v.vehicleType?.toLowerCase().includes(q) || v.ownerName?.toLowerCase().includes(q)) {
+          results.push({
+            id: v._id,
+            type: "VEHICLE",
+            title: `Vehicle ${v.plateNumber}`,
+            subtitle: `${v.vehicleType} \u2022 ${v.capacityTonnage} MT \u2022 ${v.ownerName || "BTS"}`,
+            status: v.status,
+            url: "/app/vehicles"
+          });
+        }
+      });
+      mockStore2.drivers.forEach((d) => {
+        if (d.name?.toLowerCase().includes(q) || d.phone?.toLowerCase().includes(q) || d.licenseNumber?.toLowerCase().includes(q)) {
+          results.push({
+            id: d._id,
+            type: "DRIVER",
+            title: `Driver ${d.name}`,
+            subtitle: `Phone: ${d.phone} \u2022 DL: ${d.licenseNumber}`,
+            status: d.status,
+            url: "/app/drivers"
+          });
+        }
+      });
+      mockStore2.customers.forEach((c) => {
+        if (c.legalName?.toLowerCase().includes(q) || c.tradeName?.toLowerCase().includes(q) || c.gstin?.toLowerCase().includes(q) || c.city?.toLowerCase().includes(q)) {
+          results.push({
+            id: c._id,
+            type: "CUSTOMER",
+            title: c.legalName || c.tradeName,
+            subtitle: `GSTIN: ${c.gstin || "N/A"} \u2022 ${c.city || ""}`,
+            status: "ACTIVE",
+            url: "/app/customers"
+          });
+        }
+      });
+      mockStore2.locations.forEach((loc) => {
+        if (loc.name?.toLowerCase().includes(q) || loc.city?.toLowerCase().includes(q) || loc.code?.toLowerCase().includes(q)) {
+          results.push({
+            id: loc._id,
+            type: "LOCATION",
+            title: loc.name,
+            subtitle: `${loc.city}, ${loc.state} \u2022 ${loc.locationType}`,
+            status: "ACTIVE",
+            url: "/app/locations"
+          });
+        }
+      });
+      const executionTimeMs = Date.now() - start;
+      return ok(res, { results: results.slice(0, 20), executionTimeMs });
     });
     router.post("/contact", (req, res) => {
-      return ok(res, null, "Thank you! Your logistics inquiry has been received.");
+      return ok(res, null, "Thank you! Your logistics inquiry has been received by Barkat Tempo Service.");
     });
     router.all("*", (req, res) => {
       if (req.method === "GET") {
@@ -253593,4628 +259866,6 @@ var require_location_routes = __commonJS({
       locationController.delete
     );
     module2.exports = router;
-  }
-});
-
-// node_modules/busboy/lib/utils.js
-var require_utils9 = __commonJS({
-  "node_modules/busboy/lib/utils.js"(exports2, module2) {
-    "use strict";
-    function parseContentType(str) {
-      if (str.length === 0)
-        return;
-      const params = /* @__PURE__ */ Object.create(null);
-      let i = 0;
-      for (; i < str.length; ++i) {
-        const code = str.charCodeAt(i);
-        if (TOKEN[code] !== 1) {
-          if (code !== 47 || i === 0)
-            return;
-          break;
-        }
-      }
-      if (i === str.length)
-        return;
-      const type = str.slice(0, i).toLowerCase();
-      const subtypeStart = ++i;
-      for (; i < str.length; ++i) {
-        const code = str.charCodeAt(i);
-        if (TOKEN[code] !== 1) {
-          if (i === subtypeStart)
-            return;
-          if (parseContentTypeParams(str, i, params) === void 0)
-            return;
-          break;
-        }
-      }
-      if (i === subtypeStart)
-        return;
-      const subtype = str.slice(subtypeStart, i).toLowerCase();
-      return { type, subtype, params };
-    }
-    function parseContentTypeParams(str, i, params) {
-      while (i < str.length) {
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (code !== 32 && code !== 9)
-            break;
-        }
-        if (i === str.length)
-          break;
-        if (str.charCodeAt(i++) !== 59)
-          return;
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (code !== 32 && code !== 9)
-            break;
-        }
-        if (i === str.length)
-          return;
-        let name;
-        const nameStart = i;
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (TOKEN[code] !== 1) {
-            if (code !== 61)
-              return;
-            break;
-          }
-        }
-        if (i === str.length)
-          return;
-        name = str.slice(nameStart, i);
-        ++i;
-        if (i === str.length)
-          return;
-        let value = "";
-        let valueStart;
-        if (str.charCodeAt(i) === 34) {
-          valueStart = ++i;
-          let escaping = false;
-          for (; i < str.length; ++i) {
-            const code = str.charCodeAt(i);
-            if (code === 92) {
-              if (escaping) {
-                valueStart = i;
-                escaping = false;
-              } else {
-                value += str.slice(valueStart, i);
-                escaping = true;
-              }
-              continue;
-            }
-            if (code === 34) {
-              if (escaping) {
-                valueStart = i;
-                escaping = false;
-                continue;
-              }
-              value += str.slice(valueStart, i);
-              break;
-            }
-            if (escaping) {
-              valueStart = i - 1;
-              escaping = false;
-            }
-            if (QDTEXT[code] !== 1)
-              return;
-          }
-          if (i === str.length)
-            return;
-          ++i;
-        } else {
-          valueStart = i;
-          for (; i < str.length; ++i) {
-            const code = str.charCodeAt(i);
-            if (TOKEN[code] !== 1) {
-              if (i === valueStart)
-                return;
-              break;
-            }
-          }
-          value = str.slice(valueStart, i);
-        }
-        name = name.toLowerCase();
-        if (params[name] === void 0)
-          params[name] = value;
-      }
-      return params;
-    }
-    function parseDisposition(str, defDecoder) {
-      if (str.length === 0)
-        return;
-      const params = /* @__PURE__ */ Object.create(null);
-      let i = 0;
-      for (; i < str.length; ++i) {
-        const code = str.charCodeAt(i);
-        if (TOKEN[code] !== 1) {
-          if (parseDispositionParams(str, i, params, defDecoder) === void 0)
-            return;
-          break;
-        }
-      }
-      const type = str.slice(0, i).toLowerCase();
-      return { type, params };
-    }
-    function parseDispositionParams(str, i, params, defDecoder) {
-      while (i < str.length) {
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (code !== 32 && code !== 9)
-            break;
-        }
-        if (i === str.length)
-          break;
-        if (str.charCodeAt(i++) !== 59)
-          return;
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (code !== 32 && code !== 9)
-            break;
-        }
-        if (i === str.length)
-          return;
-        let name;
-        const nameStart = i;
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (TOKEN[code] !== 1) {
-            if (code === 61)
-              break;
-            return;
-          }
-        }
-        if (i === str.length)
-          return;
-        let value = "";
-        let valueStart;
-        let charset;
-        name = str.slice(nameStart, i);
-        if (name.charCodeAt(name.length - 1) === 42) {
-          const charsetStart = ++i;
-          for (; i < str.length; ++i) {
-            const code = str.charCodeAt(i);
-            if (CHARSET[code] !== 1) {
-              if (code !== 39)
-                return;
-              break;
-            }
-          }
-          if (i === str.length)
-            return;
-          charset = str.slice(charsetStart, i);
-          ++i;
-          for (; i < str.length; ++i) {
-            const code = str.charCodeAt(i);
-            if (code === 39)
-              break;
-          }
-          if (i === str.length)
-            return;
-          ++i;
-          if (i === str.length)
-            return;
-          valueStart = i;
-          let encode = 0;
-          for (; i < str.length; ++i) {
-            const code = str.charCodeAt(i);
-            if (EXTENDED_VALUE[code] !== 1) {
-              if (code === 37) {
-                let hexUpper;
-                let hexLower;
-                if (i + 2 < str.length && (hexUpper = HEX_VALUES[str.charCodeAt(i + 1)]) !== -1 && (hexLower = HEX_VALUES[str.charCodeAt(i + 2)]) !== -1) {
-                  const byteVal = (hexUpper << 4) + hexLower;
-                  value += str.slice(valueStart, i);
-                  value += String.fromCharCode(byteVal);
-                  i += 2;
-                  valueStart = i + 1;
-                  if (byteVal >= 128)
-                    encode = 2;
-                  else if (encode === 0)
-                    encode = 1;
-                  continue;
-                }
-                return;
-              }
-              break;
-            }
-          }
-          value += str.slice(valueStart, i);
-          value = convertToUTF8(value, charset, encode);
-          if (value === void 0)
-            return;
-        } else {
-          ++i;
-          if (i === str.length)
-            return;
-          if (str.charCodeAt(i) === 34) {
-            valueStart = ++i;
-            let escaping = false;
-            for (; i < str.length; ++i) {
-              const code = str.charCodeAt(i);
-              if (code === 92) {
-                if (escaping) {
-                  valueStart = i;
-                  escaping = false;
-                } else {
-                  value += str.slice(valueStart, i);
-                  escaping = true;
-                }
-                continue;
-              }
-              if (code === 34) {
-                if (escaping) {
-                  valueStart = i;
-                  escaping = false;
-                  continue;
-                }
-                value += str.slice(valueStart, i);
-                break;
-              }
-              if (escaping) {
-                valueStart = i - 1;
-                escaping = false;
-              }
-              if (QDTEXT[code] !== 1)
-                return;
-            }
-            if (i === str.length)
-              return;
-            ++i;
-          } else {
-            valueStart = i;
-            for (; i < str.length; ++i) {
-              const code = str.charCodeAt(i);
-              if (TOKEN[code] !== 1) {
-                if (i === valueStart)
-                  return;
-                break;
-              }
-            }
-            value = str.slice(valueStart, i);
-          }
-          value = defDecoder(value, 2);
-          if (value === void 0)
-            return;
-        }
-        name = name.toLowerCase();
-        if (params[name] === void 0)
-          params[name] = value;
-      }
-      return params;
-    }
-    function getDecoder(charset) {
-      let lc;
-      while (true) {
-        switch (charset) {
-          case "utf-8":
-          case "utf8":
-            return decoders.utf8;
-          case "latin1":
-          case "ascii":
-          case "us-ascii":
-          case "iso-8859-1":
-          case "iso8859-1":
-          case "iso88591":
-          case "iso_8859-1":
-          case "windows-1252":
-          case "iso_8859-1:1987":
-          case "cp1252":
-          case "x-cp1252":
-            return decoders.latin1;
-          case "utf16le":
-          case "utf-16le":
-          case "ucs2":
-          case "ucs-2":
-            return decoders.utf16le;
-          case "base64":
-            return decoders.base64;
-          default:
-            if (lc === void 0) {
-              lc = true;
-              charset = charset.toLowerCase();
-              continue;
-            }
-            return decoders.other.bind(charset);
-        }
-      }
-    }
-    var decoders = {
-      utf8: (data, hint) => {
-        if (data.length === 0)
-          return "";
-        if (typeof data === "string") {
-          if (hint < 2)
-            return data;
-          data = Buffer.from(data, "latin1");
-        }
-        return data.utf8Slice(0, data.length);
-      },
-      latin1: (data, hint) => {
-        if (data.length === 0)
-          return "";
-        if (typeof data === "string")
-          return data;
-        return data.latin1Slice(0, data.length);
-      },
-      utf16le: (data, hint) => {
-        if (data.length === 0)
-          return "";
-        if (typeof data === "string")
-          data = Buffer.from(data, "latin1");
-        return data.ucs2Slice(0, data.length);
-      },
-      base64: (data, hint) => {
-        if (data.length === 0)
-          return "";
-        if (typeof data === "string")
-          data = Buffer.from(data, "latin1");
-        return data.base64Slice(0, data.length);
-      },
-      other: (data, hint) => {
-        if (data.length === 0)
-          return "";
-        if (typeof data === "string")
-          data = Buffer.from(data, "latin1");
-        try {
-          const decoder = new TextDecoder(exports2);
-          return decoder.decode(data);
-        } catch {
-        }
-      }
-    };
-    function convertToUTF8(data, charset, hint) {
-      const decode = getDecoder(charset);
-      if (decode)
-        return decode(data, hint);
-    }
-    function basename(path2) {
-      if (typeof path2 !== "string")
-        return "";
-      for (let i = path2.length - 1; i >= 0; --i) {
-        switch (path2.charCodeAt(i)) {
-          case 47:
-          case 92:
-            path2 = path2.slice(i + 1);
-            return path2 === ".." || path2 === "." ? "" : path2;
-        }
-      }
-      return path2 === ".." || path2 === "." ? "" : path2;
-    }
-    var TOKEN = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ];
-    var QDTEXT = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
-    ];
-    var CHARSET = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ];
-    var EXTENDED_VALUE = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ];
-    var HEX_VALUES = [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1
-    ];
-    module2.exports = {
-      basename,
-      convertToUTF8,
-      getDecoder,
-      parseContentType,
-      parseDisposition
-    };
-  }
-});
-
-// node_modules/streamsearch/lib/sbmh.js
-var require_sbmh = __commonJS({
-  "node_modules/streamsearch/lib/sbmh.js"(exports2, module2) {
-    "use strict";
-    function memcmp(buf1, pos1, buf2, pos2, num) {
-      for (let i = 0; i < num; ++i) {
-        if (buf1[pos1 + i] !== buf2[pos2 + i])
-          return false;
-      }
-      return true;
-    }
-    var SBMH = class {
-      constructor(needle, cb) {
-        if (typeof cb !== "function")
-          throw new Error("Missing match callback");
-        if (typeof needle === "string")
-          needle = Buffer.from(needle);
-        else if (!Buffer.isBuffer(needle))
-          throw new Error(`Expected Buffer for needle, got ${typeof needle}`);
-        const needleLen = needle.length;
-        this.maxMatches = Infinity;
-        this.matches = 0;
-        this._cb = cb;
-        this._lookbehindSize = 0;
-        this._needle = needle;
-        this._bufPos = 0;
-        this._lookbehind = Buffer.allocUnsafe(needleLen);
-        this._occ = [
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen
-        ];
-        if (needleLen > 1) {
-          for (let i = 0; i < needleLen - 1; ++i)
-            this._occ[needle[i]] = needleLen - 1 - i;
-        }
-      }
-      reset() {
-        this.matches = 0;
-        this._lookbehindSize = 0;
-        this._bufPos = 0;
-      }
-      push(chunk, pos) {
-        let result;
-        if (!Buffer.isBuffer(chunk))
-          chunk = Buffer.from(chunk, "latin1");
-        const chunkLen = chunk.length;
-        this._bufPos = pos || 0;
-        while (result !== chunkLen && this.matches < this.maxMatches)
-          result = feed(this, chunk);
-        return result;
-      }
-      destroy() {
-        const lbSize = this._lookbehindSize;
-        if (lbSize)
-          this._cb(false, this._lookbehind, 0, lbSize, false);
-        this.reset();
-      }
-    };
-    function feed(self2, data) {
-      const len = data.length;
-      const needle = self2._needle;
-      const needleLen = needle.length;
-      let pos = -self2._lookbehindSize;
-      const lastNeedleCharPos = needleLen - 1;
-      const lastNeedleChar = needle[lastNeedleCharPos];
-      const end = len - needleLen;
-      const occ = self2._occ;
-      const lookbehind = self2._lookbehind;
-      if (pos < 0) {
-        while (pos < 0 && pos <= end) {
-          const nextPos = pos + lastNeedleCharPos;
-          const ch = nextPos < 0 ? lookbehind[self2._lookbehindSize + nextPos] : data[nextPos];
-          if (ch === lastNeedleChar && matchNeedle(self2, data, pos, lastNeedleCharPos)) {
-            self2._lookbehindSize = 0;
-            ++self2.matches;
-            if (pos > -self2._lookbehindSize)
-              self2._cb(true, lookbehind, 0, self2._lookbehindSize + pos, false);
-            else
-              self2._cb(true, void 0, 0, 0, true);
-            return self2._bufPos = pos + needleLen;
-          }
-          pos += occ[ch];
-        }
-        while (pos < 0 && !matchNeedle(self2, data, pos, len - pos))
-          ++pos;
-        if (pos < 0) {
-          const bytesToCutOff = self2._lookbehindSize + pos;
-          if (bytesToCutOff > 0) {
-            self2._cb(false, lookbehind, 0, bytesToCutOff, false);
-          }
-          self2._lookbehindSize -= bytesToCutOff;
-          lookbehind.copy(lookbehind, 0, bytesToCutOff, self2._lookbehindSize);
-          lookbehind.set(data, self2._lookbehindSize);
-          self2._lookbehindSize += len;
-          self2._bufPos = len;
-          return len;
-        }
-        self2._cb(false, lookbehind, 0, self2._lookbehindSize, false);
-        self2._lookbehindSize = 0;
-      }
-      pos += self2._bufPos;
-      const firstNeedleChar = needle[0];
-      while (pos <= end) {
-        const ch = data[pos + lastNeedleCharPos];
-        if (ch === lastNeedleChar && data[pos] === firstNeedleChar && memcmp(needle, 0, data, pos, lastNeedleCharPos)) {
-          ++self2.matches;
-          if (pos > 0)
-            self2._cb(true, data, self2._bufPos, pos, true);
-          else
-            self2._cb(true, void 0, 0, 0, true);
-          return self2._bufPos = pos + needleLen;
-        }
-        pos += occ[ch];
-      }
-      while (pos < len) {
-        if (data[pos] !== firstNeedleChar || !memcmp(data, pos, needle, 0, len - pos)) {
-          ++pos;
-          continue;
-        }
-        data.copy(lookbehind, 0, pos, len);
-        self2._lookbehindSize = len - pos;
-        break;
-      }
-      if (pos > 0)
-        self2._cb(false, data, self2._bufPos, pos < len ? pos : len, true);
-      self2._bufPos = len;
-      return len;
-    }
-    function matchNeedle(self2, data, pos, len) {
-      const lb = self2._lookbehind;
-      const lbSize = self2._lookbehindSize;
-      const needle = self2._needle;
-      for (let i = 0; i < len; ++i, ++pos) {
-        const ch = pos < 0 ? lb[lbSize + pos] : data[pos];
-        if (ch !== needle[i])
-          return false;
-      }
-      return true;
-    }
-    module2.exports = SBMH;
-  }
-});
-
-// node_modules/busboy/lib/types/multipart.js
-var require_multipart = __commonJS({
-  "node_modules/busboy/lib/types/multipart.js"(exports2, module2) {
-    "use strict";
-    var { Readable, Writable } = require("stream");
-    var StreamSearch = require_sbmh();
-    var {
-      basename,
-      convertToUTF8,
-      getDecoder,
-      parseContentType,
-      parseDisposition
-    } = require_utils9();
-    var BUF_CRLF = Buffer.from("\r\n");
-    var BUF_CR = Buffer.from("\r");
-    var BUF_DASH = Buffer.from("-");
-    function noop() {
-    }
-    var MAX_HEADER_PAIRS = 2e3;
-    var MAX_HEADER_SIZE = 16 * 1024;
-    var HPARSER_NAME = 0;
-    var HPARSER_PRE_OWS = 1;
-    var HPARSER_VALUE = 2;
-    var HeaderParser = class {
-      constructor(cb) {
-        this.header = /* @__PURE__ */ Object.create(null);
-        this.pairCount = 0;
-        this.byteCount = 0;
-        this.state = HPARSER_NAME;
-        this.name = "";
-        this.value = "";
-        this.crlf = 0;
-        this.cb = cb;
-      }
-      reset() {
-        this.header = /* @__PURE__ */ Object.create(null);
-        this.pairCount = 0;
-        this.byteCount = 0;
-        this.state = HPARSER_NAME;
-        this.name = "";
-        this.value = "";
-        this.crlf = 0;
-      }
-      push(chunk, pos, end) {
-        let start = pos;
-        while (pos < end) {
-          switch (this.state) {
-            case HPARSER_NAME: {
-              let done = false;
-              for (; pos < end; ++pos) {
-                if (this.byteCount === MAX_HEADER_SIZE)
-                  return -1;
-                ++this.byteCount;
-                const code = chunk[pos];
-                if (TOKEN[code] !== 1) {
-                  if (code !== 58)
-                    return -1;
-                  this.name += chunk.latin1Slice(start, pos);
-                  if (this.name.length === 0)
-                    return -1;
-                  ++pos;
-                  done = true;
-                  this.state = HPARSER_PRE_OWS;
-                  break;
-                }
-              }
-              if (!done) {
-                this.name += chunk.latin1Slice(start, pos);
-                break;
-              }
-            }
-            case HPARSER_PRE_OWS: {
-              let done = false;
-              for (; pos < end; ++pos) {
-                if (this.byteCount === MAX_HEADER_SIZE)
-                  return -1;
-                ++this.byteCount;
-                const code = chunk[pos];
-                if (code !== 32 && code !== 9) {
-                  start = pos;
-                  done = true;
-                  this.state = HPARSER_VALUE;
-                  break;
-                }
-              }
-              if (!done)
-                break;
-            }
-            case HPARSER_VALUE:
-              switch (this.crlf) {
-                case 0:
-                  for (; pos < end; ++pos) {
-                    if (this.byteCount === MAX_HEADER_SIZE)
-                      return -1;
-                    ++this.byteCount;
-                    const code = chunk[pos];
-                    if (FIELD_VCHAR[code] !== 1) {
-                      if (code !== 13)
-                        return -1;
-                      ++this.crlf;
-                      break;
-                    }
-                  }
-                  this.value += chunk.latin1Slice(start, pos++);
-                  break;
-                case 1:
-                  if (this.byteCount === MAX_HEADER_SIZE)
-                    return -1;
-                  ++this.byteCount;
-                  if (chunk[pos++] !== 10)
-                    return -1;
-                  ++this.crlf;
-                  break;
-                case 2: {
-                  if (this.byteCount === MAX_HEADER_SIZE)
-                    return -1;
-                  ++this.byteCount;
-                  const code = chunk[pos];
-                  if (code === 32 || code === 9) {
-                    start = pos;
-                    this.crlf = 0;
-                  } else {
-                    if (++this.pairCount < MAX_HEADER_PAIRS) {
-                      this.name = this.name.toLowerCase();
-                      if (this.header[this.name] === void 0)
-                        this.header[this.name] = [this.value];
-                      else
-                        this.header[this.name].push(this.value);
-                    }
-                    if (code === 13) {
-                      ++this.crlf;
-                      ++pos;
-                    } else {
-                      start = pos;
-                      this.crlf = 0;
-                      this.state = HPARSER_NAME;
-                      this.name = "";
-                      this.value = "";
-                    }
-                  }
-                  break;
-                }
-                case 3: {
-                  if (this.byteCount === MAX_HEADER_SIZE)
-                    return -1;
-                  ++this.byteCount;
-                  if (chunk[pos++] !== 10)
-                    return -1;
-                  const header = this.header;
-                  this.reset();
-                  this.cb(header);
-                  return pos;
-                }
-              }
-              break;
-          }
-        }
-        return pos;
-      }
-    };
-    var FileStream = class extends Readable {
-      constructor(opts, owner) {
-        super(opts);
-        this.truncated = false;
-        this._readcb = null;
-        this.once("end", () => {
-          this._read();
-          if (--owner._fileEndsLeft === 0 && owner._finalcb) {
-            const cb = owner._finalcb;
-            owner._finalcb = null;
-            process.nextTick(cb);
-          }
-        });
-      }
-      _read(n) {
-        const cb = this._readcb;
-        if (cb) {
-          this._readcb = null;
-          cb();
-        }
-      }
-    };
-    var ignoreData = {
-      push: (chunk, pos) => {
-      },
-      destroy: () => {
-      }
-    };
-    function callAndUnsetCb(self2, err) {
-      const cb = self2._writecb;
-      self2._writecb = null;
-      if (err)
-        self2.destroy(err);
-      else if (cb)
-        cb();
-    }
-    function nullDecoder(val, hint) {
-      return val;
-    }
-    var Multipart = class extends Writable {
-      constructor(cfg) {
-        const streamOpts = {
-          autoDestroy: true,
-          emitClose: true,
-          highWaterMark: typeof cfg.highWaterMark === "number" ? cfg.highWaterMark : void 0
-        };
-        super(streamOpts);
-        if (!cfg.conType.params || typeof cfg.conType.params.boundary !== "string")
-          throw new Error("Multipart: Boundary not found");
-        const boundary = cfg.conType.params.boundary;
-        const paramDecoder = typeof cfg.defParamCharset === "string" && cfg.defParamCharset ? getDecoder(cfg.defParamCharset) : nullDecoder;
-        const defCharset = cfg.defCharset || "utf8";
-        const preservePath = cfg.preservePath;
-        const fileOpts = {
-          autoDestroy: true,
-          emitClose: true,
-          highWaterMark: typeof cfg.fileHwm === "number" ? cfg.fileHwm : void 0
-        };
-        const limits = cfg.limits;
-        const fieldSizeLimit = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : 1 * 1024 * 1024;
-        const fileSizeLimit = limits && typeof limits.fileSize === "number" ? limits.fileSize : Infinity;
-        const filesLimit = limits && typeof limits.files === "number" ? limits.files : Infinity;
-        const fieldsLimit = limits && typeof limits.fields === "number" ? limits.fields : Infinity;
-        const partsLimit = limits && typeof limits.parts === "number" ? limits.parts : Infinity;
-        let parts = -1;
-        let fields = 0;
-        let files = 0;
-        let skipPart = false;
-        this._fileEndsLeft = 0;
-        this._fileStream = void 0;
-        this._complete = false;
-        let fileSize = 0;
-        let field;
-        let fieldSize = 0;
-        let partCharset;
-        let partEncoding;
-        let partType;
-        let partName;
-        let partTruncated = false;
-        let hitFilesLimit = false;
-        let hitFieldsLimit = false;
-        this._hparser = null;
-        const hparser = new HeaderParser((header) => {
-          this._hparser = null;
-          skipPart = false;
-          partType = "text/plain";
-          partCharset = defCharset;
-          partEncoding = "7bit";
-          partName = void 0;
-          partTruncated = false;
-          let filename;
-          if (!header["content-disposition"]) {
-            skipPart = true;
-            return;
-          }
-          const disp = parseDisposition(
-            header["content-disposition"][0],
-            paramDecoder
-          );
-          if (!disp || disp.type !== "form-data") {
-            skipPart = true;
-            return;
-          }
-          if (disp.params) {
-            if (disp.params.name)
-              partName = disp.params.name;
-            if (disp.params["filename*"])
-              filename = disp.params["filename*"];
-            else if (disp.params.filename)
-              filename = disp.params.filename;
-            if (filename !== void 0 && !preservePath)
-              filename = basename(filename);
-          }
-          if (header["content-type"]) {
-            const conType = parseContentType(header["content-type"][0]);
-            if (conType) {
-              partType = `${conType.type}/${conType.subtype}`;
-              if (conType.params && typeof conType.params.charset === "string")
-                partCharset = conType.params.charset.toLowerCase();
-            }
-          }
-          if (header["content-transfer-encoding"])
-            partEncoding = header["content-transfer-encoding"][0].toLowerCase();
-          if (partType === "application/octet-stream" || filename !== void 0) {
-            if (files === filesLimit) {
-              if (!hitFilesLimit) {
-                hitFilesLimit = true;
-                this.emit("filesLimit");
-              }
-              skipPart = true;
-              return;
-            }
-            ++files;
-            if (this.listenerCount("file") === 0) {
-              skipPart = true;
-              return;
-            }
-            fileSize = 0;
-            this._fileStream = new FileStream(fileOpts, this);
-            ++this._fileEndsLeft;
-            this.emit(
-              "file",
-              partName,
-              this._fileStream,
-              {
-                filename,
-                encoding: partEncoding,
-                mimeType: partType
-              }
-            );
-          } else {
-            if (fields === fieldsLimit) {
-              if (!hitFieldsLimit) {
-                hitFieldsLimit = true;
-                this.emit("fieldsLimit");
-              }
-              skipPart = true;
-              return;
-            }
-            ++fields;
-            if (this.listenerCount("field") === 0) {
-              skipPart = true;
-              return;
-            }
-            field = [];
-            fieldSize = 0;
-          }
-        });
-        let matchPostBoundary = 0;
-        const ssCb = (isMatch, data, start, end, isDataSafe) => {
-          retrydata:
-            while (data) {
-              if (this._hparser !== null) {
-                const ret2 = this._hparser.push(data, start, end);
-                if (ret2 === -1) {
-                  this._hparser = null;
-                  hparser.reset();
-                  this.emit("error", new Error("Malformed part header"));
-                  break;
-                }
-                start = ret2;
-              }
-              if (start === end)
-                break;
-              if (matchPostBoundary !== 0) {
-                if (matchPostBoundary === 1) {
-                  switch (data[start]) {
-                    case 45:
-                      matchPostBoundary = 2;
-                      ++start;
-                      break;
-                    case 13:
-                      matchPostBoundary = 3;
-                      ++start;
-                      break;
-                    default:
-                      matchPostBoundary = 0;
-                  }
-                  if (start === end)
-                    return;
-                }
-                if (matchPostBoundary === 2) {
-                  matchPostBoundary = 0;
-                  if (data[start] === 45) {
-                    this._complete = true;
-                    this._bparser = ignoreData;
-                    return;
-                  }
-                  const writecb = this._writecb;
-                  this._writecb = noop;
-                  ssCb(false, BUF_DASH, 0, 1, false);
-                  this._writecb = writecb;
-                } else if (matchPostBoundary === 3) {
-                  matchPostBoundary = 0;
-                  if (data[start] === 10) {
-                    ++start;
-                    if (parts >= partsLimit)
-                      break;
-                    this._hparser = hparser;
-                    if (start === end)
-                      break;
-                    continue retrydata;
-                  } else {
-                    const writecb = this._writecb;
-                    this._writecb = noop;
-                    ssCb(false, BUF_CR, 0, 1, false);
-                    this._writecb = writecb;
-                  }
-                }
-              }
-              if (!skipPart) {
-                if (this._fileStream) {
-                  let chunk;
-                  const actualLen = Math.min(end - start, fileSizeLimit - fileSize);
-                  if (!isDataSafe) {
-                    chunk = Buffer.allocUnsafe(actualLen);
-                    data.copy(chunk, 0, start, start + actualLen);
-                  } else {
-                    chunk = data.slice(start, start + actualLen);
-                  }
-                  fileSize += chunk.length;
-                  if (fileSize === fileSizeLimit) {
-                    if (chunk.length > 0)
-                      this._fileStream.push(chunk);
-                    this._fileStream.emit("limit");
-                    this._fileStream.truncated = true;
-                    skipPart = true;
-                  } else if (!this._fileStream.push(chunk)) {
-                    if (this._writecb)
-                      this._fileStream._readcb = this._writecb;
-                    this._writecb = null;
-                  }
-                } else if (field !== void 0) {
-                  let chunk;
-                  const actualLen = Math.min(
-                    end - start,
-                    fieldSizeLimit - fieldSize
-                  );
-                  if (!isDataSafe) {
-                    chunk = Buffer.allocUnsafe(actualLen);
-                    data.copy(chunk, 0, start, start + actualLen);
-                  } else {
-                    chunk = data.slice(start, start + actualLen);
-                  }
-                  fieldSize += actualLen;
-                  field.push(chunk);
-                  if (fieldSize === fieldSizeLimit) {
-                    skipPart = true;
-                    partTruncated = true;
-                  }
-                }
-              }
-              break;
-            }
-          if (isMatch) {
-            matchPostBoundary = 1;
-            if (this._fileStream) {
-              this._fileStream.push(null);
-              this._fileStream = null;
-            } else if (field !== void 0) {
-              let data2;
-              switch (field.length) {
-                case 0:
-                  data2 = "";
-                  break;
-                case 1:
-                  data2 = convertToUTF8(field[0], partCharset, 0);
-                  break;
-                default:
-                  data2 = convertToUTF8(
-                    Buffer.concat(field, fieldSize),
-                    partCharset,
-                    0
-                  );
-              }
-              field = void 0;
-              fieldSize = 0;
-              this.emit(
-                "field",
-                partName,
-                data2,
-                {
-                  nameTruncated: false,
-                  valueTruncated: partTruncated,
-                  encoding: partEncoding,
-                  mimeType: partType
-                }
-              );
-            }
-            if (++parts === partsLimit)
-              this.emit("partsLimit");
-          }
-        };
-        this._bparser = new StreamSearch(`\r
---${boundary}`, ssCb);
-        this._writecb = null;
-        this._finalcb = null;
-        this.write(BUF_CRLF);
-      }
-      static detect(conType) {
-        return conType.type === "multipart" && conType.subtype === "form-data";
-      }
-      _write(chunk, enc, cb) {
-        this._writecb = cb;
-        this._bparser.push(chunk, 0);
-        if (this._writecb)
-          callAndUnsetCb(this);
-      }
-      _destroy(err, cb) {
-        this._hparser = null;
-        this._bparser = ignoreData;
-        if (!err)
-          err = checkEndState(this);
-        const fileStream = this._fileStream;
-        if (fileStream) {
-          this._fileStream = null;
-          fileStream.destroy(err);
-        }
-        cb(err);
-      }
-      _final(cb) {
-        this._bparser.destroy();
-        if (!this._complete)
-          return cb(new Error("Unexpected end of form"));
-        if (this._fileEndsLeft)
-          this._finalcb = finalcb.bind(null, this, cb);
-        else
-          finalcb(this, cb);
-      }
-    };
-    function finalcb(self2, cb, err) {
-      if (err)
-        return cb(err);
-      err = checkEndState(self2);
-      cb(err);
-    }
-    function checkEndState(self2) {
-      if (self2._hparser)
-        return new Error("Malformed part header");
-      const fileStream = self2._fileStream;
-      if (fileStream) {
-        self2._fileStream = null;
-        fileStream.destroy(new Error("Unexpected end of file"));
-      }
-      if (!self2._complete)
-        return new Error("Unexpected end of form");
-    }
-    var TOKEN = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ];
-    var FIELD_VCHAR = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
-    ];
-    module2.exports = Multipart;
-  }
-});
-
-// node_modules/busboy/lib/types/urlencoded.js
-var require_urlencoded3 = __commonJS({
-  "node_modules/busboy/lib/types/urlencoded.js"(exports2, module2) {
-    "use strict";
-    var { Writable } = require("stream");
-    var { getDecoder } = require_utils9();
-    var URLEncoded = class extends Writable {
-      constructor(cfg) {
-        const streamOpts = {
-          autoDestroy: true,
-          emitClose: true,
-          highWaterMark: typeof cfg.highWaterMark === "number" ? cfg.highWaterMark : void 0
-        };
-        super(streamOpts);
-        let charset = cfg.defCharset || "utf8";
-        if (cfg.conType.params && typeof cfg.conType.params.charset === "string")
-          charset = cfg.conType.params.charset;
-        this.charset = charset;
-        const limits = cfg.limits;
-        this.fieldSizeLimit = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : 1 * 1024 * 1024;
-        this.fieldsLimit = limits && typeof limits.fields === "number" ? limits.fields : Infinity;
-        this.fieldNameSizeLimit = limits && typeof limits.fieldNameSize === "number" ? limits.fieldNameSize : 100;
-        this._inKey = true;
-        this._keyTrunc = false;
-        this._valTrunc = false;
-        this._bytesKey = 0;
-        this._bytesVal = 0;
-        this._fields = 0;
-        this._key = "";
-        this._val = "";
-        this._byte = -2;
-        this._lastPos = 0;
-        this._encode = 0;
-        this._decoder = getDecoder(charset);
-      }
-      static detect(conType) {
-        return conType.type === "application" && conType.subtype === "x-www-form-urlencoded";
-      }
-      _write(chunk, enc, cb) {
-        if (this._fields >= this.fieldsLimit)
-          return cb();
-        let i = 0;
-        const len = chunk.length;
-        this._lastPos = 0;
-        if (this._byte !== -2) {
-          i = readPctEnc(this, chunk, i, len);
-          if (i === -1)
-            return cb(new Error("Malformed urlencoded form"));
-          if (i >= len)
-            return cb();
-          if (this._inKey)
-            ++this._bytesKey;
-          else
-            ++this._bytesVal;
-        }
-        main:
-          while (i < len) {
-            if (this._inKey) {
-              i = skipKeyBytes(this, chunk, i, len);
-              while (i < len) {
-                switch (chunk[i]) {
-                  case 61:
-                    if (this._lastPos < i)
-                      this._key += chunk.latin1Slice(this._lastPos, i);
-                    this._lastPos = ++i;
-                    this._key = this._decoder(this._key, this._encode);
-                    this._encode = 0;
-                    this._inKey = false;
-                    continue main;
-                  case 38:
-                    if (this._lastPos < i)
-                      this._key += chunk.latin1Slice(this._lastPos, i);
-                    this._lastPos = ++i;
-                    this._key = this._decoder(this._key, this._encode);
-                    this._encode = 0;
-                    if (this._bytesKey > 0) {
-                      this.emit(
-                        "field",
-                        this._key,
-                        "",
-                        {
-                          nameTruncated: this._keyTrunc,
-                          valueTruncated: false,
-                          encoding: this.charset,
-                          mimeType: "text/plain"
-                        }
-                      );
-                    }
-                    this._key = "";
-                    this._val = "";
-                    this._keyTrunc = false;
-                    this._valTrunc = false;
-                    this._bytesKey = 0;
-                    this._bytesVal = 0;
-                    if (++this._fields >= this.fieldsLimit) {
-                      this.emit("fieldsLimit");
-                      return cb();
-                    }
-                    continue;
-                  case 43:
-                    if (this._lastPos < i)
-                      this._key += chunk.latin1Slice(this._lastPos, i);
-                    this._key += " ";
-                    this._lastPos = i + 1;
-                    break;
-                  case 37:
-                    if (this._encode === 0)
-                      this._encode = 1;
-                    if (this._lastPos < i)
-                      this._key += chunk.latin1Slice(this._lastPos, i);
-                    this._lastPos = i + 1;
-                    this._byte = -1;
-                    i = readPctEnc(this, chunk, i + 1, len);
-                    if (i === -1)
-                      return cb(new Error("Malformed urlencoded form"));
-                    if (i >= len)
-                      return cb();
-                    ++this._bytesKey;
-                    i = skipKeyBytes(this, chunk, i, len);
-                    continue;
-                }
-                ++i;
-                ++this._bytesKey;
-                i = skipKeyBytes(this, chunk, i, len);
-              }
-              if (this._lastPos < i)
-                this._key += chunk.latin1Slice(this._lastPos, i);
-            } else {
-              i = skipValBytes(this, chunk, i, len);
-              while (i < len) {
-                switch (chunk[i]) {
-                  case 38:
-                    if (this._lastPos < i)
-                      this._val += chunk.latin1Slice(this._lastPos, i);
-                    this._lastPos = ++i;
-                    this._inKey = true;
-                    this._val = this._decoder(this._val, this._encode);
-                    this._encode = 0;
-                    if (this._bytesKey > 0 || this._bytesVal > 0) {
-                      this.emit(
-                        "field",
-                        this._key,
-                        this._val,
-                        {
-                          nameTruncated: this._keyTrunc,
-                          valueTruncated: this._valTrunc,
-                          encoding: this.charset,
-                          mimeType: "text/plain"
-                        }
-                      );
-                    }
-                    this._key = "";
-                    this._val = "";
-                    this._keyTrunc = false;
-                    this._valTrunc = false;
-                    this._bytesKey = 0;
-                    this._bytesVal = 0;
-                    if (++this._fields >= this.fieldsLimit) {
-                      this.emit("fieldsLimit");
-                      return cb();
-                    }
-                    continue main;
-                  case 43:
-                    if (this._lastPos < i)
-                      this._val += chunk.latin1Slice(this._lastPos, i);
-                    this._val += " ";
-                    this._lastPos = i + 1;
-                    break;
-                  case 37:
-                    if (this._encode === 0)
-                      this._encode = 1;
-                    if (this._lastPos < i)
-                      this._val += chunk.latin1Slice(this._lastPos, i);
-                    this._lastPos = i + 1;
-                    this._byte = -1;
-                    i = readPctEnc(this, chunk, i + 1, len);
-                    if (i === -1)
-                      return cb(new Error("Malformed urlencoded form"));
-                    if (i >= len)
-                      return cb();
-                    ++this._bytesVal;
-                    i = skipValBytes(this, chunk, i, len);
-                    continue;
-                }
-                ++i;
-                ++this._bytesVal;
-                i = skipValBytes(this, chunk, i, len);
-              }
-              if (this._lastPos < i)
-                this._val += chunk.latin1Slice(this._lastPos, i);
-            }
-          }
-        cb();
-      }
-      _final(cb) {
-        if (this._byte !== -2)
-          return cb(new Error("Malformed urlencoded form"));
-        if (!this._inKey || this._bytesKey > 0 || this._bytesVal > 0) {
-          if (this._inKey)
-            this._key = this._decoder(this._key, this._encode);
-          else
-            this._val = this._decoder(this._val, this._encode);
-          this.emit(
-            "field",
-            this._key,
-            this._val,
-            {
-              nameTruncated: this._keyTrunc,
-              valueTruncated: this._valTrunc,
-              encoding: this.charset,
-              mimeType: "text/plain"
-            }
-          );
-        }
-        cb();
-      }
-    };
-    function readPctEnc(self2, chunk, pos, len) {
-      if (pos >= len)
-        return len;
-      if (self2._byte === -1) {
-        const hexUpper = HEX_VALUES[chunk[pos++]];
-        if (hexUpper === -1)
-          return -1;
-        if (hexUpper >= 8)
-          self2._encode = 2;
-        if (pos < len) {
-          const hexLower = HEX_VALUES[chunk[pos++]];
-          if (hexLower === -1)
-            return -1;
-          if (self2._inKey)
-            self2._key += String.fromCharCode((hexUpper << 4) + hexLower);
-          else
-            self2._val += String.fromCharCode((hexUpper << 4) + hexLower);
-          self2._byte = -2;
-          self2._lastPos = pos;
-        } else {
-          self2._byte = hexUpper;
-        }
-      } else {
-        const hexLower = HEX_VALUES[chunk[pos++]];
-        if (hexLower === -1)
-          return -1;
-        if (self2._inKey)
-          self2._key += String.fromCharCode((self2._byte << 4) + hexLower);
-        else
-          self2._val += String.fromCharCode((self2._byte << 4) + hexLower);
-        self2._byte = -2;
-        self2._lastPos = pos;
-      }
-      return pos;
-    }
-    function skipKeyBytes(self2, chunk, pos, len) {
-      if (self2._bytesKey > self2.fieldNameSizeLimit) {
-        if (!self2._keyTrunc) {
-          if (self2._lastPos < pos)
-            self2._key += chunk.latin1Slice(self2._lastPos, pos - 1);
-        }
-        self2._keyTrunc = true;
-        for (; pos < len; ++pos) {
-          const code = chunk[pos];
-          if (code === 61 || code === 38)
-            break;
-          ++self2._bytesKey;
-        }
-        self2._lastPos = pos;
-      }
-      return pos;
-    }
-    function skipValBytes(self2, chunk, pos, len) {
-      if (self2._bytesVal > self2.fieldSizeLimit) {
-        if (!self2._valTrunc) {
-          if (self2._lastPos < pos)
-            self2._val += chunk.latin1Slice(self2._lastPos, pos - 1);
-        }
-        self2._valTrunc = true;
-        for (; pos < len; ++pos) {
-          if (chunk[pos] === 38)
-            break;
-          ++self2._bytesVal;
-        }
-        self2._lastPos = pos;
-      }
-      return pos;
-    }
-    var HEX_VALUES = [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1
-    ];
-    module2.exports = URLEncoded;
-  }
-});
-
-// node_modules/busboy/lib/index.js
-var require_lib10 = __commonJS({
-  "node_modules/busboy/lib/index.js"(exports2, module2) {
-    "use strict";
-    var { parseContentType } = require_utils9();
-    function getInstance(cfg) {
-      const headers = cfg.headers;
-      const conType = parseContentType(headers["content-type"]);
-      if (!conType)
-        throw new Error("Malformed content type");
-      for (const type of TYPES) {
-        const matched = type.detect(conType);
-        if (!matched)
-          continue;
-        const instanceCfg = {
-          limits: cfg.limits,
-          headers,
-          conType,
-          highWaterMark: void 0,
-          fileHwm: void 0,
-          defCharset: void 0,
-          defParamCharset: void 0,
-          preservePath: false
-        };
-        if (cfg.highWaterMark)
-          instanceCfg.highWaterMark = cfg.highWaterMark;
-        if (cfg.fileHwm)
-          instanceCfg.fileHwm = cfg.fileHwm;
-        instanceCfg.defCharset = cfg.defCharset;
-        instanceCfg.defParamCharset = cfg.defParamCharset;
-        instanceCfg.preservePath = cfg.preservePath;
-        return new type(instanceCfg);
-      }
-      throw new Error(`Unsupported content type: ${headers["content-type"]}`);
-    }
-    var TYPES = [
-      require_multipart(),
-      require_urlencoded3()
-    ].filter(function(typemod) {
-      return typeof typemod.detect === "function";
-    });
-    module2.exports = (cfg) => {
-      if (typeof cfg !== "object" || cfg === null)
-        cfg = {};
-      if (typeof cfg.headers !== "object" || cfg.headers === null || typeof cfg.headers["content-type"] !== "string") {
-        throw new Error("Missing Content-Type");
-      }
-      return getInstance(cfg);
-    };
-  }
-});
-
-// node_modules/append-field/lib/parse-path.js
-var require_parse_path = __commonJS({
-  "node_modules/append-field/lib/parse-path.js"(exports2, module2) {
-    var reFirstKey = /^[^\[]*/;
-    var reDigitPath = /^\[(\d+)\]/;
-    var reNormalPath = /^\[([^\]]+)\]/;
-    function parsePath(key) {
-      function failure() {
-        return [{ type: "object", key, last: true }];
-      }
-      var firstKey = reFirstKey.exec(key)[0];
-      if (!firstKey) return failure();
-      var len = key.length;
-      var pos = firstKey.length;
-      var tail = { type: "object", key: firstKey };
-      var steps = [tail];
-      while (pos < len) {
-        var m;
-        if (key[pos] === "[" && key[pos + 1] === "]") {
-          pos += 2;
-          tail.append = true;
-          if (pos !== len) return failure();
-          continue;
-        }
-        m = reDigitPath.exec(key.substring(pos));
-        if (m !== null) {
-          pos += m[0].length;
-          tail.nextType = "array";
-          tail = { type: "array", key: parseInt(m[1], 10) };
-          steps.push(tail);
-          continue;
-        }
-        m = reNormalPath.exec(key.substring(pos));
-        if (m !== null) {
-          pos += m[0].length;
-          tail.nextType = "object";
-          tail = { type: "object", key: m[1] };
-          steps.push(tail);
-          continue;
-        }
-        return failure();
-      }
-      tail.last = true;
-      return steps;
-    }
-    module2.exports = parsePath;
-  }
-});
-
-// node_modules/append-field/lib/set-value.js
-var require_set_value = __commonJS({
-  "node_modules/append-field/lib/set-value.js"(exports2, module2) {
-    function valueType(value) {
-      if (value === void 0) return "undefined";
-      if (Array.isArray(value)) return "array";
-      if (typeof value === "object") return "object";
-      return "scalar";
-    }
-    function setLastValue(context, step, currentValue, entryValue) {
-      switch (valueType(currentValue)) {
-        case "undefined":
-          if (step.append) {
-            context[step.key] = [entryValue];
-          } else {
-            context[step.key] = entryValue;
-          }
-          break;
-        case "array":
-          context[step.key].push(entryValue);
-          break;
-        case "object":
-          return setLastValue(currentValue, { type: "object", key: "", last: true }, currentValue[""], entryValue);
-        case "scalar":
-          context[step.key] = [context[step.key], entryValue];
-          break;
-      }
-      return context;
-    }
-    function setValue(context, step, currentValue, entryValue) {
-      if (step.last) return setLastValue(context, step, currentValue, entryValue);
-      var obj2;
-      switch (valueType(currentValue)) {
-        case "undefined":
-          if (step.nextType === "array") {
-            context[step.key] = [];
-          } else {
-            context[step.key] = /* @__PURE__ */ Object.create(null);
-          }
-          return context[step.key];
-        case "object":
-          return context[step.key];
-        case "array":
-          if (step.nextType === "array") {
-            return currentValue;
-          }
-          obj2 = /* @__PURE__ */ Object.create(null);
-          context[step.key] = obj2;
-          currentValue.forEach(function(item, i) {
-            if (item !== void 0) obj2["" + i] = item;
-          });
-          return obj2;
-        case "scalar":
-          obj2 = /* @__PURE__ */ Object.create(null);
-          obj2[""] = currentValue;
-          context[step.key] = obj2;
-          return obj2;
-      }
-    }
-    module2.exports = setValue;
-  }
-});
-
-// node_modules/append-field/index.js
-var require_append_field = __commonJS({
-  "node_modules/append-field/index.js"(exports2, module2) {
-    var parsePath = require_parse_path();
-    var setValue = require_set_value();
-    function appendField(store, key, value) {
-      var steps = parsePath(key);
-      steps.reduce(function(context, step) {
-        return setValue(context, step, context[step.key], value);
-      }, store);
-    }
-    module2.exports = appendField;
-  }
-});
-
-// node_modules/multer/lib/counter.js
-var require_counter = __commonJS({
-  "node_modules/multer/lib/counter.js"(exports2, module2) {
-    var EventEmitter = require("events").EventEmitter;
-    function Counter() {
-      EventEmitter.call(this);
-      this.value = 0;
-    }
-    Counter.prototype = Object.create(EventEmitter.prototype);
-    Counter.prototype.increment = function increment() {
-      this.value++;
-    };
-    Counter.prototype.decrement = function decrement() {
-      if (--this.value === 0) this.emit("zero");
-    };
-    Counter.prototype.isZero = function isZero() {
-      return this.value === 0;
-    };
-    Counter.prototype.onceZero = function onceZero(fn) {
-      if (this.isZero()) return fn();
-      this.once("zero", fn);
-    };
-    module2.exports = Counter;
-  }
-});
-
-// node_modules/multer/lib/multer-error.js
-var require_multer_error = __commonJS({
-  "node_modules/multer/lib/multer-error.js"(exports2, module2) {
-    var util = require("util");
-    var errorMessages = {
-      LIMIT_PART_COUNT: "Too many parts",
-      LIMIT_FILE_SIZE: "File too large",
-      LIMIT_FILE_COUNT: "Too many files",
-      LIMIT_FIELD_KEY: "Field name too long",
-      LIMIT_FIELD_VALUE: "Field value too long",
-      LIMIT_FIELD_COUNT: "Too many fields",
-      LIMIT_UNEXPECTED_FILE: "Unexpected file field",
-      MISSING_FIELD_NAME: "Field name missing",
-      LIMIT_FIELD_NESTING: "Field name nesting too deep",
-      LIMIT_FIELD_ARRAY_INDEX: "Field name array index too large",
-      STREAM_DESTROYED: "File stream was destroyed",
-      INVALID_FIELD_NAME: "Invalid field name"
-    };
-    function MulterError(code, field, filename) {
-      Error.captureStackTrace(this, this.constructor);
-      this.name = this.constructor.name;
-      this.message = errorMessages[code] || `Unknown error: ${code}`;
-      this.code = code;
-      if (field) this.field = field;
-      if (filename) this.filename = filename;
-    }
-    util.inherits(MulterError, Error);
-    module2.exports = MulterError;
-  }
-});
-
-// node_modules/multer/lib/file-appender.js
-var require_file_appender = __commonJS({
-  "node_modules/multer/lib/file-appender.js"(exports2, module2) {
-    function arrayRemove(arr, item) {
-      var idx = arr.indexOf(item);
-      if (~idx) arr.splice(idx, 1);
-    }
-    function FileAppender(strategy, req) {
-      this.strategy = strategy;
-      this.req = req;
-      switch (strategy) {
-        case "NONE":
-          break;
-        case "VALUE":
-          break;
-        case "ARRAY":
-          req.files = [];
-          break;
-        case "OBJECT":
-          req.files = /* @__PURE__ */ Object.create(null);
-          break;
-        default:
-          throw new Error("Unknown file strategy: " + strategy);
-      }
-    }
-    FileAppender.prototype.insertPlaceholder = function(file) {
-      var placeholder = {
-        fieldname: file.fieldname
-      };
-      switch (this.strategy) {
-        case "NONE":
-          break;
-        case "VALUE":
-          break;
-        case "ARRAY":
-          this.req.files.push(placeholder);
-          break;
-        case "OBJECT":
-          if (this.req.files[file.fieldname]) {
-            this.req.files[file.fieldname].push(placeholder);
-          } else {
-            this.req.files[file.fieldname] = [placeholder];
-          }
-          break;
-      }
-      return placeholder;
-    };
-    FileAppender.prototype.removePlaceholder = function(placeholder) {
-      switch (this.strategy) {
-        case "NONE":
-          break;
-        case "VALUE":
-          break;
-        case "ARRAY":
-          arrayRemove(this.req.files, placeholder);
-          break;
-        case "OBJECT": {
-          var files = this.req.files[placeholder.fieldname];
-          if (!files) break;
-          arrayRemove(files, placeholder);
-          if (files.length === 0) delete this.req.files[placeholder.fieldname];
-          break;
-        }
-      }
-    };
-    FileAppender.prototype.replacePlaceholder = function(placeholder, file) {
-      if (this.strategy === "VALUE") {
-        this.req.file = file;
-        return;
-      }
-      delete placeholder.fieldname;
-      Object.assign(placeholder, file);
-    };
-    module2.exports = FileAppender;
-  }
-});
-
-// node_modules/multer/lib/remove-uploaded-files.js
-var require_remove_uploaded_files = __commonJS({
-  "node_modules/multer/lib/remove-uploaded-files.js"(exports2, module2) {
-    function removeUploadedFiles(uploadedFiles, remove, cb) {
-      var length = uploadedFiles.length;
-      var errors = [];
-      if (length === 0) return cb(null, errors);
-      function handleFile(idx) {
-        var file = uploadedFiles[idx];
-        remove(file, function(err) {
-          if (err) {
-            err.file = file;
-            err.field = file.fieldname;
-            errors.push(err);
-          }
-          if (idx < length - 1) {
-            setImmediate(function() {
-              handleFile(idx + 1);
-            });
-          } else {
-            cb(null, errors);
-          }
-        });
-      }
-      handleFile(0);
-    }
-    module2.exports = removeUploadedFiles;
-  }
-});
-
-// node_modules/multer/lib/validate-limits.js
-var require_validate_limits = __commonJS({
-  "node_modules/multer/lib/validate-limits.js"(exports2, module2) {
-    function validateLimits(limits) {
-      Object.keys(limits).forEach(function(key) {
-        var value = limits[key];
-        if (value == null) return;
-        if (Number.isInteger(value) && value >= 0 || value === Infinity) return;
-        throw new TypeError("Expected limits." + key + " to be a non-negative integer or Infinity");
-      });
-    }
-    module2.exports = validateLimits;
-  }
-});
-
-// node_modules/multer/lib/make-middleware.js
-var require_make_middleware = __commonJS({
-  "node_modules/multer/lib/make-middleware.js"(exports2, module2) {
-    var is = require_type_is();
-    var AsyncResource = require("async_hooks").AsyncResource;
-    var Busboy = require_lib10();
-    var appendField = require_append_field();
-    var Counter = require_counter();
-    var MulterError = require_multer_error();
-    var FileAppender = require_file_appender();
-    var removeUploadedFiles = require_remove_uploaded_files();
-    var validateLimits = require_validate_limits();
-    var DEFAULT_FIELD_SIZE = 1024 * 1024;
-    function exceedsArrayIndexLimit(fieldname, limit) {
-      if (!/^[^[]+(?:\[[^\]]+\])*(?:\[\])?$/.test(fieldname)) return false;
-      var pattern = /\[(\d+)\]/g;
-      var match;
-      while ((match = pattern.exec(fieldname)) !== null) {
-        if (Number(match[1]) > limit) return true;
-      }
-      return false;
-    }
-    function drainStream(stream) {
-      stream.on("readable", () => {
-        while (stream.read() !== null) {
-        }
-      });
-    }
-    function decodeFormDataName(str) {
-      return str.replace(/%0A|%0D|%22/gi, function(match) {
-        switch (match.toUpperCase()) {
-          case "%0A":
-            return "\n";
-          case "%0D":
-            return "\r";
-          default:
-            return '"';
-        }
-      });
-    }
-    function defaultStreamHandler(req, busboy) {
-      req.pipe(busboy);
-    }
-    function makeMiddleware(setup) {
-      return function multerMiddleware(req, res, next) {
-        var resource = new AsyncResource("multer");
-        var originalNext = next;
-        next = function(err) {
-          resource.runInAsyncScope(originalNext, null, err);
-        };
-        if (!is(req, ["multipart"])) return next();
-        var options = setup();
-        var limits = options.limits;
-        if (typeof limits === "function") {
-          try {
-            limits = limits(req);
-            if (limits) validateLimits(limits);
-          } catch (err) {
-            return next(err);
-          }
-        }
-        var busboyLimits = {};
-        var key;
-        for (key in limits) {
-          busboyLimits[key] = limits[key];
-        }
-        var fieldSize = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : DEFAULT_FIELD_SIZE;
-        if (isFinite(fieldSize)) {
-          busboyLimits.fieldSize = fieldSize + 1;
-        }
-        if (limits && typeof limits.fileSize === "number" && isFinite(limits.fileSize)) {
-          busboyLimits.fileSize = limits.fileSize + 1;
-        }
-        if (limits && typeof limits.parts === "number" && isFinite(limits.parts)) {
-          busboyLimits.parts = limits.parts + 1;
-        }
-        var storage = options.storage;
-        var fileFilter = options.fileFilter;
-        var fileStrategy = options.fileStrategy;
-        var preservePath = options.preservePath;
-        var defParamCharset = options.defParamCharset;
-        var defCharset = options.defCharset;
-        var highWaterMark = options.highWaterMark;
-        var fileHwm = options.fileHwm;
-        var streamHandler = options.streamHandler || defaultStreamHandler;
-        req.body = /* @__PURE__ */ Object.create(null);
-        var busboy;
-        var appender = null;
-        var isDone = false;
-        var readFinished = false;
-        var errorOccured = false;
-        var abortCleanupDone = false;
-        var abortRemovedFiles = /* @__PURE__ */ new Set();
-        var pendingWrites = new Counter();
-        var uploadedFiles = [];
-        var pendingFiles = [];
-        function done(err) {
-          var called = false;
-          function onFinished() {
-            if (called) return;
-            called = true;
-            next(err);
-          }
-          if (isDone) return;
-          isDone = true;
-          if (busboy) {
-            req.unpipe(busboy);
-            setImmediate(() => {
-              busboy.removeAllListeners();
-              busboy.on("error", function() {
-              });
-            });
-          }
-          drainStream(req);
-          req.resume();
-          if (err && req.readable && !req.destroyed) {
-            req.once("end", onFinished);
-            req.once("error", onFinished);
-            req.once("close", onFinished);
-            return;
-          }
-          next(err);
-        }
-        function indicateDone() {
-          if (readFinished && pendingWrites.isZero() && !errorOccured) done();
-        }
-        function abortWithError(uploadError, skipPendingWait) {
-          if (errorOccured) return;
-          errorOccured = true;
-          function finishAbort() {
-            abortCleanupDone = true;
-            function remove(file, cb) {
-              storage._removeFile(req, file, cb);
-            }
-            var pendingToRemove = pendingFiles.filter(function(f) {
-              return f.path;
-            });
-            pendingToRemove.forEach(function(f) {
-              abortRemovedFiles.add(f);
-            });
-            var filesToRemove = uploadedFiles.concat(pendingToRemove);
-            pendingFiles = [];
-            removeUploadedFiles(filesToRemove, remove, function(err, storageErrors) {
-              if (err) return done(err);
-              uploadError.storageErrors = storageErrors;
-              done(uploadError);
-            });
-          }
-          if (skipPendingWait) {
-            finishAbort();
-          } else {
-            pendingWrites.onceZero(finishAbort);
-          }
-        }
-        function abortWithCode(code, optionalField, optionalFilename) {
-          abortWithError(new MulterError(code, optionalField, optionalFilename));
-        }
-        function handleRequestFailure(err) {
-          if (isDone) return;
-          if (busboy) {
-            req.unpipe(busboy);
-            busboy.destroy(err);
-          }
-          abortWithError(err, true);
-        }
-        req.on("error", function(err) {
-          handleRequestFailure(err || new Error("Request error"));
-        });
-        req.on("aborted", function() {
-          handleRequestFailure(new Error("Request aborted"));
-        });
-        req.on("close", function() {
-          if (req.readableEnded) return;
-          handleRequestFailure(new Error("Request closed"));
-        });
-        try {
-          busboy = Busboy({
-            headers: req.headers,
-            limits: busboyLimits,
-            preservePath,
-            defParamCharset,
-            defCharset,
-            highWaterMark,
-            fileHwm
-          });
-        } catch (err) {
-          return next(err);
-        }
-        appender = new FileAppender(fileStrategy, req);
-        busboy.on("field", function(fieldname, value, { nameTruncated, valueTruncated }) {
-          if (fieldname == null) return abortWithCode("MISSING_FIELD_NAME");
-          var rawFieldname = fieldname;
-          fieldname = decodeFormDataName(fieldname);
-          if (nameTruncated) return abortWithCode("LIMIT_FIELD_KEY");
-          if (valueTruncated) return abortWithCode("LIMIT_FIELD_VALUE", fieldname);
-          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNameSize")) {
-            if (rawFieldname.length > limits.fieldNameSize) return abortWithCode("LIMIT_FIELD_KEY");
-          }
-          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNestingDepth")) {
-            if (fieldname.split("[").length - 1 > limits.fieldNestingDepth) return abortWithCode("LIMIT_FIELD_NESTING", fieldname);
-          }
-          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldArrayIndexLimit")) {
-            if (exceedsArrayIndexLimit(fieldname, limits.fieldArrayIndexLimit)) {
-              return abortWithCode("LIMIT_FIELD_ARRAY_INDEX", fieldname);
-            }
-          }
-          try {
-            appendField(req.body, fieldname, value);
-          } catch {
-            return abortWithCode("INVALID_FIELD_NAME", fieldname);
-          }
-        });
-        busboy.on("file", function(fieldname, fileStream, { filename, encoding, mimeType }) {
-          var pendingWritesIncremented = false;
-          var aborting = false;
-          var accepted = false;
-          var fileSizeLimitReached = false;
-          var originalname = filename && decodeFormDataName(filename);
-          function decrementPendingWrites() {
-            if (!pendingWritesIncremented) return;
-            pendingWritesIncremented = false;
-            pendingWrites.decrement();
-          }
-          fileStream.on("error", function(err) {
-            decrementPendingWrites();
-            abortWithError(err);
-          });
-          fileStream.on("limit", function() {
-            fileSizeLimitReached = true;
-            if (accepted) {
-              aborting = true;
-              abortWithCode("LIMIT_FILE_SIZE", fieldname, originalname);
-            }
-          });
-          if (fieldname == null) return abortWithCode("MISSING_FIELD_NAME");
-          var rawFieldname = fieldname;
-          fieldname = decodeFormDataName(fieldname);
-          if (!filename) return fileStream.resume();
-          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNameSize")) {
-            if (rawFieldname.length > limits.fieldNameSize) return abortWithCode("LIMIT_FIELD_KEY");
-          }
-          var file = {
-            fieldname,
-            originalname,
-            encoding,
-            mimetype: mimeType
-          };
-          var placeholder = appender.insertPlaceholder(file);
-          fileFilter(req, file, function(err, includeFile) {
-            if (errorOccured) {
-              appender.removePlaceholder(placeholder);
-              return fileStream.resume();
-            }
-            if (err) {
-              appender.removePlaceholder(placeholder);
-              return abortWithError(err);
-            }
-            if (!includeFile) {
-              appender.removePlaceholder(placeholder);
-              return fileStream.resume();
-            }
-            if (fileSizeLimitReached) {
-              appender.removePlaceholder(placeholder);
-              return abortWithCode("LIMIT_FILE_SIZE", fieldname, originalname);
-            }
-            accepted = true;
-            pendingWritesIncremented = true;
-            pendingWrites.increment();
-            Object.defineProperty(file, "stream", {
-              configurable: true,
-              enumerable: false,
-              value: fileStream
-            });
-            pendingFiles.push(file);
-            storage._handleFile(req, file, function(err2, info) {
-              var idx = pendingFiles.indexOf(file);
-              if (idx !== -1) pendingFiles.splice(idx, 1);
-              if (aborting) {
-                appender.removePlaceholder(placeholder);
-                if (!err2) uploadedFiles.push({ ...file, ...info });
-                return decrementPendingWrites();
-              }
-              if (err2) {
-                appender.removePlaceholder(placeholder);
-                decrementPendingWrites();
-                return abortWithError(err2);
-              }
-              var fileInfo = { ...file, ...info };
-              if (abortCleanupDone) {
-                if (abortRemovedFiles.has(file)) {
-                  appender.removePlaceholder(placeholder);
-                  decrementPendingWrites();
-                  return;
-                }
-                return storage._removeFile(req, fileInfo, function() {
-                  appender.removePlaceholder(placeholder);
-                  decrementPendingWrites();
-                });
-              }
-              appender.replacePlaceholder(placeholder, fileInfo);
-              uploadedFiles.push(fileInfo);
-              decrementPendingWrites();
-              indicateDone();
-            });
-          });
-        });
-        busboy.on("error", function(err) {
-          abortWithError(err);
-        });
-        busboy.on("partsLimit", function() {
-          abortWithCode("LIMIT_PART_COUNT");
-        });
-        busboy.on("filesLimit", function() {
-          abortWithCode("LIMIT_FILE_COUNT");
-        });
-        busboy.on("fieldsLimit", function() {
-          abortWithCode("LIMIT_FIELD_COUNT");
-        });
-        busboy.on("close", function() {
-          readFinished = true;
-          indicateDone();
-        });
-        streamHandler(req, busboy);
-      };
-    }
-    module2.exports = makeMiddleware;
-  }
-});
-
-// node_modules/multer/storage/disk.js
-var require_disk = __commonJS({
-  "node_modules/multer/storage/disk.js"(exports2, module2) {
-    var fs2 = require("fs");
-    var os = require("os");
-    var path2 = require("path");
-    var crypto4 = require("crypto");
-    var pipeline = require("stream").pipeline;
-    var MulterError = require_multer_error();
-    var openStreams = /* @__PURE__ */ new WeakMap();
-    var flushingFiles = /* @__PURE__ */ new WeakMap();
-    function endFlush(file) {
-      var flush = flushingFiles.get(file);
-      if (!flush) return;
-      flushingFiles.delete(file);
-      if (flush.onClosed) flush.onClosed();
-    }
-    function getFilename(req, file, cb) {
-      crypto4.randomBytes(16, function(err, raw) {
-        cb(err, err ? void 0 : raw.toString("hex"));
-      });
-    }
-    function getDestination(req, file, cb) {
-      cb(null, os.tmpdir());
-    }
-    function DiskStorage(opts) {
-      opts = opts || {};
-      this.getFilename = opts.filename || getFilename;
-      this.flush = opts.flush;
-      if (typeof opts.destination === "string") {
-        fs2.mkdirSync(opts.destination, { recursive: true });
-        this.getDestination = function($0, $1, cb) {
-          cb(null, opts.destination);
-        };
-      } else {
-        this.getDestination = opts.destination || getDestination;
-      }
-    }
-    DiskStorage.prototype._handleFile = function _handleFile(req, file, cb) {
-      var that = this;
-      that.getDestination(req, file, function(err, destination) {
-        if (err) return cb(err);
-        that.getFilename(req, file, function(err2, filename) {
-          if (err2) return cb(err2);
-          var finalPath = path2.join(destination, filename);
-          if (file.stream.destroyed) return cb(new MulterError("STREAM_DESTROYED"));
-          var outStream = fs2.createWriteStream(finalPath);
-          file.path = finalPath;
-          openStreams.set(file, outStream);
-          outStream.once("close", function() {
-            openStreams.delete(file);
-          });
-          if (that.flush) flushingFiles.set(file, {});
-          pipeline(file.stream, outStream, function(err3) {
-            if (err3) {
-              endFlush(file);
-              return cb(err3);
-            }
-            var done = function(err4) {
-              if (err4) return cb(err4);
-              cb(null, {
-                destination,
-                filename,
-                path: finalPath,
-                size: outStream.bytesWritten
-              });
-            };
-            if (!that.flush) return done();
-            fs2.open(finalPath, "r+", function(err4, fd) {
-              if (err4) {
-                endFlush(file);
-                return done(err4);
-              }
-              fs2.fsync(fd, function(syncErr) {
-                fs2.close(fd, function(closeErr) {
-                  endFlush(file);
-                  done(syncErr || closeErr);
-                });
-              });
-            });
-          });
-        });
-      });
-    };
-    DiskStorage.prototype._removeFile = function _removeFile(req, file, cb) {
-      var path3 = file.path;
-      delete file.destination;
-      delete file.filename;
-      delete file.path;
-      function unlink() {
-        var flush = flushingFiles.get(file);
-        if (!flush) return fs2.unlink(path3, cb);
-        flush.onClosed = function() {
-          fs2.unlink(path3, cb);
-        };
-      }
-      var outStream = openStreams.get(file);
-      if (!outStream) return unlink();
-      if (outStream.closed) return unlink();
-      function onReleased() {
-        outStream.removeListener("close", onReleased);
-        outStream.removeListener("error", onReleased);
-        unlink();
-      }
-      outStream.once("close", onReleased);
-      outStream.once("error", onReleased);
-      outStream.destroy();
-    };
-    module2.exports = function(opts) {
-      return new DiskStorage(opts);
-    };
-  }
-});
-
-// node_modules/multer/storage/memory.js
-var require_memory = __commonJS({
-  "node_modules/multer/storage/memory.js"(exports2, module2) {
-    function MemoryStorage(opts) {
-    }
-    MemoryStorage.prototype._handleFile = function _handleFile(req, file, cb) {
-      var chunks = [];
-      file.stream.on("data", function(chunk) {
-        chunks.push(chunk);
-      });
-      file.stream.on("end", function() {
-        var buffer = Buffer.concat(chunks);
-        cb(null, {
-          buffer,
-          size: buffer.length
-        });
-      });
-    };
-    MemoryStorage.prototype._removeFile = function _removeFile(req, file, cb) {
-      delete file.buffer;
-      cb(null);
-    };
-    module2.exports = function(opts) {
-      return new MemoryStorage(opts);
-    };
-  }
-});
-
-// node_modules/multer/index.js
-var require_multer = __commonJS({
-  "node_modules/multer/index.js"(exports2, module2) {
-    var makeMiddleware = require_make_middleware();
-    var diskStorage = require_disk();
-    var memoryStorage = require_memory();
-    var MulterError = require_multer_error();
-    var validateLimits = require_validate_limits();
-    function allowAll(req, file, cb) {
-      cb(null, true);
-    }
-    function Multer(options) {
-      if (options.storage) {
-        this.storage = options.storage;
-      } else if (options.dest) {
-        this.storage = diskStorage({ destination: options.dest });
-      } else {
-        this.storage = memoryStorage();
-      }
-      if (options.limits && typeof options.limits !== "function") validateLimits(options.limits);
-      this.limits = options.limits;
-      this.preservePath = options.preservePath;
-      this.defParamCharset = options.defParamCharset || "latin1";
-      this.defCharset = options.defCharset;
-      this.highWaterMark = options.highWaterMark;
-      this.fileHwm = options.fileHwm;
-      this.fileFilter = options.fileFilter || allowAll;
-      if (options.streamHandler !== void 0 && typeof options.streamHandler !== "function") {
-        throw new TypeError("Expected streamHandler to be a function");
-      }
-      this.streamHandler = options.streamHandler;
-    }
-    Multer.prototype._makeMiddleware = function(fields, fileStrategy) {
-      function setup() {
-        var fileFilter = this.fileFilter;
-        var filesLeft = /* @__PURE__ */ Object.create(null);
-        fields.forEach(function(field) {
-          if (typeof field.maxCount === "number") {
-            filesLeft[field.name] = field.maxCount;
-          } else {
-            filesLeft[field.name] = Infinity;
-          }
-        });
-        function wrappedFileFilter(req, file, cb) {
-          if ((filesLeft[file.fieldname] || 0) <= 0) {
-            return cb(new MulterError("LIMIT_UNEXPECTED_FILE", file.fieldname, file.originalname));
-          }
-          filesLeft[file.fieldname] -= 1;
-          var settled = false;
-          fileFilter(req, file, function(err, includeFile) {
-            if (!settled) {
-              settled = true;
-              if (err || !includeFile) filesLeft[file.fieldname] += 1;
-            }
-            cb(err, includeFile);
-          });
-        }
-        return {
-          limits: this.limits,
-          preservePath: this.preservePath,
-          defParamCharset: this.defParamCharset,
-          defCharset: this.defCharset,
-          highWaterMark: this.highWaterMark,
-          fileHwm: this.fileHwm,
-          streamHandler: this.streamHandler,
-          storage: this.storage,
-          fileFilter: wrappedFileFilter,
-          fileStrategy
-        };
-      }
-      return makeMiddleware(setup.bind(this));
-    };
-    Multer.prototype.single = function(name) {
-      return this._makeMiddleware([{ name, maxCount: 1 }], "VALUE");
-    };
-    Multer.prototype.array = function(name, maxCount) {
-      return this._makeMiddleware([{ name, maxCount }], "ARRAY");
-    };
-    Multer.prototype.fields = function(fields) {
-      return this._makeMiddleware(fields, "OBJECT");
-    };
-    Multer.prototype.none = function() {
-      return this._makeMiddleware([], "NONE");
-    };
-    Multer.prototype.any = function() {
-      function setup() {
-        return {
-          limits: this.limits,
-          preservePath: this.preservePath,
-          defParamCharset: this.defParamCharset,
-          defCharset: this.defCharset,
-          highWaterMark: this.highWaterMark,
-          fileHwm: this.fileHwm,
-          streamHandler: this.streamHandler,
-          storage: this.storage,
-          fileFilter: this.fileFilter,
-          fileStrategy: "ARRAY"
-        };
-      }
-      return makeMiddleware(setup.bind(this));
-    };
-    function multer(options) {
-      if (options === void 0) {
-        return new Multer({});
-      }
-      if (typeof options === "object" && options !== null) {
-        return new Multer(options);
-      }
-      throw new TypeError("Expected object for argument options");
-    }
-    module2.exports = multer;
-    module2.exports.diskStorage = diskStorage;
-    module2.exports.memoryStorage = memoryStorage;
-    module2.exports.MulterError = MulterError;
   }
 });
 

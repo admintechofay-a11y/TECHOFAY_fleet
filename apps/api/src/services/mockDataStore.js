@@ -118,8 +118,8 @@ const defaultVehicles = [
     fuelType: 'DIESEL',
     status: 'AVAILABLE',
     isActive: true,
-    ownerName: 'Garuda Express Logistics Pvt Ltd',
-    ownerPhone: '+91 98251 12345',
+    ownerName: 'Barkat Tempo Service',
+    ownerPhone: '93776 10333',
     currentLocation: 'Ahmedabad Central Hub',
     documents: [
       { _id: 'doc_v1_rc', documentType: 'RC', documentNumber: 'GJ01-2024-RC-9812', expiryDate: '2039-03-15', status: 'VERIFIED' },
@@ -141,8 +141,8 @@ const defaultVehicles = [
     fuelType: 'DIESEL',
     status: 'ON_TRIP',
     isActive: true,
-    ownerName: 'Garuda Express Logistics Pvt Ltd',
-    ownerPhone: '+91 98251 12345',
+    ownerName: 'Barkat Tempo Service',
+    ownerPhone: '93776 10333',
     currentLocation: 'In Transit: Surat - Mumbai Highway',
     documents: [
       { _id: 'doc_v2_rc', documentType: 'RC', documentNumber: 'MH12-2023-RC-5541', expiryDate: '2038-08-20', status: 'VERIFIED' },
@@ -203,8 +203,8 @@ const defaultVehicles = [
     fuelType: 'DIESEL',
     status: 'UNDER_MAINTENANCE',
     isActive: true,
-    ownerName: 'Garuda Express Logistics Pvt Ltd',
-    ownerPhone: '+91 98251 12345',
+    ownerName: 'Barkat Tempo Service',
+    ownerPhone: '93776 10333',
     currentLocation: 'Ahmedabad Authorized Workshop',
     documents: [],
     createdAt: new Date('2026-01-20T16:00:00.000Z')
@@ -288,6 +288,7 @@ const defaultCustomers = [
   {
     _id: '671e3b0f27d7a87e3cbb0030',
     companyId: defaultTenant._id,
+    name: 'Reliance Industries Limited',
     legalName: 'Reliance Industries Limited',
     tradeName: 'Reliance Petrochemicals Hazira',
     gstin: '24AAACR1234A1Z1',
@@ -304,6 +305,7 @@ const defaultCustomers = [
   {
     _id: '671e3b0f27d7a87e3cbb0031',
     companyId: defaultTenant._id,
+    name: 'Adani Wilmar Limited',
     legalName: 'Adani Wilmar Limited',
     tradeName: 'Adani Wilmar Mundra Port',
     gstin: '24AAACA5678B1Z2',
@@ -320,6 +322,7 @@ const defaultCustomers = [
   {
     _id: '671e3b0f27d7a87e3cbb0032',
     companyId: defaultTenant._id,
+    name: 'Tata Steel Limited',
     legalName: 'Tata Steel Limited',
     tradeName: 'Tata Steel Tubes Division',
     gstin: '27AAACT9012C1Z3',
@@ -336,6 +339,7 @@ const defaultCustomers = [
   {
     _id: '671e3b0f27d7a87e3cbb0033',
     companyId: defaultTenant._id,
+    name: 'UltraTech Cement Limited',
     legalName: 'UltraTech Cement Limited',
     tradeName: 'UltraTech Kovaya Works',
     gstin: '24AAACU3456D1Z4',
@@ -352,6 +356,7 @@ const defaultCustomers = [
   {
     _id: '671e3b0f27d7a87e3cbb0034',
     companyId: defaultTenant._id,
+    name: 'Asian Paints Limited',
     legalName: 'Asian Paints Limited',
     tradeName: 'Asian Paints Industrial Center',
     gstin: '27AAACA7890E1Z5',
@@ -442,29 +447,93 @@ const defaultLoads = [
     _id: '671e3b0f27d7a87e3cbb0050',
     companyId: defaultTenant._id,
     loadNumber: 'LD-2026-0001',
-    customerId: defaultCustomers[0]._id,
+    orderDate: '2026-01-20T08:00:00.000Z',
+    customerId: {
+      _id: defaultCustomers[0]._id,
+      name: defaultCustomers[0].legalName,
+      legalName: defaultCustomers[0].legalName,
+      tradeName: defaultCustomers[0].tradeName,
+      phone: defaultCustomers[0].phone
+    },
     customer: defaultCustomers[0],
-    consignorId: defaultCustomers[0]._id,
-    consigneeId: defaultCustomers[4]._id,
+    consignorId: {
+      _id: defaultCustomers[0]._id,
+      name: defaultCustomers[0].legalName,
+      legalName: defaultCustomers[0].legalName,
+      phone: defaultCustomers[0].phone
+    },
+    consigneeId: {
+      _id: defaultCustomers[4]._id,
+      name: defaultCustomers[4].legalName,
+      legalName: defaultCustomers[4].legalName,
+      phone: defaultCustomers[4].phone
+    },
     consignorName: 'Reliance Industries Limited',
     consigneeName: 'Asian Paints Limited',
     originLocationId: defaultLocations[0]._id,
     originCity: 'Ahmedabad, GJ',
+    origin: 'Ahmedabad, GJ',
     destinationLocationId: defaultLocations[2]._id,
     destinationCity: 'Mumbai JNPT, MH',
+    destination: 'Mumbai JNPT, MH',
     cargoType: 'Polymers & Petrochemicals',
     packageType: 'JUMBO_BAGS',
+    totalWeightMt: 32.5,
     weightMt: 32.5,
+    totalQuantity: 65,
     quantity: 65,
     unit: 'BAGS',
     freightAmount: 68500,
     advancePaid: 35000,
     balanceDue: 33500,
+    financials: {
+      baseFreightRupees: 68500,
+      totalFreightRupees: 68500,
+      advanceRupees: 35000,
+      balanceRupees: 33500,
+      baseFreightPaise: 6850000,
+      totalFreightPaise: 6850000,
+      advancePaise: 3500000,
+      balancePaise: 3350000
+    },
     status: 'DELIVERED',
-    assignedVehicleId: defaultVehicles[0]._id,
+    assignedVehicleId: {
+      _id: defaultVehicles[0]._id,
+      plateNumber: defaultVehicles[0].plateNumber,
+      vehicleType: defaultVehicles[0].vehicleType,
+      capacityTonnage: defaultVehicles[0].capacityTonnage,
+      status: defaultVehicles[0].status
+    },
     assignedVehiclePlate: defaultVehicles[0].plateNumber,
-    assignedDriverId: defaultDrivers[0]._id,
+    vehiclePlate: defaultVehicles[0].plateNumber,
+    assignedDriverId: {
+      _id: defaultDrivers[0]._id,
+      name: defaultDrivers[0].name,
+      phone: defaultDrivers[0].phone,
+      licenseNumber: defaultDrivers[0].licenseNumber
+    },
     assignedDriverName: defaultDrivers[0].name,
+    driverName: defaultDrivers[0].name,
+    stops: [
+      {
+        _id: 'stp_ld1_1',
+        sequence: 1,
+        stopType: 'PICKUP',
+        locationId: { _id: defaultLocations[0]._id, name: defaultLocations[0].name, city: defaultLocations[0].city, address: defaultLocations[0].address },
+        allocatedQuantity: 65,
+        allocatedWeightMt: 32.5,
+        status: 'COMPLETED'
+      },
+      {
+        _id: 'stp_ld1_2',
+        sequence: 2,
+        stopType: 'DELIVERY',
+        locationId: { _id: defaultLocations[2]._id, name: defaultLocations[2].name, city: defaultLocations[2].city, address: defaultLocations[2].address },
+        allocatedQuantity: 65,
+        allocatedWeightMt: 32.5,
+        status: 'COMPLETED'
+      }
+    ],
     gtaGstRate: 5.0,
     gtaGstAmount: 3425,
     sacCode: '9965',
@@ -474,29 +543,93 @@ const defaultLoads = [
     _id: '671e3b0f27d7a87e3cbb0051',
     companyId: defaultTenant._id,
     loadNumber: 'LD-2026-0002',
-    customerId: defaultCustomers[1]._id,
+    orderDate: '2026-01-22T09:30:00.000Z',
+    customerId: {
+      _id: defaultCustomers[1]._id,
+      name: defaultCustomers[1].legalName,
+      legalName: defaultCustomers[1].legalName,
+      tradeName: defaultCustomers[1].tradeName,
+      phone: defaultCustomers[1].phone
+    },
     customer: defaultCustomers[1],
-    consignorId: defaultCustomers[1]._id,
-    consigneeId: defaultCustomers[3]._id,
+    consignorId: {
+      _id: defaultCustomers[1]._id,
+      name: defaultCustomers[1].legalName,
+      legalName: defaultCustomers[1].legalName,
+      phone: defaultCustomers[1].phone
+    },
+    consigneeId: {
+      _id: defaultCustomers[3]._id,
+      name: defaultCustomers[3].legalName,
+      legalName: defaultCustomers[3].legalName,
+      phone: defaultCustomers[3].phone
+    },
     consignorName: 'Adani Wilmar Limited',
     consigneeName: 'UltraTech Cement Limited',
     originLocationId: defaultLocations[1]._id,
     originCity: 'Mundra Port, GJ',
+    origin: 'Mundra Port, GJ',
     destinationLocationId: defaultLocations[4]._id,
     destinationCity: 'Pune Chakan, MH',
+    destination: 'Pune Chakan, MH',
     cargoType: 'Refined Edible Bulk Oils',
     packageType: 'BARRELS',
+    totalWeightMt: 28.0,
     weightMt: 28.0,
+    totalQuantity: 140,
     quantity: 140,
     unit: 'DRUMS',
     freightAmount: 84000,
     advancePaid: 45000,
     balanceDue: 39000,
+    financials: {
+      baseFreightRupees: 84000,
+      totalFreightRupees: 84000,
+      advanceRupees: 45000,
+      balanceRupees: 39000,
+      baseFreightPaise: 8400000,
+      totalFreightPaise: 8400000,
+      advancePaise: 4500000,
+      balancePaise: 3900000
+    },
     status: 'IN_TRANSIT',
-    assignedVehicleId: defaultVehicles[1]._id,
+    assignedVehicleId: {
+      _id: defaultVehicles[1]._id,
+      plateNumber: defaultVehicles[1].plateNumber,
+      vehicleType: defaultVehicles[1].vehicleType,
+      capacityTonnage: defaultVehicles[1].capacityTonnage,
+      status: defaultVehicles[1].status
+    },
     assignedVehiclePlate: defaultVehicles[1].plateNumber,
-    assignedDriverId: defaultDrivers[1]._id,
+    vehiclePlate: defaultVehicles[1].plateNumber,
+    assignedDriverId: {
+      _id: defaultDrivers[1]._id,
+      name: defaultDrivers[1].name,
+      phone: defaultDrivers[1].phone,
+      licenseNumber: defaultDrivers[1].licenseNumber
+    },
     assignedDriverName: defaultDrivers[1].name,
+    driverName: defaultDrivers[1].name,
+    stops: [
+      {
+        _id: 'stp_ld2_1',
+        sequence: 1,
+        stopType: 'PICKUP',
+        locationId: { _id: defaultLocations[1]._id, name: defaultLocations[1].name, city: defaultLocations[1].city, address: defaultLocations[1].address },
+        allocatedQuantity: 140,
+        allocatedWeightMt: 28.0,
+        status: 'COMPLETED'
+      },
+      {
+        _id: 'stp_ld2_2',
+        sequence: 2,
+        stopType: 'DELIVERY',
+        locationId: { _id: defaultLocations[4]._id, name: defaultLocations[4].name, city: defaultLocations[4].city, address: defaultLocations[4].address },
+        allocatedQuantity: 140,
+        allocatedWeightMt: 28.0,
+        status: 'IN_TRANSIT'
+      }
+    ],
     gtaGstRate: 5.0,
     gtaGstAmount: 4200,
     sacCode: '9965',
@@ -506,29 +639,93 @@ const defaultLoads = [
     _id: '671e3b0f27d7a87e3cbb0052',
     companyId: defaultTenant._id,
     loadNumber: 'LD-2026-0003',
-    customerId: defaultCustomers[2]._id,
+    orderDate: '2026-01-23T11:00:00.000Z',
+    customerId: {
+      _id: defaultCustomers[2]._id,
+      name: defaultCustomers[2].legalName,
+      legalName: defaultCustomers[2].legalName,
+      tradeName: defaultCustomers[2].tradeName,
+      phone: defaultCustomers[2].phone
+    },
     customer: defaultCustomers[2],
-    consignorId: defaultCustomers[2]._id,
-    consigneeId: defaultCustomers[0]._id,
+    consignorId: {
+      _id: defaultCustomers[2]._id,
+      name: defaultCustomers[2].legalName,
+      legalName: defaultCustomers[2].legalName,
+      phone: defaultCustomers[2].phone
+    },
+    consigneeId: {
+      _id: defaultCustomers[0]._id,
+      name: defaultCustomers[0].legalName,
+      legalName: defaultCustomers[0].legalName,
+      phone: defaultCustomers[0].phone
+    },
     consignorName: 'Tata Steel Limited',
     consigneeName: 'Reliance Industries Limited',
     originLocationId: defaultLocations[0]._id,
     originCity: 'Ahmedabad Hub, GJ',
+    origin: 'Ahmedabad Hub, GJ',
     destinationLocationId: defaultLocations[3]._id,
     destinationCity: 'Delhi NCR Bilaspur, HR',
+    destination: 'Delhi NCR Bilaspur, HR',
     cargoType: 'Hot Rolled Steel Coils',
     packageType: 'BUNDLES',
+    totalWeightMt: 42.0,
     weightMt: 42.0,
+    totalQuantity: 8,
     quantity: 8,
     unit: 'COILS',
     freightAmount: 125000,
     advancePaid: 60000,
     balanceDue: 65000,
+    financials: {
+      baseFreightRupees: 125000,
+      totalFreightRupees: 125000,
+      advanceRupees: 60000,
+      balanceRupees: 65000,
+      baseFreightPaise: 12500000,
+      totalFreightPaise: 12500000,
+      advancePaise: 6000000,
+      balancePaise: 6500000
+    },
     status: 'IN_TRANSIT',
-    assignedVehicleId: defaultVehicles[2]._id,
+    assignedVehicleId: {
+      _id: defaultVehicles[2]._id,
+      plateNumber: defaultVehicles[2].plateNumber,
+      vehicleType: defaultVehicles[2].vehicleType,
+      capacityTonnage: defaultVehicles[2].capacityTonnage,
+      status: defaultVehicles[2].status
+    },
     assignedVehiclePlate: defaultVehicles[2].plateNumber,
-    assignedDriverId: defaultDrivers[2]._id,
+    vehiclePlate: defaultVehicles[2].plateNumber,
+    assignedDriverId: {
+      _id: defaultDrivers[2]._id,
+      name: defaultDrivers[2].name,
+      phone: defaultDrivers[2].phone,
+      licenseNumber: defaultDrivers[2].licenseNumber
+    },
     assignedDriverName: defaultDrivers[2].name,
+    driverName: defaultDrivers[2].name,
+    stops: [
+      {
+        _id: 'stp_ld3_1',
+        sequence: 1,
+        stopType: 'PICKUP',
+        locationId: { _id: defaultLocations[0]._id, name: defaultLocations[0].name, city: defaultLocations[0].city, address: defaultLocations[0].address },
+        allocatedQuantity: 8,
+        allocatedWeightMt: 42.0,
+        status: 'COMPLETED'
+      },
+      {
+        _id: 'stp_ld3_2',
+        sequence: 2,
+        stopType: 'DELIVERY',
+        locationId: { _id: defaultLocations[3]._id, name: defaultLocations[3].name, city: defaultLocations[3].city, address: defaultLocations[3].address },
+        allocatedQuantity: 8,
+        allocatedWeightMt: 42.0,
+        status: 'IN_TRANSIT'
+      }
+    ],
     gtaGstRate: 5.0,
     gtaGstAmount: 6250,
     sacCode: '9965',
@@ -538,29 +735,93 @@ const defaultLoads = [
     _id: '671e3b0f27d7a87e3cbb0053',
     companyId: defaultTenant._id,
     loadNumber: 'LD-2026-0004',
-    customerId: defaultCustomers[3]._id,
+    orderDate: '2026-01-24T14:15:00.000Z',
+    customerId: {
+      _id: defaultCustomers[3]._id,
+      name: defaultCustomers[3].legalName,
+      legalName: defaultCustomers[3].legalName,
+      tradeName: defaultCustomers[3].tradeName,
+      phone: defaultCustomers[3].phone
+    },
     customer: defaultCustomers[3],
-    consignorId: defaultCustomers[3]._id,
-    consigneeId: defaultCustomers[4]._id,
+    consignorId: {
+      _id: defaultCustomers[3]._id,
+      name: defaultCustomers[3].legalName,
+      legalName: defaultCustomers[3].legalName,
+      phone: defaultCustomers[3].phone
+    },
+    consigneeId: {
+      _id: defaultCustomers[4]._id,
+      name: defaultCustomers[4].legalName,
+      legalName: defaultCustomers[4].legalName,
+      phone: defaultCustomers[4].phone
+    },
     consignorName: 'UltraTech Cement Limited',
     consigneeName: 'Asian Paints Limited',
     originLocationId: defaultLocations[0]._id,
     originCity: 'Amreli Works, GJ',
+    origin: 'Amreli Works, GJ',
     destinationLocationId: defaultLocations[0]._id,
     destinationCity: 'Ahmedabad Yard, GJ',
+    destination: 'Ahmedabad Yard, GJ',
     cargoType: 'Packaged Grade 53 Cement',
     packageType: 'PALLETS',
+    totalWeightMt: 35.0,
     weightMt: 35.0,
+    totalQuantity: 700,
     quantity: 700,
     unit: 'BAGS',
     freightAmount: 42000,
     advancePaid: 20000,
     balanceDue: 22000,
+    financials: {
+      baseFreightRupees: 42000,
+      totalFreightRupees: 42000,
+      advanceRupees: 20000,
+      balanceRupees: 22000,
+      baseFreightPaise: 4200000,
+      totalFreightPaise: 4200000,
+      advancePaise: 2000000,
+      balancePaise: 2200000
+    },
     status: 'VEHICLE_ASSIGNED',
-    assignedVehicleId: defaultVehicles[3]._id,
+    assignedVehicleId: {
+      _id: defaultVehicles[3]._id,
+      plateNumber: defaultVehicles[3].plateNumber,
+      vehicleType: defaultVehicles[3].vehicleType,
+      capacityTonnage: defaultVehicles[3].capacityTonnage,
+      status: defaultVehicles[3].status
+    },
     assignedVehiclePlate: defaultVehicles[3].plateNumber,
-    assignedDriverId: defaultDrivers[3]._id,
+    vehiclePlate: defaultVehicles[3].plateNumber,
+    assignedDriverId: {
+      _id: defaultDrivers[3]._id,
+      name: defaultDrivers[3].name,
+      phone: defaultDrivers[3].phone,
+      licenseNumber: defaultDrivers[3].licenseNumber
+    },
     assignedDriverName: defaultDrivers[3].name,
+    driverName: defaultDrivers[3].name,
+    stops: [
+      {
+        _id: 'stp_ld4_1',
+        sequence: 1,
+        stopType: 'PICKUP',
+        locationId: { _id: defaultLocations[0]._id, name: 'Amreli Works Logistics Gate', city: 'Amreli', address: 'Amreli Works, Gujarat' },
+        allocatedQuantity: 700,
+        allocatedWeightMt: 35.0,
+        status: 'PENDING'
+      },
+      {
+        _id: 'stp_ld4_2',
+        sequence: 2,
+        stopType: 'DELIVERY',
+        locationId: { _id: defaultLocations[0]._id, name: defaultLocations[0].name, city: defaultLocations[0].city, address: defaultLocations[0].address },
+        allocatedQuantity: 700,
+        allocatedWeightMt: 35.0,
+        status: 'PENDING'
+      }
+    ],
     gtaGstRate: 5.0,
     gtaGstAmount: 2100,
     sacCode: '9965',
@@ -570,25 +831,76 @@ const defaultLoads = [
     _id: '671e3b0f27d7a87e3cbb0054',
     companyId: defaultTenant._id,
     loadNumber: 'LD-2026-0005',
-    customerId: defaultCustomers[0]._id,
+    orderDate: '2026-01-25T16:00:00.000Z',
+    customerId: {
+      _id: defaultCustomers[0]._id,
+      name: defaultCustomers[0].legalName,
+      legalName: defaultCustomers[0].legalName,
+      tradeName: defaultCustomers[0].tradeName,
+      phone: defaultCustomers[0].phone
+    },
     customer: defaultCustomers[0],
-    consignorId: defaultCustomers[0]._id,
-    consigneeId: defaultCustomers[1]._id,
+    consignorId: {
+      _id: defaultCustomers[0]._id,
+      name: defaultCustomers[0].legalName,
+      legalName: defaultCustomers[0].legalName,
+      phone: defaultCustomers[0].phone
+    },
+    consigneeId: {
+      _id: defaultCustomers[1]._id,
+      name: defaultCustomers[1].legalName,
+      legalName: defaultCustomers[1].legalName,
+      phone: defaultCustomers[1].phone
+    },
     consignorName: 'Reliance Industries Limited',
     consigneeName: 'Adani Wilmar Limited',
     originLocationId: defaultLocations[0]._id,
     originCity: 'Surat Hazira, GJ',
+    origin: 'Surat Hazira, GJ',
     destinationLocationId: defaultLocations[2]._id,
     destinationCity: 'Mumbai Port, MH',
+    destination: 'Mumbai Port, MH',
     cargoType: 'Chemical Intermediate Drums',
     packageType: 'BARRELS',
+    totalWeightMt: 24.0,
     weightMt: 24.0,
+    totalQuantity: 120,
     quantity: 120,
     unit: 'DRUMS',
     freightAmount: 38000,
     advancePaid: 0,
     balanceDue: 38000,
+    financials: {
+      baseFreightRupees: 38000,
+      totalFreightRupees: 38000,
+      advanceRupees: 0,
+      balanceRupees: 38000,
+      baseFreightPaise: 3800000,
+      totalFreightPaise: 3800000,
+      advancePaise: 0,
+      balancePaise: 3800000
+    },
     status: 'CREATED',
+    stops: [
+      {
+        _id: 'stp_ld5_1',
+        sequence: 1,
+        stopType: 'PICKUP',
+        locationId: { _id: defaultLocations[0]._id, name: 'Hazira Chemical Gate', city: 'Surat', address: 'Hazira Manufacturing Division' },
+        allocatedQuantity: 120,
+        allocatedWeightMt: 24.0,
+        status: 'PENDING'
+      },
+      {
+        _id: 'stp_ld5_2',
+        sequence: 2,
+        stopType: 'DELIVERY',
+        locationId: { _id: defaultLocations[2]._id, name: defaultLocations[2].name, city: defaultLocations[2].city, address: defaultLocations[2].address },
+        allocatedQuantity: 120,
+        allocatedWeightMt: 24.0,
+        status: 'PENDING'
+      }
+    ],
     gtaGstRate: 5.0,
     gtaGstAmount: 1900,
     sacCode: '9965',
@@ -603,12 +915,41 @@ const defaultBilties = [
     companyId: defaultTenant._id,
     biltyNumber: 'BL-2026-00101',
     lrNumber: 'LR-2026-00101',
-    loadId: defaultLoads[0]._id,
+    loadId: {
+      _id: defaultLoads[0]._id,
+      loadNumber: defaultLoads[0].loadNumber
+    },
     loadNumber: defaultLoads[0].loadNumber,
+    lrId: {
+      _id: '671e3b0f27d7a87e3cbb0060',
+      lrNumber: 'LR-2026-00101'
+    },
+    vehicleId: {
+      _id: defaultVehicles[0]._id,
+      plateNumber: defaultVehicles[0].plateNumber,
+      vehicleType: defaultVehicles[0].vehicleType
+    },
     vehiclePlate: defaultVehicles[0].plateNumber,
+    driverId: {
+      _id: defaultDrivers[0]._id,
+      name: defaultDrivers[0].name,
+      phone: defaultDrivers[0].phone
+    },
     driverName: defaultDrivers[0].name,
     driverPhone: defaultDrivers[0].phone,
+    consignorId: {
+      _id: defaultCustomers[0]._id,
+      name: defaultCustomers[0].legalName,
+      phone: defaultCustomers[0].phone,
+      gstin: defaultCustomers[0].gstin
+    },
     consignor: defaultCustomers[0].legalName,
+    consigneeId: {
+      _id: defaultCustomers[4]._id,
+      name: defaultCustomers[4].legalName,
+      phone: defaultCustomers[4].phone,
+      gstin: defaultCustomers[4].gstin
+    },
     consignee: defaultCustomers[4].legalName,
     consignorGstin: defaultCustomers[0].gstin,
     consigneeGstin: defaultCustomers[4].gstin,
@@ -632,12 +973,41 @@ const defaultBilties = [
     companyId: defaultTenant._id,
     biltyNumber: 'BL-2026-00102',
     lrNumber: 'LR-2026-00102',
-    loadId: defaultLoads[1]._id,
+    loadId: {
+      _id: defaultLoads[1]._id,
+      loadNumber: defaultLoads[1].loadNumber
+    },
     loadNumber: defaultLoads[1].loadNumber,
+    lrId: {
+      _id: '671e3b0f27d7a87e3cbb0061',
+      lrNumber: 'LR-2026-00102'
+    },
+    vehicleId: {
+      _id: defaultVehicles[1]._id,
+      plateNumber: defaultVehicles[1].plateNumber,
+      vehicleType: defaultVehicles[1].vehicleType
+    },
     vehiclePlate: defaultVehicles[1].plateNumber,
+    driverId: {
+      _id: defaultDrivers[1]._id,
+      name: defaultDrivers[1].name,
+      phone: defaultDrivers[1].phone
+    },
     driverName: defaultDrivers[1].name,
     driverPhone: defaultDrivers[1].phone,
+    consignorId: {
+      _id: defaultCustomers[1]._id,
+      name: defaultCustomers[1].legalName,
+      phone: defaultCustomers[1].phone,
+      gstin: defaultCustomers[1].gstin
+    },
     consignor: defaultCustomers[1].legalName,
+    consigneeId: {
+      _id: defaultCustomers[3]._id,
+      name: defaultCustomers[3].legalName,
+      phone: defaultCustomers[3].phone,
+      gstin: defaultCustomers[3].gstin
+    },
     consignee: defaultCustomers[3].legalName,
     consignorGstin: defaultCustomers[1].gstin,
     consigneeGstin: defaultCustomers[3].gstin,
@@ -661,12 +1031,41 @@ const defaultBilties = [
     companyId: defaultTenant._id,
     biltyNumber: 'BL-2026-00103',
     lrNumber: 'LR-2026-00103',
-    loadId: defaultLoads[2]._id,
+    loadId: {
+      _id: defaultLoads[2]._id,
+      loadNumber: defaultLoads[2].loadNumber
+    },
     loadNumber: defaultLoads[2].loadNumber,
+    lrId: {
+      _id: '671e3b0f27d7a87e3cbb0062',
+      lrNumber: 'LR-2026-00103'
+    },
+    vehicleId: {
+      _id: defaultVehicles[2]._id,
+      plateNumber: defaultVehicles[2].plateNumber,
+      vehicleType: defaultVehicles[2].vehicleType
+    },
     vehiclePlate: defaultVehicles[2].plateNumber,
+    driverId: {
+      _id: defaultDrivers[2]._id,
+      name: defaultDrivers[2].name,
+      phone: defaultDrivers[2].phone
+    },
     driverName: defaultDrivers[2].name,
     driverPhone: defaultDrivers[2].phone,
+    consignorId: {
+      _id: defaultCustomers[2]._id,
+      name: defaultCustomers[2].legalName,
+      phone: defaultCustomers[2].phone,
+      gstin: defaultCustomers[2].gstin
+    },
     consignor: defaultCustomers[2].legalName,
+    consigneeId: {
+      _id: defaultCustomers[0]._id,
+      name: defaultCustomers[0].legalName,
+      phone: defaultCustomers[0].phone,
+      gstin: defaultCustomers[0].gstin
+    },
     consignee: defaultCustomers[0].legalName,
     consignorGstin: defaultCustomers[2].gstin,
     consigneeGstin: defaultCustomers[0].gstin,
@@ -693,11 +1092,24 @@ const defaultTrips = [
     _id: '671e3b0f27d7a87e3cbb0070',
     companyId: defaultTenant._id,
     tripNumber: 'TRP-2026-001',
-    loadId: defaultLoads[0]._id,
+    loadId: {
+      _id: defaultLoads[0]._id,
+      loadNumber: defaultLoads[0].loadNumber
+    },
     loadNumber: defaultLoads[0].loadNumber,
-    vehicleId: defaultVehicles[0]._id,
+    vehicleId: {
+      _id: defaultVehicles[0]._id,
+      plateNumber: defaultVehicles[0].plateNumber,
+      vehicleType: defaultVehicles[0].vehicleType,
+      capacityTonnage: defaultVehicles[0].capacityTonnage
+    },
     vehiclePlate: defaultVehicles[0].plateNumber,
-    driverId: defaultDrivers[0]._id,
+    driverId: {
+      _id: defaultDrivers[0]._id,
+      name: defaultDrivers[0].name,
+      phone: defaultDrivers[0].phone,
+      licenseNumber: defaultDrivers[0].licenseNumber
+    },
     driverName: defaultDrivers[0].name,
     driverPhone: defaultDrivers[0].phone,
     origin: 'Ahmedabad, Gujarat',
@@ -706,6 +1118,28 @@ const defaultTrips = [
     odometerStart: 142100,
     odometerEnd: 142640,
     totalDistanceKm: 540,
+    stops: [
+      {
+        _id: 'trp_stp_1_1',
+        sequence: 1,
+        stopType: 'PICKUP',
+        locationName: 'Ahmedabad Central Transport Hub',
+        status: 'COMPLETED',
+        allocatedQuantity: 65,
+        deliveredQuantity: 65,
+        allocatedWeightMt: 32.5
+      },
+      {
+        _id: 'trp_stp_1_2',
+        sequence: 2,
+        stopType: 'DELIVERY',
+        locationName: 'Nhava Sheva JNPT Port Yard',
+        status: 'COMPLETED',
+        allocatedQuantity: 65,
+        deliveredQuantity: 65,
+        allocatedWeightMt: 32.5
+      }
+    ],
     expenses: [
       { _id: 'exp_1', category: 'FUEL', amount: 14200, notes: 'HPCL Highway Pump Vadodara' },
       { _id: 'exp_2', category: 'TOLL', amount: 2850, notes: 'Fastag Automatic Deductions NH-48' },
@@ -719,11 +1153,24 @@ const defaultTrips = [
     _id: '671e3b0f27d7a87e3cbb0071',
     companyId: defaultTenant._id,
     tripNumber: 'TRP-2026-002',
-    loadId: defaultLoads[1]._id,
+    loadId: {
+      _id: defaultLoads[1]._id,
+      loadNumber: defaultLoads[1].loadNumber
+    },
     loadNumber: defaultLoads[1].loadNumber,
-    vehicleId: defaultVehicles[1]._id,
+    vehicleId: {
+      _id: defaultVehicles[1]._id,
+      plateNumber: defaultVehicles[1].plateNumber,
+      vehicleType: defaultVehicles[1].vehicleType,
+      capacityTonnage: defaultVehicles[1].capacityTonnage
+    },
     vehiclePlate: defaultVehicles[1].plateNumber,
-    driverId: defaultDrivers[1]._id,
+    driverId: {
+      _id: defaultDrivers[1]._id,
+      name: defaultDrivers[1].name,
+      phone: defaultDrivers[1].phone,
+      licenseNumber: defaultDrivers[1].licenseNumber
+    },
     driverName: defaultDrivers[1].name,
     driverPhone: defaultDrivers[1].phone,
     origin: 'Mundra Port, Gujarat',
@@ -732,6 +1179,28 @@ const defaultTrips = [
     odometerStart: 98450,
     totalDistanceKm: 890,
     currentLocation: 'NH-48 Near Navsari Bypass, Speed: 62 km/h',
+    stops: [
+      {
+        _id: 'trp_stp_2_1',
+        sequence: 1,
+        stopType: 'PICKUP',
+        locationName: 'Mundra Port Container Terminal',
+        status: 'COMPLETED',
+        allocatedQuantity: 140,
+        deliveredQuantity: 140,
+        allocatedWeightMt: 28.0
+      },
+      {
+        _id: 'trp_stp_2_2',
+        sequence: 2,
+        stopType: 'DELIVERY',
+        locationName: 'Pune Chakan Auto Corridor Hub',
+        status: 'PENDING',
+        allocatedQuantity: 140,
+        deliveredQuantity: 0,
+        allocatedWeightMt: 28.0
+      }
+    ],
     expenses: [
       { _id: 'exp_4', category: 'FUEL', amount: 18400, notes: 'IOCL Mundra Exit' },
       { _id: 'exp_5', category: 'TOLL', amount: 3100, notes: 'Fastag Samakhiyali Toll' }
@@ -743,11 +1212,24 @@ const defaultTrips = [
     _id: '671e3b0f27d7a87e3cbb0072',
     companyId: defaultTenant._id,
     tripNumber: 'TRP-2026-003',
-    loadId: defaultLoads[2]._id,
+    loadId: {
+      _id: defaultLoads[2]._id,
+      loadNumber: defaultLoads[2].loadNumber
+    },
     loadNumber: defaultLoads[2].loadNumber,
-    vehicleId: defaultVehicles[2]._id,
+    vehicleId: {
+      _id: defaultVehicles[2]._id,
+      plateNumber: defaultVehicles[2].plateNumber,
+      vehicleType: defaultVehicles[2].vehicleType,
+      capacityTonnage: defaultVehicles[2].capacityTonnage
+    },
     vehiclePlate: defaultVehicles[2].plateNumber,
-    driverId: defaultDrivers[2]._id,
+    driverId: {
+      _id: defaultDrivers[2]._id,
+      name: defaultDrivers[2].name,
+      phone: defaultDrivers[2].phone,
+      licenseNumber: defaultDrivers[2].licenseNumber
+    },
     driverName: defaultDrivers[2].name,
     driverPhone: defaultDrivers[2].phone,
     origin: 'Ahmedabad, Gujarat',
@@ -756,6 +1238,28 @@ const defaultTrips = [
     odometerStart: 72100,
     totalDistanceKm: 950,
     currentLocation: 'NH-48 Near Jaipur Express Corridor, Speed: 58 km/h',
+    stops: [
+      {
+        _id: 'trp_stp_3_1',
+        sequence: 1,
+        stopType: 'PICKUP',
+        locationName: 'Ahmedabad Central Transport Hub',
+        status: 'COMPLETED',
+        allocatedQuantity: 8,
+        deliveredQuantity: 8,
+        allocatedWeightMt: 42.0
+      },
+      {
+        _id: 'trp_stp_3_2',
+        sequence: 2,
+        stopType: 'DELIVERY',
+        locationName: 'Delhi NCR Logistics Center',
+        status: 'PENDING',
+        allocatedQuantity: 8,
+        deliveredQuantity: 0,
+        allocatedWeightMt: 42.0
+      }
+    ],
     expenses: [
       { _id: 'exp_6', category: 'FUEL', amount: 22000, notes: 'BPCL Himatnagar Bypass' }
     ],
@@ -770,30 +1274,49 @@ const defaultPods = [
     _id: '671e3b0f27d7a87e3cbb0080',
     companyId: defaultTenant._id,
     podNumber: 'POD-2026-0001',
-    loadId: defaultLoads[0]._id,
+    loadId: {
+      _id: defaultLoads[0]._id,
+      loadNumber: defaultLoads[0].loadNumber
+    },
     loadNumber: defaultLoads[0].loadNumber,
-    tripId: defaultTrips[0]._id,
-    tripNumber: defaultTrips[0].tripNumber,
+    tripId: {
+      _id: '671e3b0f27d7a87e3cbb0070',
+      tripNumber: 'TRP-2026-001'
+    },
+    tripNumber: 'TRP-2026-001',
     status: 'VERIFIED',
     receivedBy: 'Gaurav Mehta (Warehouse Manager)',
     receiverPhone: '+91 98200 11990',
+    quantityDelivered: 65,
     deliveredAt: new Date('2026-01-21T17:30:00.000Z'),
     verifiedAt: new Date('2026-01-21T19:00:00.000Z'),
     verifiedBy: 'Lead System Administrator',
     remarks: 'Goods delivered in sound condition. Clean receipt stamped without shortage or damage.',
     documentUrl: '/storage/demo/pod_signed_0001.pdf',
+    fileName: 'pod_LD_2026_0001.pdf',
     createdAt: new Date('2026-01-21T17:45:00.000Z')
   },
   {
     _id: '671e3b0f27d7a87e3cbb0081',
     companyId: defaultTenant._id,
     podNumber: 'POD-2026-0002',
-    loadId: defaultLoads[1]._id,
+    loadId: {
+      _id: defaultLoads[1]._id,
+      loadNumber: defaultLoads[1].loadNumber
+    },
     loadNumber: defaultLoads[1].loadNumber,
-    tripId: defaultTrips[1]._id,
-    tripNumber: defaultTrips[1].tripNumber,
-    status: 'PENDING_SUBMISSION',
-    remarks: 'Consignment in transit to Pune Chakan. Driver will capture signed POD upon gate in.',
+    tripId: {
+      _id: '671e3b0f27d7a87e3cbb0071',
+      tripNumber: 'TRP-2026-002'
+    },
+    tripNumber: 'TRP-2026-002',
+    status: 'PENDING_VERIFICATION',
+    quantityDelivered: 140,
+    receivedBy: 'Ketan Trivedi (Security Gate)',
+    receiverPhone: '+91 98250 77662',
+    remarks: 'Consignment received at gate. Awaiting warehouse stamp verification.',
+    documentUrl: '/storage/demo/pod_signed_0002.pdf',
+    fileName: 'pod_LD_2026_0002.pdf',
     createdAt: new Date('2026-01-22T10:30:00.000Z')
   }
 ];
@@ -804,12 +1327,27 @@ const defaultMaintenance = [
     _id: '671e3b0f27d7a87e3cbb0090',
     companyId: defaultTenant._id,
     maintenanceNumber: 'MAINT-2026-001',
-    vehicleId: defaultVehicles[4]._id,
+    vehicleId: {
+      _id: defaultVehicles[4]._id,
+      plateNumber: defaultVehicles[4].plateNumber,
+      vehicleType: defaultVehicles[4].vehicleType,
+      make: defaultVehicles[4].make,
+      model: defaultVehicles[4].model,
+      status: defaultVehicles[4].status
+    },
     vehiclePlate: defaultVehicles[4].plateNumber,
+    serviceType: 'SCHEDULED_SERVICE',
     maintenanceType: 'SCHEDULED_SERVICE',
-    serviceCenter: 'Mahindra Trucks Authorized Workshop Narol',
+    priority: 'HIGH',
+    serviceCenter: {
+      name: 'Mahindra Trucks Authorized Workshop Narol',
+      city: 'Ahmedabad',
+      contactPhone: '+91 98251 00112'
+    },
     cost: 18500,
+    costPaise: 1850000,
     odometer: 64200,
+    odometerReadingKm: 64200,
     status: 'IN_PROGRESS',
     description: 'Engine oil replacement, fuel filter overhaul, transmission fluid check and brake adjustment.',
     scheduledDate: '2026-01-25',
@@ -819,14 +1357,30 @@ const defaultMaintenance = [
     _id: '671e3b0f27d7a87e3cbb0091',
     companyId: defaultTenant._id,
     maintenanceNumber: 'MAINT-2026-002',
-    vehicleId: defaultVehicles[0]._id,
+    vehicleId: {
+      _id: defaultVehicles[0]._id,
+      plateNumber: defaultVehicles[0].plateNumber,
+      vehicleType: defaultVehicles[0].vehicleType,
+      make: defaultVehicles[0].make,
+      model: defaultVehicles[0].model,
+      status: defaultVehicles[0].status
+    },
     vehiclePlate: defaultVehicles[0].plateNumber,
+    serviceType: 'PREVENTIVE',
     maintenanceType: 'PREVENTIVE',
-    serviceCenter: 'Tata Commercial Service Hub Sanand',
+    priority: 'MEDIUM',
+    serviceCenter: {
+      name: 'Tata Commercial Service Hub Sanand',
+      city: 'Ahmedabad',
+      contactPhone: '+91 98251 00334'
+    },
     cost: 12400,
+    costPaise: 1240000,
     odometer: 141000,
+    odometerReadingKm: 141000,
     status: 'COMPLETED',
     description: 'Heavy duty brake pad replacement and wheel alignment inspection.',
+    scheduledDate: '2026-01-18',
     completedDate: '2026-01-18',
     createdAt: new Date('2026-01-17T09:00:00.000Z')
   }
@@ -855,12 +1409,19 @@ class MockDataStore {
   query(collection, { filter = {}, search = '', page = 1, limit = 20, sortField = 'createdAt', sortOrder = -1 } = {}) {
     let items = [...collection];
 
-    // Apply exact filter matches
+    // Apply exact or multi-value filter matches
     Object.keys(filter).forEach((key) => {
       const val = filter[key];
       if (val !== undefined && val !== null && val !== '') {
         items = items.filter((item) => {
           if (item[key] === undefined) return false;
+          if (Array.isArray(val)) {
+            return val.map((v) => String(v).toLowerCase()).includes(String(item[key]).toLowerCase());
+          }
+          if (typeof val === 'string' && val.includes(',')) {
+            const list = val.split(',').map((v) => v.trim().toLowerCase());
+            return list.includes(String(item[key]).toLowerCase());
+          }
           return String(item[key]).toLowerCase() === String(val).toLowerCase();
         });
       }
@@ -1014,24 +1575,24 @@ class MockDataStore {
     const newTenantId = 'cmp_' + crypto.randomBytes(6).toString('hex');
     const newUserId = 'usr_' + crypto.randomBytes(6).toString('hex');
 
-    const cleanLegal = (companyLegalName || 'Technofay Fleet Logistics').trim();
+    const cleanLegal = (companyLegalName || 'Barkat Tempo Service').trim();
     const cleanTrade = (tradeName || cleanLegal).trim();
-    const cleanEmail = (email || 'admin@technofay.com').trim().toLowerCase();
+    const cleanEmail = (email || 'barkattemposervice@gmail.com').trim().toLowerCase();
 
     this.tenant = {
       _id: newTenantId,
       legalName: cleanLegal,
       tradeName: cleanTrade,
-      gstin: (companyGstin || '24AAACG1234A1Z5').trim().toUpperCase(),
+      gstin: (companyGstin || '24AAACT1234A1Z5').trim().toUpperCase(),
       status: 'ACTIVE',
       isActive: true,
-      phone: phone || '+91 98251 12345',
+      phone: phone || '93776 10333',
       email: cleanEmail,
       address: {
-        street: 'Transport Hub Complex',
-        city: city || 'Ahmedabad',
+        street: 'Shri Rang Market, Near Shri Rang Tyre Shop, N.H.No.-8, Golden Chokdi',
+        city: city || 'Vadodara',
         state: state || 'Gujarat',
-        pincode: '380001',
+        pincode: '390022',
         country: 'IN'
       },
       settings: { ...defaultTenant.settings },
@@ -1086,8 +1647,8 @@ class MockDataStore {
       user = {
         _id: 'usr_' + crypto.randomBytes(6).toString('hex'),
         name: cleanEmail.split('@')[0].replace(/[._]/g, ' ').toUpperCase() || 'Administrator',
-        email: cleanEmail || 'admin@technofay.com',
-        phone: '+91 98251 12345',
+        email: cleanEmail || 'barkattemposervice@gmail.com',
+        phone: '93776 10333',
         role: 'SUPER_ADMIN',
         roleId: defaultRoles[0],
         companyId: this.tenant,

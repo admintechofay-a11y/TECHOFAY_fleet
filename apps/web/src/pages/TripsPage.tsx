@@ -106,7 +106,7 @@ export const TripsPage: React.FC = () => {
   const fetchDependencies = async () => {
     try {
       const [loadsRes, vehiclesRes, driversRes] = await Promise.all([
-        apiRequest('/loads?limit=50&status=CREATED'),
+        apiRequest('/loads?limit=50&status=CREATED,VEHICLE_ASSIGNED'),
         apiRequest('/vehicles?limit=100&status=AVAILABLE'),
         apiRequest('/drivers?limit=100&status=AVAILABLE')
       ]);
@@ -652,7 +652,18 @@ export const TripsPage: React.FC = () => {
                 <select
                   required
                   value={dispatchForm.loadId}
-                  onChange={(e) => setDispatchForm({ ...dispatchForm, loadId: e.target.value })}
+                  onChange={(e) => {
+                    const selId = e.target.value;
+                    const foundLoad = loads.find((l) => l._id === selId);
+                    const vehId = foundLoad?.assignedVehicleId?._id || foundLoad?.assignedVehicleId;
+                    const drvId = foundLoad?.assignedDriverId?._id || foundLoad?.assignedDriverId;
+                    setDispatchForm({
+                      ...dispatchForm,
+                      loadId: selId,
+                      vehicleId: vehId || dispatchForm.vehicleId,
+                      driverId: drvId || dispatchForm.driverId
+                    });
+                  }}
                   style={{
                     width: '100%',
                     padding: '0.65rem 0.9rem',
