@@ -240,7 +240,7 @@ export function DashboardPage({ onNavigate }: { onNavigate?: (path: string) => v
               Operations Command Center
             </h1>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.35rem' }}>
-              Real-time fleet telemetry, cargo dispatch, and financial overview for {tenant?.legalName || 'Techofay Global Logistics'}.
+              Real-time fleet telemetry, cargo dispatch, and financial overview for {tenant?.legalName || 'Barkat Tempo Service'}.
             </p>
           </div>
 

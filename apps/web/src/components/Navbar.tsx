@@ -25,12 +25,20 @@ export function Navbar({ onOpenSearch }: NavbarProps) {
     >
       {/* Organization Badge */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <img
+          src="/bts-logo-cropped.png"
+          alt="Barkat Tempo Service"
+          style={{ height: '26px', objectFit: 'contain', borderRadius: '3px' }}
+          onError={(e) => {
+            (e.currentTarget as HTMLElement).style.display = 'none';
+          }}
+        />
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
             Organization:
           </span>
           <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-            {tenant?.legalName || tenant?.tradeName || 'Techofay Global Logistics'}
+            {tenant?.legalName || tenant?.tradeName || 'Barkat Tempo Service'}
           </span>
         </div>
         {tenant?.gstin && (

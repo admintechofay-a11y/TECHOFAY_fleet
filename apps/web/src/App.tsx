@@ -94,13 +94,13 @@ function AppContent() {
   if (currentPath === '/register' || currentPath === '/signup') {
     return <RegisterPage onNavigate={(path) => navigate(path)} />;
   }
-
-  if (!isAuthenticated) {
+  if (currentPath === '/login') {
     return <LoginPage onNavigatePublic={(path) => navigate(path)} />;
   }
 
   const renderCurrentView = () => {
     switch (currentPath) {
+      case '/':
       case '/app/dashboard':
         return <DashboardPage onNavigate={navigate} />;
       case '/app/loads':

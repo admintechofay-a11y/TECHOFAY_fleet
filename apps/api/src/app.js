@@ -393,6 +393,57 @@ app.use('/api/v1/maintenance', maintenanceRoutes);
 app.use('/api/v1/events', eventRoutes);
 app.use('/api/v1/telematics', telematicsRoutes);
 
+// Dedicated Barkat Tempo Service Document Endpoints
+const btsDocsService = require('./services/btsDocs.service');
+const mockStore = require('./services/mockDataStore');
+
+app.get(['/api/v1/bts/loading-receipt/:id', '/api/bts/loading-receipt/:id', '/v1/bts/loading-receipt/:id', '/bts/loading-receipt/:id'], async (req, res) => {
+  try {
+    const record =
+      mockStore.bilties.find((b) => b._id === req.params.id || b.lrNumber === req.params.id || b.biltyNumber === req.params.id) ||
+      mockStore.loads.find((l) => l._id === req.params.id || l.loadNumber === req.params.id) || {};
+    const pdfBuffer = await btsDocsService.generateLoadingReceiptPdf({
+      lrNumber: record.lrNumber || record.loadNumber || req.params.id,
+      date: record.createdAt,
+      vehicleNumber: record.vehiclePlate,
+      toStation: record.destination,
+      weight: record.weightMt ? `${record.weightMt} MT` : undefined,
+      freightAmount: record.freightAmount,
+      advanceAmount: record.advanceAmount,
+      balanceAmount: record.balanceAmount,
+      consignee: { name: record.consignee || record.customerName, city: record.destination },
+      consignor: { name: record.consignor, city: record.origin }
+    });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="BTS-Loading-Receipt-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.get(['/api/v1/bts/memo/:id', '/api/bts/memo/:id', '/v1/bts/memo/:id', '/bts/memo/:id'], async (req, res) => {
+  try {
+    const trip =
+      mockStore.trips.find((t) => t._id === req.params.id || t.tripNumber === req.params.id) ||
+      mockStore.loads.find((l) => l._id === req.params.id || l.loadNumber === req.params.id) || {};
+    const pdfBuffer = await btsDocsService.generateMemoPdf({
+      memoNumber: trip.tripNumber || trip.loadNumber || req.params.id,
+      date: trip.startedAt || trip.createdAt,
+      fromStation: trip.origin,
+      toStation: trip.destination,
+      vehicleNumber: trip.vehiclePlate,
+      driverName: trip.driverName,
+      phoneNo: trip.driverPhone
+    });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="BTS-Memo-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // 10.5 Static SPA fallback (serves frontend if bundled together or accessed directly)
 const candidateDistDirs = [
   path.resolve(__dirname, '../../web/dist'),

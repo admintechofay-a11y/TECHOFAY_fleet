@@ -130,7 +130,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
     const cleanPhone = (whatsappPhone || '').replace(/\D/g, '');
     const phoneSegment = cleanPhone ? `${cleanPhone.startsWith('91') ? cleanPhone : '91' + cleanPhone}` : '';
     const text = encodeURIComponent(
-      `Hello, please find official transport document for ${title} (${documentNumber}). Copy: ${selectedCopy}.\nIssued by Technofay Global Logistics Operating System.`
+      `Hello, please find official transport document for ${title} (${documentNumber}). Copy: ${selectedCopy}.\nIssued by Barkat Tempo Service.`
     );
     const waUrl = phoneSegment 
       ? `https://api.whatsapp.com/send?phone=${phoneSegment}&text=${text}`
@@ -451,7 +451,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
             Carrier Standard: <strong>Carriage by Road Act 2007</strong> • Digital Document System
           </div>
           <div>
-            Technofay Fleet OS • In-Browser Vector Rendering
+            Barkat Tempo Service • In-Browser Vector Rendering
           </div>
         </div>
       </div>

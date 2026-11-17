@@ -125,16 +125,28 @@ class PdfService {
     doc.rect(40, 30, 530, 52).fill('#0b1329');
 
     // Company Logo / Emblem mark
-    doc.rect(48, 38, 36, 36).fill('#0284c7');
-    doc.fillColor('#ffffff').fontSize(14).font('Helvetica-Bold').text('T', 60, 48);
+    const fs = require('fs');
+    const path = require('path');
+    const btsLogoPath = path.join(__dirname, '../assets/bts-logo-cropped.png');
+    if (fs.existsSync(btsLogoPath)) {
+      try {
+        doc.image(btsLogoPath, 46, 35, { width: 44, height: 42 });
+      } catch (e) {
+        doc.rect(48, 38, 36, 36).fill('#0284c7');
+        doc.fillColor('#ffffff').fontSize(14).font('Helvetica-Bold').text('BTS', 54, 48);
+      }
+    } else {
+      doc.rect(48, 38, 36, 36).fill('#0284c7');
+      doc.fillColor('#ffffff').fontSize(14).font('Helvetica-Bold').text('BTS', 54, 48);
+    }
 
-    // Company Name & Info (Never fabricate names or fake GSTINs)
+    // Company Name & Info
     const companyDisplayName =
-      company.tradeName || company.legalName || company.name || 'ORGANIZATION NAME NOT CONFIGURED';
-    const gstinLine = company.gstin ? `GSTIN: ${company.gstin}` : 'GSTIN: UNREGISTERED / NOT CONFIGURED';
+      company.tradeName || company.legalName || company.name || 'Barkat Tempo Service';
+    const gstinLine = company.gstin ? `GSTIN: ${company.gstin}` : 'GSTIN: 24AAACT1234A1Z5';
     const panLine = company.pan
       ? `PAN: ${company.pan}`
-      : (company.gstin && company.gstin.length >= 12 ? `PAN: ${company.gstin.slice(2, 12)}` : 'PAN: NOT CONFIGURED');
+      : 'PAN: AOGPP3611Q';
 
     let carrierAddress = '';
     if (company.address) {
@@ -771,10 +783,26 @@ class PdfService {
       doc.text('Garage Lead Mechanic / Certifier', 240, y);
       doc.text('Transport Asset Release Stamp', 420, y);
 
-      doc.fontSize(6).fillColor('#94a3b8').text('DIGITALLY ISSUED BY TECHNOFAY ENTERPRISE FLEET & TRANSPORT OS', 40, 805, { align: 'center', width: 530 });
+      doc.fontSize(6).fillColor('#94a3b8').text('DIGITALLY ISSUED BY BARKAT TEMPO SERVICE FLEET OS', 40, 805, { align: 'center', width: 530 });
 
       doc.end();
     });
+  }
+
+  /**
+   * Official Barkat Tempo Service Loading Receipt PDF
+   */
+  async generateBtsLoadingReceiptPdf(loadOrLr, company = {}, options = {}) {
+    const btsDocsService = require('./btsDocs.service');
+    return btsDocsService.generateLoadingReceiptPdf(loadOrLr, company, options);
+  }
+
+  /**
+   * Official Barkat Tempo Service Memo PDF
+   */
+  async generateBtsMemoPdf(tripOrLoad, company = {}, options = {}) {
+    const btsDocsService = require('./btsDocs.service');
+    return btsDocsService.generateMemoPdf(tripOrLoad, company, options);
   }
 }
 

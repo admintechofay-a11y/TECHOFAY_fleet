@@ -50,34 +50,35 @@ export function Sidebar({ currentPath, onNavigate }) {
       {/* Brand Header */}
       <div
         style={{
-          padding: '1.25rem 1rem',
+          padding: '1.1rem 1rem',
           borderBottom: '1px solid var(--border-subtle)',
           display: 'flex',
           alignItems: 'center',
           gap: '0.75rem'
         }}
       >
-        <div
+        <img
+          src="/bts-logo-cropped.png"
+          alt="BTS Logo"
           style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.2rem',
-            boxShadow: 'var(--shadow-sm)'
+            width: '40px',
+            height: '40px',
+            objectFit: 'contain',
+            borderRadius: '6px',
+            backgroundColor: '#0f172a',
+            padding: '2px',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
           }}
-        >
-          🚚
-        </div>
-        <div>
-          <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
-            {tenant?.tradeName || 'Technofay Fleet'}
+          onError={(e) => {
+            (e.currentTarget as HTMLElement).style.display = 'none';
+          }}
+        />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {tenant?.tradeName || 'Barkat Tempo Service'}
           </div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>
-            HAULAGE OS v1.0
+          <div style={{ fontSize: '0.68rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>
+            BTS FLEET OS v1.0
           </div>
         </div>
       </div>

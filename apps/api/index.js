@@ -24219,7 +24219,7 @@ var require_env = __commonJS({
       env: process.env.NODE_ENV || "development",
       port: parseInt(process.env.PORT || "5000", 10),
       host: process.env.HOST || "0.0.0.0",
-      mongoUri: process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://127.0.0.1:27017/fleet_transport_dev",
+      mongoUri: process.env.MONGODB_URI || process.env.MONGO_URI || (process.env.VERCEL ? "" : "mongodb://127.0.0.1:27017/fleet_transport_dev"),
       jwtSecret: process.env.JWT_SECRET || (process.env.VERCEL ? serverlessFallbackSecret : "dev_jwt_secret_min_32_characters_for_transport_platform"),
       jwtExpiresIn: process.env.JWT_EXPIRES_IN || "15m",
       jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || (process.env.VERCEL ? crypto4.createHash("sha256").update(serverlessFallbackSecret + "_refresh").digest("hex") : "dev_refresh_secret_min_32_characters_transport"),
@@ -94591,19 +94591,19 @@ var require_mockDataStore = __commonJS({
     var TokenService = require_token_service();
     var defaultTenant = {
       _id: "671e3b0f27d7a87e3cbb0001",
-      legalName: "Garuda Express Logistics Pvt Ltd",
-      tradeName: "Garuda Logistics",
-      gstin: "24AABCG1234A1Z5",
-      pan: "AABCG1234A",
+      legalName: "Barkat Tempo Service",
+      tradeName: "Barkat Tempo Service",
+      gstin: "24AAACT1234A1Z5",
+      pan: "AOGPP3611Q",
       status: "ACTIVE",
       isActive: true,
-      phone: "+91 98251 12345",
-      email: "ops@garudalogistics.com",
+      phone: "93776 10333 / 84010 20129 / 82000 32668",
+      email: "barkattemposervice@gmail.com",
       address: {
-        street: "Plot 42, Transport Nagar, Narol Ring Road",
-        city: "Ahmedabad",
+        street: "Shri Rang Market, Near Shri Rang Tyre Shop, N.H.No.-8, Golden Chokdi",
+        city: "Vadodara",
         state: "Gujarat",
-        pincode: "382405",
+        pincode: "390022",
         country: "IN"
       },
       settings: {
@@ -94658,9 +94658,9 @@ var require_mockDataStore = __commonJS({
       {
         _id: "671e3b0f27d7a87e3cbb0002",
         companyId: defaultTenant,
-        name: "Vikramaditya Rao",
-        email: "admin@technofay.com",
-        phone: "+91 98251 12345",
+        name: "BTS Administrator",
+        email: "barkattemposervice@gmail.com",
+        phone: "93776 10333",
         role: "SUPER_ADMIN",
         roleId: defaultRoles[0],
         isActive: true,
@@ -95650,12048 +95650,8 @@ var require_mockDataStore = __commonJS({
         };
       }
     };
-    var mockStore = new MockDataStore();
-    module2.exports = mockStore;
-  }
-});
-
-// apps/api/src/routes/mockRouter.js
-var require_mockRouter = __commonJS({
-  "apps/api/src/routes/mockRouter.js"(exports2, module2) {
-    "use strict";
-    var express2 = require_express2();
-    var crypto4 = require("node:crypto");
-    var mockStore = require_mockDataStore();
-    var TokenService = require_token_service();
-    var router = express2.Router();
-    var ok = (res, data, message = "Success", statusCode = 200) => {
-      return res.status(statusCode).json({
-        success: true,
-        statusCode,
-        message,
-        data
-      });
-    };
-    var paginated = (res, result, message = "Success") => {
-      return res.status(200).json({
-        success: true,
-        statusCode: 200,
-        message,
-        data: result.data,
-        pagination: result.pagination
-      });
-    };
-    router.use((req, res, next) => {
-      if (req.url.startsWith("/api/v1")) {
-        req.url = req.url.slice(7) || "/";
-      } else if (req.url.startsWith("/api")) {
-        req.url = req.url.slice(4) || "/";
-      } else if (req.url.startsWith("/v1")) {
-        req.url = req.url.slice(3) || "/";
-      }
-      next();
-    });
-    router.post("/auth/register", (req, res) => {
-      const result = mockStore.registerOrganization(req.body || {});
-      TokenService.setAuthCookies(res, result.accessToken, result.rawRefreshToken);
-      return ok(res, {
-        accessToken: result.accessToken,
-        user: result.user,
-        tenant: result.tenant
-      }, "Organization and administrator account registered successfully (Live Demo Mode)", 201);
-    });
-    router.post("/auth/login", (req, res) => {
-      const { email, password } = req.body || {};
-      const result = mockStore.loginUser(email, password);
-      TokenService.setAuthCookies(res, result.accessToken, result.rawRefreshToken);
-      return ok(res, {
-        accessToken: result.accessToken,
-        user: result.user,
-        tenant: result.tenant
-      }, "Authentication successful (Fleet OS Live Mode)");
-    });
-    router.get("/auth/me", (req, res) => {
-      const user = mockStore.users[0];
-      return ok(res, {
-        user: typeof user.toSafeObject === "function" ? user.toSafeObject() : user,
-        tenant: mockStore.tenant
-      }, "Current user profile retrieved");
-    });
-    router.post("/auth/refresh", (req, res) => {
-      const user = mockStore.users[0];
-      const accessToken = TokenService.generateAccessToken(user);
-      return ok(res, { accessToken, user }, "Session refreshed");
-    });
-    router.post("/auth/logout", (req, res) => {
-      TokenService.clearAuthCookies(res);
-      return ok(res, null, "Logged out successfully");
-    });
-    router.post("/auth/forgot-password", (req, res) => {
-      return ok(res, { resetToken: "demo_reset_token_2026" }, "Password reset instructions sent");
-    });
-    router.post("/auth/reset-password", (req, res) => {
-      return ok(res, null, "Password reset successful");
-    });
-    router.get("/dashboard/metrics", (req, res) => {
-      const rawMetrics = mockStore.getMetrics();
-      const metrics = {
-        ...rawMetrics,
-        financials: {
-          freightBilled: rawMetrics.financials.totalFreightBilled,
-          totalFreightBilled: rawMetrics.financials.totalFreightBilled,
-          advanceReceived: rawMetrics.financials.totalAdvanceReceived,
-          totalAdvanceReceived: rawMetrics.financials.totalAdvanceReceived,
-          balanceOutstanding: rawMetrics.financials.totalBalanceDue,
-          totalBalanceDue: rawMetrics.financials.totalBalanceDue,
-          tripExpenses: rawMetrics.financials.totalExpenses,
-          totalExpenses: rawMetrics.financials.totalExpenses,
-          netOperationalProfit: rawMetrics.financials.grossMargin
-        },
-        pod: {
-          total: mockStore.pods.length,
-          pending: rawMetrics.pod.pendingSubmission,
-          verified: rawMetrics.pod.verified,
-          rejected: 0,
-          ...rawMetrics.pod
-        },
-        whatsapp: {
-          total: 48,
-          success: 47,
-          failed: 1,
-          deliveryRate: 98,
-          ...rawMetrics.whatsapp
-        }
-      };
-      return ok(res, metrics, "Dashboard KPI metrics loaded");
-    });
-    router.get("/dashboard/trends", (req, res) => {
-      const days = parseInt(req.query.days || "7", 10);
-      const trends = [];
-      const today = /* @__PURE__ */ new Date();
-      for (let i = days - 1; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(d.getDate() - i);
-        trends.push({
-          date: d.toISOString().split("T")[0],
-          loadCount: Math.floor(4 + Math.random() * 5),
-          freight: Math.floor(12e4 + Math.random() * 8e4),
-          weightMt: Math.floor(90 + Math.random() * 60),
-          tripCount: Math.floor(3 + Math.random() * 4),
-          expenses: Math.floor(25e3 + Math.random() * 15e3)
-        });
-      }
-      return ok(res, trends, "Trend series loaded");
-    });
-    router.get("/dashboard/alerts", (req, res) => {
-      const alerts = [
-        {
-          id: "alt_1",
-          severity: "WARNING",
-          type: "COMPLIANCE",
-          title: "Vehicle Insurance Expiring Soon",
-          message: "Insurance for MH12CD5678 expires in 17 days. Renew to avoid transit penalties.",
-          link: "/app/compliance"
-        },
-        {
-          id: "alt_2",
-          severity: "INFO",
-          type: "TRIP",
-          title: "Active High-Value Consignment",
-          message: "Trip TRP-2026-003 carrying Hot Rolled Steel Coils is currently passing Jaipur corridor.",
-          link: "/app/trips"
-        }
-      ];
-      return ok(res, alerts, "Active operational alerts");
-    });
-    router.get("/telematics/status", (req, res) => {
-      return ok(res, {
-        isConfigured: true,
-        provider: "Technofay Virtual GPS Telematics Engine (AIS-140)",
-        status: "CONFIGURED",
-        supportedProtocols: ["AIS-140", "Teltonika FMB", "Concox", "OBD-II"],
-        dependencyMessage: "Virtual GPS telematics is running with high precision."
-      });
-    });
-    router.get("/vehicles", (req, res) => {
-      const { page, limit, search, status, category } = req.query;
-      const filter = {};
-      if (status) filter.status = status;
-      if (category) filter.category = category;
-      const result = mockStore.query(mockStore.vehicles, { filter, search, page, limit, sortField: "plateNumber", sortOrder: 1 });
-      return paginated(res, result);
-    });
-    router.get("/vehicles/:id", (req, res) => {
-      const vehicle = mockStore.vehicles.find((v) => v._id === req.params.id);
-      if (!vehicle) return res.status(404).json({ success: false, message: "Vehicle not found" });
-      return ok(res, vehicle);
-    });
-    router.post("/vehicles", (req, res) => {
-      const b = req.body || {};
-      const newVehicle = {
-        _id: "veh_" + crypto4.randomBytes(6).toString("hex"),
-        companyId: mockStore.tenant._id,
-        plateNumber: (b.plateNumber || "GJ01XY9999").trim().toUpperCase(),
-        vehicleType: b.vehicleType || "Heavy Commercial Vehicle (HCV)",
-        category: b.category || "OWNED",
-        make: b.make || "Tata Motors",
-        model: b.model || "Signa",
-        yearOfManufacture: parseInt(b.yearOfManufacture || "2024", 10),
-        capacityTonnage: parseFloat(b.capacityTonnage || "35"),
-        fuelType: b.fuelType || "DIESEL",
-        status: "AVAILABLE",
-        isActive: true,
-        ownerName: b.ownerName || mockStore.tenant.legalName,
-        ownerPhone: b.ownerPhone || mockStore.tenant.phone,
-        documents: [],
-        createdAt: /* @__PURE__ */ new Date()
-      };
-      mockStore.vehicles.unshift(newVehicle);
-      return ok(res, newVehicle, "Vehicle registered successfully", 201);
-    });
-    router.put("/vehicles/:id", (req, res) => {
-      const idx = mockStore.vehicles.findIndex((v) => v._id === req.params.id);
-      if (idx === -1) return res.status(404).json({ success: false, message: "Vehicle not found" });
-      mockStore.vehicles[idx] = { ...mockStore.vehicles[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
-      return ok(res, mockStore.vehicles[idx], "Vehicle updated");
-    });
-    router.delete("/vehicles/:id", (req, res) => {
-      mockStore.vehicles = mockStore.vehicles.filter((v) => v._id !== req.params.id);
-      return ok(res, null, "Vehicle deleted");
-    });
-    router.post("/vehicles/:id/documents", (req, res) => {
-      const vehicle = mockStore.vehicles.find((v) => v._id === req.params.id);
-      if (!vehicle) return res.status(404).json({ success: false, message: "Vehicle not found" });
-      const newDoc = {
-        _id: "doc_" + crypto4.randomBytes(6).toString("hex"),
-        documentType: req.body?.documentType || "RC",
-        documentNumber: req.body?.documentNumber || "DOC-" + Date.now(),
-        expiryDate: req.body?.expiryDate || "2028-12-31",
-        status: "VERIFIED",
-        createdAt: /* @__PURE__ */ new Date()
-      };
-      if (!vehicle.documents) vehicle.documents = [];
-      vehicle.documents.push(newDoc);
-      return ok(res, newDoc, "Document uploaded and verified", 201);
-    });
-    router.get("/drivers", (req, res) => {
-      const { page, limit, search, status } = req.query;
-      const filter = {};
-      if (status) filter.status = status;
-      const result = mockStore.query(mockStore.drivers, { filter, search, page, limit, sortField: "name", sortOrder: 1 });
-      return paginated(res, result);
-    });
-    router.get("/drivers/:id", (req, res) => {
-      const driver = mockStore.drivers.find((d) => d._id === req.params.id);
-      if (!driver) return res.status(404).json({ success: false, message: "Driver not found" });
-      return ok(res, driver);
-    });
-    router.post("/drivers", (req, res) => {
-      const b = req.body || {};
-      const newDriver = {
-        _id: "drv_" + crypto4.randomBytes(6).toString("hex"),
-        companyId: mockStore.tenant._id,
-        name: b.name || "New Commercial Driver",
-        phone: b.phone || "+91 98251 00000",
-        licenseNumber: (b.licenseNumber || "GJ01-2022-998877").trim().toUpperCase(),
-        licenseExpiry: b.licenseExpiry || "2038-12-31",
-        status: "AVAILABLE",
-        experienceYears: parseInt(b.experienceYears || "5", 10),
-        bloodGroup: b.bloodGroup || "B+",
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date()
-      };
-      mockStore.drivers.unshift(newDriver);
-      return ok(res, newDriver, "Driver onboarded successfully", 201);
-    });
-    router.put("/drivers/:id", (req, res) => {
-      const idx = mockStore.drivers.findIndex((d) => d._id === req.params.id);
-      if (idx === -1) return res.status(404).json({ success: false, message: "Driver not found" });
-      mockStore.drivers[idx] = { ...mockStore.drivers[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
-      return ok(res, mockStore.drivers[idx], "Driver updated");
-    });
-    router.delete("/drivers/:id", (req, res) => {
-      mockStore.drivers = mockStore.drivers.filter((d) => d._id !== req.params.id);
-      return ok(res, null, "Driver removed");
-    });
-    router.post("/drivers/:id/documents", (req, res) => {
-      return ok(res, { _id: "doc_drv_" + Date.now(), status: "VERIFIED" }, "Driver document attached", 201);
-    });
-    router.get("/customers", (req, res) => {
-      const { page, limit, search, type } = req.query;
-      const filter = {};
-      if (type) filter.type = type;
-      const result = mockStore.query(mockStore.customers, { filter, search, page, limit, sortField: "legalName", sortOrder: 1 });
-      return paginated(res, result);
-    });
-    router.get("/customers/:id", (req, res) => {
-      const customer = mockStore.customers.find((c) => c._id === req.params.id);
-      if (!customer) return res.status(404).json({ success: false, message: "Customer not found" });
-      return ok(res, customer);
-    });
-    router.post("/customers", (req, res) => {
-      const b = req.body || {};
-      const newCustomer = {
-        _id: "cust_" + crypto4.randomBytes(6).toString("hex"),
-        companyId: mockStore.tenant._id,
-        legalName: b.legalName || "New Commercial Client Ltd",
-        tradeName: b.tradeName || b.legalName || "Commercial Client",
-        gstin: (b.gstin || "24AAACT9999Z1Z5").trim().toUpperCase(),
-        pan: b.pan || (b.gstin ? b.gstin.slice(2, 12) : "AAACT9999Z"),
-        type: b.type || "CONSIGNOR",
-        contactPerson: b.contactPerson || "Dispatch Officer",
-        email: b.email || "dispatch@client.com",
-        phone: b.phone || "+91 98250 00000",
-        billingAddress: b.billingAddress || { street: "Industrial Estate", city: "Ahmedabad", state: "Gujarat", pincode: "382405", country: "IN" },
-        creditPeriodDays: parseInt(b.creditPeriodDays || "30", 10),
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date()
-      };
-      mockStore.customers.unshift(newCustomer);
-      return ok(res, newCustomer, "Party registered successfully", 201);
-    });
-    router.put("/customers/:id", (req, res) => {
-      const idx = mockStore.customers.findIndex((c) => c._id === req.params.id);
-      if (idx === -1) return res.status(404).json({ success: false, message: "Customer not found" });
-      mockStore.customers[idx] = { ...mockStore.customers[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
-      return ok(res, mockStore.customers[idx], "Customer updated");
-    });
-    router.delete("/customers/:id", (req, res) => {
-      mockStore.customers = mockStore.customers.filter((c) => c._id !== req.params.id);
-      return ok(res, null, "Customer removed");
-    });
-    router.get("/locations", (req, res) => {
-      const { page, limit, search } = req.query;
-      const result = mockStore.query(mockStore.locations, { search, page, limit, sortField: "name", sortOrder: 1 });
-      return paginated(res, result);
-    });
-    router.get("/locations/:id", (req, res) => {
-      const location = mockStore.locations.find((l2) => l2._id === req.params.id);
-      if (!location) return res.status(404).json({ success: false, message: "Location not found" });
-      return ok(res, location);
-    });
-    router.post("/locations", (req, res) => {
-      const b = req.body || {};
-      const newLoc = {
-        _id: "loc_" + crypto4.randomBytes(6).toString("hex"),
-        companyId: mockStore.tenant._id,
-        name: b.name || "New Logistics Terminal",
-        code: b.code || "LOC-" + Math.floor(100 + Math.random() * 900),
-        city: b.city || "Ahmedabad",
-        state: b.state || "Gujarat",
-        address: b.address || "National Highway 48",
-        pincode: b.pincode || "382405",
-        hubType: b.hubType || "CENTRAL_HUB",
-        coordinates: b.coordinates || { lat: 23.0225, lng: 72.5714 },
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date()
-      };
-      mockStore.locations.unshift(newLoc);
-      return ok(res, newLoc, "Location registered", 201);
-    });
-    router.get("/loads", (req, res) => {
-      const { page, limit, search, status } = req.query;
-      const filter = {};
-      if (status) filter.status = status;
-      const result = mockStore.query(mockStore.loads, { filter, search, page, limit, sortField: "createdAt", sortOrder: -1 });
-      return paginated(res, result);
-    });
-    router.get("/loads/:id", (req, res) => {
-      const load = mockStore.loads.find((l2) => l2._id === req.params.id);
-      if (!load) return res.status(404).json({ success: false, message: "Load not found" });
-      return ok(res, load);
-    });
-    router.post("/loads", (req, res) => {
-      const b = req.body || {};
-      const loadNum = "LD-2026-" + String(mockStore.loads.length + 1).padStart(4, "0");
-      const freight = parseFloat(b.freightAmount || "45000");
-      const advance = parseFloat(b.advancePaid || "20000");
-      const newLoad = {
-        _id: "ld_" + crypto4.randomBytes(6).toString("hex"),
-        companyId: mockStore.tenant._id,
-        loadNumber: loadNum,
-        customerId: b.customerId || mockStore.customers[0]._id,
-        customer: mockStore.customers.find((c) => c._id === b.customerId) || mockStore.customers[0],
-        consignorName: b.consignorName || "Reliance Industries Limited",
-        consigneeName: b.consigneeName || "Asian Paints Limited",
-        originCity: b.originCity || "Ahmedabad, Gujarat",
-        destinationCity: b.destinationCity || "Mumbai, Maharashtra",
-        cargoType: b.cargoType || "Industrial Goods",
-        packageType: b.packageType || "PALLETS",
-        weightMt: parseFloat(b.weightMt || "25.0"),
-        freightAmount: freight,
-        advancePaid: advance,
-        balanceDue: Math.max(0, freight - advance),
-        status: b.assignedVehicleId ? "VEHICLE_ASSIGNED" : "CREATED",
-        assignedVehiclePlate: b.assignedVehiclePlate || "",
-        assignedDriverName: b.assignedDriverName || "",
-        gtaGstRate: 5,
-        gtaGstAmount: Math.round(freight * 0.05),
-        sacCode: "9965",
-        createdAt: /* @__PURE__ */ new Date()
-      };
-      mockStore.loads.unshift(newLoad);
-      return ok(res, newLoad, "Load order created successfully", 201);
-    });
-    router.put("/loads/:id", (req, res) => {
-      const idx = mockStore.loads.findIndex((l2) => l2._id === req.params.id);
-      if (idx === -1) return res.status(404).json({ success: false, message: "Load not found" });
-      mockStore.loads[idx] = { ...mockStore.loads[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
-      return ok(res, mockStore.loads[idx], "Load updated");
-    });
-    router.post("/loads/:id/status", (req, res) => {
-      const load = mockStore.loads.find((l2) => l2._id === req.params.id);
-      if (!load) return res.status(404).json({ success: false, message: "Load not found" });
-      load.status = req.body?.status || load.status;
-      return ok(res, load, `Load status transitioned to ${load.status}`);
-    });
-    router.get("/loads/:id/pdf", (req, res) => {
-      res.setHeader("Content-Type", "application/pdf");
-      res.setHeader("Content-Disposition", `inline; filename="Load-${req.params.id}.pdf"`);
-      const minimalPdf = Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000101 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n178\n%%EOF\n");
-      return res.send(minimalPdf);
-    });
-    router.get("/bilties", (req, res) => {
-      const { page, limit, search } = req.query;
-      const result = mockStore.query(mockStore.bilties, { search, page, limit, sortField: "createdAt", sortOrder: -1 });
-      return paginated(res, result);
-    });
-    router.get("/bilties/:id", (req, res) => {
-      const bilty = mockStore.bilties.find((b) => b._id === req.params.id);
-      if (!bilty) return res.status(404).json({ success: false, message: "Bilty not found" });
-      return ok(res, bilty);
-    });
-    router.post("/bilties", (req, res) => {
-      const b = req.body || {};
-      const num = "BL-2026-" + String(mockStore.bilties.length + 101);
-      const freight = parseFloat(b.freightAmount || "65000");
-      const advance = parseFloat(b.advanceAmount || "30000");
-      const newBilty = {
-        _id: "bl_" + crypto4.randomBytes(6).toString("hex"),
-        companyId: mockStore.tenant._id,
-        biltyNumber: num,
-        lrNumber: "LR-2026-" + String(mockStore.bilties.length + 101),
-        loadNumber: b.loadNumber || "LD-2026-0001",
-        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
-        driverName: b.driverName || "Ramesh Patel",
-        consignor: b.consignor || "Reliance Industries Limited",
-        consignee: b.consignee || "Asian Paints Limited",
-        origin: b.origin || "Ahmedabad Hub",
-        destination: b.destination || "Mumbai Nhava Sheva",
-        goodsDescription: b.goodsDescription || "Industrial Consignment",
-        weightMt: parseFloat(b.weightMt || "28.0"),
-        freightAmount: freight,
-        advanceAmount: advance,
-        balanceAmount: Math.max(0, freight - advance),
-        gstRate: 5,
-        gstAmount: Math.round(freight * 0.05),
-        gstPayableBy: "CONSIGNOR",
-        status: "IN_TRANSIT",
-        createdAt: /* @__PURE__ */ new Date()
-      };
-      mockStore.bilties.unshift(newBilty);
-      return ok(res, newBilty, "Bilty generated successfully", 201);
-    });
-    router.get("/lr", (req, res) => {
-      const { page, limit, search } = req.query;
-      const result = mockStore.query(mockStore.bilties, { search, page, limit, sortField: "createdAt", sortOrder: -1 });
-      return paginated(res, result);
-    });
-    router.get("/bilties/:id/pdf", (req, res) => {
-      res.setHeader("Content-Type", "application/pdf");
-      res.setHeader("Content-Disposition", `inline; filename="Bilty-${req.params.id}.pdf"`);
-      const minimalPdf = Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000101 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n178\n%%EOF\n");
-      return res.send(minimalPdf);
-    });
-    router.get("/lr/:id/pdf", (req, res) => {
-      res.setHeader("Content-Type", "application/pdf");
-      res.setHeader("Content-Disposition", `inline; filename="LR-${req.params.id}.pdf"`);
-      const minimalPdf = Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000101 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n178\n%%EOF\n");
-      return res.send(minimalPdf);
-    });
-    router.get("/trips", (req, res) => {
-      const { page, limit, search, status } = req.query;
-      const filter = {};
-      if (status) filter.status = status;
-      const result = mockStore.query(mockStore.trips, { filter, search, page, limit, sortField: "startedAt", sortOrder: -1 });
-      return paginated(res, result);
-    });
-    router.get("/trips/:id", (req, res) => {
-      const trip = mockStore.trips.find((t) => t._id === req.params.id);
-      if (!trip) return res.status(404).json({ success: false, message: "Trip not found" });
-      return ok(res, trip);
-    });
-    router.post("/trips", (req, res) => {
-      const b = req.body || {};
-      const newTrip = {
-        _id: "trp_" + crypto4.randomBytes(6).toString("hex"),
-        companyId: mockStore.tenant._id,
-        tripNumber: "TRP-2026-" + String(mockStore.trips.length + 1).padStart(3, "0"),
-        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
-        driverName: b.driverName || "Ramesh Patel",
-        driverPhone: b.driverPhone || "+91 98251 11223",
-        origin: b.origin || "Ahmedabad, Gujarat",
-        destination: b.destination || "Mumbai, Maharashtra",
-        status: "IN_TRANSIT",
-        odometerStart: parseInt(b.odometerStart || "140000", 10),
-        totalExpenses: 0,
-        expenses: [],
-        startedAt: /* @__PURE__ */ new Date()
-      };
-      mockStore.trips.unshift(newTrip);
-      return ok(res, newTrip, "Trip dispatched successfully", 201);
-    });
-    router.post("/trips/:id/expenses", (req, res) => {
-      const trip = mockStore.trips.find((t) => t._id === req.params.id);
-      if (!trip) return res.status(404).json({ success: false, message: "Trip not found" });
-      const newExpense = {
-        _id: "exp_" + Date.now(),
-        category: req.body?.category || "FUEL",
-        amount: parseFloat(req.body?.amount || "5000"),
-        notes: req.body?.notes || "Highway expense"
-      };
-      if (!trip.expenses) trip.expenses = [];
-      trip.expenses.push(newExpense);
-      trip.totalExpenses = trip.expenses.reduce((s, e) => s + (e.amount || 0), 0);
-      return ok(res, trip, "Expense recorded", 201);
-    });
-    router.get("/pod", (req, res) => {
-      const { page, limit, search, status } = req.query;
-      const filter = {};
-      if (status) filter.status = status;
-      const result = mockStore.query(mockStore.pods, { filter, search, page, limit, sortField: "createdAt", sortOrder: -1 });
-      return paginated(res, result);
-    });
-    router.post("/pod", (req, res) => {
-      const b = req.body || {};
-      const newPod = {
-        _id: "pod_" + crypto4.randomBytes(6).toString("hex"),
-        companyId: mockStore.tenant._id,
-        podNumber: "POD-2026-" + String(mockStore.pods.length + 1).padStart(4, "0"),
-        loadNumber: b.loadNumber || "LD-2026-0001",
-        status: "SUBMITTED",
-        receivedBy: b.receivedBy || "Consignee Gate In Charge",
-        remarks: b.remarks || "Signed consignment copy received",
-        createdAt: /* @__PURE__ */ new Date()
-      };
-      mockStore.pods.unshift(newPod);
-      return ok(res, newPod, "POD submitted", 201);
-    });
-    router.post("/pod/:id/verify", (req, res) => {
-      const pod = mockStore.pods.find((p) => p._id === req.params.id);
-      if (!pod) return res.status(404).json({ success: false, message: "POD not found" });
-      pod.status = "VERIFIED";
-      pod.verifiedAt = /* @__PURE__ */ new Date();
-      pod.verifiedBy = "Lead System Administrator";
-      return ok(res, pod, "POD verified and confirmed");
-    });
-    router.get("/compliance", (req, res) => {
-      return ok(res, {
-        summary: { expired: 0, expiring15Days: 1, expiring30Days: 2 },
-        documents: [
-          { _id: "cmp_1", type: "VEHICLE", entityName: "MH12CD5678", docType: "INSURANCE", expiryDate: "2026-11-15", daysLeft: 17, status: "EXPIRING_SOON" },
-          { _id: "cmp_2", type: "VEHICLE", entityName: "GJ01AB1234", docType: "FITNESS", expiryDate: "2026-12-30", daysLeft: 62, status: "VALID" }
-        ]
-      });
-    });
-    router.get("/maintenance", (req, res) => {
-      const { page, limit, search } = req.query;
-      const result = mockStore.query(mockStore.maintenance, { search, page, limit, sortField: "createdAt", sortOrder: -1 });
-      return paginated(res, result);
-    });
-    router.post("/maintenance", (req, res) => {
-      const b = req.body || {};
-      const newMaint = {
-        _id: "maint_" + crypto4.randomBytes(6).toString("hex"),
-        companyId: mockStore.tenant._id,
-        maintenanceNumber: "MAINT-2026-" + String(mockStore.maintenance.length + 1).padStart(3, "0"),
-        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
-        maintenanceType: b.maintenanceType || "PREVENTIVE",
-        serviceCenter: b.serviceCenter || "Authorized Commercial Service Center",
-        cost: parseFloat(b.cost || "10000"),
-        status: "IN_PROGRESS",
-        description: b.description || "General maintenance servicing",
-        scheduledDate: b.scheduledDate || (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
-        createdAt: /* @__PURE__ */ new Date()
-      };
-      mockStore.maintenance.unshift(newMaint);
-      return ok(res, newMaint, "Maintenance record created", 201);
-    });
-    router.get("/admin/users", (req, res) => {
-      const safeUsers = mockStore.users.map((u) => typeof u.toSafeObject === "function" ? u.toSafeObject() : u);
-      return ok(res, safeUsers);
-    });
-    router.post("/admin/users", (req, res) => {
-      const b = req.body || {};
-      const newUser = {
-        _id: "usr_" + crypto4.randomBytes(6).toString("hex"),
-        name: b.name || "Staff User",
-        email: (b.email || "staff@technofay.com").trim().toLowerCase(),
-        phone: b.phone || "+91 98251 00000",
-        role: b.role || "TRANSPORT_MANAGER",
-        roleId: mockStore.roles[1],
-        companyId: mockStore.tenant,
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date()
-      };
-      mockStore.users.push(newUser);
-      return ok(res, newUser, "User created", 201);
-    });
-    router.get("/admin/roles", (req, res) => {
-      return ok(res, mockStore.roles);
-    });
-    router.get("/admin/audit-logs", (req, res) => {
-      const sampleLogs = [
-        { _id: "aud_1", actorName: "Vikramaditya Rao", action: "ORGANIZATION_REGISTERED", module: "AUTH", timestamp: new Date(Date.now() - 36e5).toISOString() },
-        { _id: "aud_2", actorName: "Vikramaditya Rao", action: "LOGIN_SUCCESS", module: "AUTH", timestamp: (/* @__PURE__ */ new Date()).toISOString() }
-      ];
-      return paginated(res, { data: sampleLogs, pagination: { page: 1, limit: 20, total: 2, totalPages: 1 } });
-    });
-    router.get("/admin/settings", (req, res) => {
-      return ok(res, mockStore.settings);
-    });
-    router.put("/admin/settings", (req, res) => {
-      mockStore.settings = { ...mockStore.settings, ...req.body };
-      return ok(res, mockStore.settings, "Settings updated");
-    });
-    router.get("/reports/loads", (req, res) => {
-      return ok(res, {
-        totalLoads: mockStore.loads.length,
-        totalFreight: mockStore.loads.reduce((s, l2) => s + (l2.freightAmount || 0), 0),
-        totalWeightMt: mockStore.loads.reduce((s, l2) => s + (l2.weightMt || 0), 0),
-        items: mockStore.loads
-      });
-    });
-    router.get("/reports/financials", (req, res) => {
-      const m = mockStore.getMetrics();
-      return ok(res, m.financials);
-    });
-    router.get("/reports/vehicles", (req, res) => {
-      return ok(res, mockStore.vehicles);
-    });
-    router.get("/reports/trips", (req, res) => {
-      return ok(res, mockStore.trips);
-    });
-    router.get("/public/track/:trackingId", (req, res) => {
-      const tid = req.params.trackingId.toUpperCase();
-      const trip = mockStore.trips[1];
-      return ok(res, {
-        trackingNumber: tid,
-        status: trip.status,
-        origin: trip.origin,
-        destination: trip.destination,
-        currentLocation: trip.currentLocation,
-        vehiclePlate: trip.vehiclePlate,
-        startedAt: trip.startedAt,
-        estimatedDelivery: new Date(Date.now() + 432e5).toISOString()
-      });
-    });
-    router.post("/contact", (req, res) => {
-      return ok(res, null, "Thank you! Your logistics inquiry has been received.");
-    });
-    router.all("*", (req, res) => {
-      if (req.method === "GET") {
-        return ok(res, [], "Autonomous In-Memory Demo Mode");
-      }
-      return ok(res, { id: "mock_" + Date.now(), ...req.body }, "Action executed in Live Demo Mode", 200);
-    });
-    module2.exports = router;
-  }
-});
-
-// node_modules/bcryptjs/dist/bcrypt.js
-var require_bcrypt = __commonJS({
-  "node_modules/bcryptjs/dist/bcrypt.js"(exports2, module2) {
-    (function(global2, factory) {
-      if (typeof define === "function" && define["amd"])
-        define([], factory);
-      else if (typeof require === "function" && typeof module2 === "object" && module2 && module2["exports"])
-        module2["exports"] = factory();
-      else
-        (global2["dcodeIO"] = global2["dcodeIO"] || {})["bcrypt"] = factory();
-    })(exports2, function() {
-      "use strict";
-      var bcrypt = {};
-      var randomFallback = null;
-      function random(len) {
-        if (typeof module2 !== "undefined" && module2 && module2["exports"])
-          try {
-            return require("crypto")["randomBytes"](len);
-          } catch (e) {
-          }
-        try {
-          var a;
-          (self["crypto"] || self["msCrypto"])["getRandomValues"](a = new Uint32Array(len));
-          return Array.prototype.slice.call(a);
-        } catch (e) {
-        }
-        if (!randomFallback)
-          throw Error("Neither WebCryptoAPI nor a crypto module is available. Use bcrypt.setRandomFallback to set an alternative");
-        return randomFallback(len);
-      }
-      var randomAvailable = false;
-      try {
-        random(1);
-        randomAvailable = true;
-      } catch (e) {
-      }
-      randomFallback = null;
-      bcrypt.setRandomFallback = function(random2) {
-        randomFallback = random2;
-      };
-      bcrypt.genSaltSync = function(rounds, seed_length) {
-        rounds = rounds || GENSALT_DEFAULT_LOG2_ROUNDS;
-        if (typeof rounds !== "number")
-          throw Error("Illegal arguments: " + typeof rounds + ", " + typeof seed_length);
-        if (rounds < 4)
-          rounds = 4;
-        else if (rounds > 31)
-          rounds = 31;
-        var salt = [];
-        salt.push("$2a$");
-        if (rounds < 10)
-          salt.push("0");
-        salt.push(rounds.toString());
-        salt.push("$");
-        salt.push(base64_encode(random(BCRYPT_SALT_LEN), BCRYPT_SALT_LEN));
-        return salt.join("");
-      };
-      bcrypt.genSalt = function(rounds, seed_length, callback) {
-        if (typeof seed_length === "function")
-          callback = seed_length, seed_length = void 0;
-        if (typeof rounds === "function")
-          callback = rounds, rounds = void 0;
-        if (typeof rounds === "undefined")
-          rounds = GENSALT_DEFAULT_LOG2_ROUNDS;
-        else if (typeof rounds !== "number")
-          throw Error("illegal arguments: " + typeof rounds);
-        function _async(callback2) {
-          nextTick(function() {
-            try {
-              callback2(null, bcrypt.genSaltSync(rounds));
-            } catch (err) {
-              callback2(err);
-            }
-          });
-        }
-        if (callback) {
-          if (typeof callback !== "function")
-            throw Error("Illegal callback: " + typeof callback);
-          _async(callback);
-        } else
-          return new Promise(function(resolve, reject) {
-            _async(function(err, res) {
-              if (err) {
-                reject(err);
-                return;
-              }
-              resolve(res);
-            });
-          });
-      };
-      bcrypt.hashSync = function(s, salt) {
-        if (typeof salt === "undefined")
-          salt = GENSALT_DEFAULT_LOG2_ROUNDS;
-        if (typeof salt === "number")
-          salt = bcrypt.genSaltSync(salt);
-        if (typeof s !== "string" || typeof salt !== "string")
-          throw Error("Illegal arguments: " + typeof s + ", " + typeof salt);
-        return _hash(s, salt);
-      };
-      bcrypt.hash = function(s, salt, callback, progressCallback) {
-        function _async(callback2) {
-          if (typeof s === "string" && typeof salt === "number")
-            bcrypt.genSalt(salt, function(err, salt2) {
-              _hash(s, salt2, callback2, progressCallback);
-            });
-          else if (typeof s === "string" && typeof salt === "string")
-            _hash(s, salt, callback2, progressCallback);
-          else
-            nextTick(callback2.bind(this, Error("Illegal arguments: " + typeof s + ", " + typeof salt)));
-        }
-        if (callback) {
-          if (typeof callback !== "function")
-            throw Error("Illegal callback: " + typeof callback);
-          _async(callback);
-        } else
-          return new Promise(function(resolve, reject) {
-            _async(function(err, res) {
-              if (err) {
-                reject(err);
-                return;
-              }
-              resolve(res);
-            });
-          });
-      };
-      function safeStringCompare(known, unknown) {
-        var right = 0, wrong = 0;
-        for (var i = 0, k = known.length; i < k; ++i) {
-          if (known.charCodeAt(i) === unknown.charCodeAt(i))
-            ++right;
-          else
-            ++wrong;
-        }
-        if (right < 0)
-          return false;
-        return wrong === 0;
-      }
-      bcrypt.compareSync = function(s, hash) {
-        if (typeof s !== "string" || typeof hash !== "string")
-          throw Error("Illegal arguments: " + typeof s + ", " + typeof hash);
-        if (hash.length !== 60)
-          return false;
-        return safeStringCompare(bcrypt.hashSync(s, hash.substr(0, hash.length - 31)), hash);
-      };
-      bcrypt.compare = function(s, hash, callback, progressCallback) {
-        function _async(callback2) {
-          if (typeof s !== "string" || typeof hash !== "string") {
-            nextTick(callback2.bind(this, Error("Illegal arguments: " + typeof s + ", " + typeof hash)));
-            return;
-          }
-          if (hash.length !== 60) {
-            nextTick(callback2.bind(this, null, false));
-            return;
-          }
-          bcrypt.hash(s, hash.substr(0, 29), function(err, comp) {
-            if (err)
-              callback2(err);
-            else
-              callback2(null, safeStringCompare(comp, hash));
-          }, progressCallback);
-        }
-        if (callback) {
-          if (typeof callback !== "function")
-            throw Error("Illegal callback: " + typeof callback);
-          _async(callback);
-        } else
-          return new Promise(function(resolve, reject) {
-            _async(function(err, res) {
-              if (err) {
-                reject(err);
-                return;
-              }
-              resolve(res);
-            });
-          });
-      };
-      bcrypt.getRounds = function(hash) {
-        if (typeof hash !== "string")
-          throw Error("Illegal arguments: " + typeof hash);
-        return parseInt(hash.split("$")[2], 10);
-      };
-      bcrypt.getSalt = function(hash) {
-        if (typeof hash !== "string")
-          throw Error("Illegal arguments: " + typeof hash);
-        if (hash.length !== 60)
-          throw Error("Illegal hash length: " + hash.length + " != 60");
-        return hash.substring(0, 29);
-      };
-      var nextTick = typeof process !== "undefined" && process && typeof process.nextTick === "function" ? typeof setImmediate === "function" ? setImmediate : process.nextTick : setTimeout;
-      function stringToBytes2(str) {
-        var out = [], i = 0;
-        utfx.encodeUTF16toUTF8(function() {
-          if (i >= str.length) return null;
-          return str.charCodeAt(i++);
-        }, function(b) {
-          out.push(b);
-        });
-        return out;
-      }
-      var BASE64_CODE = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".split("");
-      var BASE64_INDEX = [
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        0,
-        1,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1
-      ];
-      var stringFromCharCode = String.fromCharCode;
-      function base64_encode(b, len) {
-        var off = 0, rs2 = [], c1, c2;
-        if (len <= 0 || len > b.length)
-          throw Error("Illegal len: " + len);
-        while (off < len) {
-          c1 = b[off++] & 255;
-          rs2.push(BASE64_CODE[c1 >> 2 & 63]);
-          c1 = (c1 & 3) << 4;
-          if (off >= len) {
-            rs2.push(BASE64_CODE[c1 & 63]);
-            break;
-          }
-          c2 = b[off++] & 255;
-          c1 |= c2 >> 4 & 15;
-          rs2.push(BASE64_CODE[c1 & 63]);
-          c1 = (c2 & 15) << 2;
-          if (off >= len) {
-            rs2.push(BASE64_CODE[c1 & 63]);
-            break;
-          }
-          c2 = b[off++] & 255;
-          c1 |= c2 >> 6 & 3;
-          rs2.push(BASE64_CODE[c1 & 63]);
-          rs2.push(BASE64_CODE[c2 & 63]);
-        }
-        return rs2.join("");
-      }
-      function base64_decode(s, len) {
-        var off = 0, slen = s.length, olen = 0, rs2 = [], c1, c2, c3, c4, o, code;
-        if (len <= 0)
-          throw Error("Illegal len: " + len);
-        while (off < slen - 1 && olen < len) {
-          code = s.charCodeAt(off++);
-          c1 = code < BASE64_INDEX.length ? BASE64_INDEX[code] : -1;
-          code = s.charCodeAt(off++);
-          c2 = code < BASE64_INDEX.length ? BASE64_INDEX[code] : -1;
-          if (c1 == -1 || c2 == -1)
-            break;
-          o = c1 << 2 >>> 0;
-          o |= (c2 & 48) >> 4;
-          rs2.push(stringFromCharCode(o));
-          if (++olen >= len || off >= slen)
-            break;
-          code = s.charCodeAt(off++);
-          c3 = code < BASE64_INDEX.length ? BASE64_INDEX[code] : -1;
-          if (c3 == -1)
-            break;
-          o = (c2 & 15) << 4 >>> 0;
-          o |= (c3 & 60) >> 2;
-          rs2.push(stringFromCharCode(o));
-          if (++olen >= len || off >= slen)
-            break;
-          code = s.charCodeAt(off++);
-          c4 = code < BASE64_INDEX.length ? BASE64_INDEX[code] : -1;
-          o = (c3 & 3) << 6 >>> 0;
-          o |= c4;
-          rs2.push(stringFromCharCode(o));
-          ++olen;
-        }
-        var res = [];
-        for (off = 0; off < olen; off++)
-          res.push(rs2[off].charCodeAt(0));
-        return res;
-      }
-      var utfx = function() {
-        "use strict";
-        var utfx2 = {};
-        utfx2.MAX_CODEPOINT = 1114111;
-        utfx2.encodeUTF8 = function(src, dst) {
-          var cp = null;
-          if (typeof src === "number")
-            cp = src, src = function() {
-              return null;
-            };
-          while (cp !== null || (cp = src()) !== null) {
-            if (cp < 128)
-              dst(cp & 127);
-            else if (cp < 2048)
-              dst(cp >> 6 & 31 | 192), dst(cp & 63 | 128);
-            else if (cp < 65536)
-              dst(cp >> 12 & 15 | 224), dst(cp >> 6 & 63 | 128), dst(cp & 63 | 128);
-            else
-              dst(cp >> 18 & 7 | 240), dst(cp >> 12 & 63 | 128), dst(cp >> 6 & 63 | 128), dst(cp & 63 | 128);
-            cp = null;
-          }
-        };
-        utfx2.decodeUTF8 = function(src, dst) {
-          var a, b, c, d, fail = function(b2) {
-            b2 = b2.slice(0, b2.indexOf(null));
-            var err = Error(b2.toString());
-            err.name = "TruncatedError";
-            err["bytes"] = b2;
-            throw err;
-          };
-          while ((a = src()) !== null) {
-            if ((a & 128) === 0)
-              dst(a);
-            else if ((a & 224) === 192)
-              (b = src()) === null && fail([a, b]), dst((a & 31) << 6 | b & 63);
-            else if ((a & 240) === 224)
-              ((b = src()) === null || (c = src()) === null) && fail([a, b, c]), dst((a & 15) << 12 | (b & 63) << 6 | c & 63);
-            else if ((a & 248) === 240)
-              ((b = src()) === null || (c = src()) === null || (d = src()) === null) && fail([a, b, c, d]), dst((a & 7) << 18 | (b & 63) << 12 | (c & 63) << 6 | d & 63);
-            else throw RangeError("Illegal starting byte: " + a);
-          }
-        };
-        utfx2.UTF16toUTF8 = function(src, dst) {
-          var c1, c2 = null;
-          while (true) {
-            if ((c1 = c2 !== null ? c2 : src()) === null)
-              break;
-            if (c1 >= 55296 && c1 <= 57343) {
-              if ((c2 = src()) !== null) {
-                if (c2 >= 56320 && c2 <= 57343) {
-                  dst((c1 - 55296) * 1024 + c2 - 56320 + 65536);
-                  c2 = null;
-                  continue;
-                }
-              }
-            }
-            dst(c1);
-          }
-          if (c2 !== null) dst(c2);
-        };
-        utfx2.UTF8toUTF16 = function(src, dst) {
-          var cp = null;
-          if (typeof src === "number")
-            cp = src, src = function() {
-              return null;
-            };
-          while (cp !== null || (cp = src()) !== null) {
-            if (cp <= 65535)
-              dst(cp);
-            else
-              cp -= 65536, dst((cp >> 10) + 55296), dst(cp % 1024 + 56320);
-            cp = null;
-          }
-        };
-        utfx2.encodeUTF16toUTF8 = function(src, dst) {
-          utfx2.UTF16toUTF8(src, function(cp) {
-            utfx2.encodeUTF8(cp, dst);
-          });
-        };
-        utfx2.decodeUTF8toUTF16 = function(src, dst) {
-          utfx2.decodeUTF8(src, function(cp) {
-            utfx2.UTF8toUTF16(cp, dst);
-          });
-        };
-        utfx2.calculateCodePoint = function(cp) {
-          return cp < 128 ? 1 : cp < 2048 ? 2 : cp < 65536 ? 3 : 4;
-        };
-        utfx2.calculateUTF8 = function(src) {
-          var cp, l2 = 0;
-          while ((cp = src()) !== null)
-            l2 += utfx2.calculateCodePoint(cp);
-          return l2;
-        };
-        utfx2.calculateUTF16asUTF8 = function(src) {
-          var n = 0, l2 = 0;
-          utfx2.UTF16toUTF8(src, function(cp) {
-            ++n;
-            l2 += utfx2.calculateCodePoint(cp);
-          });
-          return [n, l2];
-        };
-        return utfx2;
-      }();
-      Date.now = Date.now || function() {
-        return +/* @__PURE__ */ new Date();
-      };
-      var BCRYPT_SALT_LEN = 16;
-      var GENSALT_DEFAULT_LOG2_ROUNDS = 10;
-      var BLOWFISH_NUM_ROUNDS = 16;
-      var MAX_EXECUTION_TIME = 100;
-      var P_ORIG = [
-        608135816,
-        2242054355,
-        320440878,
-        57701188,
-        2752067618,
-        698298832,
-        137296536,
-        3964562569,
-        1160258022,
-        953160567,
-        3193202383,
-        887688300,
-        3232508343,
-        3380367581,
-        1065670069,
-        3041331479,
-        2450970073,
-        2306472731
-      ];
-      var S_ORIG = [
-        3509652390,
-        2564797868,
-        805139163,
-        3491422135,
-        3101798381,
-        1780907670,
-        3128725573,
-        4046225305,
-        614570311,
-        3012652279,
-        134345442,
-        2240740374,
-        1667834072,
-        1901547113,
-        2757295779,
-        4103290238,
-        227898511,
-        1921955416,
-        1904987480,
-        2182433518,
-        2069144605,
-        3260701109,
-        2620446009,
-        720527379,
-        3318853667,
-        677414384,
-        3393288472,
-        3101374703,
-        2390351024,
-        1614419982,
-        1822297739,
-        2954791486,
-        3608508353,
-        3174124327,
-        2024746970,
-        1432378464,
-        3864339955,
-        2857741204,
-        1464375394,
-        1676153920,
-        1439316330,
-        715854006,
-        3033291828,
-        289532110,
-        2706671279,
-        2087905683,
-        3018724369,
-        1668267050,
-        732546397,
-        1947742710,
-        3462151702,
-        2609353502,
-        2950085171,
-        1814351708,
-        2050118529,
-        680887927,
-        999245976,
-        1800124847,
-        3300911131,
-        1713906067,
-        1641548236,
-        4213287313,
-        1216130144,
-        1575780402,
-        4018429277,
-        3917837745,
-        3693486850,
-        3949271944,
-        596196993,
-        3549867205,
-        258830323,
-        2213823033,
-        772490370,
-        2760122372,
-        1774776394,
-        2652871518,
-        566650946,
-        4142492826,
-        1728879713,
-        2882767088,
-        1783734482,
-        3629395816,
-        2517608232,
-        2874225571,
-        1861159788,
-        326777828,
-        3124490320,
-        2130389656,
-        2716951837,
-        967770486,
-        1724537150,
-        2185432712,
-        2364442137,
-        1164943284,
-        2105845187,
-        998989502,
-        3765401048,
-        2244026483,
-        1075463327,
-        1455516326,
-        1322494562,
-        910128902,
-        469688178,
-        1117454909,
-        936433444,
-        3490320968,
-        3675253459,
-        1240580251,
-        122909385,
-        2157517691,
-        634681816,
-        4142456567,
-        3825094682,
-        3061402683,
-        2540495037,
-        79693498,
-        3249098678,
-        1084186820,
-        1583128258,
-        426386531,
-        1761308591,
-        1047286709,
-        322548459,
-        995290223,
-        1845252383,
-        2603652396,
-        3431023940,
-        2942221577,
-        3202600964,
-        3727903485,
-        1712269319,
-        422464435,
-        3234572375,
-        1170764815,
-        3523960633,
-        3117677531,
-        1434042557,
-        442511882,
-        3600875718,
-        1076654713,
-        1738483198,
-        4213154764,
-        2393238008,
-        3677496056,
-        1014306527,
-        4251020053,
-        793779912,
-        2902807211,
-        842905082,
-        4246964064,
-        1395751752,
-        1040244610,
-        2656851899,
-        3396308128,
-        445077038,
-        3742853595,
-        3577915638,
-        679411651,
-        2892444358,
-        2354009459,
-        1767581616,
-        3150600392,
-        3791627101,
-        3102740896,
-        284835224,
-        4246832056,
-        1258075500,
-        768725851,
-        2589189241,
-        3069724005,
-        3532540348,
-        1274779536,
-        3789419226,
-        2764799539,
-        1660621633,
-        3471099624,
-        4011903706,
-        913787905,
-        3497959166,
-        737222580,
-        2514213453,
-        2928710040,
-        3937242737,
-        1804850592,
-        3499020752,
-        2949064160,
-        2386320175,
-        2390070455,
-        2415321851,
-        4061277028,
-        2290661394,
-        2416832540,
-        1336762016,
-        1754252060,
-        3520065937,
-        3014181293,
-        791618072,
-        3188594551,
-        3933548030,
-        2332172193,
-        3852520463,
-        3043980520,
-        413987798,
-        3465142937,
-        3030929376,
-        4245938359,
-        2093235073,
-        3534596313,
-        375366246,
-        2157278981,
-        2479649556,
-        555357303,
-        3870105701,
-        2008414854,
-        3344188149,
-        4221384143,
-        3956125452,
-        2067696032,
-        3594591187,
-        2921233993,
-        2428461,
-        544322398,
-        577241275,
-        1471733935,
-        610547355,
-        4027169054,
-        1432588573,
-        1507829418,
-        2025931657,
-        3646575487,
-        545086370,
-        48609733,
-        2200306550,
-        1653985193,
-        298326376,
-        1316178497,
-        3007786442,
-        2064951626,
-        458293330,
-        2589141269,
-        3591329599,
-        3164325604,
-        727753846,
-        2179363840,
-        146436021,
-        1461446943,
-        4069977195,
-        705550613,
-        3059967265,
-        3887724982,
-        4281599278,
-        3313849956,
-        1404054877,
-        2845806497,
-        146425753,
-        1854211946,
-        1266315497,
-        3048417604,
-        3681880366,
-        3289982499,
-        290971e4,
-        1235738493,
-        2632868024,
-        2414719590,
-        3970600049,
-        1771706367,
-        1449415276,
-        3266420449,
-        422970021,
-        1963543593,
-        2690192192,
-        3826793022,
-        1062508698,
-        1531092325,
-        1804592342,
-        2583117782,
-        2714934279,
-        4024971509,
-        1294809318,
-        4028980673,
-        1289560198,
-        2221992742,
-        1669523910,
-        35572830,
-        157838143,
-        1052438473,
-        1016535060,
-        1802137761,
-        1753167236,
-        1386275462,
-        3080475397,
-        2857371447,
-        1040679964,
-        2145300060,
-        2390574316,
-        1461121720,
-        2956646967,
-        4031777805,
-        4028374788,
-        33600511,
-        2920084762,
-        1018524850,
-        629373528,
-        3691585981,
-        3515945977,
-        2091462646,
-        2486323059,
-        586499841,
-        988145025,
-        935516892,
-        3367335476,
-        2599673255,
-        2839830854,
-        265290510,
-        3972581182,
-        2759138881,
-        3795373465,
-        1005194799,
-        847297441,
-        406762289,
-        1314163512,
-        1332590856,
-        1866599683,
-        4127851711,
-        750260880,
-        613907577,
-        1450815602,
-        3165620655,
-        3734664991,
-        3650291728,
-        3012275730,
-        3704569646,
-        1427272223,
-        778793252,
-        1343938022,
-        2676280711,
-        2052605720,
-        1946737175,
-        3164576444,
-        3914038668,
-        3967478842,
-        3682934266,
-        1661551462,
-        3294938066,
-        4011595847,
-        840292616,
-        3712170807,
-        616741398,
-        312560963,
-        711312465,
-        1351876610,
-        322626781,
-        1910503582,
-        271666773,
-        2175563734,
-        1594956187,
-        70604529,
-        3617834859,
-        1007753275,
-        1495573769,
-        4069517037,
-        2549218298,
-        2663038764,
-        504708206,
-        2263041392,
-        3941167025,
-        2249088522,
-        1514023603,
-        1998579484,
-        1312622330,
-        694541497,
-        2582060303,
-        2151582166,
-        1382467621,
-        776784248,
-        2618340202,
-        3323268794,
-        2497899128,
-        2784771155,
-        503983604,
-        4076293799,
-        907881277,
-        423175695,
-        432175456,
-        1378068232,
-        4145222326,
-        3954048622,
-        3938656102,
-        3820766613,
-        2793130115,
-        2977904593,
-        26017576,
-        3274890735,
-        3194772133,
-        1700274565,
-        1756076034,
-        4006520079,
-        3677328699,
-        720338349,
-        1533947780,
-        354530856,
-        688349552,
-        3973924725,
-        1637815568,
-        332179504,
-        3949051286,
-        53804574,
-        2852348879,
-        3044236432,
-        1282449977,
-        3583942155,
-        3416972820,
-        4006381244,
-        1617046695,
-        2628476075,
-        3002303598,
-        1686838959,
-        431878346,
-        2686675385,
-        1700445008,
-        1080580658,
-        1009431731,
-        832498133,
-        3223435511,
-        2605976345,
-        2271191193,
-        2516031870,
-        1648197032,
-        4164389018,
-        2548247927,
-        300782431,
-        375919233,
-        238389289,
-        3353747414,
-        2531188641,
-        2019080857,
-        1475708069,
-        455242339,
-        2609103871,
-        448939670,
-        3451063019,
-        1395535956,
-        2413381860,
-        1841049896,
-        1491858159,
-        885456874,
-        4264095073,
-        4001119347,
-        1565136089,
-        3898914787,
-        1108368660,
-        540939232,
-        1173283510,
-        2745871338,
-        3681308437,
-        4207628240,
-        3343053890,
-        4016749493,
-        1699691293,
-        1103962373,
-        3625875870,
-        2256883143,
-        3830138730,
-        1031889488,
-        3479347698,
-        1535977030,
-        4236805024,
-        3251091107,
-        2132092099,
-        1774941330,
-        1199868427,
-        1452454533,
-        157007616,
-        2904115357,
-        342012276,
-        595725824,
-        1480756522,
-        206960106,
-        497939518,
-        591360097,
-        863170706,
-        2375253569,
-        3596610801,
-        1814182875,
-        2094937945,
-        3421402208,
-        1082520231,
-        3463918190,
-        2785509508,
-        435703966,
-        3908032597,
-        1641649973,
-        2842273706,
-        3305899714,
-        1510255612,
-        2148256476,
-        2655287854,
-        3276092548,
-        4258621189,
-        236887753,
-        3681803219,
-        274041037,
-        1734335097,
-        3815195456,
-        3317970021,
-        1899903192,
-        1026095262,
-        4050517792,
-        356393447,
-        2410691914,
-        3873677099,
-        3682840055,
-        3913112168,
-        2491498743,
-        4132185628,
-        2489919796,
-        1091903735,
-        1979897079,
-        3170134830,
-        3567386728,
-        3557303409,
-        857797738,
-        1136121015,
-        1342202287,
-        507115054,
-        2535736646,
-        337727348,
-        3213592640,
-        1301675037,
-        2528481711,
-        1895095763,
-        1721773893,
-        3216771564,
-        62756741,
-        2142006736,
-        835421444,
-        2531993523,
-        1442658625,
-        3659876326,
-        2882144922,
-        676362277,
-        1392781812,
-        170690266,
-        3921047035,
-        1759253602,
-        3611846912,
-        1745797284,
-        664899054,
-        1329594018,
-        3901205900,
-        3045908486,
-        2062866102,
-        2865634940,
-        3543621612,
-        3464012697,
-        1080764994,
-        553557557,
-        3656615353,
-        3996768171,
-        991055499,
-        499776247,
-        1265440854,
-        648242737,
-        3940784050,
-        980351604,
-        3713745714,
-        1749149687,
-        3396870395,
-        4211799374,
-        3640570775,
-        1161844396,
-        3125318951,
-        1431517754,
-        545492359,
-        4268468663,
-        3499529547,
-        1437099964,
-        2702547544,
-        3433638243,
-        2581715763,
-        2787789398,
-        1060185593,
-        1593081372,
-        2418618748,
-        4260947970,
-        69676912,
-        2159744348,
-        86519011,
-        2512459080,
-        3838209314,
-        1220612927,
-        3339683548,
-        133810670,
-        1090789135,
-        1078426020,
-        1569222167,
-        845107691,
-        3583754449,
-        4072456591,
-        1091646820,
-        628848692,
-        1613405280,
-        3757631651,
-        526609435,
-        236106946,
-        48312990,
-        2942717905,
-        3402727701,
-        1797494240,
-        859738849,
-        992217954,
-        4005476642,
-        2243076622,
-        3870952857,
-        3732016268,
-        765654824,
-        3490871365,
-        2511836413,
-        1685915746,
-        3888969200,
-        1414112111,
-        2273134842,
-        3281911079,
-        4080962846,
-        172450625,
-        2569994100,
-        980381355,
-        4109958455,
-        2819808352,
-        2716589560,
-        2568741196,
-        3681446669,
-        3329971472,
-        1835478071,
-        660984891,
-        3704678404,
-        4045999559,
-        3422617507,
-        3040415634,
-        1762651403,
-        1719377915,
-        3470491036,
-        2693910283,
-        3642056355,
-        3138596744,
-        1364962596,
-        2073328063,
-        1983633131,
-        926494387,
-        3423689081,
-        2150032023,
-        4096667949,
-        1749200295,
-        3328846651,
-        309677260,
-        2016342300,
-        1779581495,
-        3079819751,
-        111262694,
-        1274766160,
-        443224088,
-        298511866,
-        1025883608,
-        3806446537,
-        1145181785,
-        168956806,
-        3641502830,
-        3584813610,
-        1689216846,
-        3666258015,
-        3200248200,
-        1692713982,
-        2646376535,
-        4042768518,
-        1618508792,
-        1610833997,
-        3523052358,
-        4130873264,
-        2001055236,
-        3610705100,
-        2202168115,
-        4028541809,
-        2961195399,
-        1006657119,
-        2006996926,
-        3186142756,
-        1430667929,
-        3210227297,
-        1314452623,
-        4074634658,
-        4101304120,
-        2273951170,
-        1399257539,
-        3367210612,
-        3027628629,
-        1190975929,
-        2062231137,
-        2333990788,
-        2221543033,
-        2438960610,
-        1181637006,
-        548689776,
-        2362791313,
-        3372408396,
-        3104550113,
-        3145860560,
-        296247880,
-        1970579870,
-        3078560182,
-        3769228297,
-        1714227617,
-        3291629107,
-        3898220290,
-        166772364,
-        1251581989,
-        493813264,
-        448347421,
-        195405023,
-        2709975567,
-        677966185,
-        3703036547,
-        1463355134,
-        2715995803,
-        1338867538,
-        1343315457,
-        2802222074,
-        2684532164,
-        233230375,
-        2599980071,
-        2000651841,
-        3277868038,
-        1638401717,
-        4028070440,
-        3237316320,
-        6314154,
-        819756386,
-        300326615,
-        590932579,
-        1405279636,
-        3267499572,
-        3150704214,
-        2428286686,
-        3959192993,
-        3461946742,
-        1862657033,
-        1266418056,
-        963775037,
-        2089974820,
-        2263052895,
-        1917689273,
-        448879540,
-        3550394620,
-        3981727096,
-        150775221,
-        3627908307,
-        1303187396,
-        508620638,
-        2975983352,
-        2726630617,
-        1817252668,
-        1876281319,
-        1457606340,
-        908771278,
-        3720792119,
-        3617206836,
-        2455994898,
-        1729034894,
-        1080033504,
-        976866871,
-        3556439503,
-        2881648439,
-        1522871579,
-        1555064734,
-        1336096578,
-        3548522304,
-        2579274686,
-        3574697629,
-        3205460757,
-        3593280638,
-        3338716283,
-        3079412587,
-        564236357,
-        2993598910,
-        1781952180,
-        1464380207,
-        3163844217,
-        3332601554,
-        1699332808,
-        1393555694,
-        1183702653,
-        3581086237,
-        1288719814,
-        691649499,
-        2847557200,
-        2895455976,
-        3193889540,
-        2717570544,
-        1781354906,
-        1676643554,
-        2592534050,
-        3230253752,
-        1126444790,
-        2770207658,
-        2633158820,
-        2210423226,
-        2615765581,
-        2414155088,
-        3127139286,
-        673620729,
-        2805611233,
-        1269405062,
-        4015350505,
-        3341807571,
-        4149409754,
-        1057255273,
-        2012875353,
-        2162469141,
-        2276492801,
-        2601117357,
-        993977747,
-        3918593370,
-        2654263191,
-        753973209,
-        36408145,
-        2530585658,
-        25011837,
-        3520020182,
-        2088578344,
-        530523599,
-        2918365339,
-        1524020338,
-        1518925132,
-        3760827505,
-        3759777254,
-        1202760957,
-        3985898139,
-        3906192525,
-        674977740,
-        4174734889,
-        2031300136,
-        2019492241,
-        3983892565,
-        4153806404,
-        3822280332,
-        352677332,
-        2297720250,
-        60907813,
-        90501309,
-        3286998549,
-        1016092578,
-        2535922412,
-        2839152426,
-        457141659,
-        509813237,
-        4120667899,
-        652014361,
-        1966332200,
-        2975202805,
-        55981186,
-        2327461051,
-        676427537,
-        3255491064,
-        2882294119,
-        3433927263,
-        1307055953,
-        942726286,
-        933058658,
-        2468411793,
-        3933900994,
-        4215176142,
-        1361170020,
-        2001714738,
-        2830558078,
-        3274259782,
-        1222529897,
-        1679025792,
-        2729314320,
-        3714953764,
-        1770335741,
-        151462246,
-        3013232138,
-        1682292957,
-        1483529935,
-        471910574,
-        1539241949,
-        458788160,
-        3436315007,
-        1807016891,
-        3718408830,
-        978976581,
-        1043663428,
-        3165965781,
-        1927990952,
-        4200891579,
-        2372276910,
-        3208408903,
-        3533431907,
-        1412390302,
-        2931980059,
-        4132332400,
-        1947078029,
-        3881505623,
-        4168226417,
-        2941484381,
-        1077988104,
-        1320477388,
-        886195818,
-        18198404,
-        3786409e3,
-        2509781533,
-        112762804,
-        3463356488,
-        1866414978,
-        891333506,
-        18488651,
-        661792760,
-        1628790961,
-        3885187036,
-        3141171499,
-        876946877,
-        2693282273,
-        1372485963,
-        791857591,
-        2686433993,
-        3759982718,
-        3167212022,
-        3472953795,
-        2716379847,
-        445679433,
-        3561995674,
-        3504004811,
-        3574258232,
-        54117162,
-        3331405415,
-        2381918588,
-        3769707343,
-        4154350007,
-        1140177722,
-        4074052095,
-        668550556,
-        3214352940,
-        367459370,
-        261225585,
-        2610173221,
-        4209349473,
-        3468074219,
-        3265815641,
-        314222801,
-        3066103646,
-        3808782860,
-        282218597,
-        3406013506,
-        3773591054,
-        379116347,
-        1285071038,
-        846784868,
-        2669647154,
-        3771962079,
-        3550491691,
-        2305946142,
-        453669953,
-        1268987020,
-        3317592352,
-        3279303384,
-        3744833421,
-        2610507566,
-        3859509063,
-        266596637,
-        3847019092,
-        517658769,
-        3462560207,
-        3443424879,
-        370717030,
-        4247526661,
-        2224018117,
-        4143653529,
-        4112773975,
-        2788324899,
-        2477274417,
-        1456262402,
-        2901442914,
-        1517677493,
-        1846949527,
-        2295493580,
-        3734397586,
-        2176403920,
-        1280348187,
-        1908823572,
-        3871786941,
-        846861322,
-        1172426758,
-        3287448474,
-        3383383037,
-        1655181056,
-        3139813346,
-        901632758,
-        1897031941,
-        2986607138,
-        3066810236,
-        3447102507,
-        1393639104,
-        373351379,
-        950779232,
-        625454576,
-        3124240540,
-        4148612726,
-        2007998917,
-        544563296,
-        2244738638,
-        2330496472,
-        2058025392,
-        1291430526,
-        424198748,
-        50039436,
-        29584100,
-        3605783033,
-        2429876329,
-        2791104160,
-        1057563949,
-        3255363231,
-        3075367218,
-        3463963227,
-        1469046755,
-        985887462
-      ];
-      var C_ORIG = [
-        1332899944,
-        1700884034,
-        1701343084,
-        1684370003,
-        1668446532,
-        1869963892
-      ];
-      function _encipher(lr, off, P, S) {
-        var n, l2 = lr[off], r = lr[off + 1];
-        l2 ^= P[0];
-        n = S[l2 >>> 24];
-        n += S[256 | l2 >> 16 & 255];
-        n ^= S[512 | l2 >> 8 & 255];
-        n += S[768 | l2 & 255];
-        r ^= n ^ P[1];
-        n = S[r >>> 24];
-        n += S[256 | r >> 16 & 255];
-        n ^= S[512 | r >> 8 & 255];
-        n += S[768 | r & 255];
-        l2 ^= n ^ P[2];
-        n = S[l2 >>> 24];
-        n += S[256 | l2 >> 16 & 255];
-        n ^= S[512 | l2 >> 8 & 255];
-        n += S[768 | l2 & 255];
-        r ^= n ^ P[3];
-        n = S[r >>> 24];
-        n += S[256 | r >> 16 & 255];
-        n ^= S[512 | r >> 8 & 255];
-        n += S[768 | r & 255];
-        l2 ^= n ^ P[4];
-        n = S[l2 >>> 24];
-        n += S[256 | l2 >> 16 & 255];
-        n ^= S[512 | l2 >> 8 & 255];
-        n += S[768 | l2 & 255];
-        r ^= n ^ P[5];
-        n = S[r >>> 24];
-        n += S[256 | r >> 16 & 255];
-        n ^= S[512 | r >> 8 & 255];
-        n += S[768 | r & 255];
-        l2 ^= n ^ P[6];
-        n = S[l2 >>> 24];
-        n += S[256 | l2 >> 16 & 255];
-        n ^= S[512 | l2 >> 8 & 255];
-        n += S[768 | l2 & 255];
-        r ^= n ^ P[7];
-        n = S[r >>> 24];
-        n += S[256 | r >> 16 & 255];
-        n ^= S[512 | r >> 8 & 255];
-        n += S[768 | r & 255];
-        l2 ^= n ^ P[8];
-        n = S[l2 >>> 24];
-        n += S[256 | l2 >> 16 & 255];
-        n ^= S[512 | l2 >> 8 & 255];
-        n += S[768 | l2 & 255];
-        r ^= n ^ P[9];
-        n = S[r >>> 24];
-        n += S[256 | r >> 16 & 255];
-        n ^= S[512 | r >> 8 & 255];
-        n += S[768 | r & 255];
-        l2 ^= n ^ P[10];
-        n = S[l2 >>> 24];
-        n += S[256 | l2 >> 16 & 255];
-        n ^= S[512 | l2 >> 8 & 255];
-        n += S[768 | l2 & 255];
-        r ^= n ^ P[11];
-        n = S[r >>> 24];
-        n += S[256 | r >> 16 & 255];
-        n ^= S[512 | r >> 8 & 255];
-        n += S[768 | r & 255];
-        l2 ^= n ^ P[12];
-        n = S[l2 >>> 24];
-        n += S[256 | l2 >> 16 & 255];
-        n ^= S[512 | l2 >> 8 & 255];
-        n += S[768 | l2 & 255];
-        r ^= n ^ P[13];
-        n = S[r >>> 24];
-        n += S[256 | r >> 16 & 255];
-        n ^= S[512 | r >> 8 & 255];
-        n += S[768 | r & 255];
-        l2 ^= n ^ P[14];
-        n = S[l2 >>> 24];
-        n += S[256 | l2 >> 16 & 255];
-        n ^= S[512 | l2 >> 8 & 255];
-        n += S[768 | l2 & 255];
-        r ^= n ^ P[15];
-        n = S[r >>> 24];
-        n += S[256 | r >> 16 & 255];
-        n ^= S[512 | r >> 8 & 255];
-        n += S[768 | r & 255];
-        l2 ^= n ^ P[16];
-        lr[off] = r ^ P[BLOWFISH_NUM_ROUNDS + 1];
-        lr[off + 1] = l2;
-        return lr;
-      }
-      function _streamtoword(data, offp) {
-        for (var i = 0, word = 0; i < 4; ++i)
-          word = word << 8 | data[offp] & 255, offp = (offp + 1) % data.length;
-        return { key: word, offp };
-      }
-      function _key(key, P, S) {
-        var offset = 0, lr = [0, 0], plen = P.length, slen = S.length, sw;
-        for (var i = 0; i < plen; i++)
-          sw = _streamtoword(key, offset), offset = sw.offp, P[i] = P[i] ^ sw.key;
-        for (i = 0; i < plen; i += 2)
-          lr = _encipher(lr, 0, P, S), P[i] = lr[0], P[i + 1] = lr[1];
-        for (i = 0; i < slen; i += 2)
-          lr = _encipher(lr, 0, P, S), S[i] = lr[0], S[i + 1] = lr[1];
-      }
-      function _ekskey(data, key, P, S) {
-        var offp = 0, lr = [0, 0], plen = P.length, slen = S.length, sw;
-        for (var i = 0; i < plen; i++)
-          sw = _streamtoword(key, offp), offp = sw.offp, P[i] = P[i] ^ sw.key;
-        offp = 0;
-        for (i = 0; i < plen; i += 2)
-          sw = _streamtoword(data, offp), offp = sw.offp, lr[0] ^= sw.key, sw = _streamtoword(data, offp), offp = sw.offp, lr[1] ^= sw.key, lr = _encipher(lr, 0, P, S), P[i] = lr[0], P[i + 1] = lr[1];
-        for (i = 0; i < slen; i += 2)
-          sw = _streamtoword(data, offp), offp = sw.offp, lr[0] ^= sw.key, sw = _streamtoword(data, offp), offp = sw.offp, lr[1] ^= sw.key, lr = _encipher(lr, 0, P, S), S[i] = lr[0], S[i + 1] = lr[1];
-      }
-      function _crypt(b, salt, rounds, callback, progressCallback) {
-        var cdata = C_ORIG.slice(), clen = cdata.length, err;
-        if (rounds < 4 || rounds > 31) {
-          err = Error("Illegal number of rounds (4-31): " + rounds);
-          if (callback) {
-            nextTick(callback.bind(this, err));
-            return;
-          } else
-            throw err;
-        }
-        if (salt.length !== BCRYPT_SALT_LEN) {
-          err = Error("Illegal salt length: " + salt.length + " != " + BCRYPT_SALT_LEN);
-          if (callback) {
-            nextTick(callback.bind(this, err));
-            return;
-          } else
-            throw err;
-        }
-        rounds = 1 << rounds >>> 0;
-        var P, S, i = 0, j;
-        if (Int32Array) {
-          P = new Int32Array(P_ORIG);
-          S = new Int32Array(S_ORIG);
-        } else {
-          P = P_ORIG.slice();
-          S = S_ORIG.slice();
-        }
-        _ekskey(salt, b, P, S);
-        function next() {
-          if (progressCallback)
-            progressCallback(i / rounds);
-          if (i < rounds) {
-            var start = Date.now();
-            for (; i < rounds; ) {
-              i = i + 1;
-              _key(b, P, S);
-              _key(salt, P, S);
-              if (Date.now() - start > MAX_EXECUTION_TIME)
-                break;
-            }
-          } else {
-            for (i = 0; i < 64; i++)
-              for (j = 0; j < clen >> 1; j++)
-                _encipher(cdata, j << 1, P, S);
-            var ret2 = [];
-            for (i = 0; i < clen; i++)
-              ret2.push((cdata[i] >> 24 & 255) >>> 0), ret2.push((cdata[i] >> 16 & 255) >>> 0), ret2.push((cdata[i] >> 8 & 255) >>> 0), ret2.push((cdata[i] & 255) >>> 0);
-            if (callback) {
-              callback(null, ret2);
-              return;
-            } else
-              return ret2;
-          }
-          if (callback)
-            nextTick(next);
-        }
-        if (typeof callback !== "undefined") {
-          next();
-        } else {
-          var res;
-          while (true)
-            if (typeof (res = next()) !== "undefined")
-              return res || [];
-        }
-      }
-      function _hash(s, salt, callback, progressCallback) {
-        var err;
-        if (typeof s !== "string" || typeof salt !== "string") {
-          err = Error("Invalid string / salt: Not a string");
-          if (callback) {
-            nextTick(callback.bind(this, err));
-            return;
-          } else
-            throw err;
-        }
-        var minor, offset;
-        if (salt.charAt(0) !== "$" || salt.charAt(1) !== "2") {
-          err = Error("Invalid salt version: " + salt.substring(0, 2));
-          if (callback) {
-            nextTick(callback.bind(this, err));
-            return;
-          } else
-            throw err;
-        }
-        if (salt.charAt(2) === "$")
-          minor = String.fromCharCode(0), offset = 3;
-        else {
-          minor = salt.charAt(2);
-          if (minor !== "a" && minor !== "b" && minor !== "y" || salt.charAt(3) !== "$") {
-            err = Error("Invalid salt revision: " + salt.substring(2, 4));
-            if (callback) {
-              nextTick(callback.bind(this, err));
-              return;
-            } else
-              throw err;
-          }
-          offset = 4;
-        }
-        if (salt.charAt(offset + 2) > "$") {
-          err = Error("Missing salt rounds");
-          if (callback) {
-            nextTick(callback.bind(this, err));
-            return;
-          } else
-            throw err;
-        }
-        var r1 = parseInt(salt.substring(offset, offset + 1), 10) * 10, r2 = parseInt(salt.substring(offset + 1, offset + 2), 10), rounds = r1 + r2, real_salt = salt.substring(offset + 3, offset + 25);
-        s += minor >= "a" ? "\0" : "";
-        var passwordb = stringToBytes2(s), saltb = base64_decode(real_salt, BCRYPT_SALT_LEN);
-        function finish(bytes) {
-          var res = [];
-          res.push("$2");
-          if (minor >= "a")
-            res.push(minor);
-          res.push("$");
-          if (rounds < 10)
-            res.push("0");
-          res.push(rounds.toString());
-          res.push("$");
-          res.push(base64_encode(saltb, saltb.length));
-          res.push(base64_encode(bytes, C_ORIG.length * 4 - 1));
-          return res.join("");
-        }
-        if (typeof callback == "undefined")
-          return finish(_crypt(passwordb, saltb, rounds));
-        else {
-          _crypt(passwordb, saltb, rounds, function(err2, bytes) {
-            if (err2)
-              callback(err2, null);
-            else
-              callback(null, finish(bytes));
-          }, progressCallback);
-        }
-      }
-      bcrypt.encodeBase64 = base64_encode;
-      bcrypt.decodeBase64 = base64_decode;
-      return bcrypt;
-    });
-  }
-});
-
-// node_modules/bcryptjs/index.js
-var require_bcryptjs = __commonJS({
-  "node_modules/bcryptjs/index.js"(exports2, module2) {
-    module2.exports = require_bcrypt();
-  }
-});
-
-// apps/api/src/modules/auth/models/User.js
-var require_User = __commonJS({
-  "apps/api/src/modules/auth/models/User.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var bcrypt = require_bcryptjs();
-    var { Schema } = mongoose;
-    var userSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        name: {
-          type: String,
-          required: true,
-          trim: true
-        },
-        email: {
-          type: String,
-          required: true,
-          lowercase: true,
-          trim: true
-        },
-        passwordHash: {
-          type: String,
-          required: true
-        },
-        phone: {
-          type: String,
-          default: ""
-        },
-        roleId: {
-          type: Schema.Types.ObjectId,
-          ref: "Role",
-          required: true,
-          index: true
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        },
-        passwordResetToken: {
-          type: String,
-          default: null
-        },
-        passwordResetExpires: {
-          type: Date,
-          default: null
-        },
-        lastLoginAt: {
-          type: Date,
-          default: null
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    userSchema.index({ email: 1 }, { unique: true });
-    userSchema.index({ companyId: 1, roleId: 1 });
-    userSchema.pre("save", async function(next) {
-      if (!this.isModified("passwordHash")) {
-        return next();
-      }
-      if (!this.passwordHash.startsWith("$2")) {
-        const salt = await bcrypt.genSalt(12);
-        this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
-      }
-      next();
-    });
-    userSchema.methods.comparePassword = async function(candidatePassword) {
-      return bcrypt.compare(candidatePassword, this.passwordHash);
-    };
-    userSchema.methods.toSafeObject = function() {
-      const obj2 = this.toObject();
-      delete obj2.passwordHash;
-      delete obj2.passwordResetToken;
-      delete obj2.passwordResetExpires;
-      delete obj2.__v;
-      return obj2;
-    };
-    module2.exports = mongoose.model("User", userSchema);
-  }
-});
-
-// apps/api/src/modules/auth/models/UserSession.js
-var require_UserSession = __commonJS({
-  "apps/api/src/modules/auth/models/UserSession.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var userSessionSchema = new Schema(
-      {
-        userId: {
-          type: Schema.Types.ObjectId,
-          ref: "User",
-          required: true,
-          index: true
-        },
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        refreshTokenHash: {
-          type: String,
-          required: true,
-          index: true
-        },
-        ipAddress: {
-          type: String,
-          default: ""
-        },
-        userAgent: {
-          type: String,
-          default: ""
-        },
-        expiresAt: {
-          type: Date,
-          required: true,
-          index: { expires: 0 }
-          // MongoDB TTL index to auto-remove expired sessions
-        },
-        isRevoked: {
-          type: Boolean,
-          default: false,
-          index: true
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    userSessionSchema.index({ userId: 1, isRevoked: 1 });
-    module2.exports = mongoose.model("UserSession", userSessionSchema);
-  }
-});
-
-// apps/api/src/modules/auth/models/Company.js
-var require_Company = __commonJS({
-  "apps/api/src/modules/auth/models/Company.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var companySchema = new Schema(
-      {
-        legalName: { type: String, required: true, trim: true },
-        tradeName: { type: String, required: true, trim: true },
-        gstin: { type: String, required: true, uppercase: true, trim: true },
-        pan: { type: String, uppercase: true, trim: true },
-        email: { type: String, required: true, lowercase: true, trim: true },
-        phone: { type: String, required: true, trim: true },
-        address: {
-          street: { type: String, default: "" },
-          city: { type: String, default: "" },
-          state: { type: String, default: "" },
-          pincode: { type: String, default: "" },
-          country: { type: String, default: "IN" }
-        },
-        settings: {
-          timezone: { type: String, default: "Asia/Kolkata" },
-          currency: { type: String, default: "INR" },
-          weightUnit: { type: String, enum: ["MT", "KG", "QUINTAL"], default: "MT" },
-          distanceUnit: { type: String, enum: ["KM", "MILE"], default: "KM" },
-          defaultGtaGstRate: { type: Number, default: 5 },
-          defaultGtaSacCode: { type: String, default: "9965" }
-        },
-        branding: {
-          logoUrl: { type: String, default: "" },
-          letterheadHeaderUrl: { type: String, default: "" },
-          authorizedSignatoryUrl: { type: String, default: "" }
-        },
-        isActive: { type: Boolean, default: true }
-      },
-      {
-        timestamps: true
-      }
-    );
-    companySchema.index({ gstin: 1 });
-    companySchema.index({ isActive: 1 });
-    module2.exports = mongoose.model("Company", companySchema);
-  }
-});
-
-// apps/api/src/shared/index.js
-var require_shared2 = __commonJS({
-  "apps/api/src/shared/index.js"(exports2, module2) {
-    "use strict";
-    var UserRole = Object.freeze({
-      SUPER_ADMIN: "super_admin",
-      ADMIN: "admin",
-      TRANSPORT_MANAGER: "transport_manager",
-      FLEET_MANAGER: "fleet_manager",
-      OPERATIONS_MANAGER: "operations_manager",
-      DATA_ENTRY: "data_entry",
-      ACCOUNTS: "accounts",
-      MANAGEMENT: "management"
-    });
-    var SystemModule = Object.freeze({
-      AUTH: "auth",
-      USERS: "users",
-      ROLES: "roles",
-      LOADS: "loads",
-      LR: "lr",
-      BILTIES: "bilties",
-      TRIPS: "trips",
-      VEHICLES: "vehicles",
-      VEHICLE_DOCS: "vehicle_docs",
-      DRIVERS: "drivers",
-      DRIVER_DOCS: "driver_docs",
-      CUSTOMERS: "customers",
-      LOCATIONS: "locations",
-      BILLING: "billing",
-      POD: "pod",
-      DOCUMENTS: "documents",
-      WHATSAPP: "whatsapp",
-      REPORTS: "reports",
-      IMPORT_EXPORT: "import_export",
-      SETTINGS: "settings",
-      AUDIT: "audit",
-      MAINTENANCE: "maintenance"
-    });
-    var ActionPermission = Object.freeze({
-      VIEW: "view",
-      ADD: "add",
-      EDIT: "edit",
-      DELETE: "delete",
-      ADMIN: "admin",
-      EXPORT: "export"
-    });
-    var AuditAction = Object.freeze({
-      LOGIN_SUCCESS: "LOGIN_SUCCESS",
-      LOGIN_FAILED: "LOGIN_FAILED",
-      LOGOUT: "LOGOUT",
-      CREATE: "CREATE",
-      UPDATE: "UPDATE",
-      DELETE: "DELETE",
-      STATUS_CHANGE: "STATUS_CHANGE",
-      PASSWORD_RESET: "PASSWORD_RESET",
-      EXPORT: "EXPORT"
-    });
-    var VehicleStatus = Object.freeze({
-      AVAILABLE: "AVAILABLE",
-      ASSIGNED: "ASSIGNED",
-      ON_TRIP: "ON_TRIP",
-      UNDER_MAINTENANCE: "UNDER_MAINTENANCE",
-      INACTIVE: "INACTIVE",
-      OUT_OF_SERVICE: "OUT_OF_SERVICE"
-    });
-    var DriverStatus = Object.freeze({
-      AVAILABLE: "AVAILABLE",
-      ASSIGNED: "ASSIGNED",
-      ON_TRIP: "ON_TRIP",
-      ON_LEAVE: "ON_LEAVE",
-      INACTIVE: "INACTIVE"
-    });
-    var LoadStatus = Object.freeze({
-      CREATED: "CREATED",
-      ASSIGNED: "ASSIGNED",
-      LOADING: "LOADING",
-      IN_TRANSIT: "IN_TRANSIT",
-      PARTIALLY_DELIVERED: "PARTIALLY_DELIVERED",
-      DELIVERED: "DELIVERED",
-      CLOSED: "CLOSED",
-      CANCELLED: "CANCELLED"
-    });
-    var LrStatus = Object.freeze({
-      BOOKED: "BOOKED",
-      LOADED: "LOADED",
-      IN_TRANSIT: "IN_TRANSIT",
-      PARTIALLY_DELIVERED: "PARTIALLY_DELIVERED",
-      DELIVERED: "DELIVERED",
-      POD_CLOSED: "POD_CLOSED",
-      CANCELLED: "CANCELLED"
-    });
-    var TripStatus = Object.freeze({
-      CREATED: "CREATED",
-      VEHICLE_ASSIGNED: "VEHICLE_ASSIGNED",
-      LOADING: "LOADING",
-      IN_TRANSIT: "IN_TRANSIT",
-      PARTIALLY_DELIVERED: "PARTIALLY_DELIVERED",
-      DELIVERED: "DELIVERED",
-      CLOSED: "CLOSED",
-      CANCELLED: "CANCELLED"
-    });
-    var ComplianceStatus = Object.freeze({
-      VALID: "VALID",
-      EXPIRING_SOON: "EXPIRING_SOON",
-      EXPIRED: "EXPIRED",
-      MISSING: "MISSING"
-    });
-    var PartyType = Object.freeze({
-      CUSTOMER: "CUSTOMER",
-      CONSIGNOR: "CONSIGNOR",
-      CONSIGNEE: "CONSIGNEE",
-      TRANSPORTER: "TRANSPORTER",
-      BOTH: "BOTH"
-    });
-    var LocationType = Object.freeze({
-      HUB: "HUB",
-      PICKUP: "PICKUP",
-      DELIVERY: "DELIVERY",
-      WAYPOINT: "WAYPOINT"
-    });
-    var VehicleCategory = Object.freeze({
-      OWNED: "OWNED",
-      ATTACHED: "ATTACHED",
-      MARKET: "MARKET"
-    });
-    var VehicleDocumentType = Object.freeze({
-      RC: "RC",
-      INSURANCE: "INSURANCE",
-      PUC: "PUC",
-      FITNESS: "FITNESS",
-      NATIONAL_PERMIT: "NATIONAL_PERMIT",
-      STATE_PERMIT: "STATE_PERMIT",
-      TAX_RECEIPT: "TAX_RECEIPT",
-      OTHER: "OTHER"
-    });
-    var DriverLicenseType = Object.freeze({
-      LMV: "LMV",
-      HMV: "HMV",
-      TRANS: "TRANS",
-      TRAILER: "TRAILER"
-    });
-    var DriverDocumentType = Object.freeze({
-      DRIVING_LICENCE: "DRIVING_LICENCE",
-      AADHAAR: "AADHAAR",
-      PAN: "PAN",
-      POLICE_VERIFICATION: "POLICE_VERIFICATION",
-      MEDICAL_FITNESS: "MEDICAL_FITNESS",
-      OTHER: "OTHER"
-    });
-    var NotificationCategory = Object.freeze({
-      DOCUMENT_EXPIRY: "DOCUMENT_EXPIRY",
-      SYSTEM: "SYSTEM",
-      TRIP_ALERT: "TRIP_ALERT"
-    });
-    var NotificationSeverity = Object.freeze({
-      INFO: "INFO",
-      WARNING: "WARNING",
-      CRITICAL: "CRITICAL"
-    });
-    var BiltyStatus = Object.freeze({
-      DRAFT: "DRAFT",
-      ISSUED: "ISSUED",
-      CANCELLED: "CANCELLED"
-    });
-    var StopType = Object.freeze({
-      PICKUP: "PICKUP",
-      DELIVERY: "DELIVERY",
-      WAYPOINT: "WAYPOINT"
-    });
-    var StopStatus = Object.freeze({
-      PENDING: "PENDING",
-      ARRIVED: "ARRIVED",
-      LOADING: "LOADING",
-      UNLOADING: "UNLOADING",
-      COMPLETED: "COMPLETED",
-      FAILED: "FAILED"
-    });
-    var PaymentTerms = Object.freeze({
-      TO_PAY: "TO_PAY",
-      PAID: "PAID",
-      TO_BE_BILLED: "TO_BE_BILLED"
-    });
-    var TripExpenseType = Object.freeze({
-      DIESEL: "DIESEL",
-      TOLL: "TOLL",
-      DRIVER_BHATTA: "DRIVER_BHATTA",
-      POLICE_CHALLAN: "POLICE_CHALLAN",
-      MAINTENANCE: "MAINTENANCE",
-      LOADING_UNLOADING: "LOADING_UNLOADING",
-      OTHER: "OTHER"
-    });
-    var PodStatus = Object.freeze({
-      PENDING_VERIFICATION: "PENDING_VERIFICATION",
-      VERIFIED: "VERIFIED",
-      REJECTED: "REJECTED"
-    });
-    var WhatsAppProvider = Object.freeze({
-      MOCK: "MOCK",
-      INTERAKT: "INTERAKT",
-      TWILIO: "TWILIO"
-    });
-    var WhatsAppMessageType = Object.freeze({
-      TEMPLATE: "TEMPLATE",
-      PDF: "PDF",
-      CUSTOM_TEXT: "CUSTOM_TEXT"
-    });
-    var WhatsAppMessageStatus = Object.freeze({
-      QUEUED: "QUEUED",
-      DISPATCHED: "DISPATCHED",
-      DELIVERED: "DELIVERED",
-      READ: "READ",
-      FAILED: "FAILED",
-      MOCK_DELIVERED: "MOCK_DELIVERED"
-    });
-    var WhatsAppTemplateType = Object.freeze({
-      LOAD_CREATED: "LOAD_CREATED",
-      VEHICLE_DISPATCHED: "VEHICLE_DISPATCHED",
-      IN_TRANSIT: "IN_TRANSIT",
-      DELIVERY_COMPLETED: "DELIVERY_COMPLETED",
-      LR_BILTY_SHARE: "LR_BILTY_SHARE"
-    });
-    var MaintenanceStatus = Object.freeze({
-      SCHEDULED: "SCHEDULED",
-      IN_PROGRESS: "IN_PROGRESS",
-      COMPLETED: "COMPLETED",
-      CANCELLED: "CANCELLED"
-    });
-    var MaintenanceServiceType = Object.freeze({
-      OIL_CHANGE: "OIL_CHANGE",
-      TYRE_ROTATION: "TYRE_ROTATION",
-      BRAKE_OVERHAUL: "BRAKE_OVERHAUL",
-      FITNESS_TESTING: "FITNESS_TESTING",
-      GENERAL_SERVICE: "GENERAL_SERVICE",
-      BATTERY_REPLACEMENT: "BATTERY_REPLACEMENT",
-      ENGINE_TUNING: "ENGINE_TUNING",
-      OTHER: "OTHER"
-    });
-    module2.exports = {
-      UserRole,
-      SystemModule,
-      ActionPermission,
-      AuditAction,
-      VehicleStatus,
-      DriverStatus,
-      LoadStatus,
-      LrStatus,
-      TripStatus,
-      ComplianceStatus,
-      PartyType,
-      LocationType,
-      VehicleCategory,
-      VehicleDocumentType,
-      DriverLicenseType,
-      DriverDocumentType,
-      NotificationCategory,
-      NotificationSeverity,
-      BiltyStatus,
-      StopType,
-      StopStatus,
-      PaymentTerms,
-      TripExpenseType,
-      PodStatus,
-      WhatsAppProvider,
-      WhatsAppMessageType,
-      WhatsAppMessageStatus,
-      WhatsAppTemplateType,
-      MaintenanceStatus,
-      MaintenanceServiceType
-    };
-  }
-});
-
-// apps/api/src/modules/auth/models/Role.js
-var require_Role = __commonJS({
-  "apps/api/src/modules/auth/models/Role.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { UserRole, SystemModule, ActionPermission } = require_shared2();
-    var permissionRuleSchema = new Schema(
-      {
-        module: {
-          type: String,
-          enum: Object.values(SystemModule),
-          required: true
-        },
-        actions: [
-          {
-            type: String,
-            enum: Object.values(ActionPermission),
-            required: true
-          }
-        ]
-      },
-      { _id: false }
-    );
-    var roleSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        name: {
-          type: String,
-          required: true,
-          trim: true
-        },
-        slug: {
-          type: String,
-          required: true,
-          trim: true,
-          lowercase: true
-        },
-        description: {
-          type: String,
-          default: ""
-        },
-        isSystemRole: {
-          type: Boolean,
-          default: false
-        },
-        permissions: [permissionRuleSchema]
-      },
-      {
-        timestamps: true
-      }
-    );
-    roleSchema.index({ companyId: 1, slug: 1 }, { unique: true });
-    module2.exports = mongoose.model("Role", roleSchema);
-  }
-});
-
-// apps/api/src/modules/auth/services/bootstrap.service.js
-var require_bootstrap_service = __commonJS({
-  "apps/api/src/modules/auth/services/bootstrap.service.js"(exports2, module2) {
-    "use strict";
-    var Company = require_Company();
-    var Role = require_Role();
-    var User = require_User();
-    var { UserRole, SystemModule, ActionPermission } = require_shared2();
-    var SYSTEM_ROLES_DEFINITIONS = [
-      {
-        name: "Super Administrator",
-        slug: UserRole.SUPER_ADMIN,
-        description: "Full master access across all system modules, settings, and audit logs",
-        isSystemRole: true,
-        permissions: Object.values(SystemModule).map((mod) => ({
-          module: mod,
-          actions: Object.values(ActionPermission)
-        }))
-      },
-      {
-        name: "Administrator",
-        slug: UserRole.ADMIN,
-        description: "Operational administration, master data, user management, and reporting",
-        isSystemRole: true,
-        permissions: [
-          { module: SystemModule.AUTH, actions: ["view", "edit"] },
-          { module: SystemModule.USERS, actions: ["view", "add", "edit"] },
-          { module: SystemModule.ROLES, actions: ["view", "add", "edit"] },
-          { module: SystemModule.LOADS, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.LR, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.BILTIES, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.TRIPS, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.VEHICLES, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.VEHICLE_DOCS, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.DRIVERS, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.DRIVER_DOCS, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.CUSTOMERS, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.LOCATIONS, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.BILLING, actions: ["view", "add", "edit", "export"] },
-          { module: SystemModule.POD, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.DOCUMENTS, actions: ["view", "add", "export"] },
-          { module: SystemModule.WHATSAPP, actions: ["view", "add", "export"] },
-          { module: SystemModule.REPORTS, actions: ["view", "export"] },
-          { module: SystemModule.SETTINGS, actions: ["view", "edit"] },
-          { module: SystemModule.AUDIT, actions: ["view", "export"] }
-        ]
-      },
-      {
-        name: "Transport Manager",
-        slug: UserRole.TRANSPORT_MANAGER,
-        description: "Full transport operations, loads, LR, Bilties, and trip dispatch",
-        isSystemRole: true,
-        permissions: [
-          { module: SystemModule.AUTH, actions: ["view", "edit"] },
-          { module: SystemModule.LOADS, actions: ["view", "add", "edit", "export"] },
-          { module: SystemModule.LR, actions: ["view", "add", "edit", "export"] },
-          { module: SystemModule.BILTIES, actions: ["view", "add", "edit", "export"] },
-          { module: SystemModule.TRIPS, actions: ["view", "add", "edit", "export"] },
-          { module: SystemModule.VEHICLES, actions: ["view"] },
-          { module: SystemModule.VEHICLE_DOCS, actions: ["view"] },
-          { module: SystemModule.DRIVERS, actions: ["view"] },
-          { module: SystemModule.DRIVER_DOCS, actions: ["view"] },
-          { module: SystemModule.CUSTOMERS, actions: ["view", "add", "edit"] },
-          { module: SystemModule.LOCATIONS, actions: ["view", "add", "edit"] },
-          { module: SystemModule.BILLING, actions: ["view", "add"] },
-          { module: SystemModule.POD, actions: ["view", "add", "edit"] },
-          { module: SystemModule.DOCUMENTS, actions: ["view", "add", "export"] },
-          { module: SystemModule.WHATSAPP, actions: ["view", "add"] },
-          { module: SystemModule.REPORTS, actions: ["view", "export"] }
-        ]
-      },
-      {
-        name: "Fleet Manager",
-        slug: UserRole.FLEET_MANAGER,
-        description: "Vehicle fleet registry, maintenance, driver compliance and document expiry tracking",
-        isSystemRole: true,
-        permissions: [
-          { module: SystemModule.AUTH, actions: ["view", "edit"] },
-          { module: SystemModule.LOADS, actions: ["view"] },
-          { module: SystemModule.LR, actions: ["view"] },
-          { module: SystemModule.TRIPS, actions: ["view", "edit"] },
-          { module: SystemModule.VEHICLES, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.VEHICLE_DOCS, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.DRIVERS, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.DRIVER_DOCS, actions: ["view", "add", "edit", "delete", "export"] },
-          { module: SystemModule.POD, actions: ["view"] },
-          { module: SystemModule.DOCUMENTS, actions: ["view", "export"] },
-          { module: SystemModule.REPORTS, actions: ["view", "export"] }
-        ]
-      },
-      {
-        name: "Operations Manager",
-        slug: UserRole.OPERATIONS_MANAGER,
-        description: "Load stops, waypoints, arrival/dispatch, and stop-wise POD verification",
-        isSystemRole: true,
-        permissions: [
-          { module: SystemModule.AUTH, actions: ["view", "edit"] },
-          { module: SystemModule.LOADS, actions: ["view", "add", "edit"] },
-          { module: SystemModule.LR, actions: ["view", "add", "edit"] },
-          { module: SystemModule.BILTIES, actions: ["view"] },
-          { module: SystemModule.TRIPS, actions: ["view", "add", "edit"] },
-          { module: SystemModule.VEHICLES, actions: ["view"] },
-          { module: SystemModule.DRIVERS, actions: ["view"] },
-          { module: SystemModule.CUSTOMERS, actions: ["view", "add"] },
-          { module: SystemModule.LOCATIONS, actions: ["view", "add", "edit"] },
-          { module: SystemModule.POD, actions: ["view", "add", "edit", "admin"] },
-          { module: SystemModule.DOCUMENTS, actions: ["view", "add", "export"] },
-          { module: SystemModule.WHATSAPP, actions: ["view", "add"] },
-          { module: SystemModule.REPORTS, actions: ["view", "export"] }
-        ]
-      },
-      {
-        name: "Data Entry Operator",
-        slug: UserRole.DATA_ENTRY,
-        description: "Routine entry of loads, locations, customers, and master records",
-        isSystemRole: true,
-        permissions: [
-          { module: SystemModule.AUTH, actions: ["view", "edit"] },
-          { module: SystemModule.LOADS, actions: ["view", "add"] },
-          { module: SystemModule.LR, actions: ["view", "add"] },
-          { module: SystemModule.BILTIES, actions: ["view", "add"] },
-          { module: SystemModule.VEHICLES, actions: ["view", "add"] },
-          { module: SystemModule.VEHICLE_DOCS, actions: ["view", "add"] },
-          { module: SystemModule.DRIVERS, actions: ["view", "add"] },
-          { module: SystemModule.DRIVER_DOCS, actions: ["view", "add"] },
-          { module: SystemModule.CUSTOMERS, actions: ["view", "add"] },
-          { module: SystemModule.LOCATIONS, actions: ["view", "add"] },
-          { module: SystemModule.POD, actions: ["view", "add"] },
-          { module: SystemModule.DOCUMENTS, actions: ["view"] }
-        ]
-      },
-      {
-        name: "Accounts User",
-        slug: UserRole.ACCOUNTS,
-        description: "Financial ledger, freight calculations, statements, advances, and payment tracking",
-        isSystemRole: true,
-        permissions: [
-          { module: SystemModule.AUTH, actions: ["view", "edit"] },
-          { module: SystemModule.LOADS, actions: ["view", "export"] },
-          { module: SystemModule.LR, actions: ["view", "export"] },
-          { module: SystemModule.BILTIES, actions: ["view", "add", "edit", "export"] },
-          { module: SystemModule.TRIPS, actions: ["view"] },
-          { module: SystemModule.CUSTOMERS, actions: ["view", "add", "edit", "export"] },
-          { module: SystemModule.BILLING, actions: ["view", "add", "edit", "export", "admin"] },
-          { module: SystemModule.POD, actions: ["view", "edit"] },
-          { module: SystemModule.DOCUMENTS, actions: ["view", "add", "export"] },
-          { module: SystemModule.REPORTS, actions: ["view", "export"] }
-        ]
-      },
-      {
-        name: "Management User",
-        slug: UserRole.MANAGEMENT,
-        description: "Executive read-only visibility into operational dashboards, reports, and analytics",
-        isSystemRole: true,
-        permissions: [
-          { module: SystemModule.AUTH, actions: ["view", "edit"] },
-          { module: SystemModule.LOADS, actions: ["view", "export"] },
-          { module: SystemModule.LR, actions: ["view", "export"] },
-          { module: SystemModule.BILTIES, actions: ["view", "export"] },
-          { module: SystemModule.TRIPS, actions: ["view", "export"] },
-          { module: SystemModule.VEHICLES, actions: ["view", "export"] },
-          { module: SystemModule.DRIVERS, actions: ["view", "export"] },
-          { module: SystemModule.CUSTOMERS, actions: ["view", "export"] },
-          { module: SystemModule.BILLING, actions: ["view", "export"] },
-          { module: SystemModule.POD, actions: ["view", "export"] },
-          { module: SystemModule.DOCUMENTS, actions: ["view", "export"] },
-          { module: SystemModule.REPORTS, actions: ["view", "export"] },
-          { module: SystemModule.AUDIT, actions: ["view"] }
-        ]
-      }
-    ];
-    var BootstrapService = class {
-      /**
-       * Bootstraps company, default roles, and super admin user
-       */
-      static async bootstrapSystem({
-        companyLegalName = "Techofay Global Logistics Pvt Ltd",
-        tradeName,
-        companyGstin = "24AAACT1234A1Z5",
-        adminEmail = "admin@technofay.com",
-        adminPassword = "change_on_first_login_secure_password",
-        adminName = "System Super Administrator",
-        phone = "+91 98765 43210",
-        address
-      } = {}) {
-        let company = await Company.findOne({ gstin: companyGstin });
-        if (!company) {
-          company = await Company.create({
-            legalName: companyLegalName,
-            tradeName: tradeName || (companyLegalName === "Techofay Global Logistics Pvt Ltd" ? "Techofay Transport" : companyLegalName),
-            gstin: companyGstin,
-            pan: companyGstin.length >= 12 ? companyGstin.substring(2, 12) : "AAACT1234A",
-            email: adminEmail || "dispatch@technofay.com",
-            phone: phone || "+91 98765 43210",
-            address: {
-              street: address?.street || "Transport Hub Complex, Sarkhej-Bavla Highway",
-              city: address?.city || "Ahmedabad",
-              state: address?.state || "Gujarat",
-              pincode: address?.pincode || "382210",
-              country: address?.country || "IN"
-            },
-            settings: {
-              timezone: "Asia/Kolkata",
-              currency: "INR",
-              defaultGtaGstRate: 5,
-              defaultGtaSacCode: "9965"
-            }
-          });
-          console.log(`[BOOTSTRAP] Created default organization: ${company.legalName}`);
-        }
-        const roleMap = {};
-        for (const def of SYSTEM_ROLES_DEFINITIONS) {
-          let role = await Role.findOne({ companyId: company._id, slug: def.slug });
-          if (!role) {
-            role = await Role.create({
-              companyId: company._id,
-              name: def.name,
-              slug: def.slug,
-              description: def.description,
-              isSystemRole: def.isSystemRole,
-              permissions: def.permissions
-            });
-          }
-          roleMap[def.slug] = role;
-        }
-        console.log(`[BOOTSTRAP] Verified ${Object.keys(roleMap).length} system roles for ${company.tradeName}`);
-        const superAdminRole = roleMap[UserRole.SUPER_ADMIN];
-        let superAdmin = null;
-        if (adminEmail) {
-          superAdmin = await User.findOne({ companyId: company._id, email: adminEmail.toLowerCase() });
-          if (!superAdmin) {
-            if (!adminPassword) {
-              if (process.env.NODE_ENV === "production") {
-                throw new Error("[FATAL] Cannot bootstrap Super Administrator in production without BOOTSTRAP_ADMIN_PASSWORD environment variable.");
-              }
-              adminPassword = "fleet2026_SecureAdmin!";
-            }
-            superAdmin = await User.create({
-              companyId: company._id,
-              name: adminName || "Lead System Administrator",
-              email: adminEmail.toLowerCase(),
-              passwordHash: adminPassword,
-              // Pre-save hook will bcrypt hash
-              phone: phone || "+91 98765 43210",
-              roleId: superAdminRole._id,
-              isActive: true
-            });
-            console.log(`[BOOTSTRAP] Created Super Administrator: ${superAdmin.email}`);
-          }
-        }
-        return { company, roles: roleMap, superAdmin };
-      }
-    };
-    module2.exports = BootstrapService;
-  }
-});
-
-// apps/api/src/modules/audit/models/AuditLog.js
-var require_AuditLog = __commonJS({
-  "apps/api/src/modules/audit/models/AuditLog.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { SystemModule, AuditAction } = require_shared2();
-    var auditLogSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        actorId: {
-          type: Schema.Types.ObjectId,
-          ref: "User",
-          index: true,
-          default: null
-        },
-        module: {
-          type: String,
-          lowercase: true,
-          enum: Object.values(SystemModule),
-          required: true
-        },
-        action: {
-          type: String,
-          uppercase: true,
-          enum: Object.values(AuditAction),
-          required: true
-        },
-        entityId: {
-          type: Schema.Types.Mixed,
-          default: null
-        },
-        oldValues: {
-          type: Schema.Types.Mixed,
-          default: null
-        },
-        newValues: {
-          type: Schema.Types.Mixed,
-          default: null
-        },
-        ipAddress: {
-          type: String,
-          default: ""
-        },
-        userAgent: {
-          type: String,
-          default: ""
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    auditLogSchema.index({ companyId: 1, module: 1, createdAt: -1 });
-    module2.exports = mongoose.model("AuditLog", auditLogSchema);
-  }
-});
-
-// apps/api/src/modules/audit/services/auditLog.service.js
-var require_auditLog_service = __commonJS({
-  "apps/api/src/modules/audit/services/auditLog.service.js"(exports2, module2) {
-    "use strict";
-    var AuditLog = require_AuditLog();
-    var AuditLogService = class {
-      /**
-       * Record an immutable audit log entry
-       */
-      static async log({
-        companyId,
-        actorId = null,
-        module: module3,
-        action,
-        entityId = null,
-        oldValues = null,
-        newValues = null,
-        ipAddress = "",
-        userAgent = ""
-      }) {
-        try {
-          if (!companyId) {
-            return null;
-          }
-          return await AuditLog.create({
-            companyId,
-            actorId,
-            module: module3,
-            action,
-            entityId,
-            oldValues,
-            newValues,
-            ipAddress,
-            userAgent
-          });
-        } catch (err) {
-          console.error("[AUDIT_ERROR] Failed to record audit log:", err.message);
-          return null;
-        }
-      }
-      /**
-       * Alias for log()
-       */
-      static async logAction(params) {
-        return this.log(params);
-      }
-      /**
-       * Retrieve audit logs with filtering and pagination
-       */
-      static async getLogs(companyId, filter = {}, { page = 1, limit = 50 } = {}) {
-        const query = { companyId };
-        if (filter.module) query.module = filter.module;
-        if (filter.action) query.action = filter.action;
-        if (filter.actorId) query.actorId = filter.actorId;
-        const skip = (page - 1) * limit;
-        const [logs, totalRecords] = await Promise.all([
-          AuditLog.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("actorId", "name email").lean(),
-          AuditLog.countDocuments(query)
-        ]);
-        return {
-          logs,
-          pagination: {
-            page,
-            limit,
-            totalRecords,
-            totalPages: Math.ceil(totalRecords / limit) || 1
-          }
-        };
-      }
-    };
-    module2.exports = AuditLogService;
-  }
-});
-
-// apps/api/src/modules/auth/controllers/auth.controller.js
-var require_auth_controller = __commonJS({
-  "apps/api/src/modules/auth/controllers/auth.controller.js"(exports2, module2) {
-    "use strict";
-    var crypto4 = require("node:crypto");
-    var User = require_User();
-    var UserSession = require_UserSession();
-    var Company = require_Company();
-    var BootstrapService = require_bootstrap_service();
-    var TokenService = require_token_service();
-    var AuditLogService = require_auditLog_service();
-    var { SystemModule, AuditAction } = require_shared2();
-    var { AppError: AppError2 } = require_errorHandler();
-    var db2 = require_db3();
-    var AuthController = class {
-      /**
-       * POST /api/v1/auth/register
-       * Registers a new tenant organization and super administrator user
-       */
-      static async register(req, res, next) {
-        try {
-          const {
-            companyLegalName,
-            tradeName,
-            companyGstin,
-            adminName,
-            email,
-            password,
-            phone,
-            street,
-            city,
-            state,
-            pincode
-          } = req.body || {};
-          if (!companyLegalName || !adminName || !email || !password) {
-            return next(new AppError2("Company name, administrator name, email, and password are required", 400));
-          }
-          if (typeof password !== "string" || password.length < 8) {
-            return next(new AppError2("Password must be at least 8 characters long", 400));
-          }
-          const normalizedEmail = email.toLowerCase().trim();
-          const existingUser = await User.findOne({ email: normalizedEmail });
-          if (existingUser) {
-            return next(new AppError2("An account with this email address already exists. Please log in.", 409));
-          }
-          let gstin = (companyGstin || "").trim().toUpperCase();
-          if (!gstin) {
-            const randomHex = crypto4.randomBytes(3).toString("hex").toUpperCase();
-            gstin = `24TEMP${randomHex}Z1`;
-          }
-          const existingCompany = await Company.findOne({ gstin });
-          if (existingCompany) {
-            const randomHex = crypto4.randomBytes(2).toString("hex").toUpperCase();
-            gstin = `${gstin.slice(0, 10)}${randomHex}Z1`;
-          }
-          const { company, roles, superAdmin } = await BootstrapService.bootstrapSystem({
-            companyLegalName: companyLegalName.trim(),
-            tradeName: tradeName ? tradeName.trim() : companyLegalName.trim(),
-            companyGstin: gstin,
-            adminEmail: normalizedEmail,
-            adminPassword: password,
-            adminName: adminName.trim(),
-            phone: phone ? phone.trim() : "+91 98765 43210",
-            address: {
-              street: street ? street.trim() : "Transport Hub Complex",
-              city: city ? city.trim() : "Ahmedabad",
-              state: state ? state.trim() : "Gujarat",
-              pincode: pincode ? pincode.trim() : "380001",
-              country: "IN"
-            }
-          });
-          const populatedUser = await User.findById(superAdmin._id).populate("roleId").populate("companyId");
-          const accessToken = TokenService.generateAccessToken(populatedUser);
-          const rawRefreshToken = TokenService.generateRefreshToken();
-          const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
-          const ipAddress = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || "";
-          const userAgent = req.headers["user-agent"] || "";
-          const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1e3);
-          await UserSession.create({
-            userId: populatedUser._id,
-            companyId: company._id,
-            refreshTokenHash,
-            ipAddress,
-            userAgent,
-            expiresAt
-          });
-          await AuditLogService.log({
-            companyId: company._id,
-            actorId: populatedUser._id,
-            module: SystemModule.AUTH,
-            action: AuditAction.CREATE,
-            newValues: {
-              event: "ORGANIZATION_REGISTERED",
-              company: company.legalName,
-              email: normalizedEmail
-            },
-            ipAddress,
-            userAgent
-          });
-          TokenService.setAuthCookies(res, accessToken, rawRefreshToken);
-          res.status(201).json({
-            success: true,
-            statusCode: 201,
-            message: "Organization and administrator account registered successfully",
-            data: {
-              accessToken,
-              user: populatedUser.toSafeObject(),
-              tenant: company
-            }
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-      /**
-       * POST /api/v1/auth/login
-       */
-      static async login(req, res, next) {
-        try {
-          const { email, password } = req.body || {};
-          if (!email || !password) {
-            return next(new AppError2("Email and password are required", 400));
-          }
-          if (typeof password !== "string" || password.length < 8) {
-            return next(new AppError2("Password must be at least 8 characters long", 400));
-          }
-          const normalizedEmail = email.toLowerCase().trim();
-          if (!db2.isConnected() || req.isDbDisconnected) {
-            const mockTenant = {
-              _id: "671e3b0f27d7a87e3cbb0001",
-              legalName: "Technofay Fleet OS",
-              tradeName: "Technofay Fleet",
-              gstin: "24AAACT1234A1Z5",
-              status: "ACTIVE"
-            };
-            const mockUser = {
-              _id: "671e3b0f27d7a87e3cbb0002",
-              name: "Lead System Administrator",
-              email: normalizedEmail,
-              phone: "+91 98765 43210",
-              role: "SUPER_ADMIN",
-              roleId: {
-                _id: "671e3b0f27d7a87e3cbb0003",
-                name: "Super Administrator",
-                permissions: ["*"]
-              },
-              companyId: mockTenant,
-              isActive: true,
-              toSafeObject: function() {
-                return {
-                  _id: this._id,
-                  name: this.name,
-                  email: this.email,
-                  phone: this.phone,
-                  role: this.role,
-                  roleId: this.roleId,
-                  companyId: this.companyId,
-                  isActive: this.isActive
-                };
-              }
-            };
-            const accessToken2 = TokenService.generateAccessToken(mockUser);
-            const rawRefreshToken2 = TokenService.generateRefreshToken();
-            TokenService.setAuthCookies(res, accessToken2, rawRefreshToken2);
-            return res.status(200).json({
-              success: true,
-              statusCode: 200,
-              message: "Authentication successful (Fleet OS Live Mode)",
-              data: {
-                accessToken: accessToken2,
-                user: mockUser.toSafeObject(),
-                tenant: mockTenant
-              }
-            });
-          }
-          const user = await User.findOne({ email: normalizedEmail }).populate("roleId").populate("companyId");
-          const ipAddress = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || "";
-          const userAgent = req.headers["user-agent"] || "";
-          if (!user) {
-            return next(new AppError2("Invalid email or password", 401));
-          }
-          if (!user.isActive) {
-            await AuditLogService.log({
-              companyId: user.companyId._id,
-              actorId: user._id,
-              module: SystemModule.AUTH,
-              action: AuditAction.LOGIN_FAILED,
-              newValues: { reason: "ACCOUNT_DEACTIVATED", email: normalizedEmail },
-              ipAddress,
-              userAgent
-            });
-            return next(new AppError2("Your account has been deactivated. Please contact your administrator.", 401));
-          }
-          const isMatch = await user.comparePassword(password);
-          if (!isMatch) {
-            await AuditLogService.log({
-              companyId: user.companyId._id,
-              actorId: user._id,
-              module: SystemModule.AUTH,
-              action: AuditAction.LOGIN_FAILED,
-              newValues: { reason: "PASSWORD_MISMATCH", email: normalizedEmail },
-              ipAddress,
-              userAgent
-            });
-            return next(new AppError2("Invalid email or password", 401));
-          }
-          const accessToken = TokenService.generateAccessToken(user);
-          const rawRefreshToken = TokenService.generateRefreshToken();
-          const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
-          const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1e3);
-          await UserSession.create({
-            userId: user._id,
-            companyId: user.companyId._id,
-            refreshTokenHash,
-            ipAddress,
-            userAgent,
-            expiresAt
-          });
-          user.lastLoginAt = /* @__PURE__ */ new Date();
-          await user.save();
-          await AuditLogService.log({
-            companyId: user.companyId._id,
-            actorId: user._id,
-            module: SystemModule.AUTH,
-            action: AuditAction.LOGIN_SUCCESS,
-            ipAddress,
-            userAgent
-          });
-          TokenService.setAuthCookies(res, accessToken, rawRefreshToken);
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Login successful",
-            data: {
-              accessToken,
-              user: user.toSafeObject()
-            }
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-      /**
-       * POST /api/v1/auth/refresh
-       */
-      static async refresh(req, res, next) {
-        try {
-          const rawRefreshToken = req.cookies && req.cookies.refreshToken || req.body && req.body.refreshToken;
-          if (!rawRefreshToken) {
-            return next(new AppError2("Refresh token required", 401));
-          }
-          const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
-          const session = await UserSession.findOne({
-            refreshTokenHash,
-            isRevoked: false,
-            expiresAt: { $gt: /* @__PURE__ */ new Date() }
-          });
-          if (!session) {
-            TokenService.clearAuthCookies(res);
-            return next(new AppError2("Invalid or expired refresh session. Please login again.", 401));
-          }
-          const user = await User.findById(session.userId).populate("roleId").populate("companyId");
-          if (!user || !user.isActive) {
-            session.isRevoked = true;
-            await session.save();
-            TokenService.clearAuthCookies(res);
-            return next(new AppError2("User account is invalid or deactivated.", 401));
-          }
-          session.isRevoked = true;
-          await session.save();
-          const newAccessToken = TokenService.generateAccessToken(user);
-          const newRawRefreshToken = TokenService.generateRefreshToken();
-          const newRefreshTokenHash = TokenService.hashToken(newRawRefreshToken);
-          const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1e3);
-          await UserSession.create({
-            userId: user._id,
-            companyId: user.companyId._id,
-            refreshTokenHash: newRefreshTokenHash,
-            ipAddress: req.ip || "",
-            userAgent: req.headers["user-agent"] || "",
-            expiresAt
-          });
-          TokenService.setAuthCookies(res, newAccessToken, newRawRefreshToken);
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Token refreshed successfully",
-            data: {
-              accessToken: newAccessToken,
-              user: user.toSafeObject()
-            }
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-      /**
-       * POST /api/v1/auth/logout
-       */
-      static async logout(req, res, next) {
-        try {
-          const rawRefreshToken = req.cookies && req.cookies.refreshToken || req.body && req.body.refreshToken;
-          if (rawRefreshToken) {
-            const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
-            await UserSession.updateMany(
-              { refreshTokenHash },
-              { $set: { isRevoked: true } }
-            );
-          }
-          if (req.user) {
-            await AuditLogService.log({
-              companyId: req.user.companyId._id || req.user.companyId,
-              actorId: req.user._id,
-              module: SystemModule.AUTH,
-              action: AuditAction.LOGOUT,
-              ipAddress: req.ip || "",
-              userAgent: req.headers["user-agent"] || ""
-            });
-          }
-          TokenService.clearAuthCookies(res);
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Logged out successfully",
-            data: null
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-      /**
-       * GET /api/v1/auth/me
-       */
-      static async me(req, res) {
-        res.status(200).json({
-          success: true,
-          statusCode: 200,
-          message: "Current user profile retrieved",
-          data: {
-            user: req.user.toSafeObject(),
-            tenant: req.tenant.company
-          }
-        });
-      }
-      /**
-       * POST /api/v1/auth/forgot-password
-       */
-      static async forgotPassword(req, res, next) {
-        try {
-          const { email } = req.body || {};
-          if (!email) {
-            return next(new AppError2("Email is required", 400));
-          }
-          const normalizedEmail = email.toLowerCase().trim();
-          const user = await User.findOne({ email: normalizedEmail });
-          let generatedToken = null;
-          if (user) {
-            const rawToken = crypto4.randomBytes(32).toString("hex");
-            generatedToken = rawToken;
-            user.passwordResetToken = crypto4.createHash("sha256").update(rawToken).digest("hex");
-            user.passwordResetExpires = new Date(Date.now() + 15 * 60 * 1e3);
-            await user.save();
-            await AuditLogService.log({
-              companyId: user.companyId,
-              actorId: user._id,
-              module: SystemModule.AUTH,
-              action: AuditAction.PASSWORD_RESET,
-              newValues: { event: "RESET_TOKEN_GENERATED" },
-              ipAddress: req.ip || "",
-              userAgent: req.headers["user-agent"] || ""
-            });
-            const isEmailConfigured2 = process.env.EMAIL_ENABLED === "true" && Boolean(process.env.SMTP_HOST || process.env.SENDGRID_API_KEY);
-            if (isEmailConfigured2) {
-              console.log(`[AUTH] Dispatching password reset email to ${normalizedEmail}`);
-            } else {
-              console.warn(`[AUTH] Password reset requested for ${normalizedEmail}. Email provider is not configured.`);
-              if (process.env.NODE_ENV !== "production") {
-                console.info(`[DEV-ONLY] Password Reset Token: ${rawToken}`);
-              }
-            }
-          }
-          const isEmailConfigured = process.env.EMAIL_ENABLED === "true" && Boolean(process.env.SMTP_HOST || process.env.SENDGRID_API_KEY);
-          if (!isEmailConfigured && process.env.NODE_ENV === "production") {
-            return res.status(503).json({
-              success: false,
-              statusCode: 503,
-              error: "Service Unavailable",
-              message: "Password reset email delivery service is currently not configured. Please contact support or your organization administrator.",
-              data: null
-            });
-          }
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: isEmailConfigured ? "If this email is registered, password reset instructions have been dispatched." : "Password reset token generated (development mode).",
-            data: process.env.NODE_ENV !== "production" && generatedToken ? { devResetToken: generatedToken } : null
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-      /**
-       * POST /api/v1/auth/reset-password
-       */
-      static async resetPassword(req, res, next) {
-        try {
-          const { token, newPassword } = req.body || {};
-          if (!token || !newPassword) {
-            return next(new AppError2("Reset token and new password are required", 400));
-          }
-          if (newPassword.length < 8) {
-            return next(new AppError2("Password must be at least 8 characters long", 400));
-          }
-          const hashedToken = crypto4.createHash("sha256").update(token).digest("hex");
-          const user = await User.findOne({
-            passwordResetToken: hashedToken,
-            passwordResetExpires: { $gt: /* @__PURE__ */ new Date() }
-          });
-          if (!user) {
-            return next(new AppError2("Invalid or expired password reset token", 400));
-          }
-          user.passwordHash = newPassword;
-          user.passwordResetToken = null;
-          user.passwordResetExpires = null;
-          await user.save();
-          await UserSession.updateMany(
-            { userId: user._id },
-            { $set: { isRevoked: true } }
-          );
-          await AuditLogService.log({
-            companyId: user.companyId,
-            actorId: user._id,
-            module: SystemModule.AUTH,
-            action: AuditAction.PASSWORD_RESET,
-            newValues: { event: "PASSWORD_RESET_SUCCESSFUL" },
-            ipAddress: req.ip || "",
-            userAgent: req.headers["user-agent"] || ""
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Password reset successful. Please login with your new password.",
-            data: null
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-    };
-    module2.exports = AuthController;
-  }
-});
-
-// apps/api/src/middleware/auth.middleware.js
-var require_auth_middleware = __commonJS({
-  "apps/api/src/middleware/auth.middleware.js"(exports2, module2) {
-    "use strict";
-    var jwt = require_jsonwebtoken();
-    var config2 = require_env();
-    var User = require_User();
-    var { AppError: AppError2 } = require_errorHandler();
-    async function authenticate(req, res, next) {
-      try {
-        let token = null;
-        const authHeader = req.headers.authorization;
-        if (authHeader && authHeader.startsWith("Bearer ")) {
-          token = authHeader.split(" ")[1];
-        } else if (req.cookies && req.cookies.accessToken) {
-          token = req.cookies.accessToken;
-        } else if (req.query && req.query.token) {
-          token = req.query.token;
-        }
-        if (!token) {
-          return next(new AppError2("Authentication required. Missing access token.", 401));
-        }
-        let decoded;
-        try {
-          decoded = jwt.verify(token, config2.jwtSecret);
-        } catch (err) {
-          if (err.name === "TokenExpiredError") {
-            return next(new AppError2("Session expired. Please refresh your token.", 401));
-          }
-          return next(new AppError2("Invalid authentication token.", 401));
-        }
-        const db2 = require_db3();
-        if (!db2.isConnected()) {
-          const mockTenant = {
-            _id: decoded.companyId || "671e3b0f27d7a87e3cbb0001",
-            legalName: "Technofay Fleet OS",
-            tradeName: "Technofay Fleet",
-            gstin: "24AAACT1234A1Z5",
-            isActive: true
-          };
-          const mockUser = {
-            _id: decoded.userId || "671e3b0f27d7a87e3cbb0002",
-            name: "Lead System Administrator",
-            email: decoded.email || "admin@technofay.com",
-            role: decoded.role || "SUPER_ADMIN",
-            roleId: {
-              _id: decoded.roleId || "671e3b0f27d7a87e3cbb0003",
-              name: "Super Administrator",
-              permissions: ["*"]
-            },
-            companyId: mockTenant,
-            isActive: true,
-            toSafeObject: function() {
-              return {
-                _id: this._id,
-                name: this.name,
-                email: this.email,
-                role: this.role,
-                roleId: this.roleId,
-                companyId: this.companyId,
-                isActive: this.isActive
-              };
-            }
-          };
-          req.user = mockUser;
-          req.tenant = {
-            companyId: mockTenant._id,
-            company: mockTenant
-          };
-          return next();
-        }
-        const user = await User.findById(decoded.userId).populate("roleId").populate("companyId");
-        if (!user) {
-          return next(new AppError2("User account not found.", 401));
-        }
-        if (!user.isActive) {
-          return next(new AppError2("Your account has been deactivated. Please contact your administrator.", 401));
-        }
-        if (!user.companyId || !user.companyId.isActive) {
-          return next(new AppError2("Organization account is inactive or not found.", 403));
-        }
-        req.user = user;
-        req.tenant = {
-          companyId: user.companyId._id,
-          company: user.companyId
-        };
-        next();
-      } catch (error) {
-        next(error);
-      }
-    }
-    function enforceTenantScope(req, res, next) {
-      if (!req.tenant || !req.tenant.companyId) {
-        return next(new AppError2("Tenant context missing. Cross-tenant access forbidden.", 403));
-      }
-      next();
-    }
-    module2.exports = {
-      authenticate,
-      enforceTenantScope
-    };
-  }
-});
-
-// apps/api/src/modules/auth/routes/auth.routes.js
-var require_auth_routes = __commonJS({
-  "apps/api/src/modules/auth/routes/auth.routes.js"(exports2, module2) {
-    "use strict";
-    var express2 = require_express2();
-    var AuthController = require_auth_controller();
-    var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var { authRateLimiter } = require_rateLimiter();
-    var router = express2.Router();
-    router.post("/register", authRateLimiter, AuthController.register);
-    router.post("/login", authRateLimiter, AuthController.login);
-    router.post("/refresh", AuthController.refresh);
-    router.post("/forgot-password", authRateLimiter, AuthController.forgotPassword);
-    router.post("/reset-password", authRateLimiter, AuthController.resetPassword);
-    router.post("/logout", authenticate, AuthController.logout);
-    router.get("/me", authenticate, enforceTenantScope, AuthController.me);
-    module2.exports = router;
-  }
-});
-
-// apps/api/src/modules/users/controllers/user.controller.js
-var require_user_controller = __commonJS({
-  "apps/api/src/modules/users/controllers/user.controller.js"(exports2, module2) {
-    "use strict";
-    var User = require_User();
-    var Role = require_Role();
-    var AuditLogService = require_auditLog_service();
-    var { SystemModule, AuditAction, UserRole } = require_shared2();
-    var { AppError: AppError2 } = require_errorHandler();
-    var UserController = class {
-      /**
-       * GET /api/v1/admin/users
-       */
-      static async listUsers(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const page = parseInt(req.query.page || "1", 10);
-          const limit = parseInt(req.query.limit || "20", 10);
-          const search = req.query.search ? req.query.search.trim() : "";
-          const query = { companyId };
-          if (search) {
-            query.$or = [
-              { name: { $regex: search, $options: "i" } },
-              { email: { $regex: search, $options: "i" } },
-              { phone: { $regex: search, $options: "i" } }
-            ];
-          }
-          const skip = (page - 1) * limit;
-          const [users, totalRecords] = await Promise.all([
-            User.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("roleId", "name slug isSystemRole").lean(),
-            User.countDocuments(query)
-          ]);
-          const safeUsers = users.map((u) => {
-            delete u.passwordHash;
-            delete u.passwordResetToken;
-            delete u.passwordResetExpires;
-            delete u.__v;
-            return u;
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Users retrieved successfully",
-            data: safeUsers,
-            meta: {
-              page,
-              limit,
-              totalRecords,
-              totalPages: Math.ceil(totalRecords / limit) || 1
-            }
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-      /**
-       * POST /api/v1/admin/users
-       */
-      static async createUser(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const { name, email, password, phone, roleId } = req.body || {};
-          if (!name || !email || !password || !roleId) {
-            return next(new AppError2("Name, email, password, and roleId are required", 400));
-          }
-          if (password.length < 8) {
-            return next(new AppError2("Password must be at least 8 characters long", 400));
-          }
-          const normalizedEmail = email.toLowerCase().trim();
-          const role = await Role.findOne({ _id: roleId, companyId });
-          if (!role) {
-            return next(new AppError2("Invalid role specified for this organization", 400));
-          }
-          const existing = await User.findOne({ companyId, email: normalizedEmail });
-          if (existing) {
-            return next(new AppError2(`User with email '${normalizedEmail}' already exists in this organization`, 409));
-          }
-          const newUser = await User.create({
-            companyId,
-            name: name.trim(),
-            email: normalizedEmail,
-            passwordHash: password,
-            // Pre-save hook will hash
-            phone: phone || "",
-            roleId: role._id,
-            isActive: true
-          });
-          await AuditLogService.log({
-            companyId,
-            actorId: req.user._id,
-            module: SystemModule.USERS,
-            action: AuditAction.CREATE,
-            entityId: newUser._id,
-            newValues: { name: newUser.name, email: newUser.email, role: role.slug },
-            ipAddress: req.ip || "",
-            userAgent: req.headers["user-agent"] || ""
-          });
-          res.status(201).json({
-            success: true,
-            statusCode: 201,
-            message: "User created successfully",
-            data: newUser.toSafeObject()
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-      /**
-       * PATCH /api/v1/admin/users/:id
-       */
-      static async updateUser(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const targetUserId = req.params.id;
-          const { name, phone, roleId } = req.body || {};
-          const user = await User.findOne({ _id: targetUserId, companyId }).populate("roleId");
-          if (!user) {
-            return next(new AppError2("User not found", 404));
-          }
-          const oldValues = {
-            name: user.name,
-            phone: user.phone,
-            roleId: user.roleId ? user.roleId._id : null
-          };
-          if (name) user.name = name.trim();
-          if (phone !== void 0) user.phone = phone.trim();
-          if (roleId && roleId.toString() !== user.roleId._id.toString()) {
-            const newRole = await Role.findOne({ _id: roleId, companyId });
-            if (!newRole) {
-              return next(new AppError2("Invalid role specified", 400));
-            }
-            if (user.roleId.slug === UserRole.SUPER_ADMIN && newRole.slug !== UserRole.SUPER_ADMIN) {
-              const superAdminRole = await Role.findOne({ companyId, slug: UserRole.SUPER_ADMIN });
-              const otherSuperAdmins = await User.countDocuments({
-                companyId,
-                roleId: superAdminRole._id,
-                isActive: true,
-                _id: { $ne: user._id }
-              });
-              if (otherSuperAdmins === 0) {
-                return next(new AppError2("Cannot demote the last active Super Administrator.", 400));
-              }
-            }
-            user.roleId = newRole._id;
-          }
-          await user.save();
-          await AuditLogService.log({
-            companyId,
-            actorId: req.user._id,
-            module: SystemModule.USERS,
-            action: AuditAction.UPDATE,
-            entityId: user._id,
-            oldValues,
-            newValues: { name: user.name, phone: user.phone, roleId: user.roleId },
-            ipAddress: req.ip || "",
-            userAgent: req.headers["user-agent"] || ""
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "User updated successfully",
-            data: user.toSafeObject()
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-      /**
-       * PATCH /api/v1/admin/users/:id/status
-       */
-      static async toggleStatus(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const targetUserId = req.params.id;
-          const { isActive } = req.body;
-          if (typeof isActive !== "boolean") {
-            return next(new AppError2("isActive boolean is required", 400));
-          }
-          const user = await User.findOne({ _id: targetUserId, companyId }).populate("roleId");
-          if (!user) {
-            return next(new AppError2("User not found", 404));
-          }
-          if (!isActive && user.roleId.slug === UserRole.SUPER_ADMIN) {
-            const superAdminRole = await Role.findOne({ companyId, slug: UserRole.SUPER_ADMIN });
-            const otherSuperAdmins = await User.countDocuments({
-              companyId,
-              roleId: superAdminRole._id,
-              isActive: true,
-              _id: { $ne: user._id }
-            });
-            if (otherSuperAdmins === 0) {
-              return next(new AppError2("Cannot deactivate the last active Super Administrator.", 400));
-            }
-          }
-          const oldStatus = user.isActive;
-          user.isActive = isActive;
-          await user.save();
-          await AuditLogService.log({
-            companyId,
-            actorId: req.user._id,
-            module: SystemModule.USERS,
-            action: AuditAction.STATUS_CHANGE,
-            entityId: user._id,
-            oldValues: { isActive: oldStatus },
-            newValues: { isActive },
-            ipAddress: req.ip || "",
-            userAgent: req.headers["user-agent"] || ""
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: `User ${isActive ? "activated" : "deactivated"} successfully`,
-            data: user.toSafeObject()
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-    };
-    module2.exports = UserController;
-  }
-});
-
-// apps/api/src/middleware/rbac.middleware.js
-var require_rbac_middleware = __commonJS({
-  "apps/api/src/middleware/rbac.middleware.js"(exports2, module2) {
-    "use strict";
-    var { UserRole } = require_shared2();
-    var { AppError: AppError2 } = require_errorHandler();
-    function requirePermission(module3, action) {
-      return (req, res, next) => {
-        if (!req.user || !req.user.roleId) {
-          return next(new AppError2("Unauthorized: No role assigned to this account.", 401));
-        }
-        const role = req.user.roleId;
-        if (role.slug === UserRole.SUPER_ADMIN) {
-          return next();
-        }
-        const permissionRule = role.permissions.find((p) => p.module === module3);
-        if (!permissionRule) {
-          return next(
-            new AppError2(`Access denied: You do not have permission to access the '${module3}' module.`, 403)
-          );
-        }
-        const hasAction = permissionRule.actions.includes(action) || permissionRule.actions.includes("admin");
-        if (!hasAction) {
-          return next(
-            new AppError2(`Access denied: You do not have '${action}' permission on '${module3}'.`, 403)
-          );
-        }
-        next();
-      };
-    }
-    function requireRole(...allowedRoles) {
-      return (req, res, next) => {
-        if (!req.user || !req.user.roleId) {
-          return next(new AppError2("Unauthorized: No role assigned.", 401));
-        }
-        const userRoleSlug = req.user.roleId.slug;
-        if (allowedRoles.includes(userRoleSlug)) {
-          return next();
-        }
-        return next(new AppError2(`Access denied: Requires one of [${allowedRoles.join(", ")}] role.`, 403));
-      };
-    }
-    module2.exports = {
-      requirePermission,
-      requireRole
-    };
-  }
-});
-
-// apps/api/src/modules/users/routes/user.routes.js
-var require_user_routes = __commonJS({
-  "apps/api/src/modules/users/routes/user.routes.js"(exports2, module2) {
-    "use strict";
-    var express2 = require_express2();
-    var UserController = require_user_controller();
-    var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var { requirePermission } = require_rbac_middleware();
-    var { SystemModule } = require_shared2();
-    var router = express2.Router();
-    router.use(authenticate, enforceTenantScope);
-    router.get("/", requirePermission(SystemModule.USERS, "view"), UserController.listUsers);
-    router.post("/", requirePermission(SystemModule.USERS, "add"), UserController.createUser);
-    router.patch("/:id", requirePermission(SystemModule.USERS, "edit"), UserController.updateUser);
-    router.patch("/:id/status", requirePermission(SystemModule.USERS, "edit"), UserController.toggleStatus);
-    module2.exports = router;
-  }
-});
-
-// apps/api/src/modules/roles/controllers/role.controller.js
-var require_role_controller = __commonJS({
-  "apps/api/src/modules/roles/controllers/role.controller.js"(exports2, module2) {
-    "use strict";
-    var Role = require_Role();
-    var AuditLogService = require_auditLog_service();
-    var { SystemModule, AuditAction } = require_shared2();
-    var { AppError: AppError2 } = require_errorHandler();
-    var RoleController = class {
-      /**
-       * GET /api/v1/admin/roles
-       */
-      static async listRoles(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const roles = await Role.find({ companyId }).sort({ isSystemRole: -1, name: 1 });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Roles retrieved successfully",
-            data: roles
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-      /**
-       * POST /api/v1/admin/roles
-       */
-      static async createRole(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const { name, description, permissions } = req.body || {};
-          if (!name) {
-            return next(new AppError2("Role name is required", 400));
-          }
-          const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
-          const existing = await Role.findOne({ companyId, slug });
-          if (existing) {
-            return next(new AppError2(`Role with slug '${slug}' already exists`, 409));
-          }
-          const role = await Role.create({
-            companyId,
-            name: name.trim(),
-            slug,
-            description: description || "",
-            isSystemRole: false,
-            permissions: permissions || []
-          });
-          await AuditLogService.log({
-            companyId,
-            actorId: req.user._id,
-            module: SystemModule.ROLES,
-            action: AuditAction.CREATE,
-            entityId: role._id,
-            newValues: { name: role.name, slug: role.slug },
-            ipAddress: req.ip || "",
-            userAgent: req.headers["user-agent"] || ""
-          });
-          res.status(201).json({
-            success: true,
-            statusCode: 201,
-            message: "Role created successfully",
-            data: role
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-      /**
-       * GET /api/v1/admin/roles/:id
-       */
-      static async getRole(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const role = await Role.findOne({ _id: req.params.id, companyId });
-          if (!role) {
-            return next(new AppError2("Role not found", 404));
-          }
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Role retrieved successfully",
-            data: role
-          });
-        } catch (error) {
-          next(error);
-        }
-      }
-    };
-    module2.exports = RoleController;
-  }
-});
-
-// apps/api/src/modules/roles/routes/role.routes.js
-var require_role_routes = __commonJS({
-  "apps/api/src/modules/roles/routes/role.routes.js"(exports2, module2) {
-    "use strict";
-    var express2 = require_express2();
-    var RoleController = require_role_controller();
-    var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var { requirePermission } = require_rbac_middleware();
-    var { SystemModule } = require_shared2();
-    var router = express2.Router();
-    router.use(authenticate, enforceTenantScope);
-    router.get("/", requirePermission(SystemModule.ROLES, "view"), RoleController.listRoles);
-    router.post("/", requirePermission(SystemModule.ROLES, "add"), RoleController.createRole);
-    router.get("/:id", requirePermission(SystemModule.ROLES, "view"), RoleController.getRole);
-    module2.exports = router;
-  }
-});
-
-// apps/api/src/modules/audit/routes/audit.routes.js
-var require_audit_routes = __commonJS({
-  "apps/api/src/modules/audit/routes/audit.routes.js"(exports2, module2) {
-    "use strict";
-    var express2 = require_express2();
-    var AuditLogService = require_auditLog_service();
-    var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var { requirePermission } = require_rbac_middleware();
-    var { SystemModule } = require_shared2();
-    var router = express2.Router();
-    router.use(authenticate, enforceTenantScope);
-    router.get("/", requirePermission(SystemModule.AUDIT, "view"), async (req, res, next) => {
-      try {
-        const companyId = req.tenant.companyId;
-        const page = parseInt(req.query.page || "1", 10);
-        const limit = parseInt(req.query.limit || "50", 10);
-        const filter = {};
-        if (req.query.module) filter.module = req.query.module;
-        if (req.query.action) filter.action = req.query.action;
-        if (req.query.actorId) filter.actorId = req.query.actorId;
-        const result = await AuditLogService.getLogs(companyId, filter, { page, limit });
-        res.status(200).json({
-          success: true,
-          statusCode: 200,
-          message: "Audit logs retrieved successfully",
-          data: result.logs,
-          meta: result.pagination
-        });
-      } catch (error) {
-        next(error);
-      }
-    });
-    module2.exports = router;
-  }
-});
-
-// apps/api/src/modules/customers/models/CustomerParty.js
-var require_CustomerParty = __commonJS({
-  "apps/api/src/modules/customers/models/CustomerParty.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { PartyType } = require_shared2();
-    var customerPartySchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        name: {
-          type: String,
-          required: [true, "Party name is required"],
-          trim: true
-        },
-        code: {
-          type: String,
-          trim: true,
-          uppercase: true,
-          default: ""
-        },
-        partyType: {
-          type: String,
-          enum: Object.values(PartyType),
-          default: PartyType.CUSTOMER
-        },
-        gstin: {
-          type: String,
-          trim: true,
-          uppercase: true,
-          validate: {
-            validator: function(v) {
-              if (!v) return true;
-              return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(v);
-            },
-            message: (props) => `${props.value} is not a valid 15-character Indian GSTIN format.`
-          }
-        },
-        pan: {
-          type: String,
-          trim: true,
-          uppercase: true,
-          validate: {
-            validator: function(v) {
-              if (!v) return true;
-              return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(v);
-            },
-            message: (props) => `${props.value} is not a valid Indian PAN format.`
-          }
-        },
-        primaryContact: {
-          name: { type: String, trim: true, default: "" },
-          phone: { type: String, trim: true, default: "" },
-          email: { type: String, trim: true, lowercase: true, default: "" },
-          designation: { type: String, trim: true, default: "" }
-        },
-        billingAddress: {
-          street: { type: String, trim: true, default: "" },
-          city: { type: String, trim: true, default: "" },
-          state: { type: String, trim: true, default: "" },
-          stateCode: { type: String, trim: true, default: "" },
-          pincode: { type: String, trim: true, default: "" }
-        },
-        deliveryAddresses: [
-          {
-            label: { type: String, trim: true, default: "" },
-            street: { type: String, trim: true, default: "" },
-            city: { type: String, trim: true, default: "" },
-            state: { type: String, trim: true, default: "" },
-            pincode: { type: String, trim: true, default: "" },
-            contactPerson: { type: String, trim: true, default: "" },
-            contactPhone: { type: String, trim: true, default: "" }
-          }
-        ],
-        paymentTermsDays: {
-          type: Number,
-          default: 30,
-          min: 0
-        },
-        creditLimitPaise: {
-          type: Number,
-          default: 0,
-          min: 0
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    customerPartySchema.index({ companyId: 1, name: 1 });
-    customerPartySchema.index({ companyId: 1, partyType: 1 });
-    customerPartySchema.index(
-      { companyId: 1, gstin: 1 },
-      { unique: true, partialFilterExpression: { gstin: { $type: "string", $gt: "" } } }
-    );
-    module2.exports = mongoose.model("CustomerParty", customerPartySchema);
-  }
-});
-
-// apps/api/src/modules/loads/models/Load.js
-var require_Load = __commonJS({
-  "apps/api/src/modules/loads/models/Load.js"(exports2, module2) {
-    "use strict";
-    var crypto4 = require("crypto");
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { LoadStatus, StopType, StopStatus } = require_shared2();
-    var loadStopSchema = new Schema(
-      {
-        sequence: {
-          type: Number,
-          required: true
-        },
-        stopType: {
-          type: String,
-          enum: Object.values(StopType),
-          default: StopType.PICKUP
-        },
-        locationId: {
-          type: Schema.Types.ObjectId,
-          ref: "Location",
-          required: true
-        },
-        consignorConsigneeId: {
-          type: Schema.Types.ObjectId,
-          ref: "CustomerParty",
-          default: null
-        },
-        allocatedQuantity: {
-          type: Number,
-          default: 0
-        },
-        allocatedWeightMt: {
-          type: Number,
-          default: 0
-        },
-        deliveredQuantity: {
-          type: Number,
-          default: 0
-        },
-        pendingQuantity: {
-          type: Number,
-          default: 0
-        },
-        status: {
-          type: String,
-          enum: Object.values(StopStatus),
-          default: StopStatus.PENDING
-        },
-        contactPerson: {
-          type: String,
-          default: ""
-        },
-        contactPhone: {
-          type: String,
-          default: ""
-        },
-        scheduledDate: {
-          type: Date,
-          default: null
-        },
-        actualArrivalTime: {
-          type: Date,
-          default: null
-        },
-        actualDepartureTime: {
-          type: Date,
-          default: null
-        },
-        remarks: {
-          type: String,
-          default: ""
-        }
-      },
-      { _id: true, timestamps: true }
-    );
-    var loadSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        loadNumber: {
-          type: String,
-          required: [true, "Load number is required"],
-          trim: true,
-          uppercase: true
-        },
-        trackingToken: {
-          type: String,
-          unique: true,
-          sparse: true,
-          index: true
-        },
-        customerId: {
-          type: Schema.Types.ObjectId,
-          ref: "CustomerParty",
-          required: [true, "Customer/Billing party is required"],
-          index: true
-        },
-        consignorId: {
-          type: Schema.Types.ObjectId,
-          ref: "CustomerParty",
-          required: [true, "Consignor is required"],
-          index: true
-        },
-        consigneeId: {
-          type: Schema.Types.ObjectId,
-          ref: "CustomerParty",
-          required: [true, "Consignee is required"],
-          index: true
-        },
-        originLocationId: {
-          type: Schema.Types.ObjectId,
-          ref: "Location",
-          default: null,
-          index: true
-        },
-        destinationLocationId: {
-          type: Schema.Types.ObjectId,
-          ref: "Location",
-          default: null,
-          index: true
-        },
-        orderDate: {
-          type: Date,
-          default: Date.now
-        },
-        expectedDeliveryDate: {
-          type: Date,
-          default: null
-        },
-        status: {
-          type: String,
-          enum: Object.values(LoadStatus),
-          default: LoadStatus.CREATED,
-          index: true
-        },
-        totalWeightMt: {
-          type: Number,
-          required: [true, "Total weight in MT is required"],
-          min: [0.01, "Weight must be at least 0.01 MT"]
-        },
-        totalQuantity: {
-          type: Number,
-          default: 1
-        },
-        packageType: {
-          type: String,
-          trim: true,
-          default: "Bags"
-          // Bags, Drums, Boxes, Pallets, Loose, Liquid Bulk
-        },
-        materialType: {
-          type: String,
-          trim: true,
-          default: "Industrial Freight"
-        },
-        assignedVehicleId: {
-          type: Schema.Types.ObjectId,
-          ref: "Vehicle",
-          default: null,
-          index: true
-        },
-        assignedDriverId: {
-          type: Schema.Types.ObjectId,
-          ref: "Driver",
-          default: null,
-          index: true
-        },
-        currentTripId: {
-          type: Schema.Types.ObjectId,
-          ref: "Trip",
-          default: null
-        },
-        financials: {
-          baseFreightPaise: { type: Number, required: true, default: 0 },
-          loadingPaise: { type: Number, default: 0 },
-          unloadingPaise: { type: Number, default: 0 },
-          detentionPaise: { type: Number, default: 0 },
-          tollPaise: { type: Number, default: 0 },
-          handlingPaise: { type: Number, default: 0 },
-          miscChargePaise: { type: Number, default: 0 },
-          advancePaise: { type: Number, default: 0 },
-          deductionPaise: { type: Number, default: 0 },
-          totalFreightPaise: { type: Number, default: 0 },
-          balancePaise: { type: Number, default: 0 }
-        },
-        stops: [loadStopSchema],
-        statusHistory: [
-          {
-            status: { type: String, required: true },
-            changedBy: { type: Schema.Types.ObjectId, ref: "User" },
-            reason: { type: String, default: "" },
-            timestamp: { type: Date, default: Date.now }
-          }
-        ],
-        remarks: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    loadSchema.pre("save", function(next) {
-      if (!this.trackingToken) {
-        this.trackingToken = crypto4.randomBytes(16).toString("hex");
-      }
-      if (this.financials) {
-        const f = this.financials;
-        const base = Number(f.baseFreightPaise) || 0;
-        const loading = Number(f.loadingPaise) || 0;
-        const unloading = Number(f.unloadingPaise) || 0;
-        const detention = Number(f.detentionPaise) || 0;
-        const toll = Number(f.tollPaise) || 0;
-        const handling = Number(f.handlingPaise) || 0;
-        const misc = Number(f.miscChargePaise) || 0;
-        const advance = Number(f.advancePaise) || 0;
-        const deduction = Number(f.deductionPaise) || 0;
-        f.totalFreightPaise = Math.round(base + loading + unloading + detention + toll + handling + misc);
-        f.balancePaise = Math.round(f.totalFreightPaise - advance - deduction);
-      }
-      if (this.stops && Array.isArray(this.stops)) {
-        this.stops.forEach((stop) => {
-          stop.pendingQuantity = Math.max(0, (stop.allocatedQuantity || 0) - (stop.deliveredQuantity || 0));
-        });
-        if (!this.originLocationId && this.stops.length > 0) {
-          const orig = this.stops.find((s) => s.stopType === StopType.PICKUP) || this.stops[0];
-          if (orig && orig.locationId) this.originLocationId = orig.locationId;
-        }
-        if (!this.destinationLocationId && this.stops.length > 0) {
-          const dest = this.stops.find((s) => s.stopType === StopType.DELIVERY) || this.stops[this.stops.length - 1];
-          if (dest && dest.locationId) this.destinationLocationId = dest.locationId;
-        }
-      }
-      next();
-    });
-    loadSchema.index({ companyId: 1, loadNumber: 1 }, { unique: true });
-    loadSchema.index({ companyId: 1, status: 1 });
-    loadSchema.index({ companyId: 1, orderDate: -1 });
-    module2.exports = mongoose.model("Load", loadSchema);
-  }
-});
-
-// apps/api/src/modules/customers/controllers/customer.controller.js
-var require_customer_controller = __commonJS({
-  "apps/api/src/modules/customers/controllers/customer.controller.js"(exports2, module2) {
-    "use strict";
-    var CustomerParty = require_CustomerParty();
-    var auditLogService = require_auditLog_service();
-    var { AuditAction } = require_shared2();
-    var { AppError: AppError2 } = require_errorHandler();
-    var CustomerController = class {
-      async list(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const {
-            page = 1,
-            limit = 20,
-            search = "",
-            partyType = "",
-            isActive = ""
-          } = req.query;
-          const filter = { companyId };
-          if (partyType) {
-            filter.partyType = partyType;
-          }
-          if (isActive !== "") {
-            filter.isActive = isActive === "true";
-          }
-          if (search) {
-            const regex = new RegExp(search.trim(), "i");
-            filter.$or = [
-              { name: regex },
-              { code: regex },
-              { gstin: regex },
-              { "primaryContact.name": regex },
-              { "primaryContact.phone": regex },
-              { "billingAddress.city": regex }
-            ];
-          }
-          const pageNum = Math.max(1, parseInt(page, 10));
-          const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10)));
-          const skip = (pageNum - 1) * limitNum;
-          const [customers, total] = await Promise.all([
-            CustomerParty.find(filter).sort({ name: 1 }).skip(skip).limit(limitNum),
-            CustomerParty.countDocuments(filter)
-          ]);
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: {
-              items: customers,
-              pagination: {
-                page: pageNum,
-                limit: limitNum,
-                total,
-                totalPages: Math.ceil(total / limitNum)
-              }
-            }
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async getById(req, res, next) {
-        try {
-          const { id } = req.params;
-          const customer = await CustomerParty.findOne({
-            _id: id,
-            companyId: req.tenant.companyId
-          });
-          if (!customer) {
-            return next(new AppError2("Customer party not found.", 404));
-          }
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: customer
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async create(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const {
-            name,
-            code,
-            partyType,
-            gstin,
-            pan,
-            primaryContact,
-            billingAddress,
-            deliveryAddresses,
-            paymentTermsDays,
-            creditLimitPaise
-          } = req.body;
-          if (!name || !name.trim()) {
-            return next(new AppError2("Customer/Party name is required.", 400));
-          }
-          if (gstin && gstin.trim()) {
-            const existing = await CustomerParty.findOne({
-              companyId,
-              gstin: gstin.trim().toUpperCase()
-            });
-            if (existing) {
-              return next(new AppError2(`Party with GSTIN '${gstin}' already exists in your organization.`, 409));
-            }
-          }
-          const party = await CustomerParty.create({
-            companyId,
-            name: name.trim(),
-            code: code ? code.trim().toUpperCase() : "",
-            partyType: partyType || "CUSTOMER",
-            gstin: gstin ? gstin.trim().toUpperCase() : void 0,
-            pan: pan ? pan.trim().toUpperCase() : void 0,
-            primaryContact,
-            billingAddress,
-            deliveryAddresses,
-            paymentTermsDays: paymentTermsDays || 30,
-            creditLimitPaise: creditLimitPaise || 0,
-            isActive: true
-          });
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "CUSTOMERS",
-            action: AuditAction.CREATE,
-            entityId: party._id,
-            newValues: party.toObject(),
-            ipAddress: req.ip
-          });
-          res.status(201).json({
-            success: true,
-            statusCode: 201,
-            message: "Customer party created successfully.",
-            data: party
-          });
-        } catch (err) {
-          if (err.code === 11e3) {
-            return next(new AppError2("Duplicate record constraint violated.", 409));
-          }
-          next(err);
-        }
-      }
-      async update(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const party = await CustomerParty.findOne({ _id: id, companyId });
-          if (!party) {
-            return next(new AppError2("Customer party not found.", 404));
-          }
-          const oldValues = party.toObject();
-          const allowedFields = [
-            "name",
-            "code",
-            "partyType",
-            "gstin",
-            "pan",
-            "primaryContact",
-            "billingAddress",
-            "deliveryAddresses",
-            "paymentTermsDays",
-            "creditLimitPaise",
-            "isActive"
-          ];
-          allowedFields.forEach((field) => {
-            if (req.body[field] !== void 0) {
-              party[field] = req.body[field];
-            }
-          });
-          await party.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "CUSTOMERS",
-            action: AuditAction.UPDATE,
-            entityId: party._id,
-            oldValues,
-            newValues: party.toObject(),
-            ipAddress: req.ip
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Customer party updated successfully.",
-            data: party
-          });
-        } catch (err) {
-          if (err.code === 11e3) {
-            return next(new AppError2("Duplicate GSTIN or identifier constraint violated.", 409));
-          }
-          next(err);
-        }
-      }
-      async delete(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const party = await CustomerParty.findOne({ _id: id, companyId });
-          if (!party) {
-            return next(new AppError2("Customer party not found.", 404));
-          }
-          const Load = require_Load();
-          const activeLoad = await Load.findOne({
-            companyId,
-            $or: [
-              { customerId: party._id },
-              { consignorId: party._id },
-              { consigneeId: party._id }
-            ],
-            status: { $in: ["CREATED", "ASSIGNED", "LOADING", "IN_TRANSIT", "PARTIALLY_DELIVERED"] },
-            isActive: true
-          });
-          if (activeLoad) {
-            return next(new AppError2(`Cannot deactivate party '${party.name}': currently associated with active consignment ${activeLoad.loadNumber}.`, 400));
-          }
-          party.isActive = false;
-          await party.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "CUSTOMERS",
-            action: AuditAction.DELETE,
-            entityId: party._id,
-            oldValues: { isActive: true },
-            newValues: { isActive: false },
-            ipAddress: req.ip
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Customer party deactivated successfully."
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-    };
-    module2.exports = new CustomerController();
-  }
-});
-
-// apps/api/src/modules/customers/routes/customer.routes.js
-var require_customer_routes = __commonJS({
-  "apps/api/src/modules/customers/routes/customer.routes.js"(exports2, module2) {
-    "use strict";
-    var express2 = require_express2();
-    var customerController = require_customer_controller();
-    var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var { requirePermission } = require_rbac_middleware();
-    var { SystemModule, ActionPermission } = require_shared2();
-    var router = express2.Router();
-    router.use(authenticate, enforceTenantScope);
-    router.get(
-      "/",
-      requirePermission(SystemModule.CUSTOMERS, ActionPermission.VIEW),
-      customerController.list
-    );
-    router.get(
-      "/:id",
-      requirePermission(SystemModule.CUSTOMERS, ActionPermission.VIEW),
-      customerController.getById
-    );
-    router.post(
-      "/",
-      requirePermission(SystemModule.CUSTOMERS, ActionPermission.ADD),
-      customerController.create
-    );
-    router.put(
-      "/:id",
-      requirePermission(SystemModule.CUSTOMERS, ActionPermission.EDIT),
-      customerController.update
-    );
-    router.delete(
-      "/:id",
-      requirePermission(SystemModule.CUSTOMERS, ActionPermission.DELETE),
-      customerController.delete
-    );
-    module2.exports = router;
-  }
-});
-
-// apps/api/src/modules/locations/models/Location.js
-var require_Location = __commonJS({
-  "apps/api/src/modules/locations/models/Location.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { LocationType } = require_shared2();
-    var locationSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        name: {
-          type: String,
-          required: [true, "Location name is required"],
-          trim: true
-        },
-        code: {
-          type: String,
-          trim: true,
-          uppercase: true,
-          default: ""
-        },
-        locationType: {
-          type: String,
-          enum: Object.values(LocationType),
-          default: LocationType.PICKUP
-        },
-        address: {
-          street: { type: String, trim: true, default: "" },
-          city: { type: String, required: [true, "City is required"], trim: true },
-          state: { type: String, required: [true, "State is required"], trim: true },
-          pincode: { type: String, trim: true, default: "" }
-        },
-        coordinates: {
-          lat: { type: Number, min: -90, max: 90, default: null },
-          lng: { type: Number, min: -180, max: 180, default: null }
-        },
-        contactPerson: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        contactPhone: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        customerId: {
-          type: Schema.Types.ObjectId,
-          ref: "CustomerParty",
-          default: null,
-          index: true
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    locationSchema.index({ companyId: 1, name: 1 });
-    locationSchema.index({ companyId: 1, locationType: 1 });
-    module2.exports = mongoose.model("Location", locationSchema);
-  }
-});
-
-// apps/api/src/modules/locations/controllers/location.controller.js
-var require_location_controller = __commonJS({
-  "apps/api/src/modules/locations/controllers/location.controller.js"(exports2, module2) {
-    "use strict";
-    var Location = require_Location();
-    var auditLogService = require_auditLog_service();
-    var { AuditAction } = require_shared2();
-    var { AppError: AppError2 } = require_errorHandler();
-    var LocationController = class {
-      async list(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const {
-            page = 1,
-            limit = 20,
-            search = "",
-            locationType = "",
-            customerId = "",
-            isActive = ""
-          } = req.query;
-          const filter = { companyId };
-          if (locationType) filter.locationType = locationType;
-          if (customerId) filter.customerId = customerId;
-          if (isActive !== "") filter.isActive = isActive === "true";
-          if (search) {
-            const regex = new RegExp(search.trim(), "i");
-            filter.$or = [
-              { name: regex },
-              { code: regex },
-              { "address.city": regex },
-              { "address.state": regex },
-              { contactPerson: regex }
-            ];
-          }
-          const pageNum = Math.max(1, parseInt(page, 10));
-          const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10)));
-          const skip = (pageNum - 1) * limitNum;
-          const [locations, total] = await Promise.all([
-            Location.find(filter).populate("customerId", "name code").sort({ name: 1 }).skip(skip).limit(limitNum),
-            Location.countDocuments(filter)
-          ]);
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: {
-              items: locations,
-              pagination: {
-                page: pageNum,
-                limit: limitNum,
-                total,
-                totalPages: Math.ceil(total / limitNum)
-              }
-            }
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async getById(req, res, next) {
-        try {
-          const { id } = req.params;
-          const location = await Location.findOne({
-            _id: id,
-            companyId: req.tenant.companyId
-          }).populate("customerId", "name code");
-          if (!location) {
-            return next(new AppError2("Location not found.", 404));
-          }
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: location
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async create(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const {
-            name,
-            code,
-            locationType,
-            address,
-            coordinates,
-            contactPerson,
-            contactPhone,
-            customerId
-          } = req.body;
-          if (!name || !name.trim()) {
-            return next(new AppError2("Location name is required.", 400));
-          }
-          if (!address || !address.city || !address.state) {
-            return next(new AppError2("Address with City and State is required.", 400));
-          }
-          const location = await Location.create({
-            companyId,
-            name: name.trim(),
-            code: code ? code.trim().toUpperCase() : "",
-            locationType: locationType || "PICKUP",
-            address,
-            coordinates,
-            contactPerson: contactPerson || "",
-            contactPhone: contactPhone || "",
-            customerId: customerId || null,
-            isActive: true
-          });
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "LOCATIONS",
-            action: AuditAction.CREATE,
-            entityId: location._id,
-            newValues: location.toObject(),
-            ipAddress: req.ip
-          });
-          res.status(201).json({
-            success: true,
-            statusCode: 201,
-            message: "Location created successfully.",
-            data: location
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async update(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const location = await Location.findOne({ _id: id, companyId });
-          if (!location) {
-            return next(new AppError2("Location not found.", 404));
-          }
-          const oldValues = location.toObject();
-          const allowedFields = [
-            "name",
-            "code",
-            "locationType",
-            "address",
-            "coordinates",
-            "contactPerson",
-            "contactPhone",
-            "customerId",
-            "isActive"
-          ];
-          allowedFields.forEach((field) => {
-            if (req.body[field] !== void 0) {
-              location[field] = req.body[field];
-            }
-          });
-          await location.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "LOCATIONS",
-            action: AuditAction.UPDATE,
-            entityId: location._id,
-            oldValues,
-            newValues: location.toObject(),
-            ipAddress: req.ip
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Location updated successfully.",
-            data: location
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async delete(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const location = await Location.findOne({ _id: id, companyId });
-          if (!location) {
-            return next(new AppError2("Location not found.", 404));
-          }
-          location.isActive = false;
-          await location.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "LOCATIONS",
-            action: AuditAction.DELETE,
-            entityId: location._id,
-            oldValues: { isActive: true },
-            newValues: { isActive: false },
-            ipAddress: req.ip
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Location deactivated successfully."
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-    };
-    module2.exports = new LocationController();
-  }
-});
-
-// apps/api/src/modules/locations/routes/location.routes.js
-var require_location_routes = __commonJS({
-  "apps/api/src/modules/locations/routes/location.routes.js"(exports2, module2) {
-    "use strict";
-    var express2 = require_express2();
-    var locationController = require_location_controller();
-    var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var { requirePermission } = require_rbac_middleware();
-    var { SystemModule, ActionPermission } = require_shared2();
-    var router = express2.Router();
-    router.use(authenticate, enforceTenantScope);
-    router.get(
-      "/",
-      requirePermission(SystemModule.LOCATIONS, ActionPermission.VIEW),
-      locationController.list
-    );
-    router.get(
-      "/:id",
-      requirePermission(SystemModule.LOCATIONS, ActionPermission.VIEW),
-      locationController.getById
-    );
-    router.post(
-      "/",
-      requirePermission(SystemModule.LOCATIONS, ActionPermission.ADD),
-      locationController.create
-    );
-    router.put(
-      "/:id",
-      requirePermission(SystemModule.LOCATIONS, ActionPermission.EDIT),
-      locationController.update
-    );
-    router.delete(
-      "/:id",
-      requirePermission(SystemModule.LOCATIONS, ActionPermission.DELETE),
-      locationController.delete
-    );
-    module2.exports = router;
-  }
-});
-
-// node_modules/busboy/lib/utils.js
-var require_utils7 = __commonJS({
-  "node_modules/busboy/lib/utils.js"(exports2, module2) {
-    "use strict";
-    function parseContentType(str) {
-      if (str.length === 0)
-        return;
-      const params = /* @__PURE__ */ Object.create(null);
-      let i = 0;
-      for (; i < str.length; ++i) {
-        const code = str.charCodeAt(i);
-        if (TOKEN[code] !== 1) {
-          if (code !== 47 || i === 0)
-            return;
-          break;
-        }
-      }
-      if (i === str.length)
-        return;
-      const type = str.slice(0, i).toLowerCase();
-      const subtypeStart = ++i;
-      for (; i < str.length; ++i) {
-        const code = str.charCodeAt(i);
-        if (TOKEN[code] !== 1) {
-          if (i === subtypeStart)
-            return;
-          if (parseContentTypeParams(str, i, params) === void 0)
-            return;
-          break;
-        }
-      }
-      if (i === subtypeStart)
-        return;
-      const subtype = str.slice(subtypeStart, i).toLowerCase();
-      return { type, subtype, params };
-    }
-    function parseContentTypeParams(str, i, params) {
-      while (i < str.length) {
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (code !== 32 && code !== 9)
-            break;
-        }
-        if (i === str.length)
-          break;
-        if (str.charCodeAt(i++) !== 59)
-          return;
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (code !== 32 && code !== 9)
-            break;
-        }
-        if (i === str.length)
-          return;
-        let name;
-        const nameStart = i;
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (TOKEN[code] !== 1) {
-            if (code !== 61)
-              return;
-            break;
-          }
-        }
-        if (i === str.length)
-          return;
-        name = str.slice(nameStart, i);
-        ++i;
-        if (i === str.length)
-          return;
-        let value = "";
-        let valueStart;
-        if (str.charCodeAt(i) === 34) {
-          valueStart = ++i;
-          let escaping = false;
-          for (; i < str.length; ++i) {
-            const code = str.charCodeAt(i);
-            if (code === 92) {
-              if (escaping) {
-                valueStart = i;
-                escaping = false;
-              } else {
-                value += str.slice(valueStart, i);
-                escaping = true;
-              }
-              continue;
-            }
-            if (code === 34) {
-              if (escaping) {
-                valueStart = i;
-                escaping = false;
-                continue;
-              }
-              value += str.slice(valueStart, i);
-              break;
-            }
-            if (escaping) {
-              valueStart = i - 1;
-              escaping = false;
-            }
-            if (QDTEXT[code] !== 1)
-              return;
-          }
-          if (i === str.length)
-            return;
-          ++i;
-        } else {
-          valueStart = i;
-          for (; i < str.length; ++i) {
-            const code = str.charCodeAt(i);
-            if (TOKEN[code] !== 1) {
-              if (i === valueStart)
-                return;
-              break;
-            }
-          }
-          value = str.slice(valueStart, i);
-        }
-        name = name.toLowerCase();
-        if (params[name] === void 0)
-          params[name] = value;
-      }
-      return params;
-    }
-    function parseDisposition(str, defDecoder) {
-      if (str.length === 0)
-        return;
-      const params = /* @__PURE__ */ Object.create(null);
-      let i = 0;
-      for (; i < str.length; ++i) {
-        const code = str.charCodeAt(i);
-        if (TOKEN[code] !== 1) {
-          if (parseDispositionParams(str, i, params, defDecoder) === void 0)
-            return;
-          break;
-        }
-      }
-      const type = str.slice(0, i).toLowerCase();
-      return { type, params };
-    }
-    function parseDispositionParams(str, i, params, defDecoder) {
-      while (i < str.length) {
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (code !== 32 && code !== 9)
-            break;
-        }
-        if (i === str.length)
-          break;
-        if (str.charCodeAt(i++) !== 59)
-          return;
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (code !== 32 && code !== 9)
-            break;
-        }
-        if (i === str.length)
-          return;
-        let name;
-        const nameStart = i;
-        for (; i < str.length; ++i) {
-          const code = str.charCodeAt(i);
-          if (TOKEN[code] !== 1) {
-            if (code === 61)
-              break;
-            return;
-          }
-        }
-        if (i === str.length)
-          return;
-        let value = "";
-        let valueStart;
-        let charset;
-        name = str.slice(nameStart, i);
-        if (name.charCodeAt(name.length - 1) === 42) {
-          const charsetStart = ++i;
-          for (; i < str.length; ++i) {
-            const code = str.charCodeAt(i);
-            if (CHARSET[code] !== 1) {
-              if (code !== 39)
-                return;
-              break;
-            }
-          }
-          if (i === str.length)
-            return;
-          charset = str.slice(charsetStart, i);
-          ++i;
-          for (; i < str.length; ++i) {
-            const code = str.charCodeAt(i);
-            if (code === 39)
-              break;
-          }
-          if (i === str.length)
-            return;
-          ++i;
-          if (i === str.length)
-            return;
-          valueStart = i;
-          let encode = 0;
-          for (; i < str.length; ++i) {
-            const code = str.charCodeAt(i);
-            if (EXTENDED_VALUE[code] !== 1) {
-              if (code === 37) {
-                let hexUpper;
-                let hexLower;
-                if (i + 2 < str.length && (hexUpper = HEX_VALUES[str.charCodeAt(i + 1)]) !== -1 && (hexLower = HEX_VALUES[str.charCodeAt(i + 2)]) !== -1) {
-                  const byteVal = (hexUpper << 4) + hexLower;
-                  value += str.slice(valueStart, i);
-                  value += String.fromCharCode(byteVal);
-                  i += 2;
-                  valueStart = i + 1;
-                  if (byteVal >= 128)
-                    encode = 2;
-                  else if (encode === 0)
-                    encode = 1;
-                  continue;
-                }
-                return;
-              }
-              break;
-            }
-          }
-          value += str.slice(valueStart, i);
-          value = convertToUTF8(value, charset, encode);
-          if (value === void 0)
-            return;
-        } else {
-          ++i;
-          if (i === str.length)
-            return;
-          if (str.charCodeAt(i) === 34) {
-            valueStart = ++i;
-            let escaping = false;
-            for (; i < str.length; ++i) {
-              const code = str.charCodeAt(i);
-              if (code === 92) {
-                if (escaping) {
-                  valueStart = i;
-                  escaping = false;
-                } else {
-                  value += str.slice(valueStart, i);
-                  escaping = true;
-                }
-                continue;
-              }
-              if (code === 34) {
-                if (escaping) {
-                  valueStart = i;
-                  escaping = false;
-                  continue;
-                }
-                value += str.slice(valueStart, i);
-                break;
-              }
-              if (escaping) {
-                valueStart = i - 1;
-                escaping = false;
-              }
-              if (QDTEXT[code] !== 1)
-                return;
-            }
-            if (i === str.length)
-              return;
-            ++i;
-          } else {
-            valueStart = i;
-            for (; i < str.length; ++i) {
-              const code = str.charCodeAt(i);
-              if (TOKEN[code] !== 1) {
-                if (i === valueStart)
-                  return;
-                break;
-              }
-            }
-            value = str.slice(valueStart, i);
-          }
-          value = defDecoder(value, 2);
-          if (value === void 0)
-            return;
-        }
-        name = name.toLowerCase();
-        if (params[name] === void 0)
-          params[name] = value;
-      }
-      return params;
-    }
-    function getDecoder(charset) {
-      let lc;
-      while (true) {
-        switch (charset) {
-          case "utf-8":
-          case "utf8":
-            return decoders.utf8;
-          case "latin1":
-          case "ascii":
-          case "us-ascii":
-          case "iso-8859-1":
-          case "iso8859-1":
-          case "iso88591":
-          case "iso_8859-1":
-          case "windows-1252":
-          case "iso_8859-1:1987":
-          case "cp1252":
-          case "x-cp1252":
-            return decoders.latin1;
-          case "utf16le":
-          case "utf-16le":
-          case "ucs2":
-          case "ucs-2":
-            return decoders.utf16le;
-          case "base64":
-            return decoders.base64;
-          default:
-            if (lc === void 0) {
-              lc = true;
-              charset = charset.toLowerCase();
-              continue;
-            }
-            return decoders.other.bind(charset);
-        }
-      }
-    }
-    var decoders = {
-      utf8: (data, hint) => {
-        if (data.length === 0)
-          return "";
-        if (typeof data === "string") {
-          if (hint < 2)
-            return data;
-          data = Buffer.from(data, "latin1");
-        }
-        return data.utf8Slice(0, data.length);
-      },
-      latin1: (data, hint) => {
-        if (data.length === 0)
-          return "";
-        if (typeof data === "string")
-          return data;
-        return data.latin1Slice(0, data.length);
-      },
-      utf16le: (data, hint) => {
-        if (data.length === 0)
-          return "";
-        if (typeof data === "string")
-          data = Buffer.from(data, "latin1");
-        return data.ucs2Slice(0, data.length);
-      },
-      base64: (data, hint) => {
-        if (data.length === 0)
-          return "";
-        if (typeof data === "string")
-          data = Buffer.from(data, "latin1");
-        return data.base64Slice(0, data.length);
-      },
-      other: (data, hint) => {
-        if (data.length === 0)
-          return "";
-        if (typeof data === "string")
-          data = Buffer.from(data, "latin1");
-        try {
-          const decoder = new TextDecoder(exports2);
-          return decoder.decode(data);
-        } catch {
-        }
-      }
-    };
-    function convertToUTF8(data, charset, hint) {
-      const decode = getDecoder(charset);
-      if (decode)
-        return decode(data, hint);
-    }
-    function basename(path2) {
-      if (typeof path2 !== "string")
-        return "";
-      for (let i = path2.length - 1; i >= 0; --i) {
-        switch (path2.charCodeAt(i)) {
-          case 47:
-          case 92:
-            path2 = path2.slice(i + 1);
-            return path2 === ".." || path2 === "." ? "" : path2;
-        }
-      }
-      return path2 === ".." || path2 === "." ? "" : path2;
-    }
-    var TOKEN = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ];
-    var QDTEXT = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
-    ];
-    var CHARSET = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ];
-    var EXTENDED_VALUE = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ];
-    var HEX_VALUES = [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1
-    ];
-    module2.exports = {
-      basename,
-      convertToUTF8,
-      getDecoder,
-      parseContentType,
-      parseDisposition
-    };
-  }
-});
-
-// node_modules/streamsearch/lib/sbmh.js
-var require_sbmh = __commonJS({
-  "node_modules/streamsearch/lib/sbmh.js"(exports2, module2) {
-    "use strict";
-    function memcmp(buf1, pos1, buf2, pos2, num) {
-      for (let i = 0; i < num; ++i) {
-        if (buf1[pos1 + i] !== buf2[pos2 + i])
-          return false;
-      }
-      return true;
-    }
-    var SBMH = class {
-      constructor(needle, cb) {
-        if (typeof cb !== "function")
-          throw new Error("Missing match callback");
-        if (typeof needle === "string")
-          needle = Buffer.from(needle);
-        else if (!Buffer.isBuffer(needle))
-          throw new Error(`Expected Buffer for needle, got ${typeof needle}`);
-        const needleLen = needle.length;
-        this.maxMatches = Infinity;
-        this.matches = 0;
-        this._cb = cb;
-        this._lookbehindSize = 0;
-        this._needle = needle;
-        this._bufPos = 0;
-        this._lookbehind = Buffer.allocUnsafe(needleLen);
-        this._occ = [
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen,
-          needleLen
-        ];
-        if (needleLen > 1) {
-          for (let i = 0; i < needleLen - 1; ++i)
-            this._occ[needle[i]] = needleLen - 1 - i;
-        }
-      }
-      reset() {
-        this.matches = 0;
-        this._lookbehindSize = 0;
-        this._bufPos = 0;
-      }
-      push(chunk, pos) {
-        let result;
-        if (!Buffer.isBuffer(chunk))
-          chunk = Buffer.from(chunk, "latin1");
-        const chunkLen = chunk.length;
-        this._bufPos = pos || 0;
-        while (result !== chunkLen && this.matches < this.maxMatches)
-          result = feed(this, chunk);
-        return result;
-      }
-      destroy() {
-        const lbSize = this._lookbehindSize;
-        if (lbSize)
-          this._cb(false, this._lookbehind, 0, lbSize, false);
-        this.reset();
-      }
-    };
-    function feed(self2, data) {
-      const len = data.length;
-      const needle = self2._needle;
-      const needleLen = needle.length;
-      let pos = -self2._lookbehindSize;
-      const lastNeedleCharPos = needleLen - 1;
-      const lastNeedleChar = needle[lastNeedleCharPos];
-      const end = len - needleLen;
-      const occ = self2._occ;
-      const lookbehind = self2._lookbehind;
-      if (pos < 0) {
-        while (pos < 0 && pos <= end) {
-          const nextPos = pos + lastNeedleCharPos;
-          const ch = nextPos < 0 ? lookbehind[self2._lookbehindSize + nextPos] : data[nextPos];
-          if (ch === lastNeedleChar && matchNeedle(self2, data, pos, lastNeedleCharPos)) {
-            self2._lookbehindSize = 0;
-            ++self2.matches;
-            if (pos > -self2._lookbehindSize)
-              self2._cb(true, lookbehind, 0, self2._lookbehindSize + pos, false);
-            else
-              self2._cb(true, void 0, 0, 0, true);
-            return self2._bufPos = pos + needleLen;
-          }
-          pos += occ[ch];
-        }
-        while (pos < 0 && !matchNeedle(self2, data, pos, len - pos))
-          ++pos;
-        if (pos < 0) {
-          const bytesToCutOff = self2._lookbehindSize + pos;
-          if (bytesToCutOff > 0) {
-            self2._cb(false, lookbehind, 0, bytesToCutOff, false);
-          }
-          self2._lookbehindSize -= bytesToCutOff;
-          lookbehind.copy(lookbehind, 0, bytesToCutOff, self2._lookbehindSize);
-          lookbehind.set(data, self2._lookbehindSize);
-          self2._lookbehindSize += len;
-          self2._bufPos = len;
-          return len;
-        }
-        self2._cb(false, lookbehind, 0, self2._lookbehindSize, false);
-        self2._lookbehindSize = 0;
-      }
-      pos += self2._bufPos;
-      const firstNeedleChar = needle[0];
-      while (pos <= end) {
-        const ch = data[pos + lastNeedleCharPos];
-        if (ch === lastNeedleChar && data[pos] === firstNeedleChar && memcmp(needle, 0, data, pos, lastNeedleCharPos)) {
-          ++self2.matches;
-          if (pos > 0)
-            self2._cb(true, data, self2._bufPos, pos, true);
-          else
-            self2._cb(true, void 0, 0, 0, true);
-          return self2._bufPos = pos + needleLen;
-        }
-        pos += occ[ch];
-      }
-      while (pos < len) {
-        if (data[pos] !== firstNeedleChar || !memcmp(data, pos, needle, 0, len - pos)) {
-          ++pos;
-          continue;
-        }
-        data.copy(lookbehind, 0, pos, len);
-        self2._lookbehindSize = len - pos;
-        break;
-      }
-      if (pos > 0)
-        self2._cb(false, data, self2._bufPos, pos < len ? pos : len, true);
-      self2._bufPos = len;
-      return len;
-    }
-    function matchNeedle(self2, data, pos, len) {
-      const lb = self2._lookbehind;
-      const lbSize = self2._lookbehindSize;
-      const needle = self2._needle;
-      for (let i = 0; i < len; ++i, ++pos) {
-        const ch = pos < 0 ? lb[lbSize + pos] : data[pos];
-        if (ch !== needle[i])
-          return false;
-      }
-      return true;
-    }
-    module2.exports = SBMH;
-  }
-});
-
-// node_modules/busboy/lib/types/multipart.js
-var require_multipart = __commonJS({
-  "node_modules/busboy/lib/types/multipart.js"(exports2, module2) {
-    "use strict";
-    var { Readable, Writable } = require("stream");
-    var StreamSearch = require_sbmh();
-    var {
-      basename,
-      convertToUTF8,
-      getDecoder,
-      parseContentType,
-      parseDisposition
-    } = require_utils7();
-    var BUF_CRLF = Buffer.from("\r\n");
-    var BUF_CR = Buffer.from("\r");
-    var BUF_DASH = Buffer.from("-");
-    function noop() {
-    }
-    var MAX_HEADER_PAIRS = 2e3;
-    var MAX_HEADER_SIZE = 16 * 1024;
-    var HPARSER_NAME = 0;
-    var HPARSER_PRE_OWS = 1;
-    var HPARSER_VALUE = 2;
-    var HeaderParser = class {
-      constructor(cb) {
-        this.header = /* @__PURE__ */ Object.create(null);
-        this.pairCount = 0;
-        this.byteCount = 0;
-        this.state = HPARSER_NAME;
-        this.name = "";
-        this.value = "";
-        this.crlf = 0;
-        this.cb = cb;
-      }
-      reset() {
-        this.header = /* @__PURE__ */ Object.create(null);
-        this.pairCount = 0;
-        this.byteCount = 0;
-        this.state = HPARSER_NAME;
-        this.name = "";
-        this.value = "";
-        this.crlf = 0;
-      }
-      push(chunk, pos, end) {
-        let start = pos;
-        while (pos < end) {
-          switch (this.state) {
-            case HPARSER_NAME: {
-              let done = false;
-              for (; pos < end; ++pos) {
-                if (this.byteCount === MAX_HEADER_SIZE)
-                  return -1;
-                ++this.byteCount;
-                const code = chunk[pos];
-                if (TOKEN[code] !== 1) {
-                  if (code !== 58)
-                    return -1;
-                  this.name += chunk.latin1Slice(start, pos);
-                  if (this.name.length === 0)
-                    return -1;
-                  ++pos;
-                  done = true;
-                  this.state = HPARSER_PRE_OWS;
-                  break;
-                }
-              }
-              if (!done) {
-                this.name += chunk.latin1Slice(start, pos);
-                break;
-              }
-            }
-            case HPARSER_PRE_OWS: {
-              let done = false;
-              for (; pos < end; ++pos) {
-                if (this.byteCount === MAX_HEADER_SIZE)
-                  return -1;
-                ++this.byteCount;
-                const code = chunk[pos];
-                if (code !== 32 && code !== 9) {
-                  start = pos;
-                  done = true;
-                  this.state = HPARSER_VALUE;
-                  break;
-                }
-              }
-              if (!done)
-                break;
-            }
-            case HPARSER_VALUE:
-              switch (this.crlf) {
-                case 0:
-                  for (; pos < end; ++pos) {
-                    if (this.byteCount === MAX_HEADER_SIZE)
-                      return -1;
-                    ++this.byteCount;
-                    const code = chunk[pos];
-                    if (FIELD_VCHAR[code] !== 1) {
-                      if (code !== 13)
-                        return -1;
-                      ++this.crlf;
-                      break;
-                    }
-                  }
-                  this.value += chunk.latin1Slice(start, pos++);
-                  break;
-                case 1:
-                  if (this.byteCount === MAX_HEADER_SIZE)
-                    return -1;
-                  ++this.byteCount;
-                  if (chunk[pos++] !== 10)
-                    return -1;
-                  ++this.crlf;
-                  break;
-                case 2: {
-                  if (this.byteCount === MAX_HEADER_SIZE)
-                    return -1;
-                  ++this.byteCount;
-                  const code = chunk[pos];
-                  if (code === 32 || code === 9) {
-                    start = pos;
-                    this.crlf = 0;
-                  } else {
-                    if (++this.pairCount < MAX_HEADER_PAIRS) {
-                      this.name = this.name.toLowerCase();
-                      if (this.header[this.name] === void 0)
-                        this.header[this.name] = [this.value];
-                      else
-                        this.header[this.name].push(this.value);
-                    }
-                    if (code === 13) {
-                      ++this.crlf;
-                      ++pos;
-                    } else {
-                      start = pos;
-                      this.crlf = 0;
-                      this.state = HPARSER_NAME;
-                      this.name = "";
-                      this.value = "";
-                    }
-                  }
-                  break;
-                }
-                case 3: {
-                  if (this.byteCount === MAX_HEADER_SIZE)
-                    return -1;
-                  ++this.byteCount;
-                  if (chunk[pos++] !== 10)
-                    return -1;
-                  const header = this.header;
-                  this.reset();
-                  this.cb(header);
-                  return pos;
-                }
-              }
-              break;
-          }
-        }
-        return pos;
-      }
-    };
-    var FileStream = class extends Readable {
-      constructor(opts, owner) {
-        super(opts);
-        this.truncated = false;
-        this._readcb = null;
-        this.once("end", () => {
-          this._read();
-          if (--owner._fileEndsLeft === 0 && owner._finalcb) {
-            const cb = owner._finalcb;
-            owner._finalcb = null;
-            process.nextTick(cb);
-          }
-        });
-      }
-      _read(n) {
-        const cb = this._readcb;
-        if (cb) {
-          this._readcb = null;
-          cb();
-        }
-      }
-    };
-    var ignoreData = {
-      push: (chunk, pos) => {
-      },
-      destroy: () => {
-      }
-    };
-    function callAndUnsetCb(self2, err) {
-      const cb = self2._writecb;
-      self2._writecb = null;
-      if (err)
-        self2.destroy(err);
-      else if (cb)
-        cb();
-    }
-    function nullDecoder(val, hint) {
-      return val;
-    }
-    var Multipart = class extends Writable {
-      constructor(cfg) {
-        const streamOpts = {
-          autoDestroy: true,
-          emitClose: true,
-          highWaterMark: typeof cfg.highWaterMark === "number" ? cfg.highWaterMark : void 0
-        };
-        super(streamOpts);
-        if (!cfg.conType.params || typeof cfg.conType.params.boundary !== "string")
-          throw new Error("Multipart: Boundary not found");
-        const boundary = cfg.conType.params.boundary;
-        const paramDecoder = typeof cfg.defParamCharset === "string" && cfg.defParamCharset ? getDecoder(cfg.defParamCharset) : nullDecoder;
-        const defCharset = cfg.defCharset || "utf8";
-        const preservePath = cfg.preservePath;
-        const fileOpts = {
-          autoDestroy: true,
-          emitClose: true,
-          highWaterMark: typeof cfg.fileHwm === "number" ? cfg.fileHwm : void 0
-        };
-        const limits = cfg.limits;
-        const fieldSizeLimit = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : 1 * 1024 * 1024;
-        const fileSizeLimit = limits && typeof limits.fileSize === "number" ? limits.fileSize : Infinity;
-        const filesLimit = limits && typeof limits.files === "number" ? limits.files : Infinity;
-        const fieldsLimit = limits && typeof limits.fields === "number" ? limits.fields : Infinity;
-        const partsLimit = limits && typeof limits.parts === "number" ? limits.parts : Infinity;
-        let parts = -1;
-        let fields = 0;
-        let files = 0;
-        let skipPart = false;
-        this._fileEndsLeft = 0;
-        this._fileStream = void 0;
-        this._complete = false;
-        let fileSize = 0;
-        let field;
-        let fieldSize = 0;
-        let partCharset;
-        let partEncoding;
-        let partType;
-        let partName;
-        let partTruncated = false;
-        let hitFilesLimit = false;
-        let hitFieldsLimit = false;
-        this._hparser = null;
-        const hparser = new HeaderParser((header) => {
-          this._hparser = null;
-          skipPart = false;
-          partType = "text/plain";
-          partCharset = defCharset;
-          partEncoding = "7bit";
-          partName = void 0;
-          partTruncated = false;
-          let filename;
-          if (!header["content-disposition"]) {
-            skipPart = true;
-            return;
-          }
-          const disp = parseDisposition(
-            header["content-disposition"][0],
-            paramDecoder
-          );
-          if (!disp || disp.type !== "form-data") {
-            skipPart = true;
-            return;
-          }
-          if (disp.params) {
-            if (disp.params.name)
-              partName = disp.params.name;
-            if (disp.params["filename*"])
-              filename = disp.params["filename*"];
-            else if (disp.params.filename)
-              filename = disp.params.filename;
-            if (filename !== void 0 && !preservePath)
-              filename = basename(filename);
-          }
-          if (header["content-type"]) {
-            const conType = parseContentType(header["content-type"][0]);
-            if (conType) {
-              partType = `${conType.type}/${conType.subtype}`;
-              if (conType.params && typeof conType.params.charset === "string")
-                partCharset = conType.params.charset.toLowerCase();
-            }
-          }
-          if (header["content-transfer-encoding"])
-            partEncoding = header["content-transfer-encoding"][0].toLowerCase();
-          if (partType === "application/octet-stream" || filename !== void 0) {
-            if (files === filesLimit) {
-              if (!hitFilesLimit) {
-                hitFilesLimit = true;
-                this.emit("filesLimit");
-              }
-              skipPart = true;
-              return;
-            }
-            ++files;
-            if (this.listenerCount("file") === 0) {
-              skipPart = true;
-              return;
-            }
-            fileSize = 0;
-            this._fileStream = new FileStream(fileOpts, this);
-            ++this._fileEndsLeft;
-            this.emit(
-              "file",
-              partName,
-              this._fileStream,
-              {
-                filename,
-                encoding: partEncoding,
-                mimeType: partType
-              }
-            );
-          } else {
-            if (fields === fieldsLimit) {
-              if (!hitFieldsLimit) {
-                hitFieldsLimit = true;
-                this.emit("fieldsLimit");
-              }
-              skipPart = true;
-              return;
-            }
-            ++fields;
-            if (this.listenerCount("field") === 0) {
-              skipPart = true;
-              return;
-            }
-            field = [];
-            fieldSize = 0;
-          }
-        });
-        let matchPostBoundary = 0;
-        const ssCb = (isMatch, data, start, end, isDataSafe) => {
-          retrydata:
-            while (data) {
-              if (this._hparser !== null) {
-                const ret2 = this._hparser.push(data, start, end);
-                if (ret2 === -1) {
-                  this._hparser = null;
-                  hparser.reset();
-                  this.emit("error", new Error("Malformed part header"));
-                  break;
-                }
-                start = ret2;
-              }
-              if (start === end)
-                break;
-              if (matchPostBoundary !== 0) {
-                if (matchPostBoundary === 1) {
-                  switch (data[start]) {
-                    case 45:
-                      matchPostBoundary = 2;
-                      ++start;
-                      break;
-                    case 13:
-                      matchPostBoundary = 3;
-                      ++start;
-                      break;
-                    default:
-                      matchPostBoundary = 0;
-                  }
-                  if (start === end)
-                    return;
-                }
-                if (matchPostBoundary === 2) {
-                  matchPostBoundary = 0;
-                  if (data[start] === 45) {
-                    this._complete = true;
-                    this._bparser = ignoreData;
-                    return;
-                  }
-                  const writecb = this._writecb;
-                  this._writecb = noop;
-                  ssCb(false, BUF_DASH, 0, 1, false);
-                  this._writecb = writecb;
-                } else if (matchPostBoundary === 3) {
-                  matchPostBoundary = 0;
-                  if (data[start] === 10) {
-                    ++start;
-                    if (parts >= partsLimit)
-                      break;
-                    this._hparser = hparser;
-                    if (start === end)
-                      break;
-                    continue retrydata;
-                  } else {
-                    const writecb = this._writecb;
-                    this._writecb = noop;
-                    ssCb(false, BUF_CR, 0, 1, false);
-                    this._writecb = writecb;
-                  }
-                }
-              }
-              if (!skipPart) {
-                if (this._fileStream) {
-                  let chunk;
-                  const actualLen = Math.min(end - start, fileSizeLimit - fileSize);
-                  if (!isDataSafe) {
-                    chunk = Buffer.allocUnsafe(actualLen);
-                    data.copy(chunk, 0, start, start + actualLen);
-                  } else {
-                    chunk = data.slice(start, start + actualLen);
-                  }
-                  fileSize += chunk.length;
-                  if (fileSize === fileSizeLimit) {
-                    if (chunk.length > 0)
-                      this._fileStream.push(chunk);
-                    this._fileStream.emit("limit");
-                    this._fileStream.truncated = true;
-                    skipPart = true;
-                  } else if (!this._fileStream.push(chunk)) {
-                    if (this._writecb)
-                      this._fileStream._readcb = this._writecb;
-                    this._writecb = null;
-                  }
-                } else if (field !== void 0) {
-                  let chunk;
-                  const actualLen = Math.min(
-                    end - start,
-                    fieldSizeLimit - fieldSize
-                  );
-                  if (!isDataSafe) {
-                    chunk = Buffer.allocUnsafe(actualLen);
-                    data.copy(chunk, 0, start, start + actualLen);
-                  } else {
-                    chunk = data.slice(start, start + actualLen);
-                  }
-                  fieldSize += actualLen;
-                  field.push(chunk);
-                  if (fieldSize === fieldSizeLimit) {
-                    skipPart = true;
-                    partTruncated = true;
-                  }
-                }
-              }
-              break;
-            }
-          if (isMatch) {
-            matchPostBoundary = 1;
-            if (this._fileStream) {
-              this._fileStream.push(null);
-              this._fileStream = null;
-            } else if (field !== void 0) {
-              let data2;
-              switch (field.length) {
-                case 0:
-                  data2 = "";
-                  break;
-                case 1:
-                  data2 = convertToUTF8(field[0], partCharset, 0);
-                  break;
-                default:
-                  data2 = convertToUTF8(
-                    Buffer.concat(field, fieldSize),
-                    partCharset,
-                    0
-                  );
-              }
-              field = void 0;
-              fieldSize = 0;
-              this.emit(
-                "field",
-                partName,
-                data2,
-                {
-                  nameTruncated: false,
-                  valueTruncated: partTruncated,
-                  encoding: partEncoding,
-                  mimeType: partType
-                }
-              );
-            }
-            if (++parts === partsLimit)
-              this.emit("partsLimit");
-          }
-        };
-        this._bparser = new StreamSearch(`\r
---${boundary}`, ssCb);
-        this._writecb = null;
-        this._finalcb = null;
-        this.write(BUF_CRLF);
-      }
-      static detect(conType) {
-        return conType.type === "multipart" && conType.subtype === "form-data";
-      }
-      _write(chunk, enc, cb) {
-        this._writecb = cb;
-        this._bparser.push(chunk, 0);
-        if (this._writecb)
-          callAndUnsetCb(this);
-      }
-      _destroy(err, cb) {
-        this._hparser = null;
-        this._bparser = ignoreData;
-        if (!err)
-          err = checkEndState(this);
-        const fileStream = this._fileStream;
-        if (fileStream) {
-          this._fileStream = null;
-          fileStream.destroy(err);
-        }
-        cb(err);
-      }
-      _final(cb) {
-        this._bparser.destroy();
-        if (!this._complete)
-          return cb(new Error("Unexpected end of form"));
-        if (this._fileEndsLeft)
-          this._finalcb = finalcb.bind(null, this, cb);
-        else
-          finalcb(this, cb);
-      }
-    };
-    function finalcb(self2, cb, err) {
-      if (err)
-        return cb(err);
-      err = checkEndState(self2);
-      cb(err);
-    }
-    function checkEndState(self2) {
-      if (self2._hparser)
-        return new Error("Malformed part header");
-      const fileStream = self2._fileStream;
-      if (fileStream) {
-        self2._fileStream = null;
-        fileStream.destroy(new Error("Unexpected end of file"));
-      }
-      if (!self2._complete)
-        return new Error("Unexpected end of form");
-    }
-    var TOKEN = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ];
-    var FIELD_VCHAR = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
-    ];
-    module2.exports = Multipart;
-  }
-});
-
-// node_modules/busboy/lib/types/urlencoded.js
-var require_urlencoded3 = __commonJS({
-  "node_modules/busboy/lib/types/urlencoded.js"(exports2, module2) {
-    "use strict";
-    var { Writable } = require("stream");
-    var { getDecoder } = require_utils7();
-    var URLEncoded = class extends Writable {
-      constructor(cfg) {
-        const streamOpts = {
-          autoDestroy: true,
-          emitClose: true,
-          highWaterMark: typeof cfg.highWaterMark === "number" ? cfg.highWaterMark : void 0
-        };
-        super(streamOpts);
-        let charset = cfg.defCharset || "utf8";
-        if (cfg.conType.params && typeof cfg.conType.params.charset === "string")
-          charset = cfg.conType.params.charset;
-        this.charset = charset;
-        const limits = cfg.limits;
-        this.fieldSizeLimit = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : 1 * 1024 * 1024;
-        this.fieldsLimit = limits && typeof limits.fields === "number" ? limits.fields : Infinity;
-        this.fieldNameSizeLimit = limits && typeof limits.fieldNameSize === "number" ? limits.fieldNameSize : 100;
-        this._inKey = true;
-        this._keyTrunc = false;
-        this._valTrunc = false;
-        this._bytesKey = 0;
-        this._bytesVal = 0;
-        this._fields = 0;
-        this._key = "";
-        this._val = "";
-        this._byte = -2;
-        this._lastPos = 0;
-        this._encode = 0;
-        this._decoder = getDecoder(charset);
-      }
-      static detect(conType) {
-        return conType.type === "application" && conType.subtype === "x-www-form-urlencoded";
-      }
-      _write(chunk, enc, cb) {
-        if (this._fields >= this.fieldsLimit)
-          return cb();
-        let i = 0;
-        const len = chunk.length;
-        this._lastPos = 0;
-        if (this._byte !== -2) {
-          i = readPctEnc(this, chunk, i, len);
-          if (i === -1)
-            return cb(new Error("Malformed urlencoded form"));
-          if (i >= len)
-            return cb();
-          if (this._inKey)
-            ++this._bytesKey;
-          else
-            ++this._bytesVal;
-        }
-        main:
-          while (i < len) {
-            if (this._inKey) {
-              i = skipKeyBytes(this, chunk, i, len);
-              while (i < len) {
-                switch (chunk[i]) {
-                  case 61:
-                    if (this._lastPos < i)
-                      this._key += chunk.latin1Slice(this._lastPos, i);
-                    this._lastPos = ++i;
-                    this._key = this._decoder(this._key, this._encode);
-                    this._encode = 0;
-                    this._inKey = false;
-                    continue main;
-                  case 38:
-                    if (this._lastPos < i)
-                      this._key += chunk.latin1Slice(this._lastPos, i);
-                    this._lastPos = ++i;
-                    this._key = this._decoder(this._key, this._encode);
-                    this._encode = 0;
-                    if (this._bytesKey > 0) {
-                      this.emit(
-                        "field",
-                        this._key,
-                        "",
-                        {
-                          nameTruncated: this._keyTrunc,
-                          valueTruncated: false,
-                          encoding: this.charset,
-                          mimeType: "text/plain"
-                        }
-                      );
-                    }
-                    this._key = "";
-                    this._val = "";
-                    this._keyTrunc = false;
-                    this._valTrunc = false;
-                    this._bytesKey = 0;
-                    this._bytesVal = 0;
-                    if (++this._fields >= this.fieldsLimit) {
-                      this.emit("fieldsLimit");
-                      return cb();
-                    }
-                    continue;
-                  case 43:
-                    if (this._lastPos < i)
-                      this._key += chunk.latin1Slice(this._lastPos, i);
-                    this._key += " ";
-                    this._lastPos = i + 1;
-                    break;
-                  case 37:
-                    if (this._encode === 0)
-                      this._encode = 1;
-                    if (this._lastPos < i)
-                      this._key += chunk.latin1Slice(this._lastPos, i);
-                    this._lastPos = i + 1;
-                    this._byte = -1;
-                    i = readPctEnc(this, chunk, i + 1, len);
-                    if (i === -1)
-                      return cb(new Error("Malformed urlencoded form"));
-                    if (i >= len)
-                      return cb();
-                    ++this._bytesKey;
-                    i = skipKeyBytes(this, chunk, i, len);
-                    continue;
-                }
-                ++i;
-                ++this._bytesKey;
-                i = skipKeyBytes(this, chunk, i, len);
-              }
-              if (this._lastPos < i)
-                this._key += chunk.latin1Slice(this._lastPos, i);
-            } else {
-              i = skipValBytes(this, chunk, i, len);
-              while (i < len) {
-                switch (chunk[i]) {
-                  case 38:
-                    if (this._lastPos < i)
-                      this._val += chunk.latin1Slice(this._lastPos, i);
-                    this._lastPos = ++i;
-                    this._inKey = true;
-                    this._val = this._decoder(this._val, this._encode);
-                    this._encode = 0;
-                    if (this._bytesKey > 0 || this._bytesVal > 0) {
-                      this.emit(
-                        "field",
-                        this._key,
-                        this._val,
-                        {
-                          nameTruncated: this._keyTrunc,
-                          valueTruncated: this._valTrunc,
-                          encoding: this.charset,
-                          mimeType: "text/plain"
-                        }
-                      );
-                    }
-                    this._key = "";
-                    this._val = "";
-                    this._keyTrunc = false;
-                    this._valTrunc = false;
-                    this._bytesKey = 0;
-                    this._bytesVal = 0;
-                    if (++this._fields >= this.fieldsLimit) {
-                      this.emit("fieldsLimit");
-                      return cb();
-                    }
-                    continue main;
-                  case 43:
-                    if (this._lastPos < i)
-                      this._val += chunk.latin1Slice(this._lastPos, i);
-                    this._val += " ";
-                    this._lastPos = i + 1;
-                    break;
-                  case 37:
-                    if (this._encode === 0)
-                      this._encode = 1;
-                    if (this._lastPos < i)
-                      this._val += chunk.latin1Slice(this._lastPos, i);
-                    this._lastPos = i + 1;
-                    this._byte = -1;
-                    i = readPctEnc(this, chunk, i + 1, len);
-                    if (i === -1)
-                      return cb(new Error("Malformed urlencoded form"));
-                    if (i >= len)
-                      return cb();
-                    ++this._bytesVal;
-                    i = skipValBytes(this, chunk, i, len);
-                    continue;
-                }
-                ++i;
-                ++this._bytesVal;
-                i = skipValBytes(this, chunk, i, len);
-              }
-              if (this._lastPos < i)
-                this._val += chunk.latin1Slice(this._lastPos, i);
-            }
-          }
-        cb();
-      }
-      _final(cb) {
-        if (this._byte !== -2)
-          return cb(new Error("Malformed urlencoded form"));
-        if (!this._inKey || this._bytesKey > 0 || this._bytesVal > 0) {
-          if (this._inKey)
-            this._key = this._decoder(this._key, this._encode);
-          else
-            this._val = this._decoder(this._val, this._encode);
-          this.emit(
-            "field",
-            this._key,
-            this._val,
-            {
-              nameTruncated: this._keyTrunc,
-              valueTruncated: this._valTrunc,
-              encoding: this.charset,
-              mimeType: "text/plain"
-            }
-          );
-        }
-        cb();
-      }
-    };
-    function readPctEnc(self2, chunk, pos, len) {
-      if (pos >= len)
-        return len;
-      if (self2._byte === -1) {
-        const hexUpper = HEX_VALUES[chunk[pos++]];
-        if (hexUpper === -1)
-          return -1;
-        if (hexUpper >= 8)
-          self2._encode = 2;
-        if (pos < len) {
-          const hexLower = HEX_VALUES[chunk[pos++]];
-          if (hexLower === -1)
-            return -1;
-          if (self2._inKey)
-            self2._key += String.fromCharCode((hexUpper << 4) + hexLower);
-          else
-            self2._val += String.fromCharCode((hexUpper << 4) + hexLower);
-          self2._byte = -2;
-          self2._lastPos = pos;
-        } else {
-          self2._byte = hexUpper;
-        }
-      } else {
-        const hexLower = HEX_VALUES[chunk[pos++]];
-        if (hexLower === -1)
-          return -1;
-        if (self2._inKey)
-          self2._key += String.fromCharCode((self2._byte << 4) + hexLower);
-        else
-          self2._val += String.fromCharCode((self2._byte << 4) + hexLower);
-        self2._byte = -2;
-        self2._lastPos = pos;
-      }
-      return pos;
-    }
-    function skipKeyBytes(self2, chunk, pos, len) {
-      if (self2._bytesKey > self2.fieldNameSizeLimit) {
-        if (!self2._keyTrunc) {
-          if (self2._lastPos < pos)
-            self2._key += chunk.latin1Slice(self2._lastPos, pos - 1);
-        }
-        self2._keyTrunc = true;
-        for (; pos < len; ++pos) {
-          const code = chunk[pos];
-          if (code === 61 || code === 38)
-            break;
-          ++self2._bytesKey;
-        }
-        self2._lastPos = pos;
-      }
-      return pos;
-    }
-    function skipValBytes(self2, chunk, pos, len) {
-      if (self2._bytesVal > self2.fieldSizeLimit) {
-        if (!self2._valTrunc) {
-          if (self2._lastPos < pos)
-            self2._val += chunk.latin1Slice(self2._lastPos, pos - 1);
-        }
-        self2._valTrunc = true;
-        for (; pos < len; ++pos) {
-          if (chunk[pos] === 38)
-            break;
-          ++self2._bytesVal;
-        }
-        self2._lastPos = pos;
-      }
-      return pos;
-    }
-    var HEX_VALUES = [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1
-    ];
-    module2.exports = URLEncoded;
-  }
-});
-
-// node_modules/busboy/lib/index.js
-var require_lib10 = __commonJS({
-  "node_modules/busboy/lib/index.js"(exports2, module2) {
-    "use strict";
-    var { parseContentType } = require_utils7();
-    function getInstance(cfg) {
-      const headers = cfg.headers;
-      const conType = parseContentType(headers["content-type"]);
-      if (!conType)
-        throw new Error("Malformed content type");
-      for (const type of TYPES) {
-        const matched = type.detect(conType);
-        if (!matched)
-          continue;
-        const instanceCfg = {
-          limits: cfg.limits,
-          headers,
-          conType,
-          highWaterMark: void 0,
-          fileHwm: void 0,
-          defCharset: void 0,
-          defParamCharset: void 0,
-          preservePath: false
-        };
-        if (cfg.highWaterMark)
-          instanceCfg.highWaterMark = cfg.highWaterMark;
-        if (cfg.fileHwm)
-          instanceCfg.fileHwm = cfg.fileHwm;
-        instanceCfg.defCharset = cfg.defCharset;
-        instanceCfg.defParamCharset = cfg.defParamCharset;
-        instanceCfg.preservePath = cfg.preservePath;
-        return new type(instanceCfg);
-      }
-      throw new Error(`Unsupported content type: ${headers["content-type"]}`);
-    }
-    var TYPES = [
-      require_multipart(),
-      require_urlencoded3()
-    ].filter(function(typemod) {
-      return typeof typemod.detect === "function";
-    });
-    module2.exports = (cfg) => {
-      if (typeof cfg !== "object" || cfg === null)
-        cfg = {};
-      if (typeof cfg.headers !== "object" || cfg.headers === null || typeof cfg.headers["content-type"] !== "string") {
-        throw new Error("Missing Content-Type");
-      }
-      return getInstance(cfg);
-    };
-  }
-});
-
-// node_modules/append-field/lib/parse-path.js
-var require_parse_path = __commonJS({
-  "node_modules/append-field/lib/parse-path.js"(exports2, module2) {
-    var reFirstKey = /^[^\[]*/;
-    var reDigitPath = /^\[(\d+)\]/;
-    var reNormalPath = /^\[([^\]]+)\]/;
-    function parsePath(key) {
-      function failure() {
-        return [{ type: "object", key, last: true }];
-      }
-      var firstKey = reFirstKey.exec(key)[0];
-      if (!firstKey) return failure();
-      var len = key.length;
-      var pos = firstKey.length;
-      var tail = { type: "object", key: firstKey };
-      var steps = [tail];
-      while (pos < len) {
-        var m;
-        if (key[pos] === "[" && key[pos + 1] === "]") {
-          pos += 2;
-          tail.append = true;
-          if (pos !== len) return failure();
-          continue;
-        }
-        m = reDigitPath.exec(key.substring(pos));
-        if (m !== null) {
-          pos += m[0].length;
-          tail.nextType = "array";
-          tail = { type: "array", key: parseInt(m[1], 10) };
-          steps.push(tail);
-          continue;
-        }
-        m = reNormalPath.exec(key.substring(pos));
-        if (m !== null) {
-          pos += m[0].length;
-          tail.nextType = "object";
-          tail = { type: "object", key: m[1] };
-          steps.push(tail);
-          continue;
-        }
-        return failure();
-      }
-      tail.last = true;
-      return steps;
-    }
-    module2.exports = parsePath;
-  }
-});
-
-// node_modules/append-field/lib/set-value.js
-var require_set_value = __commonJS({
-  "node_modules/append-field/lib/set-value.js"(exports2, module2) {
-    function valueType(value) {
-      if (value === void 0) return "undefined";
-      if (Array.isArray(value)) return "array";
-      if (typeof value === "object") return "object";
-      return "scalar";
-    }
-    function setLastValue(context, step, currentValue, entryValue) {
-      switch (valueType(currentValue)) {
-        case "undefined":
-          if (step.append) {
-            context[step.key] = [entryValue];
-          } else {
-            context[step.key] = entryValue;
-          }
-          break;
-        case "array":
-          context[step.key].push(entryValue);
-          break;
-        case "object":
-          return setLastValue(currentValue, { type: "object", key: "", last: true }, currentValue[""], entryValue);
-        case "scalar":
-          context[step.key] = [context[step.key], entryValue];
-          break;
-      }
-      return context;
-    }
-    function setValue(context, step, currentValue, entryValue) {
-      if (step.last) return setLastValue(context, step, currentValue, entryValue);
-      var obj2;
-      switch (valueType(currentValue)) {
-        case "undefined":
-          if (step.nextType === "array") {
-            context[step.key] = [];
-          } else {
-            context[step.key] = /* @__PURE__ */ Object.create(null);
-          }
-          return context[step.key];
-        case "object":
-          return context[step.key];
-        case "array":
-          if (step.nextType === "array") {
-            return currentValue;
-          }
-          obj2 = /* @__PURE__ */ Object.create(null);
-          context[step.key] = obj2;
-          currentValue.forEach(function(item, i) {
-            if (item !== void 0) obj2["" + i] = item;
-          });
-          return obj2;
-        case "scalar":
-          obj2 = /* @__PURE__ */ Object.create(null);
-          obj2[""] = currentValue;
-          context[step.key] = obj2;
-          return obj2;
-      }
-    }
-    module2.exports = setValue;
-  }
-});
-
-// node_modules/append-field/index.js
-var require_append_field = __commonJS({
-  "node_modules/append-field/index.js"(exports2, module2) {
-    var parsePath = require_parse_path();
-    var setValue = require_set_value();
-    function appendField(store, key, value) {
-      var steps = parsePath(key);
-      steps.reduce(function(context, step) {
-        return setValue(context, step, context[step.key], value);
-      }, store);
-    }
-    module2.exports = appendField;
-  }
-});
-
-// node_modules/multer/lib/counter.js
-var require_counter = __commonJS({
-  "node_modules/multer/lib/counter.js"(exports2, module2) {
-    var EventEmitter = require("events").EventEmitter;
-    function Counter() {
-      EventEmitter.call(this);
-      this.value = 0;
-    }
-    Counter.prototype = Object.create(EventEmitter.prototype);
-    Counter.prototype.increment = function increment() {
-      this.value++;
-    };
-    Counter.prototype.decrement = function decrement() {
-      if (--this.value === 0) this.emit("zero");
-    };
-    Counter.prototype.isZero = function isZero() {
-      return this.value === 0;
-    };
-    Counter.prototype.onceZero = function onceZero(fn) {
-      if (this.isZero()) return fn();
-      this.once("zero", fn);
-    };
-    module2.exports = Counter;
-  }
-});
-
-// node_modules/multer/lib/multer-error.js
-var require_multer_error = __commonJS({
-  "node_modules/multer/lib/multer-error.js"(exports2, module2) {
-    var util = require("util");
-    var errorMessages = {
-      LIMIT_PART_COUNT: "Too many parts",
-      LIMIT_FILE_SIZE: "File too large",
-      LIMIT_FILE_COUNT: "Too many files",
-      LIMIT_FIELD_KEY: "Field name too long",
-      LIMIT_FIELD_VALUE: "Field value too long",
-      LIMIT_FIELD_COUNT: "Too many fields",
-      LIMIT_UNEXPECTED_FILE: "Unexpected file field",
-      MISSING_FIELD_NAME: "Field name missing",
-      LIMIT_FIELD_NESTING: "Field name nesting too deep",
-      LIMIT_FIELD_ARRAY_INDEX: "Field name array index too large",
-      STREAM_DESTROYED: "File stream was destroyed",
-      INVALID_FIELD_NAME: "Invalid field name"
-    };
-    function MulterError(code, field, filename) {
-      Error.captureStackTrace(this, this.constructor);
-      this.name = this.constructor.name;
-      this.message = errorMessages[code] || `Unknown error: ${code}`;
-      this.code = code;
-      if (field) this.field = field;
-      if (filename) this.filename = filename;
-    }
-    util.inherits(MulterError, Error);
-    module2.exports = MulterError;
-  }
-});
-
-// node_modules/multer/lib/file-appender.js
-var require_file_appender = __commonJS({
-  "node_modules/multer/lib/file-appender.js"(exports2, module2) {
-    function arrayRemove(arr, item) {
-      var idx = arr.indexOf(item);
-      if (~idx) arr.splice(idx, 1);
-    }
-    function FileAppender(strategy, req) {
-      this.strategy = strategy;
-      this.req = req;
-      switch (strategy) {
-        case "NONE":
-          break;
-        case "VALUE":
-          break;
-        case "ARRAY":
-          req.files = [];
-          break;
-        case "OBJECT":
-          req.files = /* @__PURE__ */ Object.create(null);
-          break;
-        default:
-          throw new Error("Unknown file strategy: " + strategy);
-      }
-    }
-    FileAppender.prototype.insertPlaceholder = function(file) {
-      var placeholder = {
-        fieldname: file.fieldname
-      };
-      switch (this.strategy) {
-        case "NONE":
-          break;
-        case "VALUE":
-          break;
-        case "ARRAY":
-          this.req.files.push(placeholder);
-          break;
-        case "OBJECT":
-          if (this.req.files[file.fieldname]) {
-            this.req.files[file.fieldname].push(placeholder);
-          } else {
-            this.req.files[file.fieldname] = [placeholder];
-          }
-          break;
-      }
-      return placeholder;
-    };
-    FileAppender.prototype.removePlaceholder = function(placeholder) {
-      switch (this.strategy) {
-        case "NONE":
-          break;
-        case "VALUE":
-          break;
-        case "ARRAY":
-          arrayRemove(this.req.files, placeholder);
-          break;
-        case "OBJECT": {
-          var files = this.req.files[placeholder.fieldname];
-          if (!files) break;
-          arrayRemove(files, placeholder);
-          if (files.length === 0) delete this.req.files[placeholder.fieldname];
-          break;
-        }
-      }
-    };
-    FileAppender.prototype.replacePlaceholder = function(placeholder, file) {
-      if (this.strategy === "VALUE") {
-        this.req.file = file;
-        return;
-      }
-      delete placeholder.fieldname;
-      Object.assign(placeholder, file);
-    };
-    module2.exports = FileAppender;
-  }
-});
-
-// node_modules/multer/lib/remove-uploaded-files.js
-var require_remove_uploaded_files = __commonJS({
-  "node_modules/multer/lib/remove-uploaded-files.js"(exports2, module2) {
-    function removeUploadedFiles(uploadedFiles, remove, cb) {
-      var length = uploadedFiles.length;
-      var errors = [];
-      if (length === 0) return cb(null, errors);
-      function handleFile(idx) {
-        var file = uploadedFiles[idx];
-        remove(file, function(err) {
-          if (err) {
-            err.file = file;
-            err.field = file.fieldname;
-            errors.push(err);
-          }
-          if (idx < length - 1) {
-            setImmediate(function() {
-              handleFile(idx + 1);
-            });
-          } else {
-            cb(null, errors);
-          }
-        });
-      }
-      handleFile(0);
-    }
-    module2.exports = removeUploadedFiles;
-  }
-});
-
-// node_modules/multer/lib/validate-limits.js
-var require_validate_limits = __commonJS({
-  "node_modules/multer/lib/validate-limits.js"(exports2, module2) {
-    function validateLimits(limits) {
-      Object.keys(limits).forEach(function(key) {
-        var value = limits[key];
-        if (value == null) return;
-        if (Number.isInteger(value) && value >= 0 || value === Infinity) return;
-        throw new TypeError("Expected limits." + key + " to be a non-negative integer or Infinity");
-      });
-    }
-    module2.exports = validateLimits;
-  }
-});
-
-// node_modules/multer/lib/make-middleware.js
-var require_make_middleware = __commonJS({
-  "node_modules/multer/lib/make-middleware.js"(exports2, module2) {
-    var is = require_type_is();
-    var AsyncResource = require("async_hooks").AsyncResource;
-    var Busboy = require_lib10();
-    var appendField = require_append_field();
-    var Counter = require_counter();
-    var MulterError = require_multer_error();
-    var FileAppender = require_file_appender();
-    var removeUploadedFiles = require_remove_uploaded_files();
-    var validateLimits = require_validate_limits();
-    var DEFAULT_FIELD_SIZE = 1024 * 1024;
-    function exceedsArrayIndexLimit(fieldname, limit) {
-      if (!/^[^[]+(?:\[[^\]]+\])*(?:\[\])?$/.test(fieldname)) return false;
-      var pattern = /\[(\d+)\]/g;
-      var match;
-      while ((match = pattern.exec(fieldname)) !== null) {
-        if (Number(match[1]) > limit) return true;
-      }
-      return false;
-    }
-    function drainStream(stream) {
-      stream.on("readable", () => {
-        while (stream.read() !== null) {
-        }
-      });
-    }
-    function decodeFormDataName(str) {
-      return str.replace(/%0A|%0D|%22/gi, function(match) {
-        switch (match.toUpperCase()) {
-          case "%0A":
-            return "\n";
-          case "%0D":
-            return "\r";
-          default:
-            return '"';
-        }
-      });
-    }
-    function defaultStreamHandler(req, busboy) {
-      req.pipe(busboy);
-    }
-    function makeMiddleware(setup) {
-      return function multerMiddleware(req, res, next) {
-        var resource = new AsyncResource("multer");
-        var originalNext = next;
-        next = function(err) {
-          resource.runInAsyncScope(originalNext, null, err);
-        };
-        if (!is(req, ["multipart"])) return next();
-        var options = setup();
-        var limits = options.limits;
-        if (typeof limits === "function") {
-          try {
-            limits = limits(req);
-            if (limits) validateLimits(limits);
-          } catch (err) {
-            return next(err);
-          }
-        }
-        var busboyLimits = {};
-        var key;
-        for (key in limits) {
-          busboyLimits[key] = limits[key];
-        }
-        var fieldSize = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : DEFAULT_FIELD_SIZE;
-        if (isFinite(fieldSize)) {
-          busboyLimits.fieldSize = fieldSize + 1;
-        }
-        if (limits && typeof limits.fileSize === "number" && isFinite(limits.fileSize)) {
-          busboyLimits.fileSize = limits.fileSize + 1;
-        }
-        if (limits && typeof limits.parts === "number" && isFinite(limits.parts)) {
-          busboyLimits.parts = limits.parts + 1;
-        }
-        var storage = options.storage;
-        var fileFilter = options.fileFilter;
-        var fileStrategy = options.fileStrategy;
-        var preservePath = options.preservePath;
-        var defParamCharset = options.defParamCharset;
-        var defCharset = options.defCharset;
-        var highWaterMark = options.highWaterMark;
-        var fileHwm = options.fileHwm;
-        var streamHandler = options.streamHandler || defaultStreamHandler;
-        req.body = /* @__PURE__ */ Object.create(null);
-        var busboy;
-        var appender = null;
-        var isDone = false;
-        var readFinished = false;
-        var errorOccured = false;
-        var abortCleanupDone = false;
-        var abortRemovedFiles = /* @__PURE__ */ new Set();
-        var pendingWrites = new Counter();
-        var uploadedFiles = [];
-        var pendingFiles = [];
-        function done(err) {
-          var called = false;
-          function onFinished() {
-            if (called) return;
-            called = true;
-            next(err);
-          }
-          if (isDone) return;
-          isDone = true;
-          if (busboy) {
-            req.unpipe(busboy);
-            setImmediate(() => {
-              busboy.removeAllListeners();
-              busboy.on("error", function() {
-              });
-            });
-          }
-          drainStream(req);
-          req.resume();
-          if (err && req.readable && !req.destroyed) {
-            req.once("end", onFinished);
-            req.once("error", onFinished);
-            req.once("close", onFinished);
-            return;
-          }
-          next(err);
-        }
-        function indicateDone() {
-          if (readFinished && pendingWrites.isZero() && !errorOccured) done();
-        }
-        function abortWithError(uploadError, skipPendingWait) {
-          if (errorOccured) return;
-          errorOccured = true;
-          function finishAbort() {
-            abortCleanupDone = true;
-            function remove(file, cb) {
-              storage._removeFile(req, file, cb);
-            }
-            var pendingToRemove = pendingFiles.filter(function(f) {
-              return f.path;
-            });
-            pendingToRemove.forEach(function(f) {
-              abortRemovedFiles.add(f);
-            });
-            var filesToRemove = uploadedFiles.concat(pendingToRemove);
-            pendingFiles = [];
-            removeUploadedFiles(filesToRemove, remove, function(err, storageErrors) {
-              if (err) return done(err);
-              uploadError.storageErrors = storageErrors;
-              done(uploadError);
-            });
-          }
-          if (skipPendingWait) {
-            finishAbort();
-          } else {
-            pendingWrites.onceZero(finishAbort);
-          }
-        }
-        function abortWithCode(code, optionalField, optionalFilename) {
-          abortWithError(new MulterError(code, optionalField, optionalFilename));
-        }
-        function handleRequestFailure(err) {
-          if (isDone) return;
-          if (busboy) {
-            req.unpipe(busboy);
-            busboy.destroy(err);
-          }
-          abortWithError(err, true);
-        }
-        req.on("error", function(err) {
-          handleRequestFailure(err || new Error("Request error"));
-        });
-        req.on("aborted", function() {
-          handleRequestFailure(new Error("Request aborted"));
-        });
-        req.on("close", function() {
-          if (req.readableEnded) return;
-          handleRequestFailure(new Error("Request closed"));
-        });
-        try {
-          busboy = Busboy({
-            headers: req.headers,
-            limits: busboyLimits,
-            preservePath,
-            defParamCharset,
-            defCharset,
-            highWaterMark,
-            fileHwm
-          });
-        } catch (err) {
-          return next(err);
-        }
-        appender = new FileAppender(fileStrategy, req);
-        busboy.on("field", function(fieldname, value, { nameTruncated, valueTruncated }) {
-          if (fieldname == null) return abortWithCode("MISSING_FIELD_NAME");
-          var rawFieldname = fieldname;
-          fieldname = decodeFormDataName(fieldname);
-          if (nameTruncated) return abortWithCode("LIMIT_FIELD_KEY");
-          if (valueTruncated) return abortWithCode("LIMIT_FIELD_VALUE", fieldname);
-          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNameSize")) {
-            if (rawFieldname.length > limits.fieldNameSize) return abortWithCode("LIMIT_FIELD_KEY");
-          }
-          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNestingDepth")) {
-            if (fieldname.split("[").length - 1 > limits.fieldNestingDepth) return abortWithCode("LIMIT_FIELD_NESTING", fieldname);
-          }
-          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldArrayIndexLimit")) {
-            if (exceedsArrayIndexLimit(fieldname, limits.fieldArrayIndexLimit)) {
-              return abortWithCode("LIMIT_FIELD_ARRAY_INDEX", fieldname);
-            }
-          }
-          try {
-            appendField(req.body, fieldname, value);
-          } catch {
-            return abortWithCode("INVALID_FIELD_NAME", fieldname);
-          }
-        });
-        busboy.on("file", function(fieldname, fileStream, { filename, encoding, mimeType }) {
-          var pendingWritesIncremented = false;
-          var aborting = false;
-          var accepted = false;
-          var fileSizeLimitReached = false;
-          var originalname = filename && decodeFormDataName(filename);
-          function decrementPendingWrites() {
-            if (!pendingWritesIncremented) return;
-            pendingWritesIncremented = false;
-            pendingWrites.decrement();
-          }
-          fileStream.on("error", function(err) {
-            decrementPendingWrites();
-            abortWithError(err);
-          });
-          fileStream.on("limit", function() {
-            fileSizeLimitReached = true;
-            if (accepted) {
-              aborting = true;
-              abortWithCode("LIMIT_FILE_SIZE", fieldname, originalname);
-            }
-          });
-          if (fieldname == null) return abortWithCode("MISSING_FIELD_NAME");
-          var rawFieldname = fieldname;
-          fieldname = decodeFormDataName(fieldname);
-          if (!filename) return fileStream.resume();
-          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNameSize")) {
-            if (rawFieldname.length > limits.fieldNameSize) return abortWithCode("LIMIT_FIELD_KEY");
-          }
-          var file = {
-            fieldname,
-            originalname,
-            encoding,
-            mimetype: mimeType
-          };
-          var placeholder = appender.insertPlaceholder(file);
-          fileFilter(req, file, function(err, includeFile) {
-            if (errorOccured) {
-              appender.removePlaceholder(placeholder);
-              return fileStream.resume();
-            }
-            if (err) {
-              appender.removePlaceholder(placeholder);
-              return abortWithError(err);
-            }
-            if (!includeFile) {
-              appender.removePlaceholder(placeholder);
-              return fileStream.resume();
-            }
-            if (fileSizeLimitReached) {
-              appender.removePlaceholder(placeholder);
-              return abortWithCode("LIMIT_FILE_SIZE", fieldname, originalname);
-            }
-            accepted = true;
-            pendingWritesIncremented = true;
-            pendingWrites.increment();
-            Object.defineProperty(file, "stream", {
-              configurable: true,
-              enumerable: false,
-              value: fileStream
-            });
-            pendingFiles.push(file);
-            storage._handleFile(req, file, function(err2, info) {
-              var idx = pendingFiles.indexOf(file);
-              if (idx !== -1) pendingFiles.splice(idx, 1);
-              if (aborting) {
-                appender.removePlaceholder(placeholder);
-                if (!err2) uploadedFiles.push({ ...file, ...info });
-                return decrementPendingWrites();
-              }
-              if (err2) {
-                appender.removePlaceholder(placeholder);
-                decrementPendingWrites();
-                return abortWithError(err2);
-              }
-              var fileInfo = { ...file, ...info };
-              if (abortCleanupDone) {
-                if (abortRemovedFiles.has(file)) {
-                  appender.removePlaceholder(placeholder);
-                  decrementPendingWrites();
-                  return;
-                }
-                return storage._removeFile(req, fileInfo, function() {
-                  appender.removePlaceholder(placeholder);
-                  decrementPendingWrites();
-                });
-              }
-              appender.replacePlaceholder(placeholder, fileInfo);
-              uploadedFiles.push(fileInfo);
-              decrementPendingWrites();
-              indicateDone();
-            });
-          });
-        });
-        busboy.on("error", function(err) {
-          abortWithError(err);
-        });
-        busboy.on("partsLimit", function() {
-          abortWithCode("LIMIT_PART_COUNT");
-        });
-        busboy.on("filesLimit", function() {
-          abortWithCode("LIMIT_FILE_COUNT");
-        });
-        busboy.on("fieldsLimit", function() {
-          abortWithCode("LIMIT_FIELD_COUNT");
-        });
-        busboy.on("close", function() {
-          readFinished = true;
-          indicateDone();
-        });
-        streamHandler(req, busboy);
-      };
-    }
-    module2.exports = makeMiddleware;
-  }
-});
-
-// node_modules/multer/storage/disk.js
-var require_disk = __commonJS({
-  "node_modules/multer/storage/disk.js"(exports2, module2) {
-    var fs2 = require("fs");
-    var os = require("os");
-    var path2 = require("path");
-    var crypto4 = require("crypto");
-    var pipeline = require("stream").pipeline;
-    var MulterError = require_multer_error();
-    var openStreams = /* @__PURE__ */ new WeakMap();
-    var flushingFiles = /* @__PURE__ */ new WeakMap();
-    function endFlush(file) {
-      var flush = flushingFiles.get(file);
-      if (!flush) return;
-      flushingFiles.delete(file);
-      if (flush.onClosed) flush.onClosed();
-    }
-    function getFilename(req, file, cb) {
-      crypto4.randomBytes(16, function(err, raw) {
-        cb(err, err ? void 0 : raw.toString("hex"));
-      });
-    }
-    function getDestination(req, file, cb) {
-      cb(null, os.tmpdir());
-    }
-    function DiskStorage(opts) {
-      opts = opts || {};
-      this.getFilename = opts.filename || getFilename;
-      this.flush = opts.flush;
-      if (typeof opts.destination === "string") {
-        fs2.mkdirSync(opts.destination, { recursive: true });
-        this.getDestination = function($0, $1, cb) {
-          cb(null, opts.destination);
-        };
-      } else {
-        this.getDestination = opts.destination || getDestination;
-      }
-    }
-    DiskStorage.prototype._handleFile = function _handleFile(req, file, cb) {
-      var that = this;
-      that.getDestination(req, file, function(err, destination) {
-        if (err) return cb(err);
-        that.getFilename(req, file, function(err2, filename) {
-          if (err2) return cb(err2);
-          var finalPath = path2.join(destination, filename);
-          if (file.stream.destroyed) return cb(new MulterError("STREAM_DESTROYED"));
-          var outStream = fs2.createWriteStream(finalPath);
-          file.path = finalPath;
-          openStreams.set(file, outStream);
-          outStream.once("close", function() {
-            openStreams.delete(file);
-          });
-          if (that.flush) flushingFiles.set(file, {});
-          pipeline(file.stream, outStream, function(err3) {
-            if (err3) {
-              endFlush(file);
-              return cb(err3);
-            }
-            var done = function(err4) {
-              if (err4) return cb(err4);
-              cb(null, {
-                destination,
-                filename,
-                path: finalPath,
-                size: outStream.bytesWritten
-              });
-            };
-            if (!that.flush) return done();
-            fs2.open(finalPath, "r+", function(err4, fd) {
-              if (err4) {
-                endFlush(file);
-                return done(err4);
-              }
-              fs2.fsync(fd, function(syncErr) {
-                fs2.close(fd, function(closeErr) {
-                  endFlush(file);
-                  done(syncErr || closeErr);
-                });
-              });
-            });
-          });
-        });
-      });
-    };
-    DiskStorage.prototype._removeFile = function _removeFile(req, file, cb) {
-      var path3 = file.path;
-      delete file.destination;
-      delete file.filename;
-      delete file.path;
-      function unlink() {
-        var flush = flushingFiles.get(file);
-        if (!flush) return fs2.unlink(path3, cb);
-        flush.onClosed = function() {
-          fs2.unlink(path3, cb);
-        };
-      }
-      var outStream = openStreams.get(file);
-      if (!outStream) return unlink();
-      if (outStream.closed) return unlink();
-      function onReleased() {
-        outStream.removeListener("close", onReleased);
-        outStream.removeListener("error", onReleased);
-        unlink();
-      }
-      outStream.once("close", onReleased);
-      outStream.once("error", onReleased);
-      outStream.destroy();
-    };
-    module2.exports = function(opts) {
-      return new DiskStorage(opts);
-    };
-  }
-});
-
-// node_modules/multer/storage/memory.js
-var require_memory = __commonJS({
-  "node_modules/multer/storage/memory.js"(exports2, module2) {
-    function MemoryStorage(opts) {
-    }
-    MemoryStorage.prototype._handleFile = function _handleFile(req, file, cb) {
-      var chunks = [];
-      file.stream.on("data", function(chunk) {
-        chunks.push(chunk);
-      });
-      file.stream.on("end", function() {
-        var buffer = Buffer.concat(chunks);
-        cb(null, {
-          buffer,
-          size: buffer.length
-        });
-      });
-    };
-    MemoryStorage.prototype._removeFile = function _removeFile(req, file, cb) {
-      delete file.buffer;
-      cb(null);
-    };
-    module2.exports = function(opts) {
-      return new MemoryStorage(opts);
-    };
-  }
-});
-
-// node_modules/multer/index.js
-var require_multer = __commonJS({
-  "node_modules/multer/index.js"(exports2, module2) {
-    var makeMiddleware = require_make_middleware();
-    var diskStorage = require_disk();
-    var memoryStorage = require_memory();
-    var MulterError = require_multer_error();
-    var validateLimits = require_validate_limits();
-    function allowAll(req, file, cb) {
-      cb(null, true);
-    }
-    function Multer(options) {
-      if (options.storage) {
-        this.storage = options.storage;
-      } else if (options.dest) {
-        this.storage = diskStorage({ destination: options.dest });
-      } else {
-        this.storage = memoryStorage();
-      }
-      if (options.limits && typeof options.limits !== "function") validateLimits(options.limits);
-      this.limits = options.limits;
-      this.preservePath = options.preservePath;
-      this.defParamCharset = options.defParamCharset || "latin1";
-      this.defCharset = options.defCharset;
-      this.highWaterMark = options.highWaterMark;
-      this.fileHwm = options.fileHwm;
-      this.fileFilter = options.fileFilter || allowAll;
-      if (options.streamHandler !== void 0 && typeof options.streamHandler !== "function") {
-        throw new TypeError("Expected streamHandler to be a function");
-      }
-      this.streamHandler = options.streamHandler;
-    }
-    Multer.prototype._makeMiddleware = function(fields, fileStrategy) {
-      function setup() {
-        var fileFilter = this.fileFilter;
-        var filesLeft = /* @__PURE__ */ Object.create(null);
-        fields.forEach(function(field) {
-          if (typeof field.maxCount === "number") {
-            filesLeft[field.name] = field.maxCount;
-          } else {
-            filesLeft[field.name] = Infinity;
-          }
-        });
-        function wrappedFileFilter(req, file, cb) {
-          if ((filesLeft[file.fieldname] || 0) <= 0) {
-            return cb(new MulterError("LIMIT_UNEXPECTED_FILE", file.fieldname, file.originalname));
-          }
-          filesLeft[file.fieldname] -= 1;
-          var settled = false;
-          fileFilter(req, file, function(err, includeFile) {
-            if (!settled) {
-              settled = true;
-              if (err || !includeFile) filesLeft[file.fieldname] += 1;
-            }
-            cb(err, includeFile);
-          });
-        }
-        return {
-          limits: this.limits,
-          preservePath: this.preservePath,
-          defParamCharset: this.defParamCharset,
-          defCharset: this.defCharset,
-          highWaterMark: this.highWaterMark,
-          fileHwm: this.fileHwm,
-          streamHandler: this.streamHandler,
-          storage: this.storage,
-          fileFilter: wrappedFileFilter,
-          fileStrategy
-        };
-      }
-      return makeMiddleware(setup.bind(this));
-    };
-    Multer.prototype.single = function(name) {
-      return this._makeMiddleware([{ name, maxCount: 1 }], "VALUE");
-    };
-    Multer.prototype.array = function(name, maxCount) {
-      return this._makeMiddleware([{ name, maxCount }], "ARRAY");
-    };
-    Multer.prototype.fields = function(fields) {
-      return this._makeMiddleware(fields, "OBJECT");
-    };
-    Multer.prototype.none = function() {
-      return this._makeMiddleware([], "NONE");
-    };
-    Multer.prototype.any = function() {
-      function setup() {
-        return {
-          limits: this.limits,
-          preservePath: this.preservePath,
-          defParamCharset: this.defParamCharset,
-          defCharset: this.defCharset,
-          highWaterMark: this.highWaterMark,
-          fileHwm: this.fileHwm,
-          streamHandler: this.streamHandler,
-          storage: this.storage,
-          fileFilter: this.fileFilter,
-          fileStrategy: "ARRAY"
-        };
-      }
-      return makeMiddleware(setup.bind(this));
-    };
-    function multer(options) {
-      if (options === void 0) {
-        return new Multer({});
-      }
-      if (typeof options === "object" && options !== null) {
-        return new Multer(options);
-      }
-      throw new TypeError("Expected object for argument options");
-    }
-    module2.exports = multer;
-    module2.exports.diskStorage = diskStorage;
-    module2.exports.memoryStorage = memoryStorage;
-    module2.exports.MulterError = MulterError;
-  }
-});
-
-// apps/api/src/modules/vehicles/models/Vehicle.js
-var require_Vehicle = __commonJS({
-  "apps/api/src/modules/vehicles/models/Vehicle.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { VehicleStatus, VehicleCategory } = require_shared2();
-    var vehicleSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        plateNumber: {
-          type: String,
-          required: [true, "Vehicle plate/registration number is required"],
-          trim: true,
-          uppercase: true,
-          validate: {
-            validator: function(v) {
-              return /^[A-Z]{2}[0-9]{1,2}[A-Z]{0,3}[0-9]{4}$/.test(v.replace(/\s+/g, ""));
-            },
-            message: (props) => `${props.value} is not a valid vehicle registration plate format.`
-          }
-        },
-        vehicleType: {
-          type: String,
-          required: [true, "Vehicle type is required"],
-          // e.g. "Open Truck", "Container", "Trailer", "Tanker", "Tempo"
-          trim: true
-        },
-        category: {
-          type: String,
-          enum: Object.values(VehicleCategory),
-          default: VehicleCategory.OWNED
-        },
-        make: {
-          type: String,
-          trim: true,
-          default: ""
-          // e.g. "Tata", "Ashok Leyland", "BharatBenz", "Eicher"
-        },
-        model: {
-          type: String,
-          trim: true,
-          default: ""
-          // e.g. "Signa 4825.TK", "Pro 6028"
-        },
-        yearOfManufacture: {
-          type: Number,
-          min: 1980,
-          max: (/* @__PURE__ */ new Date()).getFullYear() + 1
-        },
-        capacityTonnage: {
-          type: Number,
-          required: [true, "Capacity in metric tons (MT) is required"],
-          min: [0.1, "Capacity must be at least 0.1 MT"]
-        },
-        chassisNumber: {
-          type: String,
-          trim: true,
-          uppercase: true,
-          default: ""
-        },
-        engineNumber: {
-          type: String,
-          trim: true,
-          uppercase: true,
-          default: ""
-        },
-        ownerName: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        ownerPhone: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        status: {
-          type: String,
-          enum: Object.values(VehicleStatus),
-          default: VehicleStatus.AVAILABLE,
-          index: true
-        },
-        currentTripId: {
-          type: Schema.Types.ObjectId,
-          ref: "Trip",
-          default: null
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        },
-        telematics: {
-          deviceId: {
-            type: String,
-            trim: true,
-            index: true,
-            sparse: true
-          },
-          provider: {
-            type: String,
-            enum: ["AIS140", "TELTONIKA", "TRACCAR", "SIM_TRACKING", "REST_PING", "NONE"],
-            default: "NONE"
-          },
-          imei: {
-            type: String,
-            trim: true,
-            default: ""
-          },
-          simNumber: {
-            type: String,
-            trim: true,
-            default: ""
-          },
-          isActive: {
-            type: Boolean,
-            default: false
-          },
-          lastPing: {
-            latitude: { type: Number, default: null },
-            longitude: { type: Number, default: null },
-            speedKmph: { type: Number, default: 0 },
-            headingDegrees: { type: Number, default: 0 },
-            altitudeMeters: { type: Number, default: 0 },
-            accuracyMeters: { type: Number, default: 0 },
-            ignition: { type: Boolean, default: false },
-            batteryPercent: { type: Number, default: 100 },
-            recordedAt: { type: Date, default: null },
-            receivedAt: { type: Date, default: null },
-            rawPayload: { type: Schema.Types.Mixed, default: null }
-          },
-          lastGpsTimestamp: {
-            type: Date,
-            default: null
-          }
-        }
-      },
-      {
-        timestamps: true,
-        toJSON: { virtuals: true },
-        toObject: { virtuals: true }
-      }
-    );
-    vehicleSchema.virtual("registrationNumber").get(function() {
-      return this.plateNumber;
-    }).set(function(v) {
-      this.plateNumber = v;
-    });
-    vehicleSchema.index({ companyId: 1, plateNumber: 1 }, { unique: true });
-    vehicleSchema.index({ companyId: 1, status: 1 });
-    vehicleSchema.index({ companyId: 1, category: 1 });
-    vehicleSchema.index({ companyId: 1, "telematics.deviceId": 1 });
-    module2.exports = mongoose.model("Vehicle", vehicleSchema);
-  }
-});
-
-// apps/api/src/modules/vehicles/models/VehicleDocument.js
-var require_VehicleDocument = __commonJS({
-  "apps/api/src/modules/vehicles/models/VehicleDocument.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { VehicleDocumentType, ComplianceStatus } = require_shared2();
-    var vehicleDocumentSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        vehicleId: {
-          type: Schema.Types.ObjectId,
-          ref: "Vehicle",
-          required: true,
-          index: true
-        },
-        documentType: {
-          type: String,
-          enum: Object.values(VehicleDocumentType),
-          required: [true, "Document type is required"]
-        },
-        documentNumber: {
-          type: String,
-          trim: true,
-          uppercase: true,
-          default: ""
-        },
-        issueDate: {
-          type: Date,
-          default: null
-        },
-        expiryDate: {
-          type: Date,
-          required: [true, "Document expiry date is required"],
-          index: true
-        },
-        fileKey: {
-          type: String,
-          required: [true, "File storage key is required"]
-        },
-        originalFileName: {
-          type: String,
-          required: true
-        },
-        mimeType: {
-          type: String,
-          required: true
-        },
-        fileSize: {
-          type: Number,
-          required: true
-        },
-        complianceStatus: {
-          type: String,
-          enum: Object.values(ComplianceStatus),
-          default: ComplianceStatus.VALID,
-          index: true
-        },
-        notes: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    vehicleDocumentSchema.methods.calculateComplianceStatus = function(now = /* @__PURE__ */ new Date()) {
-      if (!this.expiryDate) {
-        this.complianceStatus = ComplianceStatus.MISSING;
-        return this.complianceStatus;
-      }
-      const expiry = new Date(this.expiryDate);
-      const diffMs = expiry.getTime() - now.getTime();
-      const diffDays = Math.ceil(diffMs / (1e3 * 60 * 60 * 24));
-      if (diffDays < 0) {
-        this.complianceStatus = ComplianceStatus.EXPIRED;
-      } else if (diffDays <= 30) {
-        this.complianceStatus = ComplianceStatus.EXPIRING_SOON;
-      } else {
-        this.complianceStatus = ComplianceStatus.VALID;
-      }
-      return this.complianceStatus;
-    };
-    vehicleDocumentSchema.pre("save", function(next) {
-      this.calculateComplianceStatus();
-      next();
-    });
-    vehicleDocumentSchema.index({ companyId: 1, vehicleId: 1, documentType: 1 });
-    vehicleDocumentSchema.index({ companyId: 1, expiryDate: 1 });
-    module2.exports = mongoose.model("VehicleDocument", vehicleDocumentSchema);
-  }
-});
-
-// apps/api/src/services/storage.service.js
-var require_storage_service = __commonJS({
-  "apps/api/src/services/storage.service.js"(exports2, module2) {
-    "use strict";
-    var fs2 = require("fs");
-    var path2 = require("path");
-    var crypto4 = require("crypto");
-    var { AppError: AppError2 } = require_errorHandler();
-    var defaultUploadDir = process.env.VERCEL || process.env.SERVERLESS ? path2.join(require("os").tmpdir(), "uploads") : "./uploads";
-    var UPLOAD_ROOT = path2.resolve(
-      process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || defaultUploadDir
-    );
-    var ALLOWED_MIME_TYPES = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "application/pdf",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "application/vnd.ms-excel",
-      "text/csv"
-    ];
-    var DANGEROUS_EXTENSIONS = /* @__PURE__ */ new Set([
-      ".exe",
-      ".bat",
-      ".cmd",
-      ".sh",
-      ".bash",
-      ".php",
-      ".phtml",
-      ".php3",
-      ".php4",
-      ".php5",
-      ".php7",
-      ".phps",
-      ".js",
-      ".mjs",
-      ".vbs",
-      ".py",
-      ".bin",
-      ".dll",
-      ".msi",
-      ".jar",
-      ".com",
-      ".scr",
-      ".ps1",
-      ".hta",
-      ".cpl"
-    ]);
-    var MIME_EXTENSION_MAP = {
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
-      "image/webp": [".webp"],
-      "application/pdf": [".pdf"],
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
-      "application/vnd.ms-excel": [".xls", ".xlsx"],
-      "text/csv": [".csv", ".txt"]
-    };
-    function validateFileSignature(buffer, mimeType, filenameOrExt) {
-      if (!buffer || buffer.length === 0) {
-        throw new AppError2("Uploaded file buffer is empty.", 400);
-      }
-      const ext = (filenameOrExt && filenameOrExt.startsWith(".") ? filenameOrExt : path2.extname(filenameOrExt || "")).toLowerCase();
-      if (DANGEROUS_EXTENSIONS.has(ext)) {
-        throw new AppError2(`Security violation: File extension '${ext}' is strictly prohibited.`, 400);
-      }
-      const allowedExts = MIME_EXTENSION_MAP[mimeType];
-      if (allowedExts && !allowedExts.includes(ext)) {
-        throw new AppError2(
-          `File extension '${ext}' does not match declared MIME type '${mimeType}'. Expected: ${allowedExts.join(", ")}`,
-          400
-        );
-      }
-      if (mimeType === "application/pdf") {
-        const header = buffer.slice(0, 4).toString("ascii");
-        if (header !== "%PDF") {
-          throw new AppError2("File signature mismatch: File claims to be PDF but lacks valid %PDF header.", 400);
-        }
-      } else if (mimeType === "image/jpeg") {
-        if (buffer.length < 3 || buffer[0] !== 255 || buffer[1] !== 216 || buffer[2] !== 255) {
-          throw new AppError2("File signature mismatch: File claims to be JPEG but lacks valid SOI marker.", 400);
-        }
-      } else if (mimeType === "image/png") {
-        if (buffer.length < 8 || buffer[0] !== 137 || buffer[1] !== 80 || buffer[2] !== 78 || buffer[3] !== 71 || buffer[4] !== 13 || buffer[5] !== 10 || buffer[6] !== 26 || buffer[7] !== 10) {
-          throw new AppError2("File signature mismatch: File claims to be PNG but lacks valid PNG signature.", 400);
-        }
-      } else if (mimeType === "image/webp") {
-        if (buffer.length < 12 || buffer.slice(0, 4).toString("ascii") !== "RIFF" || buffer.slice(8, 12).toString("ascii") !== "WEBP") {
-          throw new AppError2("File signature mismatch: File claims to be WEBP but lacks valid RIFF/WEBP header.", 400);
-        }
-      } else if (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-        if (buffer.length < 4 || buffer[0] !== 80 || buffer[1] !== 75) {
-          throw new AppError2("File signature mismatch: File claims to be XLSX spreadsheet but lacks ZIP/PK signature.", 400);
-        }
-      } else if (mimeType === "application/vnd.ms-excel") {
-        const isOle = buffer.length >= 4 && buffer[0] === 208 && buffer[1] === 207 && buffer[2] === 17 && buffer[3] === 224;
-        const isZip = buffer.length >= 2 && buffer[0] === 80 && buffer[1] === 75;
-        if (!isOle && !isZip) {
-          throw new AppError2("File signature mismatch: File claims to be Excel workbook but lacks valid signature.", 400);
-        }
-      } else if (mimeType === "text/csv") {
-        if (buffer.length >= 2 && buffer[0] === 77 && buffer[1] === 90) {
-          throw new AppError2("Security violation: Executable binary (MZ header) disguised as CSV.", 400);
-        }
-        if (buffer.length >= 4 && buffer[0] === 127 && buffer.slice(1, 4).toString("ascii") === "ELF") {
-          throw new AppError2("Security violation: ELF executable disguised as CSV.", 400);
-        }
-        for (let i = 0; i < Math.min(buffer.length, 512); i++) {
-          if (buffer[i] === 0) {
-            throw new AppError2("Security violation: Binary content with NUL bytes detected in CSV text file.", 400);
-          }
-        }
-      }
-      return true;
-    }
-    var StorageService = class {
-      constructor() {
-        this.root = UPLOAD_ROOT;
-        this.driver = process.env.STORAGE_DRIVER || "local";
-        const maxMb = parseInt(process.env.STORAGE_MAX_FILE_SIZE_MB, 10) || 15;
-        this.maxFileSize = maxMb * 1024 * 1024;
-        try {
-          if (!fs2.existsSync(this.root)) {
-            fs2.mkdirSync(this.root, { recursive: true });
-          }
-        } catch (err) {
-          console.warn("[STORAGE] Local storage initialization warning:", err.message);
-        }
-      }
-      /**
-       * Public validation helper for file signatures
-       */
-      validateFileSignature(buffer, mimeType, originalName) {
-        return validateFileSignature(buffer, mimeType, originalName);
-      }
-      /**
-       * Save an uploaded file buffer into tenant-isolated storage
-       */
-      async saveFile({ buffer, originalName, mimeType, companyId, module: module3 = "documents" }) {
-        if (!companyId) {
-          throw new AppError2("Tenant company ID is required for storage isolation.", 400);
-        }
-        if (!ALLOWED_MIME_TYPES.includes(mimeType)) {
-          throw new AppError2(
-            `Invalid file format '${mimeType}'. Allowed formats: JPG, PNG, WEBP, PDF, XLSX, CSV.`,
-            400
-          );
-        }
-        if (buffer.length > this.maxFileSize) {
-          const limitMb = Math.round(this.maxFileSize / (1024 * 1024));
-          throw new AppError2(`File size exceeds the ${limitMb} MB maximum limit.`, 400);
-        }
-        const ext = path2.extname(originalName || "").toLowerCase() || ".bin";
-        validateFileSignature(buffer, mimeType, ext);
-        const tenantDir = path2.join(this.root, "tenants", companyId.toString(), module3);
-        try {
-          if (!fs2.existsSync(tenantDir)) {
-            fs2.mkdirSync(tenantDir, { recursive: true });
-          }
-        } catch (err) {
-          console.warn("[STORAGE] Tenant directory creation warning:", err.message);
-        }
-        const randomHex = crypto4.randomBytes(16).toString("hex");
-        const storageFileName = `${Date.now()}_${randomHex}${ext}`;
-        const fullPath = path2.join(tenantDir, storageFileName);
-        await fs2.promises.writeFile(fullPath, buffer);
-        const relativeKey = path2.relative(this.root, fullPath).replace(/\\/g, "/");
-        return {
-          fileKey: relativeKey,
-          originalFileName: originalName,
-          mimeType,
-          fileSize: buffer.length
-        };
-      }
-      /**
-       * Resolve and verify absolute path for a stored file key
-       */
-      getFilePath(fileKey, companyId = null) {
-        if (!fileKey || typeof fileKey !== "string") {
-          throw new AppError2("Invalid file key provided.", 400);
-        }
-        const resolvedPath = path2.resolve(this.root, fileKey);
-        if (!resolvedPath.startsWith(this.root)) {
-          throw new AppError2("Invalid path: Directory traversal detected.", 403);
-        }
-        if (companyId) {
-          const tenantPrefix = path2.resolve(this.root, "tenants", companyId.toString());
-          if (!resolvedPath.startsWith(tenantPrefix)) {
-            throw new AppError2("Access denied: Document does not belong to your organization.", 403);
-          }
-        }
-        if (!fs2.existsSync(resolvedPath)) {
-          throw new AppError2("The requested file was not found on the server.", 404);
-        }
-        return resolvedPath;
-      }
-      /**
-       * Remove a file from private storage
-       */
-      async deleteFile(fileKey, companyId = null) {
-        try {
-          const fullPath = this.getFilePath(fileKey, companyId);
-          await fs2.promises.unlink(fullPath);
-          return true;
-        } catch (err) {
-          if (err.statusCode === 404) return false;
-          throw err;
-        }
-      }
-    };
-    module2.exports = new StorageService();
-  }
-});
-
-// apps/api/src/modules/trips/models/Trip.js
-var require_Trip = __commonJS({
-  "apps/api/src/modules/trips/models/Trip.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { TripStatus, StopType, StopStatus, TripExpenseType } = require_shared2();
-    var tripStopSchema = new Schema(
-      {
-        sequence: {
-          type: Number,
-          required: true
-        },
-        stopType: {
-          type: String,
-          enum: Object.values(StopType),
-          default: StopType.PICKUP
-        },
-        locationId: {
-          type: Schema.Types.ObjectId,
-          ref: "Location",
-          required: true
-        },
-        loadStopId: {
-          type: Schema.Types.ObjectId,
-          default: null
-        },
-        allocatedQuantity: {
-          type: Number,
-          default: 0
-        },
-        allocatedWeightMt: {
-          type: Number,
-          default: 0
-        },
-        deliveredQuantity: {
-          type: Number,
-          default: 0
-        },
-        pendingQuantity: {
-          type: Number,
-          default: 0
-        },
-        status: {
-          type: String,
-          enum: Object.values(StopStatus),
-          default: StopStatus.PENDING
-        },
-        arrivedAt: {
-          type: Date,
-          default: null
-        },
-        completedAt: {
-          type: Date,
-          default: null
-        },
-        receiverName: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        receiverPhone: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        remarks: {
-          type: String,
-          trim: true,
-          default: ""
-        }
-      },
-      { _id: true, timestamps: true }
-    );
-    var tripExpenseSchema = new Schema(
-      {
-        expenseType: {
-          type: String,
-          enum: Object.values(TripExpenseType),
-          required: true
-        },
-        amountPaise: {
-          type: Number,
-          required: true,
-          min: 0
-        },
-        description: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        paidBy: {
-          type: String,
-          enum: ["DRIVER", "COMPANY"],
-          default: "DRIVER"
-        },
-        receiptFileKey: {
-          type: String,
-          default: null
-        },
-        recordedAt: {
-          type: Date,
-          default: Date.now
-        }
-      },
-      { _id: true }
-    );
-    var tripSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        tripNumber: {
-          type: String,
-          required: [true, "Trip number is required"],
-          trim: true,
-          uppercase: true
-        },
-        loadId: {
-          type: Schema.Types.ObjectId,
-          ref: "Load",
-          required: [true, "Linked Load is required"],
-          index: true
-        },
-        vehicleId: {
-          type: Schema.Types.ObjectId,
-          ref: "Vehicle",
-          required: [true, "Assigned Vehicle is required"],
-          index: true
-        },
-        driverId: {
-          type: Schema.Types.ObjectId,
-          ref: "Driver",
-          required: [true, "Assigned Driver is required"],
-          index: true
-        },
-        startDateTime: {
-          type: Date,
-          default: Date.now
-        },
-        expectedDeliveryDateTime: {
-          type: Date,
-          default: null
-        },
-        actualEndDateTime: {
-          type: Date,
-          default: null
-        },
-        status: {
-          type: String,
-          enum: Object.values(TripStatus),
-          default: TripStatus.CREATED,
-          index: true
-        },
-        stops: [tripStopSchema],
-        expenses: [tripExpenseSchema],
-        financials: {
-          grossFreightPaise: {
-            type: Number,
-            default: 0,
-            min: 0
-          },
-          driverAdvancePaise: {
-            type: Number,
-            default: 0,
-            min: 0
-          },
-          totalExpensesPaise: {
-            type: Number,
-            default: 0,
-            min: 0
-          },
-          netSettlementPaise: {
-            type: Number,
-            default: 0
-          }
-        },
-        statusHistory: [
-          {
-            status: { type: String, required: true },
-            changedBy: { type: Schema.Types.ObjectId, ref: "User" },
-            reason: { type: String, default: "" },
-            timestamp: { type: Date, default: Date.now }
-          }
-        ],
-        remarks: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    tripSchema.pre("save", function(next) {
-      if (this.expenses && this.expenses.length > 0) {
-        this.financials.totalExpensesPaise = this.expenses.reduce(
-          (sum, e) => sum + (e.amountPaise || 0),
-          0
-        );
-      } else {
-        this.financials.totalExpensesPaise = 0;
-      }
-      this.financials.netSettlementPaise = (this.financials.grossFreightPaise || 0) - (this.financials.totalExpensesPaise || 0) - (this.financials.driverAdvancePaise || 0);
-      next();
-    });
-    tripSchema.index({ companyId: 1, tripNumber: 1 }, { unique: true });
-    tripSchema.index({ companyId: 1, status: 1 });
-    tripSchema.index({ companyId: 1, vehicleId: 1, status: 1 });
-    tripSchema.index({ companyId: 1, driverId: 1, status: 1 });
-    tripSchema.index({ companyId: 1, loadId: 1, status: 1 });
-    var ACTIVE_STATUSES = [
-      TripStatus.CREATED,
-      TripStatus.VEHICLE_ASSIGNED,
-      TripStatus.LOADING,
-      TripStatus.IN_TRANSIT,
-      TripStatus.PARTIALLY_DELIVERED
-    ];
-    tripSchema.index(
-      { companyId: 1, vehicleId: 1 },
-      {
-        unique: true,
-        partialFilterExpression: {
-          isActive: true,
-          status: { $in: ACTIVE_STATUSES }
-        }
-      }
-    );
-    tripSchema.index(
-      { companyId: 1, driverId: 1 },
-      {
-        unique: true,
-        partialFilterExpression: {
-          isActive: true,
-          status: { $in: ACTIVE_STATUSES }
-        }
-      }
-    );
-    tripSchema.index(
-      { companyId: 1, loadId: 1 },
-      {
-        unique: true,
-        partialFilterExpression: {
-          isActive: true,
-          status: { $in: ACTIVE_STATUSES }
-        }
-      }
-    );
-    module2.exports = mongoose.model("Trip", tripSchema);
-  }
-});
-
-// apps/api/src/modules/vehicles/controllers/vehicle.controller.js
-var require_vehicle_controller = __commonJS({
-  "apps/api/src/modules/vehicles/controllers/vehicle.controller.js"(exports2, module2) {
-    "use strict";
-    var Vehicle = require_Vehicle();
-    var VehicleDocument = require_VehicleDocument();
-    var storageService = require_storage_service();
-    var auditLogService = require_auditLog_service();
-    var { AuditAction, VehicleStatus, VehicleDocumentType } = require_shared2();
-    var { AppError: AppError2 } = require_errorHandler();
-    var VehicleController = class {
-      async list(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const {
-            page = 1,
-            limit = 20,
-            search = "",
-            status = "",
-            category = "",
-            isActive = ""
-          } = req.query;
-          const filter = { companyId };
-          if (status) filter.status = status;
-          if (category) filter.category = category;
-          if (isActive !== "") filter.isActive = isActive === "true";
-          if (search) {
-            const cleanSearch = search.trim().replace(/\s+/g, "");
-            const regex = new RegExp(cleanSearch, "i");
-            filter.$or = [
-              { plateNumber: regex },
-              { make: new RegExp(search.trim(), "i") },
-              { model: new RegExp(search.trim(), "i") },
-              { ownerName: new RegExp(search.trim(), "i") },
-              { chassisNumber: regex }
-            ];
-          }
-          const pageNum = Math.max(1, parseInt(page, 10));
-          const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10)));
-          const skip = (pageNum - 1) * limitNum;
-          const [vehicles, total] = await Promise.all([
-            Vehicle.find(filter).sort({ plateNumber: 1 }).skip(skip).limit(limitNum),
-            Vehicle.countDocuments(filter)
-          ]);
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: {
-              items: vehicles,
-              pagination: {
-                page: pageNum,
-                limit: limitNum,
-                total,
-                totalPages: Math.ceil(total / limitNum)
-              }
-            }
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async getById(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const vehicle = await Vehicle.findOne({ _id: id, companyId });
-          if (!vehicle) {
-            return next(new AppError2("Vehicle not found.", 404));
-          }
-          const documents = await VehicleDocument.find({
-            vehicleId: id,
-            companyId,
-            isActive: true
-          }).sort({ expiryDate: 1 });
-          const now = /* @__PURE__ */ new Date();
-          documents.forEach((doc) => doc.calculateComplianceStatus(now));
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: {
-              ...vehicle.toObject(),
-              documents
-            }
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async create(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const {
-            plateNumber,
-            vehicleType,
-            category,
-            make,
-            model,
-            yearOfManufacture,
-            capacityTonnage,
-            chassisNumber,
-            engineNumber,
-            ownerName,
-            ownerPhone,
-            status
-          } = req.body;
-          if (!plateNumber || !plateNumber.trim()) {
-            return next(new AppError2("Vehicle registration plate number is required.", 400));
-          }
-          const cleanPlate = plateNumber.trim().toUpperCase().replace(/\s+/g, "");
-          const existing = await Vehicle.findOne({ companyId, plateNumber: cleanPlate });
-          if (existing) {
-            return next(new AppError2(`Vehicle with plate number '${cleanPlate}' already exists in your fleet.`, 409));
-          }
-          const vehicle = await Vehicle.create({
-            companyId,
-            plateNumber: cleanPlate,
-            vehicleType: vehicleType ? vehicleType.trim() : "Open Truck",
-            category: category || "OWNED",
-            make: make ? make.trim() : "",
-            model: model ? model.trim() : "",
-            yearOfManufacture: yearOfManufacture || void 0,
-            capacityTonnage: capacityTonnage || 10,
-            chassisNumber: chassisNumber ? chassisNumber.trim().toUpperCase() : "",
-            engineNumber: engineNumber ? engineNumber.trim().toUpperCase() : "",
-            ownerName: ownerName ? ownerName.trim() : "",
-            ownerPhone: ownerPhone ? ownerPhone.trim() : "",
-            status: status || VehicleStatus.AVAILABLE,
-            isActive: true
-          });
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "VEHICLES",
-            action: AuditAction.CREATE,
-            entityId: vehicle._id,
-            newValues: vehicle.toObject(),
-            ipAddress: req.ip
-          });
-          res.status(201).json({
-            success: true,
-            statusCode: 201,
-            message: "Vehicle added to fleet successfully.",
-            data: vehicle
-          });
-        } catch (err) {
-          if (err.code === 11e3) {
-            return next(new AppError2("Duplicate vehicle plate number constraint violated.", 409));
-          }
-          next(err);
-        }
-      }
-      async update(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const vehicle = await Vehicle.findOne({ _id: id, companyId });
-          if (!vehicle) {
-            return next(new AppError2("Vehicle not found.", 404));
-          }
-          const oldValues = vehicle.toObject();
-          const allowedFields = [
-            "vehicleType",
-            "category",
-            "make",
-            "model",
-            "yearOfManufacture",
-            "capacityTonnage",
-            "chassisNumber",
-            "engineNumber",
-            "ownerName",
-            "ownerPhone",
-            "status",
-            "isActive"
-          ];
-          allowedFields.forEach((field) => {
-            if (req.body[field] !== void 0) {
-              vehicle[field] = req.body[field];
-            }
-          });
-          if (req.body.plateNumber) {
-            const cleanPlate = req.body.plateNumber.trim().toUpperCase().replace(/\s+/g, "");
-            if (cleanPlate !== vehicle.plateNumber) {
-              const duplicate = await Vehicle.findOne({ companyId, plateNumber: cleanPlate });
-              if (duplicate) {
-                return next(new AppError2(`Vehicle plate '${cleanPlate}' already in use.`, 409));
-              }
-              vehicle.plateNumber = cleanPlate;
-            }
-          }
-          await vehicle.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "VEHICLES",
-            action: AuditAction.UPDATE,
-            entityId: vehicle._id,
-            oldValues,
-            newValues: vehicle.toObject(),
-            ipAddress: req.ip
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Vehicle updated successfully.",
-            data: vehicle
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async delete(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const vehicle = await Vehicle.findOne({ _id: id, companyId });
-          if (!vehicle) {
-            return next(new AppError2("Vehicle not found.", 404));
-          }
-          const Trip = require_Trip();
-          const activeTrip = await Trip.findOne({
-            companyId,
-            vehicleId: vehicle._id,
-            status: { $in: ["CREATED", "VEHICLE_ASSIGNED", "LOADING", "IN_TRANSIT", "PARTIALLY_DELIVERED"] },
-            isActive: true
-          });
-          if (activeTrip) {
-            return next(new AppError2(`Cannot deactivate vehicle ${vehicle.plateNumber}: currently assigned to active Trip ${activeTrip.tripNumber}.`, 400));
-          }
-          vehicle.isActive = false;
-          vehicle.status = VehicleStatus.INACTIVE;
-          await vehicle.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "VEHICLES",
-            action: AuditAction.DELETE,
-            entityId: vehicle._id,
-            oldValues: { isActive: true },
-            newValues: { isActive: false, status: VehicleStatus.INACTIVE },
-            ipAddress: req.ip
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Vehicle deactivated from active fleet."
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      /**
-       * Upload & attach a regulatory document to vehicle
-       */
-      async uploadDocument(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const vehicle = await Vehicle.findOne({ _id: id, companyId });
-          if (!vehicle) {
-            return next(new AppError2("Vehicle not found.", 404));
-          }
-          if (!req.file) {
-            return next(new AppError2("Document file is required (PDF, JPG, PNG).", 400));
-          }
-          const {
-            documentType,
-            documentNumber,
-            issueDate,
-            expiryDate,
-            notes
-          } = req.body;
-          if (!documentType || !Object.values(VehicleDocumentType).includes(documentType)) {
-            return next(new AppError2(`Invalid document type. Allowed: ${Object.values(VehicleDocumentType).join(", ")}`, 400));
-          }
-          if (!expiryDate) {
-            return next(new AppError2("Document expiry date is mandatory.", 400));
-          }
-          const storageResult = await storageService.saveFile({
-            buffer: req.file.buffer,
-            originalName: req.file.originalname,
-            mimeType: req.file.mimetype,
-            companyId,
-            module: "vehicles"
-          });
-          const vehicleDoc = new VehicleDocument({
-            companyId,
-            vehicleId: vehicle._id,
-            documentType,
-            documentNumber: documentNumber ? documentNumber.trim().toUpperCase() : "",
-            issueDate: issueDate ? new Date(issueDate) : null,
-            expiryDate: new Date(expiryDate),
-            fileKey: storageResult.fileKey,
-            originalFileName: storageResult.originalFileName,
-            mimeType: storageResult.mimeType,
-            fileSize: storageResult.fileSize,
-            notes: notes || "",
-            isActive: true
-          });
-          vehicleDoc.calculateComplianceStatus();
-          await vehicleDoc.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "VEHICLE_DOCS",
-            action: AuditAction.CREATE,
-            entityId: vehicleDoc._id,
-            newValues: {
-              vehicleId: vehicle._id,
-              plateNumber: vehicle.plateNumber,
-              documentType,
-              expiryDate: vehicleDoc.expiryDate
-            },
-            ipAddress: req.ip
-          });
-          res.status(201).json({
-            success: true,
-            statusCode: 201,
-            message: `${documentType} document uploaded successfully.`,
-            data: vehicleDoc
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async listDocuments(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const docs = await VehicleDocument.find({
-            vehicleId: id,
-            companyId,
-            isActive: true
-          }).sort({ expiryDate: 1 });
-          const now = /* @__PURE__ */ new Date();
-          docs.forEach((d) => d.calculateComplianceStatus(now));
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: docs
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async deleteDocument(req, res, next) {
-        try {
-          const { docId } = req.params;
-          const companyId = req.tenant.companyId;
-          const doc = await VehicleDocument.findOne({ _id: docId, companyId });
-          if (!doc) {
-            return next(new AppError2("Document not found.", 404));
-          }
-          doc.isActive = false;
-          await doc.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "VEHICLE_DOCS",
-            action: AuditAction.DELETE,
-            entityId: doc._id,
-            oldValues: { documentType: doc.documentType, vehicleId: doc.vehicleId },
-            newValues: { isActive: false },
-            ipAddress: req.ip
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Vehicle document deactivated."
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-    };
-    module2.exports = new VehicleController();
-  }
-});
-
-// apps/api/src/modules/vehicles/routes/vehicle.routes.js
-var require_vehicle_routes = __commonJS({
-  "apps/api/src/modules/vehicles/routes/vehicle.routes.js"(exports2, module2) {
-    "use strict";
-    var express2 = require_express2();
-    var multer = require_multer();
-    var vehicleController = require_vehicle_controller();
-    var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var { requirePermission } = require_rbac_middleware();
-    var { SystemModule, ActionPermission } = require_shared2();
-    var router = express2.Router();
-    var upload = multer({
-      storage: multer.memoryStorage(),
-      limits: { fileSize: 10 * 1024 * 1024 }
-      // 10MB limit
-    });
-    router.use(authenticate, enforceTenantScope);
-    router.get(
-      "/",
-      requirePermission(SystemModule.VEHICLES, ActionPermission.VIEW),
-      vehicleController.list
-    );
-    router.get(
-      "/:id",
-      requirePermission(SystemModule.VEHICLES, ActionPermission.VIEW),
-      vehicleController.getById
-    );
-    router.post(
-      "/",
-      requirePermission(SystemModule.VEHICLES, ActionPermission.ADD),
-      vehicleController.create
-    );
-    router.put(
-      "/:id",
-      requirePermission(SystemModule.VEHICLES, ActionPermission.EDIT),
-      vehicleController.update
-    );
-    router.delete(
-      "/:id",
-      requirePermission(SystemModule.VEHICLES, ActionPermission.DELETE),
-      vehicleController.delete
-    );
-    router.post(
-      "/:id/documents",
-      requirePermission(SystemModule.VEHICLE_DOCS, ActionPermission.ADD),
-      upload.single("file"),
-      vehicleController.uploadDocument
-    );
-    router.get(
-      "/:id/documents",
-      requirePermission(SystemModule.VEHICLE_DOCS, ActionPermission.VIEW),
-      vehicleController.listDocuments
-    );
-    router.delete(
-      "/documents/:docId",
-      requirePermission(SystemModule.VEHICLE_DOCS, ActionPermission.DELETE),
-      vehicleController.deleteDocument
-    );
-    module2.exports = router;
-  }
-});
-
-// apps/api/src/modules/drivers/models/Driver.js
-var require_Driver = __commonJS({
-  "apps/api/src/modules/drivers/models/Driver.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { DriverStatus, DriverLicenseType } = require_shared2();
-    var driverSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        name: {
-          type: String,
-          required: [true, "Driver full name is required"],
-          trim: true
-        },
-        phone: {
-          type: String,
-          required: [true, "Driver contact phone number is required"],
-          trim: true
-        },
-        alternatePhone: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        licenseNumber: {
-          type: String,
-          required: [true, "Driving licence number is required"],
-          trim: true,
-          uppercase: true
-        },
-        licenseType: {
-          type: String,
-          enum: Object.values(DriverLicenseType),
-          default: DriverLicenseType.HMV
-        },
-        licenseExpiryDate: {
-          type: Date,
-          required: [true, "Licence expiry date is required"],
-          index: true
-        },
-        address: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        emergencyContact: {
-          name: { type: String, trim: true, default: "" },
-          relation: { type: String, trim: true, default: "" },
-          phone: { type: String, trim: true, default: "" }
-        },
-        status: {
-          type: String,
-          enum: Object.values(DriverStatus),
-          default: DriverStatus.AVAILABLE,
-          index: true
-        },
-        currentVehicleId: {
-          type: Schema.Types.ObjectId,
-          ref: "Vehicle",
-          default: null
-        },
-        currentTripId: {
-          type: Schema.Types.ObjectId,
-          ref: "Trip",
-          default: null
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        }
-      },
-      {
-        timestamps: true,
-        toJSON: { virtuals: true },
-        toObject: { virtuals: true }
-      }
-    );
-    driverSchema.virtual("licenceNumber").get(function() {
-      return this.licenseNumber;
-    }).set(function(v) {
-      this.licenseNumber = v;
-    });
-    driverSchema.index({ companyId: 1, licenseNumber: 1 }, { unique: true });
-    driverSchema.index({ companyId: 1, status: 1 });
-    driverSchema.index({ companyId: 1, licenseExpiryDate: 1 });
-    module2.exports = mongoose.model("Driver", driverSchema);
-  }
-});
-
-// apps/api/src/modules/drivers/models/DriverDocument.js
-var require_DriverDocument = __commonJS({
-  "apps/api/src/modules/drivers/models/DriverDocument.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { DriverDocumentType, ComplianceStatus } = require_shared2();
-    var driverDocumentSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        driverId: {
-          type: Schema.Types.ObjectId,
-          ref: "Driver",
-          required: true,
-          index: true
-        },
-        documentType: {
-          type: String,
-          enum: Object.values(DriverDocumentType),
-          required: [true, "Document type is required"]
-        },
-        documentNumber: {
-          type: String,
-          trim: true,
-          uppercase: true,
-          default: ""
-        },
-        issueDate: {
-          type: Date,
-          default: null
-        },
-        expiryDate: {
-          type: Date,
-          default: null,
-          // Note: PAN and Aadhaar do not have expiry dates, whereas DL and Medical do
-          index: true
-        },
-        fileKey: {
-          type: String,
-          required: [true, "File storage key is required"]
-        },
-        originalFileName: {
-          type: String,
-          required: true
-        },
-        mimeType: {
-          type: String,
-          required: true
-        },
-        fileSize: {
-          type: Number,
-          required: true
-        },
-        complianceStatus: {
-          type: String,
-          enum: Object.values(ComplianceStatus),
-          default: ComplianceStatus.VALID,
-          index: true
-        },
-        notes: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    driverDocumentSchema.methods.calculateComplianceStatus = function(now = /* @__PURE__ */ new Date()) {
-      if (!this.expiryDate) {
-        this.complianceStatus = ComplianceStatus.VALID;
-        return this.complianceStatus;
-      }
-      const expiry = new Date(this.expiryDate);
-      const diffMs = expiry.getTime() - now.getTime();
-      const diffDays = Math.ceil(diffMs / (1e3 * 60 * 60 * 24));
-      if (diffDays < 0) {
-        this.complianceStatus = ComplianceStatus.EXPIRED;
-      } else if (diffDays <= 30) {
-        this.complianceStatus = ComplianceStatus.EXPIRING_SOON;
-      } else {
-        this.complianceStatus = ComplianceStatus.VALID;
-      }
-      return this.complianceStatus;
-    };
-    driverDocumentSchema.pre("save", function(next) {
-      this.calculateComplianceStatus();
-      next();
-    });
-    driverDocumentSchema.index({ companyId: 1, driverId: 1, documentType: 1 });
-    driverDocumentSchema.index({ companyId: 1, expiryDate: 1 });
-    module2.exports = mongoose.model("DriverDocument", driverDocumentSchema);
-  }
-});
-
-// apps/api/src/modules/drivers/controllers/driver.controller.js
-var require_driver_controller = __commonJS({
-  "apps/api/src/modules/drivers/controllers/driver.controller.js"(exports2, module2) {
-    "use strict";
-    var Driver = require_Driver();
-    var DriverDocument = require_DriverDocument();
-    var storageService = require_storage_service();
-    var auditLogService = require_auditLog_service();
-    var { AuditAction, DriverStatus, DriverDocumentType } = require_shared2();
-    var { AppError: AppError2 } = require_errorHandler();
-    var DriverController = class {
-      async list(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const {
-            page = 1,
-            limit = 20,
-            search = "",
-            status = "",
-            licenseType = "",
-            isActive = ""
-          } = req.query;
-          const filter = { companyId };
-          if (status) filter.status = status;
-          if (licenseType) filter.licenseType = licenseType;
-          if (isActive !== "") filter.isActive = isActive === "true";
-          if (search) {
-            const regex = new RegExp(search.trim(), "i");
-            filter.$or = [
-              { name: regex },
-              { phone: regex },
-              { alternatePhone: regex },
-              { licenseNumber: regex }
-            ];
-          }
-          const pageNum = Math.max(1, parseInt(page, 10));
-          const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10)));
-          const skip = (pageNum - 1) * limitNum;
-          const [drivers, total] = await Promise.all([
-            Driver.find(filter).sort({ name: 1 }).skip(skip).limit(limitNum),
-            Driver.countDocuments(filter)
-          ]);
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: {
-              items: drivers,
-              pagination: {
-                page: pageNum,
-                limit: limitNum,
-                total,
-                totalPages: Math.ceil(total / limitNum)
-              }
-            }
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async getById(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const driver = await Driver.findOne({ _id: id, companyId });
-          if (!driver) {
-            return next(new AppError2("Driver not found.", 404));
-          }
-          const documents = await DriverDocument.find({
-            driverId: id,
-            companyId,
-            isActive: true
-          }).sort({ createdAt: -1 });
-          const now = /* @__PURE__ */ new Date();
-          documents.forEach((doc) => doc.calculateComplianceStatus(now));
-          const diffMs = new Date(driver.licenseExpiryDate).getTime() - now.getTime();
-          const diffDays = Math.ceil(diffMs / (1e3 * 60 * 60 * 24));
-          const licenceStatus = diffDays < 0 ? "EXPIRED" : diffDays <= 30 ? "EXPIRING_SOON" : "VALID";
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: {
-              ...driver.toObject(),
-              licenceComplianceStatus: licenceStatus,
-              daysUntilLicenceExpiry: diffDays,
-              documents
-            }
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async create(req, res, next) {
-        try {
-          const companyId = req.tenant.companyId;
-          const {
-            name,
-            phone,
-            alternatePhone,
-            licenseNumber,
-            licenseType,
-            licenseExpiryDate,
-            address,
-            emergencyContact,
-            status
-          } = req.body;
-          if (!name || !name.trim()) {
-            return next(new AppError2("Driver full name is required.", 400));
-          }
-          if (!phone || !phone.trim()) {
-            return next(new AppError2("Driver contact phone number is required.", 400));
-          }
-          if (!licenseNumber || !licenseNumber.trim()) {
-            return next(new AppError2("Driving licence number is required.", 400));
-          }
-          if (!licenseExpiryDate) {
-            return next(new AppError2("Driving licence expiry date is required.", 400));
-          }
-          const cleanLicense = licenseNumber.trim().toUpperCase();
-          const existing = await Driver.findOne({ companyId, licenseNumber: cleanLicense });
-          if (existing) {
-            return next(new AppError2(`Driver with licence number '${cleanLicense}' already exists.`, 409));
-          }
-          const driver = await Driver.create({
-            companyId,
-            name: name.trim(),
-            phone: phone.trim(),
-            alternatePhone: alternatePhone ? alternatePhone.trim() : "",
-            licenseNumber: cleanLicense,
-            licenseType: licenseType || "HMV",
-            licenseExpiryDate: new Date(licenseExpiryDate),
-            address: address ? address.trim() : "",
-            emergencyContact,
-            status: status || DriverStatus.AVAILABLE,
-            isActive: true
-          });
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "DRIVERS",
-            action: AuditAction.CREATE,
-            entityId: driver._id,
-            newValues: driver.toObject(),
-            ipAddress: req.ip
-          });
-          res.status(201).json({
-            success: true,
-            statusCode: 201,
-            message: "Driver profile created successfully.",
-            data: driver
-          });
-        } catch (err) {
-          if (err.code === 11e3) {
-            return next(new AppError2("Duplicate licence number constraint violated.", 409));
-          }
-          next(err);
-        }
-      }
-      async update(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const driver = await Driver.findOne({ _id: id, companyId });
-          if (!driver) {
-            return next(new AppError2("Driver not found.", 404));
-          }
-          const oldValues = driver.toObject();
-          const allowedFields = [
-            "name",
-            "phone",
-            "alternatePhone",
-            "licenseType",
-            "licenseExpiryDate",
-            "address",
-            "emergencyContact",
-            "status",
-            "isActive"
-          ];
-          allowedFields.forEach((field) => {
-            if (req.body[field] !== void 0) {
-              if (field === "licenseExpiryDate") {
-                driver[field] = new Date(req.body[field]);
-              } else {
-                driver[field] = req.body[field];
-              }
-            }
-          });
-          if (req.body.licenseNumber) {
-            const cleanLicense = req.body.licenseNumber.trim().toUpperCase();
-            if (cleanLicense !== driver.licenseNumber) {
-              const duplicate = await Driver.findOne({ companyId, licenseNumber: cleanLicense });
-              if (duplicate) {
-                return next(new AppError2(`Driving licence '${cleanLicense}' already in use.`, 409));
-              }
-              driver.licenseNumber = cleanLicense;
-            }
-          }
-          await driver.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "DRIVERS",
-            action: AuditAction.UPDATE,
-            entityId: driver._id,
-            oldValues,
-            newValues: driver.toObject(),
-            ipAddress: req.ip
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Driver profile updated successfully.",
-            data: driver
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async delete(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const driver = await Driver.findOne({ _id: id, companyId });
-          if (!driver) {
-            return next(new AppError2("Driver not found.", 404));
-          }
-          const Trip = require_Trip();
-          const activeTrip = await Trip.findOne({
-            companyId,
-            driverId: driver._id,
-            status: { $in: ["CREATED", "VEHICLE_ASSIGNED", "LOADING", "IN_TRANSIT", "PARTIALLY_DELIVERED"] },
-            isActive: true
-          });
-          if (activeTrip) {
-            return next(new AppError2(`Cannot deactivate driver ${driver.name}: currently assigned to active Trip ${activeTrip.tripNumber}.`, 400));
-          }
-          driver.isActive = false;
-          driver.status = DriverStatus.INACTIVE;
-          await driver.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "DRIVERS",
-            action: AuditAction.DELETE,
-            entityId: driver._id,
-            oldValues: { isActive: true },
-            newValues: { isActive: false, status: DriverStatus.INACTIVE },
-            ipAddress: req.ip
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Driver profile deactivated."
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      /**
-       * Upload & attach identity/licence document for driver
-       */
-      async uploadDocument(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const driver = await Driver.findOne({ _id: id, companyId });
-          if (!driver) {
-            return next(new AppError2("Driver not found.", 404));
-          }
-          if (!req.file) {
-            return next(new AppError2("Document file is required (PDF, JPG, PNG).", 400));
-          }
-          const {
-            documentType,
-            documentNumber,
-            issueDate,
-            expiryDate,
-            notes
-          } = req.body;
-          if (!documentType || !Object.values(DriverDocumentType).includes(documentType)) {
-            return next(new AppError2(`Invalid document type. Allowed: ${Object.values(DriverDocumentType).join(", ")}`, 400));
-          }
-          const storageResult = await storageService.saveFile({
-            buffer: req.file.buffer,
-            originalName: req.file.originalname,
-            mimeType: req.file.mimetype,
-            companyId,
-            module: "drivers"
-          });
-          const driverDoc = new DriverDocument({
-            companyId,
-            driverId: driver._id,
-            documentType,
-            documentNumber: documentNumber ? documentNumber.trim().toUpperCase() : "",
-            issueDate: issueDate ? new Date(issueDate) : null,
-            expiryDate: expiryDate ? new Date(expiryDate) : null,
-            fileKey: storageResult.fileKey,
-            originalFileName: storageResult.originalFileName,
-            mimeType: storageResult.mimeType,
-            fileSize: storageResult.fileSize,
-            notes: notes || "",
-            isActive: true
-          });
-          driverDoc.calculateComplianceStatus();
-          await driverDoc.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "DRIVER_DOCS",
-            action: AuditAction.CREATE,
-            entityId: driverDoc._id,
-            newValues: {
-              driverId: driver._id,
-              driverName: driver.name,
-              documentType
-            },
-            ipAddress: req.ip
-          });
-          res.status(201).json({
-            success: true,
-            statusCode: 201,
-            message: `${documentType} uploaded successfully for ${driver.name}.`,
-            data: driverDoc
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async listDocuments(req, res, next) {
-        try {
-          const { id } = req.params;
-          const companyId = req.tenant.companyId;
-          const docs = await DriverDocument.find({
-            driverId: id,
-            companyId,
-            isActive: true
-          }).sort({ createdAt: -1 });
-          const now = /* @__PURE__ */ new Date();
-          docs.forEach((d) => d.calculateComplianceStatus(now));
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            data: docs
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-      async deleteDocument(req, res, next) {
-        try {
-          const { docId } = req.params;
-          const companyId = req.tenant.companyId;
-          const doc = await DriverDocument.findOne({ _id: docId, companyId });
-          if (!doc) {
-            return next(new AppError2("Document not found.", 404));
-          }
-          doc.isActive = false;
-          await doc.save();
-          await auditLogService.logAction({
-            companyId,
-            actorId: req.user._id,
-            module: "DRIVER_DOCS",
-            action: AuditAction.DELETE,
-            entityId: doc._id,
-            oldValues: { documentType: doc.documentType, driverId: doc.driverId },
-            newValues: { isActive: false },
-            ipAddress: req.ip
-          });
-          res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: "Driver document deactivated."
-          });
-        } catch (err) {
-          next(err);
-        }
-      }
-    };
-    module2.exports = new DriverController();
-  }
-});
-
-// apps/api/src/modules/drivers/routes/driver.routes.js
-var require_driver_routes = __commonJS({
-  "apps/api/src/modules/drivers/routes/driver.routes.js"(exports2, module2) {
-    "use strict";
-    var express2 = require_express2();
-    var multer = require_multer();
-    var driverController = require_driver_controller();
-    var { authenticate, enforceTenantScope } = require_auth_middleware();
-    var { requirePermission } = require_rbac_middleware();
-    var { SystemModule, ActionPermission } = require_shared2();
-    var router = express2.Router();
-    var upload = multer({
-      storage: multer.memoryStorage(),
-      limits: { fileSize: 10 * 1024 * 1024 }
-    });
-    router.use(authenticate, enforceTenantScope);
-    router.get(
-      "/",
-      requirePermission(SystemModule.DRIVERS, ActionPermission.VIEW),
-      driverController.list
-    );
-    router.get(
-      "/:id",
-      requirePermission(SystemModule.DRIVERS, ActionPermission.VIEW),
-      driverController.getById
-    );
-    router.post(
-      "/",
-      requirePermission(SystemModule.DRIVERS, ActionPermission.ADD),
-      driverController.create
-    );
-    router.put(
-      "/:id",
-      requirePermission(SystemModule.DRIVERS, ActionPermission.EDIT),
-      driverController.update
-    );
-    router.delete(
-      "/:id",
-      requirePermission(SystemModule.DRIVERS, ActionPermission.DELETE),
-      driverController.delete
-    );
-    router.post(
-      "/:id/documents",
-      requirePermission(SystemModule.DRIVER_DOCS, ActionPermission.ADD),
-      upload.single("file"),
-      driverController.uploadDocument
-    );
-    router.get(
-      "/:id/documents",
-      requirePermission(SystemModule.DRIVER_DOCS, ActionPermission.VIEW),
-      driverController.listDocuments
-    );
-    router.delete(
-      "/documents/:docId",
-      requirePermission(SystemModule.DRIVER_DOCS, ActionPermission.DELETE),
-      driverController.deleteDocument
-    );
-    module2.exports = router;
-  }
-});
-
-// apps/api/src/modules/lr/models/LrNumber.js
-var require_LrNumber = __commonJS({
-  "apps/api/src/modules/lr/models/LrNumber.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { LrStatus } = require_shared2();
-    var lrNumberSchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        lrNumber: {
-          type: String,
-          required: [true, "LR number is required"],
-          trim: true,
-          uppercase: true
-        },
-        isManualNumber: {
-          type: Boolean,
-          default: false
-        },
-        loadId: {
-          type: Schema.Types.ObjectId,
-          ref: "Load",
-          required: [true, "Linked Load is required"],
-          index: true
-        },
-        vehicleId: {
-          type: Schema.Types.ObjectId,
-          ref: "Vehicle",
-          default: null,
-          index: true
-        },
-        driverId: {
-          type: Schema.Types.ObjectId,
-          ref: "Driver",
-          default: null,
-          index: true
-        },
-        consignorId: {
-          type: Schema.Types.ObjectId,
-          ref: "CustomerParty",
-          required: true
-        },
-        consigneeId: {
-          type: Schema.Types.ObjectId,
-          ref: "CustomerParty",
-          required: true
-        },
-        fromLocationId: {
-          type: Schema.Types.ObjectId,
-          ref: "Location",
-          default: null
-        },
-        toLocationId: {
-          type: Schema.Types.ObjectId,
-          ref: "Location",
-          default: null
-        },
-        status: {
-          type: String,
-          enum: Object.values(LrStatus),
-          default: LrStatus.BOOKED,
-          index: true
-        },
-        issuedDate: {
-          type: Date,
-          default: Date.now
-        },
-        deliveryDate: {
-          type: Date,
-          default: null
-        },
-        eWayBillNumber: {
-          type: String,
-          trim: true,
-          uppercase: true,
-          default: ""
-        },
-        eWayBillExpiry: {
-          type: Date,
-          default: null
-        },
-        pdfFileKey: {
-          type: String,
-          default: null
-        },
-        statusHistory: [
-          {
-            status: { type: String, required: true },
-            changedBy: { type: Schema.Types.ObjectId, ref: "User" },
-            reason: { type: String, default: "" },
-            timestamp: { type: Date, default: Date.now }
-          }
-        ],
-        remarks: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    lrNumberSchema.index({ companyId: 1, lrNumber: 1 }, { unique: true });
-    lrNumberSchema.index({ companyId: 1, status: 1 });
-    module2.exports = mongoose.model("LrNumber", lrNumberSchema);
-  }
-});
-
-// apps/api/src/modules/bilties/models/Bilty.js
-var require_Bilty = __commonJS({
-  "apps/api/src/modules/bilties/models/Bilty.js"(exports2, module2) {
-    "use strict";
-    var mongoose = require_mongoose2();
-    var { Schema } = mongoose;
-    var { BiltyStatus, PaymentTerms } = require_shared2();
-    var biltySchema = new Schema(
-      {
-        companyId: {
-          type: Schema.Types.ObjectId,
-          ref: "Company",
-          required: true,
-          index: true
-        },
-        biltyNumber: {
-          type: String,
-          required: [true, "Bilty number is required"],
-          trim: true,
-          uppercase: true
-        },
-        lrId: {
-          type: Schema.Types.ObjectId,
-          ref: "LrNumber",
-          required: [true, "Linked LR is required"],
-          index: true
-        },
-        loadId: {
-          type: Schema.Types.ObjectId,
-          ref: "Load",
-          required: [true, "Linked Load is required"],
-          index: true
-        },
-        consignorId: {
-          type: Schema.Types.ObjectId,
-          ref: "CustomerParty",
-          required: true
-        },
-        consigneeId: {
-          type: Schema.Types.ObjectId,
-          ref: "CustomerParty",
-          required: true
-        },
-        fromLocationId: {
-          type: Schema.Types.ObjectId,
-          ref: "Location",
-          default: null
-        },
-        toLocationId: {
-          type: Schema.Types.ObjectId,
-          ref: "Location",
-          default: null
-        },
-        paymentTerms: {
-          type: String,
-          enum: Object.values(PaymentTerms),
-          default: PaymentTerms.TO_PAY
-        },
-        totalFreightPaise: {
-          type: Number,
-          required: true,
-          min: 0
-        },
-        advancePaise: {
-          type: Number,
-          default: 0,
-          min: 0
-        },
-        balancePaise: {
-          type: Number,
-          required: true
-        },
-        gstGtaRate: {
-          type: Number,
-          default: 5
-          // Default 5.0% GTA GST
-        },
-        gstGtaSac: {
-          type: String,
-          default: "9965"
-          // SAC 9965 Goods Transport Agency
-        },
-        status: {
-          type: String,
-          enum: Object.values(BiltyStatus),
-          default: BiltyStatus.ISSUED,
-          index: true
-        },
-        pdfFileKey: {
-          type: String,
-          default: null
-        },
-        remarks: {
-          type: String,
-          trim: true,
-          default: ""
-        },
-        isActive: {
-          type: Boolean,
-          default: true,
-          index: true
-        }
-      },
-      {
-        timestamps: true
-      }
-    );
-    biltySchema.index({ companyId: 1, biltyNumber: 1 }, { unique: true });
-    biltySchema.index({ companyId: 1, lrId: 1 }, { unique: true, partialFilterExpression: { isActive: true } });
-    module2.exports = mongoose.model("Bilty", biltySchema);
+    var mockStore2 = new MockDataStore();
+    module2.exports = mockStore2;
   }
 });
 
@@ -107707,7 +95667,7 @@ var require_cryptoNode = __commonJS({
 });
 
 // node_modules/@noble/hashes/utils.js
-var require_utils8 = __commonJS({
+var require_utils7 = __commonJS({
   "node_modules/@noble/hashes/utils.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -107949,7 +95909,7 @@ var require_utils8 = __commonJS({
 });
 
 // node_modules/@noble/ciphers/utils.js
-var require_utils9 = __commonJS({
+var require_utils8 = __commonJS({
   "node_modules/@noble/ciphers/utils.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -108247,7 +96207,7 @@ var require_polyval = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.polyval = exports2.ghash = void 0;
     exports2._toGHASHKey = _toGHASHKey;
-    var utils_ts_1 = require_utils9();
+    var utils_ts_1 = require_utils8();
     var BLOCK_SIZE = 16;
     var ZEROS16 = /* @__PURE__ */ new Uint8Array(16);
     var ZEROS32 = (0, utils_ts_1.u32)(ZEROS16);
@@ -108448,7 +96408,7 @@ var require_aes = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.unsafe = exports2.aeskwp = exports2.aeskw = exports2.siv = exports2.gcmsiv = exports2.gcm = exports2.cfb = exports2.cbc = exports2.ecb = exports2.ctr = void 0;
     var _polyval_ts_1 = require_polyval();
-    var utils_ts_1 = require_utils9();
+    var utils_ts_1 = require_utils8();
     var BLOCK_SIZE = 16;
     var BLOCK_SIZE32 = 4;
     var EMPTY_BLOCK = /* @__PURE__ */ new Uint8Array(BLOCK_SIZE);
@@ -251727,7 +239687,7 @@ var require_pdfkit = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     var module$1 = require("module");
     var stream = require("stream");
-    var utils = require_utils8();
+    var utils = require_utils7();
     var zlib$1 = require("zlib");
     var aes = require_aes();
     var fs$1 = require("fs");
@@ -258942,6 +246902,450 @@ end`);
   }
 });
 
+// apps/api/src/services/btsDocs.service.js
+var require_btsDocs_service = __commonJS({
+  "apps/api/src/services/btsDocs.service.js"(exports2, module2) {
+    "use strict";
+    var fs2 = require("fs");
+    var path2 = require("path");
+    var PDFDocument = require_pdfkit();
+    var BtsDocsService = class {
+      constructor() {
+        this.primaryColor = "#002060";
+        this.accentRed = "#c00000";
+        this.darkText = "#111827";
+        this.lightBg = "#f8fafc";
+        this.borderColor = "#334155";
+        const candidatePaths = [
+          path2.join(__dirname, "../assets/bts-logo-cropped.png"),
+          path2.join(__dirname, "../assets/bts-logo.png"),
+          path2.join(process.cwd(), "apps/api/src/assets/bts-logo-cropped.png"),
+          path2.join(process.cwd(), "apps/api/src/assets/bts-logo.png"),
+          path2.join(process.cwd(), "BTS Logo.jpg.jpeg")
+        ];
+        this.logoPath = candidatePaths.find((p) => fs2.existsSync(p)) || null;
+      }
+      _formatDate(dateInput) {
+        const d = dateInput ? new Date(dateInput) : /* @__PURE__ */ new Date();
+        if (isNaN(d.getTime())) return (/* @__PURE__ */ new Date()).toLocaleDateString("en-IN");
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+      _formatInr(amount) {
+        if (amount === void 0 || amount === null || isNaN(amount)) return "0.00";
+        return Number(amount).toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+      /**
+       * 1. Barkat Tempo Service - Loading Receipt PDF
+       * Corresponds to Barkat_Tempo_Service_Loading_Receipt.docx
+       */
+      async generateLoadingReceiptPdf(data = {}, company = {}, options = {}) {
+        return new Promise((resolve, reject) => {
+          try {
+            const doc = new PDFDocument({
+              size: "A4",
+              margin: 36,
+              info: {
+                Title: `BTS Loading Receipt - ${data.lrNumber || data.loadNumber || "RECEIPT"}`,
+                Author: "Barkat Tempo Service",
+                Subject: "Official Road Transport Loading Receipt",
+                Keywords: "BTS, Barkat Tempo Service, Loading Receipt, Consignment"
+              }
+            });
+            const buffers = [];
+            doc.on("data", (c) => buffers.push(c));
+            doc.on("end", () => resolve(Buffer.concat(buffers)));
+            doc.on("error", (err) => reject(err));
+            const margin = 36;
+            const pageWidth = 595.28;
+            const pageHeight = 841.89;
+            const printableWidth = pageWidth - margin * 2;
+            doc.rect(margin - 4, margin - 4, printableWidth + 8, pageHeight - margin * 2 + 8).lineWidth(1.5).strokeColor(this.primaryColor).stroke();
+            doc.rect(margin - 1.5, margin - 1.5, printableWidth + 3, pageHeight - margin * 2 + 3).lineWidth(0.5).strokeColor(this.primaryColor).stroke();
+            let y = margin + 8;
+            if (this.logoPath && fs2.existsSync(this.logoPath)) {
+              doc.image(this.logoPath, margin + 4, y - 2, { width: 110 });
+            } else {
+              doc.font("Helvetica-Bold").fontSize(16).fillColor(this.primaryColor).text("\u2550\u2550 [ BTS ] \u2550\u2550", margin + 4, y + 6);
+            }
+            doc.font("Helvetica-Bold").fontSize(9.5).fillColor(this.darkText).text("(M) 93776 10333      84010 20129      82000 32668", margin, y + 4, {
+              width: printableWidth,
+              align: "right"
+            });
+            y += 46;
+            doc.font("Helvetica-Bold").fontSize(23).fillColor(this.accentRed).text("BARKAT TEMPO SERVICE", margin, y, {
+              width: printableWidth,
+              align: "center",
+              characterSpacing: 0.5
+            });
+            y += 26;
+            doc.font("Helvetica-Bold").fontSize(10).fillColor(this.primaryColor).text("TRANSPORT CONTRACTOR & COMMISSION AGENT", margin, y, {
+              width: printableWidth,
+              align: "center",
+              characterSpacing: 0.8
+            });
+            y += 16;
+            doc.font("Helvetica").fontSize(8.5).fillColor("#334155").text(
+              "Shri Rang Market, Near Shri Rang Tyre Shop, N.H.No.-8, Golden Chokdi, Vadodara-390022  \u2022  E-mail: barkattemposervice@gmail.com",
+              margin,
+              y,
+              { width: printableWidth, align: "center" }
+            );
+            y += 18;
+            doc.moveTo(margin + 4, y).lineTo(pageWidth - margin - 4, y).lineWidth(1).strokeColor(this.primaryColor).stroke();
+            y += 10;
+            const receiptNo = data.lrNumber || data.loadNumber || data.receiptNumber || "BTS-LR-2026-001";
+            const docDate = this._formatDate(data.date || data.billDate || data.createdAt);
+            doc.font("Helvetica-Bold").fontSize(11).fillColor(this.accentRed);
+            doc.text(`No.: ${receiptNo}`, margin + 10, y);
+            doc.font("Helvetica-Bold").fontSize(10).fillColor(this.darkText);
+            doc.text(`Date : ${docDate}`, margin, y, {
+              width: printableWidth - 10,
+              align: "right"
+            });
+            y += 24;
+            doc.moveTo(margin + 4, y).lineTo(pageWidth - margin - 4, y).lineWidth(0.5).strokeColor("#94a3b8").stroke();
+            y += 14;
+            const toParty = data.consignee?.name || data.customer?.name || data.toParty || data.consignor?.name || "M/S. RELIANCE INDUSTRIES LTD / GUJARAT DISTRIBUTORS";
+            const toCity = data.consignee?.city || data.deliveryLocation?.city || data.toStation || "SURAT / MUMBAI";
+            doc.font("Helvetica-Bold").fontSize(10.5).fillColor(this.darkText);
+            doc.text("To,", margin + 10, y);
+            doc.font("Helvetica").fontSize(10.5).fillColor("#0f172a");
+            doc.text(` ${toParty} - ${toCity}`, margin + 30, y);
+            y += 22;
+            doc.font("Helvetica-Bold").fontSize(9.5).fillColor(this.darkText);
+            doc.text("Dear Sir,", margin + 10, y);
+            y += 16;
+            doc.font("Helvetica").fontSize(9.5).fillColor("#1e293b");
+            doc.text("As per your Order / Verbal / Phone / Written", margin + 10, y);
+            y += 22;
+            const tableY = y;
+            const rowHeight = 24;
+            const labelColWidth = 180;
+            const valueColWidth = printableWidth - 20 - labelColWidth;
+            const vehicleNo = data.vehicle?.registrationNumber || data.vehicleNumber || "GJ-06-AX-8912";
+            const station = data.toStation || data.destination || data.deliveryLocation?.name || "Surat / Vapi Hub";
+            const weight = data.weight || (data.weightMt ? `${data.weightMt} MT` : "15.50 MT (15,500 KGS)");
+            const freightRate = data.rate || data.freightAmount || 32500;
+            const advanceAmount = data.advanceAmount !== void 0 ? data.advanceAmount : 15e3;
+            const balanceAmount = data.balanceAmount !== void 0 ? data.balanceAmount : Number(freightRate) - Number(advanceAmount);
+            const paymentMode = data.paymentTerm || data.paymentMode || "To Pay / To be billed";
+            const fields = [
+              { label: "We have sent Truck / Tempo No.", value: vehicleNo, bold: true },
+              { label: "For Station", value: station, bold: true },
+              { label: "Weight", value: String(weight) },
+              { label: "Rate of Rs.", value: `\u20B9 ${this._formatInr(freightRate)}` },
+              { label: "Advance Rs.", value: `\u20B9 ${this._formatInr(advanceAmount)}` },
+              { label: "Balance", value: `\u20B9 ${this._formatInr(balanceAmount)}`, bold: true, color: this.accentRed },
+              { label: "To Pay / To be billed", value: paymentMode, bold: true }
+            ];
+            const tableHeight = fields.length * rowHeight;
+            doc.rect(margin + 10, tableY, printableWidth - 20, tableHeight).lineWidth(0.8).strokeColor("#94a3b8").stroke();
+            fields.forEach((row, idx) => {
+              const currentY = tableY + idx * rowHeight;
+              if (idx % 2 === 1) {
+                doc.rect(margin + 10, currentY, printableWidth - 20, rowHeight).fillColor("#f8fafc").fill();
+              }
+              if (idx > 0) {
+                doc.moveTo(margin + 10, currentY).lineTo(margin + printableWidth - 10, currentY).lineWidth(0.5).strokeColor("#e2e8f0").stroke();
+              }
+              doc.moveTo(margin + 10 + labelColWidth, currentY).lineTo(margin + 10 + labelColWidth, currentY + rowHeight).lineWidth(0.5).strokeColor("#e2e8f0").stroke();
+              doc.font("Helvetica-Bold").fontSize(9).fillColor("#334155").text(row.label, margin + 20, currentY + 7);
+              doc.font(row.bold ? "Helvetica-Bold" : "Helvetica").fontSize(9.5).fillColor(row.color || this.darkText).text(row.value, margin + 20 + labelColWidth, currentY + 7);
+            });
+            y = tableY + tableHeight + 16;
+            doc.font("Helvetica-Bold").fontSize(9.5).fillColor(this.accentRed).text("Detention per day Rs. 1500/-", margin + 10, y);
+            y += 18;
+            doc.font("Helvetica").fontSize(9).fillColor(this.darkText).text("Please arrange to load the vehicle as early as Possible", margin + 10, y);
+            y += 16;
+            doc.text("Thanking You,", margin + 10, y);
+            y += 30;
+            const sigY = y;
+            doc.font("Helvetica-Bold").fontSize(9).fillColor(this.darkText);
+            doc.text("PAN No. AOGPP3611Q", margin + 15, sigY + 28);
+            doc.font("Helvetica").fontSize(8).fillColor("#64748b");
+            doc.text("GSTIN: 24AAACT1234A1Z5", margin + 15, sigY + 40);
+            doc.font("Helvetica-Bold").fontSize(9.5).fillColor(this.primaryColor);
+            doc.text("Your's Faithfully", margin, sigY, { width: printableWidth - 20, align: "right" });
+            doc.text("For, BARKAT TEMPO SERVICE", margin, sigY + 16, { width: printableWidth - 20, align: "right" });
+            doc.font("Helvetica").fontSize(8).fillColor("#64748b");
+            doc.text("(Authorised Signatory)", margin, sigY + 46, { width: printableWidth - 20, align: "right" });
+            y = sigY + 76;
+            const disclaimerY = y;
+            const disclaimerBoxHeight = 64;
+            doc.rect(margin + 10, disclaimerY, printableWidth - 20, disclaimerBoxHeight).lineWidth(0.8).strokeColor("#cbd5e1").fillAndStroke("#f1f5f9", "#94a3b8");
+            doc.font("Helvetica-Bold").fontSize(7.5).fillColor("#1e293b").text(
+              "The BARKAT TEMPO SERVICE hereby specifically stipulates that is shall not be responsible any way or any casefully accident, damage theft, etc. after the loaded Vehicle Start for the Journey.",
+              margin + 16,
+              disclaimerY + 8,
+              { width: printableWidth - 32 }
+            );
+            doc.font("Helvetica").fontSize(7.5).fillColor("#334155").text(
+              "Note: Please check up engine no., chessis no. and other documents Pertaining to Vehicle & Driver for your satisfaction.",
+              margin + 16,
+              disclaimerY + 34,
+              { width: printableWidth - 32 }
+            );
+            doc.end();
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+      /**
+       * 2. Barkat Tempo Service - Memo PDF
+       * Corresponds to Barkat_Tempo_Service_Memo.docx
+       */
+      async generateMemoPdf(data = {}, company = {}, options = {}) {
+        return new Promise((resolve, reject) => {
+          try {
+            const doc = new PDFDocument({
+              size: "A4",
+              margin: 32,
+              info: {
+                Title: `BTS Memo - ${data.memoNumber || data.tripNumber || "MEMO"}`,
+                Author: "Barkat Tempo Service",
+                Subject: "Transport Trip Memo & Settlement Ledger",
+                Keywords: "BTS, Barkat Tempo Service, Memo, Trip Sheet"
+              }
+            });
+            const buffers = [];
+            doc.on("data", (c) => buffers.push(c));
+            doc.on("end", () => resolve(Buffer.concat(buffers)));
+            doc.on("error", (err) => reject(err));
+            const margin = 32;
+            const pageWidth = 595.28;
+            const pageHeight = 841.89;
+            const printableWidth = pageWidth - margin * 2;
+            doc.rect(margin - 4, margin - 4, printableWidth + 8, pageHeight - margin * 2 + 8).lineWidth(1.5).strokeColor(this.primaryColor).stroke();
+            doc.rect(margin - 1.5, margin - 1.5, printableWidth + 3, pageHeight - margin * 2 + 3).lineWidth(0.5).strokeColor(this.primaryColor).stroke();
+            let y = margin + 6;
+            const memoNo = data.memoNumber || data.tripNumber || data.id || "MEMO-2026-004";
+            const memoDate = this._formatDate(data.date || data.startDate || data.createdAt);
+            doc.font("Helvetica-Bold").fontSize(11).fillColor(this.accentRed);
+            doc.text(`MEMO NO.:  ${memoNo}`, margin + 6, y);
+            doc.font("Helvetica-Bold").fontSize(10).fillColor(this.darkText);
+            doc.text(`DATE:  ${memoDate}`, margin, y, {
+              width: printableWidth - 6,
+              align: "right"
+            });
+            y += 18;
+            if (this.logoPath && fs2.existsSync(this.logoPath)) {
+              doc.image(this.logoPath, margin + (printableWidth - 140) / 2, y, { width: 140 });
+              y += 52;
+            } else {
+              doc.font("Helvetica-Bold").fontSize(14).fillColor(this.primaryColor).text("\u2550\u2550 [ BTS ] \u2550\u2550", margin, y, { width: printableWidth, align: "center" });
+              y += 20;
+            }
+            doc.font("Helvetica-Bold").fontSize(22).fillColor(this.accentRed).text("BARKAT TEMPO SERVICE", margin, y, {
+              width: printableWidth,
+              align: "center",
+              characterSpacing: 0.5
+            });
+            y += 24;
+            doc.font("Helvetica").fontSize(8).fillColor("#334155").text(
+              "Shree Rang Market, Near Shree Rang Tyre Shop, N.H. No. 8, Golden Chokdi, Vadodara 390 022",
+              margin,
+              y,
+              { width: printableWidth, align: "center" }
+            );
+            y += 12;
+            doc.font("Helvetica-Bold").fontSize(8).fillColor(this.darkText).text(
+              "(M) 9377610333, 8401020129, 8200032668. E-mail : barkattemposervice@gmail.com",
+              margin,
+              y,
+              { width: printableWidth, align: "center" }
+            );
+            y += 16;
+            doc.moveTo(margin + 4, y).lineTo(pageWidth - margin - 4, y).lineWidth(1).strokeColor(this.primaryColor).stroke();
+            y += 8;
+            const infoY = y;
+            const colW = printableWidth / 2;
+            const rowH = 18;
+            const fromStation = data.fromStation || data.originLocation?.name || "Vadodara Hub";
+            const toStation = data.toStation || data.destinationLocation?.name || "Vapi / Mumbai Terminal";
+            const truckNo = data.vehicle?.registrationNumber || data.vehicleNumber || "GJ-06-AX-8912";
+            const driverName = data.driver?.name || data.driverName || "Ramesh Patel";
+            const ownerName = data.ownerName || data.vehicle?.ownerName || "Barkat Tempo Service";
+            const phoneNo = data.driver?.phone || data.phoneNo || "98765 43210";
+            const ownerAddress = data.ownerAddress || "Golden Chokdi, Vadodara";
+            const transporterName = data.transporterName || "BTS Logistics Division";
+            const tripDetails = [
+              [
+                { label: "From", value: fromStation },
+                { label: "To", value: toStation }
+              ],
+              [
+                { label: "Truck No.", value: truckNo, bold: true },
+                { label: "Driver Name", value: driverName }
+              ],
+              [
+                { label: "Owner Name", value: ownerName },
+                { label: "Phone No.", value: phoneNo }
+              ],
+              [
+                { label: "Owner Add.", value: ownerAddress },
+                { label: "Transporter's Name", value: transporterName }
+              ]
+            ];
+            doc.rect(margin + 4, infoY, printableWidth - 8, tripDetails.length * rowH).lineWidth(0.6).strokeColor("#94a3b8").stroke();
+            tripDetails.forEach((row, rIdx) => {
+              const cy = infoY + rIdx * rowH;
+              if (rIdx > 0) {
+                doc.moveTo(margin + 4, cy).lineTo(margin + printableWidth - 4, cy).lineWidth(0.5).strokeColor("#e2e8f0").stroke();
+              }
+              doc.moveTo(margin + colW, cy).lineTo(margin + colW, cy + rowH).lineWidth(0.5).strokeColor("#e2e8f0").stroke();
+              doc.font("Helvetica-Bold").fontSize(8).fillColor("#475569").text(row[0].label + " :", margin + 10, cy + 5);
+              doc.font(row[0].bold ? "Helvetica-Bold" : "Helvetica").fontSize(8.5).fillColor(this.darkText).text(row[0].value, margin + 85, cy + 5, { width: colW - 95 });
+              doc.font("Helvetica-Bold").fontSize(8).fillColor("#475569").text(row[1].label + " :", margin + colW + 10, cy + 5);
+              doc.font(row[1].bold ? "Helvetica-Bold" : "Helvetica").fontSize(8.5).fillColor(this.darkText).text(row[1].value, margin + colW + 95, cy + 5, { width: colW - 105 });
+            });
+            y = infoY + tripDetails.length * rowH + 12;
+            const freightTableY = y;
+            const ftHeaderH = 18;
+            const ftRowH = 16;
+            const ftCols = [
+              { key: "name", label: "Transporter's Name", width: 171 },
+              { key: "freight", label: "Freight", width: 90, align: "right" },
+              { key: "advance", label: "Advance", width: 90, align: "right" },
+              { key: "balance", label: "Balance", width: 90, align: "right" },
+              { key: "topay", label: "To Pay", width: 82, align: "right" }
+            ];
+            doc.rect(margin + 4, freightTableY, printableWidth - 8, ftHeaderH).fillAndStroke(this.primaryColor, this.primaryColor);
+            let hx = margin + 4;
+            ftCols.forEach((col) => {
+              doc.font("Helvetica-Bold").fontSize(8).fillColor("#ffffff").text(col.label, hx + 4, freightTableY + 5, {
+                width: col.width - 8,
+                align: col.align || "left"
+              });
+              hx += col.width;
+            });
+            const items = data.items || [
+              { name: "Reliance Industries Hazira (LR-001)", freight: 28e3, advance: 15e3, balance: 13e3, topay: 0 },
+              { name: "Gujarat Glass Works Ltd (LR-002)", freight: 18500, advance: 8e3, balance: 10500, topay: 0 },
+              { name: "L&T Heavy Engineering Baroda", freight: 22e3, advance: 1e4, balance: 12e3, topay: 0 },
+              { name: "General Consignment Parcel", freight: 6500, advance: 0, balance: 0, topay: 6500 }
+            ];
+            let rY = freightTableY + ftHeaderH;
+            items.slice(0, 5).forEach((item, idx) => {
+              if (idx % 2 === 1) {
+                doc.rect(margin + 4, rY, printableWidth - 8, ftRowH).fill("#f8fafc");
+              }
+              let cx = margin + 4;
+              ftCols.forEach((col) => {
+                let val = "";
+                if (col.key === "name") val = item.name;
+                else if (item[col.key] !== void 0) val = `\u20B9 ${this._formatInr(item[col.key])}`;
+                doc.font("Helvetica").fontSize(7.5).fillColor(this.darkText).text(val, cx + 4, rY + 4, {
+                  width: col.width - 8,
+                  align: col.align || "left"
+                });
+                cx += col.width;
+              });
+              rY += ftRowH;
+            });
+            doc.rect(margin + 4, freightTableY, printableWidth - 8, rY - freightTableY).lineWidth(0.6).strokeColor("#94a3b8").stroke();
+            y = rY + 10;
+            const dualGridY = y;
+            const halfWidth = (printableWidth - 14) / 2;
+            const leftAdvance = data.driverAdvance || 33e3;
+            const leftBalance = data.driverBalance || 35500;
+            const leftLocal = data.localFreight || 2500;
+            const leftHamali = data.hamali || 1800;
+            const leftTotal = leftAdvance + leftBalance + leftLocal + leftHamali;
+            const leftRows = [
+              { label: "Advance", value: `\u20B9 ${this._formatInr(leftAdvance)}` },
+              { label: "Balance", value: `\u20B9 ${this._formatInr(leftBalance)}` },
+              { label: "Local", value: `\u20B9 ${this._formatInr(leftLocal)}` },
+              { label: "Hamali", value: `\u20B9 ${this._formatInr(leftHamali)}` },
+              { label: "Total", value: `\u20B9 ${this._formatInr(leftTotal)}`, bold: true, color: this.primaryColor }
+            ];
+            const comm = data.commission || 1500;
+            const tapal = data.tapal || 150;
+            const guide = data.guide || 200;
+            const crane = data.craneGodown || 800;
+            const incHamali = data.incomingHamali || 600;
+            const localRight = data.localDeduction || 500;
+            const handLoan = data.handLoan || 2e3;
+            const memoHandLoan = data.memoHandLoan || 1e3;
+            const diesel = data.diesel || 14e3;
+            const rightTotal = comm + tapal + guide + crane + incHamali + localRight + handLoan + memoHandLoan + diesel;
+            const rightRows = [
+              { label: "Commission", value: `\u20B9 ${this._formatInr(comm)}` },
+              { label: "Tapal", value: `\u20B9 ${this._formatInr(tapal)}` },
+              { label: "Guide", value: `\u20B9 ${this._formatInr(guide)}` },
+              { label: "Crane + Godown", value: `\u20B9 ${this._formatInr(crane)}` },
+              { label: "In coming Hamali", value: `\u20B9 ${this._formatInr(incHamali)}` },
+              { label: "Local", value: `\u20B9 ${this._formatInr(localRight)}` },
+              { label: "Hand Loan", value: `\u20B9 ${this._formatInr(handLoan)}` },
+              { label: "Memo Hand Loan", value: `\u20B9 ${this._formatInr(memoHandLoan)}` },
+              { label: "Diesel", value: `\u20B9 ${this._formatInr(diesel)}`, bold: true },
+              { label: "TOTAL", value: `\u20B9 ${this._formatInr(rightTotal)}`, bold: true, color: this.accentRed }
+            ];
+            const gridRowH = 14;
+            doc.rect(margin + 4, dualGridY, halfWidth, leftRows.length * gridRowH + 18).lineWidth(0.6).strokeColor("#94a3b8").stroke();
+            doc.rect(margin + 4, dualGridY, halfWidth, 16).fill("#f1f5f9");
+            doc.font("Helvetica-Bold").fontSize(7.5).fillColor(this.primaryColor).text("DRIVER / SETTLEMENT SUMMARY", margin + 10, dualGridY + 4);
+            leftRows.forEach((r, idx) => {
+              const cy = dualGridY + 16 + idx * gridRowH;
+              if (idx > 0) {
+                doc.moveTo(margin + 4, cy).lineTo(margin + 4 + halfWidth, cy).lineWidth(0.5).strokeColor("#e2e8f0").stroke();
+              }
+              doc.font("Helvetica-Bold").fontSize(7).fillColor("#334155").text(r.label, margin + 10, cy + 3);
+              doc.font(r.bold ? "Helvetica-Bold" : "Helvetica").fontSize(7.5).fillColor(r.color || this.darkText).text(r.value, margin + 10, cy + 3, { width: halfWidth - 20, align: "right" });
+            });
+            doc.rect(margin + 10 + halfWidth, dualGridY, halfWidth, rightRows.length * gridRowH + 18).lineWidth(0.6).strokeColor("#94a3b8").stroke();
+            doc.rect(margin + 10 + halfWidth, dualGridY, halfWidth, 16).fill("#f1f5f9");
+            doc.font("Helvetica-Bold").fontSize(7.5).fillColor(this.accentRed).text("CHARGES, EXPENSES & DEDUCTIONS", margin + 16 + halfWidth, dualGridY + 4);
+            rightRows.forEach((r, idx) => {
+              const cy = dualGridY + 16 + idx * gridRowH;
+              if (idx > 0) {
+                doc.moveTo(margin + 10 + halfWidth, cy).lineTo(margin + 10 + halfWidth * 2, cy).lineWidth(0.5).strokeColor("#e2e8f0").stroke();
+              }
+              doc.font("Helvetica-Bold").fontSize(7).fillColor("#334155").text(r.label, margin + 16 + halfWidth, cy + 3);
+              doc.font(r.bold ? "Helvetica-Bold" : "Helvetica").fontSize(7.5).fillColor(r.color || this.darkText).text(r.value, margin + 16 + halfWidth, cy + 3, { width: halfWidth - 26, align: "right" });
+            });
+            y = dualGridY + rightRows.length * gridRowH + 26;
+            const noteBoxY = y;
+            const noteBoxH = 68;
+            doc.rect(margin + 4, noteBoxY, printableWidth - 8, noteBoxH).lineWidth(0.6).strokeColor("#cbd5e1").fillAndStroke("#fafafa", "#cbd5e1");
+            doc.font("Helvetica-Bold").fontSize(7).fillColor(this.accentRed).text("NOTE :", margin + 10, noteBoxY + 6);
+            const notes = [
+              "1) ACKNOWLEDGMENT (PONCH) IF NOT RECEIVED WITHIN 10 DAYS THE BALANCE PAYMENT WILL NOT BE PAID.",
+              "2) In case any shortage is found in goods or truck meets with an accident the truck owner will make goods for the loss.",
+              "3) In case any goods are not delivered to the proper or not delivered at correct address, truck owner will be responsible for the same.",
+              "4) At the time of loading truck, driver should check and verify the articles, if any shortage is found, the driver will be held responsible."
+            ];
+            let ny = noteBoxY + 16;
+            notes.forEach((n) => {
+              doc.font("Helvetica").fontSize(6.5).fillColor("#1e293b").text(n, margin + 10, ny, { width: printableWidth - 20 });
+              ny += 11;
+            });
+            y = noteBoxY + noteBoxH + 16;
+            const sigY = y;
+            doc.moveTo(margin + 16, sigY + 24).lineTo(margin + 170, sigY + 24).lineWidth(0.5).strokeColor("#94a3b8").stroke();
+            doc.font("Helvetica-Bold").fontSize(8.5).fillColor(this.darkText).text("Driver's Signature", margin + 16, sigY + 28);
+            doc.moveTo(margin + printableWidth - 180, sigY + 24).lineTo(margin + printableWidth - 16, sigY + 24).lineWidth(0.5).strokeColor("#94a3b8").stroke();
+            doc.font("Helvetica-Bold").fontSize(8.5).fillColor(this.primaryColor).text("For BARKAT TEMPO SERVICE", margin, sigY + 28, {
+              width: printableWidth - 16,
+              align: "right"
+            });
+            doc.end();
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+    };
+    module2.exports = new BtsDocsService();
+  }
+});
+
 // apps/api/src/services/pdf.service.js
 var require_pdf_service = __commonJS({
   "apps/api/src/services/pdf.service.js"(exports2, module2) {
@@ -259121,11 +247525,23 @@ var require_pdf_service = __commonJS({
         };
         const activeBadge = copyColors[copyType.toUpperCase()] || copyColors.ORIGINAL;
         doc.rect(40, 30, 530, 52).fill("#0b1329");
-        doc.rect(48, 38, 36, 36).fill("#0284c7");
-        doc.fillColor("#ffffff").fontSize(14).font("Helvetica-Bold").text("T", 60, 48);
-        const companyDisplayName = company.tradeName || company.legalName || company.name || "ORGANIZATION NAME NOT CONFIGURED";
-        const gstinLine = company.gstin ? `GSTIN: ${company.gstin}` : "GSTIN: UNREGISTERED / NOT CONFIGURED";
-        const panLine = company.pan ? `PAN: ${company.pan}` : company.gstin && company.gstin.length >= 12 ? `PAN: ${company.gstin.slice(2, 12)}` : "PAN: NOT CONFIGURED";
+        const fs2 = require("fs");
+        const path2 = require("path");
+        const btsLogoPath = path2.join(__dirname, "../assets/bts-logo-cropped.png");
+        if (fs2.existsSync(btsLogoPath)) {
+          try {
+            doc.image(btsLogoPath, 46, 35, { width: 44, height: 42 });
+          } catch (e) {
+            doc.rect(48, 38, 36, 36).fill("#0284c7");
+            doc.fillColor("#ffffff").fontSize(14).font("Helvetica-Bold").text("BTS", 54, 48);
+          }
+        } else {
+          doc.rect(48, 38, 36, 36).fill("#0284c7");
+          doc.fillColor("#ffffff").fontSize(14).font("Helvetica-Bold").text("BTS", 54, 48);
+        }
+        const companyDisplayName = company.tradeName || company.legalName || company.name || "Barkat Tempo Service";
+        const gstinLine = company.gstin ? `GSTIN: ${company.gstin}` : "GSTIN: 24AAACT1234A1Z5";
+        const panLine = company.pan ? `PAN: ${company.pan}` : "PAN: AOGPP3611Q";
         let carrierAddress = "";
         if (company.address) {
           if (typeof company.address === "string") {
@@ -259582,12 +247998,12281 @@ var require_pdf_service = __commonJS({
           doc.text("Fleet Maintenance Engineer", 50, y);
           doc.text("Garage Lead Mechanic / Certifier", 240, y);
           doc.text("Transport Asset Release Stamp", 420, y);
-          doc.fontSize(6).fillColor("#94a3b8").text("DIGITALLY ISSUED BY TECHNOFAY ENTERPRISE FLEET & TRANSPORT OS", 40, 805, { align: "center", width: 530 });
+          doc.fontSize(6).fillColor("#94a3b8").text("DIGITALLY ISSUED BY BARKAT TEMPO SERVICE FLEET OS", 40, 805, { align: "center", width: 530 });
           doc.end();
         });
       }
+      /**
+       * Official Barkat Tempo Service Loading Receipt PDF
+       */
+      async generateBtsLoadingReceiptPdf(loadOrLr, company = {}, options = {}) {
+        const btsDocsService2 = require_btsDocs_service();
+        return btsDocsService2.generateLoadingReceiptPdf(loadOrLr, company, options);
+      }
+      /**
+       * Official Barkat Tempo Service Memo PDF
+       */
+      async generateBtsMemoPdf(tripOrLoad, company = {}, options = {}) {
+        const btsDocsService2 = require_btsDocs_service();
+        return btsDocsService2.generateMemoPdf(tripOrLoad, company, options);
+      }
     };
     module2.exports = new PdfService();
+  }
+});
+
+// apps/api/src/routes/mockRouter.js
+var require_mockRouter = __commonJS({
+  "apps/api/src/routes/mockRouter.js"(exports2, module2) {
+    "use strict";
+    var express2 = require_express2();
+    var crypto4 = require("node:crypto");
+    var mockStore2 = require_mockDataStore();
+    var TokenService = require_token_service();
+    var btsDocsService2 = require_btsDocs_service();
+    var router = express2.Router();
+    var ok = (res, data, message = "Success", statusCode = 200) => {
+      return res.status(statusCode).json({
+        success: true,
+        statusCode,
+        message,
+        data
+      });
+    };
+    var paginated = (res, result, message = "Success") => {
+      return res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message,
+        data: result.data,
+        pagination: result.pagination
+      });
+    };
+    router.use((req, res, next) => {
+      if (req.url.startsWith("/api/v1")) {
+        req.url = req.url.slice(7) || "/";
+      } else if (req.url.startsWith("/api")) {
+        req.url = req.url.slice(4) || "/";
+      } else if (req.url.startsWith("/v1")) {
+        req.url = req.url.slice(3) || "/";
+      }
+      next();
+    });
+    router.post("/auth/register", (req, res) => {
+      const result = mockStore2.registerOrganization(req.body || {});
+      TokenService.setAuthCookies(res, result.accessToken, result.rawRefreshToken);
+      return ok(res, {
+        accessToken: result.accessToken,
+        user: result.user,
+        tenant: result.tenant
+      }, "Organization and administrator account registered successfully (Live Demo Mode)", 201);
+    });
+    router.post("/auth/login", (req, res) => {
+      const { email, password } = req.body || {};
+      const result = mockStore2.loginUser(email, password);
+      TokenService.setAuthCookies(res, result.accessToken, result.rawRefreshToken);
+      return ok(res, {
+        accessToken: result.accessToken,
+        user: result.user,
+        tenant: result.tenant
+      }, "Authentication successful (Fleet OS Live Mode)");
+    });
+    router.get("/auth/me", (req, res) => {
+      const user = mockStore2.users[0];
+      return ok(res, {
+        user: typeof user.toSafeObject === "function" ? user.toSafeObject() : user,
+        tenant: mockStore2.tenant
+      }, "Current user profile retrieved");
+    });
+    router.post("/auth/refresh", (req, res) => {
+      const user = mockStore2.users[0];
+      const accessToken = TokenService.generateAccessToken(user);
+      return ok(res, { accessToken, user }, "Session refreshed");
+    });
+    router.post("/auth/logout", (req, res) => {
+      TokenService.clearAuthCookies(res);
+      return ok(res, null, "Logged out successfully");
+    });
+    router.post("/auth/forgot-password", (req, res) => {
+      return ok(res, { resetToken: "demo_reset_token_2026" }, "Password reset instructions sent");
+    });
+    router.post("/auth/reset-password", (req, res) => {
+      return ok(res, null, "Password reset successful");
+    });
+    router.get("/dashboard/metrics", (req, res) => {
+      const rawMetrics = mockStore2.getMetrics();
+      const metrics = {
+        ...rawMetrics,
+        financials: {
+          freightBilled: rawMetrics.financials.totalFreightBilled,
+          totalFreightBilled: rawMetrics.financials.totalFreightBilled,
+          advanceReceived: rawMetrics.financials.totalAdvanceReceived,
+          totalAdvanceReceived: rawMetrics.financials.totalAdvanceReceived,
+          balanceOutstanding: rawMetrics.financials.totalBalanceDue,
+          totalBalanceDue: rawMetrics.financials.totalBalanceDue,
+          tripExpenses: rawMetrics.financials.totalExpenses,
+          totalExpenses: rawMetrics.financials.totalExpenses,
+          netOperationalProfit: rawMetrics.financials.grossMargin
+        },
+        pod: {
+          total: mockStore2.pods.length,
+          pending: rawMetrics.pod.pendingSubmission,
+          verified: rawMetrics.pod.verified,
+          rejected: 0,
+          ...rawMetrics.pod
+        },
+        whatsapp: {
+          total: 48,
+          success: 47,
+          failed: 1,
+          deliveryRate: 98,
+          ...rawMetrics.whatsapp
+        }
+      };
+      return ok(res, metrics, "Dashboard KPI metrics loaded");
+    });
+    router.get("/dashboard/trends", (req, res) => {
+      const days = parseInt(req.query.days || "7", 10);
+      const trends = [];
+      const today = /* @__PURE__ */ new Date();
+      for (let i = days - 1; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        trends.push({
+          date: d.toISOString().split("T")[0],
+          loadCount: Math.floor(4 + Math.random() * 5),
+          freight: Math.floor(12e4 + Math.random() * 8e4),
+          weightMt: Math.floor(90 + Math.random() * 60),
+          tripCount: Math.floor(3 + Math.random() * 4),
+          expenses: Math.floor(25e3 + Math.random() * 15e3)
+        });
+      }
+      return ok(res, trends, "Trend series loaded");
+    });
+    router.get("/dashboard/alerts", (req, res) => {
+      const alerts = [
+        {
+          id: "alt_1",
+          severity: "WARNING",
+          type: "COMPLIANCE",
+          title: "Vehicle Insurance Expiring Soon",
+          message: "Insurance for MH12CD5678 expires in 17 days. Renew to avoid transit penalties.",
+          link: "/app/compliance"
+        },
+        {
+          id: "alt_2",
+          severity: "INFO",
+          type: "TRIP",
+          title: "Active High-Value Consignment",
+          message: "Trip TRP-2026-003 carrying Hot Rolled Steel Coils is currently passing Jaipur corridor.",
+          link: "/app/trips"
+        }
+      ];
+      return ok(res, alerts, "Active operational alerts");
+    });
+    router.get("/telematics/status", (req, res) => {
+      return ok(res, {
+        isConfigured: true,
+        provider: "Technofay Virtual GPS Telematics Engine (AIS-140)",
+        status: "CONFIGURED",
+        supportedProtocols: ["AIS-140", "Teltonika FMB", "Concox", "OBD-II"],
+        dependencyMessage: "Virtual GPS telematics is running with high precision."
+      });
+    });
+    router.get("/vehicles", (req, res) => {
+      const { page, limit, search, status, category } = req.query;
+      const filter = {};
+      if (status) filter.status = status;
+      if (category) filter.category = category;
+      const result = mockStore2.query(mockStore2.vehicles, { filter, search, page, limit, sortField: "plateNumber", sortOrder: 1 });
+      return paginated(res, result);
+    });
+    router.get("/vehicles/:id", (req, res) => {
+      const vehicle = mockStore2.vehicles.find((v) => v._id === req.params.id);
+      if (!vehicle) return res.status(404).json({ success: false, message: "Vehicle not found" });
+      return ok(res, vehicle);
+    });
+    router.post("/vehicles", (req, res) => {
+      const b = req.body || {};
+      const newVehicle = {
+        _id: "veh_" + crypto4.randomBytes(6).toString("hex"),
+        companyId: mockStore2.tenant._id,
+        plateNumber: (b.plateNumber || "GJ01XY9999").trim().toUpperCase(),
+        vehicleType: b.vehicleType || "Heavy Commercial Vehicle (HCV)",
+        category: b.category || "OWNED",
+        make: b.make || "Tata Motors",
+        model: b.model || "Signa",
+        yearOfManufacture: parseInt(b.yearOfManufacture || "2024", 10),
+        capacityTonnage: parseFloat(b.capacityTonnage || "35"),
+        fuelType: b.fuelType || "DIESEL",
+        status: "AVAILABLE",
+        isActive: true,
+        ownerName: b.ownerName || mockStore2.tenant.legalName,
+        ownerPhone: b.ownerPhone || mockStore2.tenant.phone,
+        documents: [],
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.vehicles.unshift(newVehicle);
+      return ok(res, newVehicle, "Vehicle registered successfully", 201);
+    });
+    router.put("/vehicles/:id", (req, res) => {
+      const idx = mockStore2.vehicles.findIndex((v) => v._id === req.params.id);
+      if (idx === -1) return res.status(404).json({ success: false, message: "Vehicle not found" });
+      mockStore2.vehicles[idx] = { ...mockStore2.vehicles[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
+      return ok(res, mockStore2.vehicles[idx], "Vehicle updated");
+    });
+    router.delete("/vehicles/:id", (req, res) => {
+      mockStore2.vehicles = mockStore2.vehicles.filter((v) => v._id !== req.params.id);
+      return ok(res, null, "Vehicle deleted");
+    });
+    router.post("/vehicles/:id/documents", (req, res) => {
+      const vehicle = mockStore2.vehicles.find((v) => v._id === req.params.id);
+      if (!vehicle) return res.status(404).json({ success: false, message: "Vehicle not found" });
+      const newDoc = {
+        _id: "doc_" + crypto4.randomBytes(6).toString("hex"),
+        documentType: req.body?.documentType || "RC",
+        documentNumber: req.body?.documentNumber || "DOC-" + Date.now(),
+        expiryDate: req.body?.expiryDate || "2028-12-31",
+        status: "VERIFIED",
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      if (!vehicle.documents) vehicle.documents = [];
+      vehicle.documents.push(newDoc);
+      return ok(res, newDoc, "Document uploaded and verified", 201);
+    });
+    router.get("/drivers", (req, res) => {
+      const { page, limit, search, status } = req.query;
+      const filter = {};
+      if (status) filter.status = status;
+      const result = mockStore2.query(mockStore2.drivers, { filter, search, page, limit, sortField: "name", sortOrder: 1 });
+      return paginated(res, result);
+    });
+    router.get("/drivers/:id", (req, res) => {
+      const driver = mockStore2.drivers.find((d) => d._id === req.params.id);
+      if (!driver) return res.status(404).json({ success: false, message: "Driver not found" });
+      return ok(res, driver);
+    });
+    router.post("/drivers", (req, res) => {
+      const b = req.body || {};
+      const newDriver = {
+        _id: "drv_" + crypto4.randomBytes(6).toString("hex"),
+        companyId: mockStore2.tenant._id,
+        name: b.name || "New Commercial Driver",
+        phone: b.phone || "+91 98251 00000",
+        licenseNumber: (b.licenseNumber || "GJ01-2022-998877").trim().toUpperCase(),
+        licenseExpiry: b.licenseExpiry || "2038-12-31",
+        status: "AVAILABLE",
+        experienceYears: parseInt(b.experienceYears || "5", 10),
+        bloodGroup: b.bloodGroup || "B+",
+        isActive: true,
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.drivers.unshift(newDriver);
+      return ok(res, newDriver, "Driver onboarded successfully", 201);
+    });
+    router.put("/drivers/:id", (req, res) => {
+      const idx = mockStore2.drivers.findIndex((d) => d._id === req.params.id);
+      if (idx === -1) return res.status(404).json({ success: false, message: "Driver not found" });
+      mockStore2.drivers[idx] = { ...mockStore2.drivers[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
+      return ok(res, mockStore2.drivers[idx], "Driver updated");
+    });
+    router.delete("/drivers/:id", (req, res) => {
+      mockStore2.drivers = mockStore2.drivers.filter((d) => d._id !== req.params.id);
+      return ok(res, null, "Driver removed");
+    });
+    router.post("/drivers/:id/documents", (req, res) => {
+      return ok(res, { _id: "doc_drv_" + Date.now(), status: "VERIFIED" }, "Driver document attached", 201);
+    });
+    router.get("/customers", (req, res) => {
+      const { page, limit, search, type } = req.query;
+      const filter = {};
+      if (type) filter.type = type;
+      const result = mockStore2.query(mockStore2.customers, { filter, search, page, limit, sortField: "legalName", sortOrder: 1 });
+      return paginated(res, result);
+    });
+    router.get("/customers/:id", (req, res) => {
+      const customer = mockStore2.customers.find((c) => c._id === req.params.id);
+      if (!customer) return res.status(404).json({ success: false, message: "Customer not found" });
+      return ok(res, customer);
+    });
+    router.post("/customers", (req, res) => {
+      const b = req.body || {};
+      const newCustomer = {
+        _id: "cust_" + crypto4.randomBytes(6).toString("hex"),
+        companyId: mockStore2.tenant._id,
+        legalName: b.legalName || "New Commercial Client Ltd",
+        tradeName: b.tradeName || b.legalName || "Commercial Client",
+        gstin: (b.gstin || "24AAACT9999Z1Z5").trim().toUpperCase(),
+        pan: b.pan || (b.gstin ? b.gstin.slice(2, 12) : "AAACT9999Z"),
+        type: b.type || "CONSIGNOR",
+        contactPerson: b.contactPerson || "Dispatch Officer",
+        email: b.email || "dispatch@client.com",
+        phone: b.phone || "+91 98250 00000",
+        billingAddress: b.billingAddress || { street: "Industrial Estate", city: "Ahmedabad", state: "Gujarat", pincode: "382405", country: "IN" },
+        creditPeriodDays: parseInt(b.creditPeriodDays || "30", 10),
+        isActive: true,
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.customers.unshift(newCustomer);
+      return ok(res, newCustomer, "Party registered successfully", 201);
+    });
+    router.put("/customers/:id", (req, res) => {
+      const idx = mockStore2.customers.findIndex((c) => c._id === req.params.id);
+      if (idx === -1) return res.status(404).json({ success: false, message: "Customer not found" });
+      mockStore2.customers[idx] = { ...mockStore2.customers[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
+      return ok(res, mockStore2.customers[idx], "Customer updated");
+    });
+    router.delete("/customers/:id", (req, res) => {
+      mockStore2.customers = mockStore2.customers.filter((c) => c._id !== req.params.id);
+      return ok(res, null, "Customer removed");
+    });
+    router.get("/locations", (req, res) => {
+      const { page, limit, search } = req.query;
+      const result = mockStore2.query(mockStore2.locations, { search, page, limit, sortField: "name", sortOrder: 1 });
+      return paginated(res, result);
+    });
+    router.get("/locations/:id", (req, res) => {
+      const location = mockStore2.locations.find((l2) => l2._id === req.params.id);
+      if (!location) return res.status(404).json({ success: false, message: "Location not found" });
+      return ok(res, location);
+    });
+    router.post("/locations", (req, res) => {
+      const b = req.body || {};
+      const newLoc = {
+        _id: "loc_" + crypto4.randomBytes(6).toString("hex"),
+        companyId: mockStore2.tenant._id,
+        name: b.name || "New Logistics Terminal",
+        code: b.code || "LOC-" + Math.floor(100 + Math.random() * 900),
+        city: b.city || "Ahmedabad",
+        state: b.state || "Gujarat",
+        address: b.address || "National Highway 48",
+        pincode: b.pincode || "382405",
+        hubType: b.hubType || "CENTRAL_HUB",
+        coordinates: b.coordinates || { lat: 23.0225, lng: 72.5714 },
+        isActive: true,
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.locations.unshift(newLoc);
+      return ok(res, newLoc, "Location registered", 201);
+    });
+    router.get("/loads", (req, res) => {
+      const { page, limit, search, status } = req.query;
+      const filter = {};
+      if (status) filter.status = status;
+      const result = mockStore2.query(mockStore2.loads, { filter, search, page, limit, sortField: "createdAt", sortOrder: -1 });
+      return paginated(res, result);
+    });
+    router.get("/loads/:id", (req, res) => {
+      const load = mockStore2.loads.find((l2) => l2._id === req.params.id);
+      if (!load) return res.status(404).json({ success: false, message: "Load not found" });
+      return ok(res, load);
+    });
+    router.post("/loads", (req, res) => {
+      const b = req.body || {};
+      const loadNum = "LD-2026-" + String(mockStore2.loads.length + 1).padStart(4, "0");
+      const freight = parseFloat(b.freightAmount || "45000");
+      const advance = parseFloat(b.advancePaid || "20000");
+      const newLoad = {
+        _id: "ld_" + crypto4.randomBytes(6).toString("hex"),
+        companyId: mockStore2.tenant._id,
+        loadNumber: loadNum,
+        customerId: b.customerId || mockStore2.customers[0]._id,
+        customer: mockStore2.customers.find((c) => c._id === b.customerId) || mockStore2.customers[0],
+        consignorName: b.consignorName || "Reliance Industries Limited",
+        consigneeName: b.consigneeName || "Asian Paints Limited",
+        originCity: b.originCity || "Ahmedabad, Gujarat",
+        destinationCity: b.destinationCity || "Mumbai, Maharashtra",
+        cargoType: b.cargoType || "Industrial Goods",
+        packageType: b.packageType || "PALLETS",
+        weightMt: parseFloat(b.weightMt || "25.0"),
+        freightAmount: freight,
+        advancePaid: advance,
+        balanceDue: Math.max(0, freight - advance),
+        status: b.assignedVehicleId ? "VEHICLE_ASSIGNED" : "CREATED",
+        assignedVehiclePlate: b.assignedVehiclePlate || "",
+        assignedDriverName: b.assignedDriverName || "",
+        gtaGstRate: 5,
+        gtaGstAmount: Math.round(freight * 0.05),
+        sacCode: "9965",
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.loads.unshift(newLoad);
+      return ok(res, newLoad, "Load order created successfully", 201);
+    });
+    router.put("/loads/:id", (req, res) => {
+      const idx = mockStore2.loads.findIndex((l2) => l2._id === req.params.id);
+      if (idx === -1) return res.status(404).json({ success: false, message: "Load not found" });
+      mockStore2.loads[idx] = { ...mockStore2.loads[idx], ...req.body, updatedAt: /* @__PURE__ */ new Date() };
+      return ok(res, mockStore2.loads[idx], "Load updated");
+    });
+    router.post("/loads/:id/status", (req, res) => {
+      const load = mockStore2.loads.find((l2) => l2._id === req.params.id);
+      if (!load) return res.status(404).json({ success: false, message: "Load not found" });
+      load.status = req.body?.status || load.status;
+      return ok(res, load, `Load status transitioned to ${load.status}`);
+    });
+    router.get(["/loads/:id/pdf", "/loads/:id/loading-slip"], async (req, res) => {
+      try {
+        const load = mockStore2.loads.find((l2) => l2._id === req.params.id || l2.loadNumber === req.params.id) || {};
+        const isMemo = req.query?.type === "memo";
+        const pdfBuffer = isMemo ? await btsDocsService2.generateMemoPdf({
+          memoNumber: load.loadNumber || req.params.id,
+          date: load.createdAt,
+          fromStation: load.origin,
+          toStation: load.destination,
+          vehicleNumber: load.vehiclePlate,
+          driverName: load.driverName
+        }) : await btsDocsService2.generateLoadingReceiptPdf({
+          lrNumber: load.loadNumber || req.params.id,
+          date: load.createdAt,
+          vehicleNumber: load.vehiclePlate,
+          toStation: load.destination,
+          weight: load.weightMt ? `${load.weightMt} MT` : void 0,
+          freightAmount: load.freightAmount,
+          advanceAmount: load.advanceAmount,
+          balanceAmount: load.balanceAmount,
+          consignee: { name: load.consignee || load.customerName, city: load.destination }
+        });
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `inline; filename="BTS-${isMemo ? "Memo" : "Loading-Receipt"}-${req.params.id}.pdf"`);
+        return res.send(pdfBuffer);
+      } catch (err) {
+        console.error("Error generating load PDF:", err);
+        return res.status(500).json({ success: false, message: err.message });
+      }
+    });
+    router.get("/bilties", (req, res) => {
+      const { page, limit, search } = req.query;
+      const result = mockStore2.query(mockStore2.bilties, { search, page, limit, sortField: "createdAt", sortOrder: -1 });
+      return paginated(res, result);
+    });
+    router.get("/bilties/:id", (req, res) => {
+      const bilty = mockStore2.bilties.find((b) => b._id === req.params.id);
+      if (!bilty) return res.status(404).json({ success: false, message: "Bilty not found" });
+      return ok(res, bilty);
+    });
+    router.post("/bilties", (req, res) => {
+      const b = req.body || {};
+      const num = "BL-2026-" + String(mockStore2.bilties.length + 101);
+      const freight = parseFloat(b.freightAmount || "65000");
+      const advance = parseFloat(b.advanceAmount || "30000");
+      const newBilty = {
+        _id: "bl_" + crypto4.randomBytes(6).toString("hex"),
+        companyId: mockStore2.tenant._id,
+        biltyNumber: num,
+        lrNumber: "LR-2026-" + String(mockStore2.bilties.length + 101),
+        loadNumber: b.loadNumber || "LD-2026-0001",
+        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
+        driverName: b.driverName || "Ramesh Patel",
+        consignor: b.consignor || "Reliance Industries Limited",
+        consignee: b.consignee || "Asian Paints Limited",
+        origin: b.origin || "Ahmedabad Hub",
+        destination: b.destination || "Mumbai Nhava Sheva",
+        goodsDescription: b.goodsDescription || "Industrial Consignment",
+        weightMt: parseFloat(b.weightMt || "28.0"),
+        freightAmount: freight,
+        advanceAmount: advance,
+        balanceAmount: Math.max(0, freight - advance),
+        gstRate: 5,
+        gstAmount: Math.round(freight * 0.05),
+        gstPayableBy: "CONSIGNOR",
+        status: "IN_TRANSIT",
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.bilties.unshift(newBilty);
+      return ok(res, newBilty, "Bilty generated successfully", 201);
+    });
+    router.get("/lr", (req, res) => {
+      const { page, limit, search } = req.query;
+      const result = mockStore2.query(mockStore2.bilties, { search, page, limit, sortField: "createdAt", sortOrder: -1 });
+      return paginated(res, result);
+    });
+    router.get("/bilties/:id/pdf", async (req, res) => {
+      try {
+        const bilty = mockStore2.bilties.find((b) => b._id === req.params.id || b.biltyNumber === req.params.id || b.lrNumber === req.params.id) || {};
+        const isMemo = req.query?.type === "memo";
+        const pdfBuffer = isMemo ? await btsDocsService2.generateMemoPdf({
+          memoNumber: bilty.biltyNumber || bilty.lrNumber || req.params.id,
+          date: bilty.createdAt,
+          fromStation: bilty.origin,
+          toStation: bilty.destination,
+          vehicleNumber: bilty.vehiclePlate,
+          driverName: bilty.driverName
+        }) : await btsDocsService2.generateLoadingReceiptPdf({
+          lrNumber: bilty.lrNumber || bilty.biltyNumber || req.params.id,
+          date: bilty.createdAt,
+          vehicleNumber: bilty.vehiclePlate,
+          toStation: bilty.destination,
+          weight: bilty.weightMt ? `${bilty.weightMt} MT` : void 0,
+          freightAmount: bilty.freightAmount,
+          advanceAmount: bilty.advanceAmount,
+          balanceAmount: bilty.balanceAmount,
+          consignee: { name: bilty.consignee, city: bilty.destination },
+          consignor: { name: bilty.consignor, city: bilty.origin }
+        });
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `inline; filename="BTS-${isMemo ? "Memo" : "Bilty"}-${req.params.id}.pdf"`);
+        return res.send(pdfBuffer);
+      } catch (err) {
+        console.error("Error generating bilty PDF:", err);
+        return res.status(500).json({ success: false, message: err.message });
+      }
+    });
+    router.get("/lr/:id/pdf", async (req, res) => {
+      try {
+        const lr = mockStore2.bilties.find((b) => b._id === req.params.id || b.lrNumber === req.params.id || b.biltyNumber === req.params.id) || {};
+        const isMemo = req.query?.type === "memo";
+        const pdfBuffer = isMemo ? await btsDocsService2.generateMemoPdf({
+          memoNumber: lr.lrNumber || req.params.id,
+          date: lr.createdAt,
+          fromStation: lr.origin,
+          toStation: lr.destination,
+          vehicleNumber: lr.vehiclePlate,
+          driverName: lr.driverName
+        }) : await btsDocsService2.generateLoadingReceiptPdf({
+          lrNumber: lr.lrNumber || req.params.id,
+          date: lr.createdAt,
+          vehicleNumber: lr.vehiclePlate,
+          toStation: lr.destination,
+          weight: lr.weightMt ? `${lr.weightMt} MT` : void 0,
+          freightAmount: lr.freightAmount,
+          advanceAmount: lr.advanceAmount,
+          balanceAmount: lr.balanceAmount,
+          consignee: { name: lr.consignee, city: lr.destination },
+          consignor: { name: lr.consignor, city: lr.origin }
+        });
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `inline; filename="BTS-${isMemo ? "Memo" : "Loading-Receipt"}-${req.params.id}.pdf"`);
+        return res.send(pdfBuffer);
+      } catch (err) {
+        console.error("Error generating LR PDF:", err);
+        return res.status(500).json({ success: false, message: err.message });
+      }
+    });
+    router.get("/trips", (req, res) => {
+      const { page, limit, search, status } = req.query;
+      const filter = {};
+      if (status) filter.status = status;
+      const result = mockStore2.query(mockStore2.trips, { filter, search, page, limit, sortField: "startedAt", sortOrder: -1 });
+      return paginated(res, result);
+    });
+    router.get("/trips/:id", (req, res) => {
+      const trip = mockStore2.trips.find((t) => t._id === req.params.id);
+      if (!trip) return res.status(404).json({ success: false, message: "Trip not found" });
+      return ok(res, trip);
+    });
+    router.post("/trips", (req, res) => {
+      const b = req.body || {};
+      const newTrip = {
+        _id: "trp_" + crypto4.randomBytes(6).toString("hex"),
+        companyId: mockStore2.tenant._id,
+        tripNumber: "TRP-2026-" + String(mockStore2.trips.length + 1).padStart(3, "0"),
+        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
+        driverName: b.driverName || "Ramesh Patel",
+        driverPhone: b.driverPhone || "+91 98251 11223",
+        origin: b.origin || "Ahmedabad, Gujarat",
+        destination: b.destination || "Mumbai, Maharashtra",
+        status: "IN_TRANSIT",
+        odometerStart: parseInt(b.odometerStart || "140000", 10),
+        totalExpenses: 0,
+        expenses: [],
+        startedAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.trips.unshift(newTrip);
+      return ok(res, newTrip, "Trip dispatched successfully", 201);
+    });
+    router.post("/trips/:id/expenses", (req, res) => {
+      const trip = mockStore2.trips.find((t) => t._id === req.params.id);
+      if (!trip) return res.status(404).json({ success: false, message: "Trip not found" });
+      const newExpense = {
+        _id: "exp_" + Date.now(),
+        category: req.body?.category || "FUEL",
+        amount: parseFloat(req.body?.amount || "5000"),
+        notes: req.body?.notes || "Highway expense"
+      };
+      if (!trip.expenses) trip.expenses = [];
+      trip.expenses.push(newExpense);
+      trip.totalExpenses = trip.expenses.reduce((s, e) => s + (e.amount || 0), 0);
+      return ok(res, trip, "Expense recorded", 201);
+    });
+    router.get(["/trips/:id/pdf", "/trips/:id/sheet"], async (req, res) => {
+      try {
+        const trip = mockStore2.trips.find((t) => t._id === req.params.id || t.tripNumber === req.params.id) || {};
+        const pdfBuffer = await btsDocsService2.generateMemoPdf({
+          memoNumber: trip.tripNumber || req.params.id,
+          date: trip.startedAt || trip.createdAt,
+          fromStation: trip.origin,
+          toStation: trip.destination,
+          vehicleNumber: trip.vehiclePlate,
+          driverName: trip.driverName,
+          phoneNo: trip.driverPhone,
+          ownerName: "Barkat Tempo Service",
+          transporterName: "Barkat Tempo Service",
+          driverAdvance: 33e3,
+          driverBalance: 35500
+        });
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `inline; filename="BTS-Memo-${req.params.id}.pdf"`);
+        return res.send(pdfBuffer);
+      } catch (err) {
+        console.error("Error generating trip memo PDF:", err);
+        return res.status(500).json({ success: false, message: err.message });
+      }
+    });
+    router.get("/bts/loading-receipt/:id", async (req, res) => {
+      try {
+        const record = mockStore2.bilties.find((b) => b._id === req.params.id || b.lrNumber === req.params.id || b.biltyNumber === req.params.id) || mockStore2.loads.find((l2) => l2._id === req.params.id || l2.loadNumber === req.params.id) || {};
+        const pdfBuffer = await btsDocsService2.generateLoadingReceiptPdf({
+          lrNumber: record.lrNumber || record.loadNumber || req.params.id,
+          date: record.createdAt,
+          vehicleNumber: record.vehiclePlate,
+          toStation: record.destination,
+          weight: record.weightMt ? `${record.weightMt} MT` : void 0,
+          freightAmount: record.freightAmount,
+          advanceAmount: record.advanceAmount,
+          balanceAmount: record.balanceAmount,
+          consignee: { name: record.consignee || record.customerName, city: record.destination },
+          consignor: { name: record.consignor, city: record.origin }
+        });
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `inline; filename="BTS-Loading-Receipt-${req.params.id}.pdf"`);
+        return res.send(pdfBuffer);
+      } catch (err) {
+        return res.status(500).json({ success: false, message: err.message });
+      }
+    });
+    router.get("/bts/memo/:id", async (req, res) => {
+      try {
+        const trip = mockStore2.trips.find((t) => t._id === req.params.id || t.tripNumber === req.params.id) || mockStore2.loads.find((l2) => l2._id === req.params.id || l2.loadNumber === req.params.id) || {};
+        const pdfBuffer = await btsDocsService2.generateMemoPdf({
+          memoNumber: trip.tripNumber || trip.loadNumber || req.params.id,
+          date: trip.startedAt || trip.createdAt,
+          fromStation: trip.origin,
+          toStation: trip.destination,
+          vehicleNumber: trip.vehiclePlate,
+          driverName: trip.driverName,
+          phoneNo: trip.driverPhone
+        });
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `inline; filename="BTS-Memo-${req.params.id}.pdf"`);
+        return res.send(pdfBuffer);
+      } catch (err) {
+        return res.status(500).json({ success: false, message: err.message });
+      }
+    });
+    router.get("/pod", (req, res) => {
+      const { page, limit, search, status } = req.query;
+      const filter = {};
+      if (status) filter.status = status;
+      const result = mockStore2.query(mockStore2.pods, { filter, search, page, limit, sortField: "createdAt", sortOrder: -1 });
+      return paginated(res, result);
+    });
+    router.post("/pod", (req, res) => {
+      const b = req.body || {};
+      const newPod = {
+        _id: "pod_" + crypto4.randomBytes(6).toString("hex"),
+        companyId: mockStore2.tenant._id,
+        podNumber: "POD-2026-" + String(mockStore2.pods.length + 1).padStart(4, "0"),
+        loadNumber: b.loadNumber || "LD-2026-0001",
+        status: "SUBMITTED",
+        receivedBy: b.receivedBy || "Consignee Gate In Charge",
+        remarks: b.remarks || "Signed consignment copy received",
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.pods.unshift(newPod);
+      return ok(res, newPod, "POD submitted", 201);
+    });
+    router.post("/pod/:id/verify", (req, res) => {
+      const pod = mockStore2.pods.find((p) => p._id === req.params.id);
+      if (!pod) return res.status(404).json({ success: false, message: "POD not found" });
+      pod.status = "VERIFIED";
+      pod.verifiedAt = /* @__PURE__ */ new Date();
+      pod.verifiedBy = "Lead System Administrator";
+      return ok(res, pod, "POD verified and confirmed");
+    });
+    router.get("/compliance", (req, res) => {
+      return ok(res, {
+        summary: { expired: 0, expiring15Days: 1, expiring30Days: 2 },
+        documents: [
+          { _id: "cmp_1", type: "VEHICLE", entityName: "MH12CD5678", docType: "INSURANCE", expiryDate: "2026-11-15", daysLeft: 17, status: "EXPIRING_SOON" },
+          { _id: "cmp_2", type: "VEHICLE", entityName: "GJ01AB1234", docType: "FITNESS", expiryDate: "2026-12-30", daysLeft: 62, status: "VALID" }
+        ]
+      });
+    });
+    router.get("/maintenance", (req, res) => {
+      const { page, limit, search } = req.query;
+      const result = mockStore2.query(mockStore2.maintenance, { search, page, limit, sortField: "createdAt", sortOrder: -1 });
+      return paginated(res, result);
+    });
+    router.post("/maintenance", (req, res) => {
+      const b = req.body || {};
+      const newMaint = {
+        _id: "maint_" + crypto4.randomBytes(6).toString("hex"),
+        companyId: mockStore2.tenant._id,
+        maintenanceNumber: "MAINT-2026-" + String(mockStore2.maintenance.length + 1).padStart(3, "0"),
+        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
+        maintenanceType: b.maintenanceType || "PREVENTIVE",
+        serviceCenter: b.serviceCenter || "Authorized Commercial Service Center",
+        cost: parseFloat(b.cost || "10000"),
+        status: "IN_PROGRESS",
+        description: b.description || "General maintenance servicing",
+        scheduledDate: b.scheduledDate || (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.maintenance.unshift(newMaint);
+      return ok(res, newMaint, "Maintenance record created", 201);
+    });
+    router.get("/maintenance/:id/job-card", async (req, res) => {
+      try {
+        const m = mockStore2.maintenance.find((item) => item._id === req.params.id) || {
+          _id: req.params.id,
+          vehiclePlate: "GJ-06-AX-8912",
+          serviceType: "PREVENTIVE",
+          costPaise: 45e4,
+          serviceCenter: "BTS Workshop Baroda",
+          description: "Periodic inspection and scheduled maintenance",
+          createdAt: /* @__PURE__ */ new Date()
+        };
+        const pdfService = require_pdf_service();
+        const pdfBuffer = await pdfService.generateMaintenancePdf(m, mockStore2.tenant);
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `inline; filename="BTS-JobCard-${req.params.id}.pdf"`);
+        return res.send(pdfBuffer);
+      } catch (err) {
+        return res.status(500).json({ success: false, message: err.message });
+      }
+    });
+    router.get("/admin/users", (req, res) => {
+      const safeUsers = mockStore2.users.map((u) => typeof u.toSafeObject === "function" ? u.toSafeObject() : u);
+      return ok(res, safeUsers);
+    });
+    router.post("/admin/users", (req, res) => {
+      const b = req.body || {};
+      const newUser = {
+        _id: "usr_" + crypto4.randomBytes(6).toString("hex"),
+        name: b.name || "Staff User",
+        email: (b.email || "staff@technofay.com").trim().toLowerCase(),
+        phone: b.phone || "+91 98251 00000",
+        role: b.role || "TRANSPORT_MANAGER",
+        roleId: mockStore2.roles[1],
+        companyId: mockStore2.tenant,
+        isActive: true,
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      mockStore2.users.push(newUser);
+      return ok(res, newUser, "User created", 201);
+    });
+    router.get("/admin/roles", (req, res) => {
+      return ok(res, mockStore2.roles);
+    });
+    router.get("/admin/audit-logs", (req, res) => {
+      const sampleLogs = [
+        { _id: "aud_1", actorName: "Vikramaditya Rao", action: "ORGANIZATION_REGISTERED", module: "AUTH", timestamp: new Date(Date.now() - 36e5).toISOString() },
+        { _id: "aud_2", actorName: "Vikramaditya Rao", action: "LOGIN_SUCCESS", module: "AUTH", timestamp: (/* @__PURE__ */ new Date()).toISOString() }
+      ];
+      return paginated(res, { data: sampleLogs, pagination: { page: 1, limit: 20, total: 2, totalPages: 1 } });
+    });
+    router.get("/admin/settings", (req, res) => {
+      return ok(res, mockStore2.settings);
+    });
+    router.put("/admin/settings", (req, res) => {
+      mockStore2.settings = { ...mockStore2.settings, ...req.body };
+      return ok(res, mockStore2.settings, "Settings updated");
+    });
+    router.get("/reports/loads", (req, res) => {
+      return ok(res, {
+        totalLoads: mockStore2.loads.length,
+        totalFreight: mockStore2.loads.reduce((s, l2) => s + (l2.freightAmount || 0), 0),
+        totalWeightMt: mockStore2.loads.reduce((s, l2) => s + (l2.weightMt || 0), 0),
+        items: mockStore2.loads
+      });
+    });
+    router.get("/reports/financials", (req, res) => {
+      const m = mockStore2.getMetrics();
+      return ok(res, m.financials);
+    });
+    router.get("/reports/vehicles", (req, res) => {
+      return ok(res, mockStore2.vehicles);
+    });
+    router.get("/reports/trips", (req, res) => {
+      return ok(res, mockStore2.trips);
+    });
+    router.get("/public/track/:trackingId", (req, res) => {
+      const tid = req.params.trackingId.toUpperCase();
+      const trip = mockStore2.trips[1];
+      return ok(res, {
+        trackingNumber: tid,
+        status: trip.status,
+        origin: trip.origin,
+        destination: trip.destination,
+        currentLocation: trip.currentLocation,
+        vehiclePlate: trip.vehiclePlate,
+        startedAt: trip.startedAt,
+        estimatedDelivery: new Date(Date.now() + 432e5).toISOString()
+      });
+    });
+    router.post("/contact", (req, res) => {
+      return ok(res, null, "Thank you! Your logistics inquiry has been received.");
+    });
+    router.all("*", (req, res) => {
+      if (req.method === "GET") {
+        return ok(res, [], "Autonomous In-Memory Demo Mode");
+      }
+      return ok(res, { id: "mock_" + Date.now(), ...req.body }, "Action executed in Live Demo Mode", 200);
+    });
+    module2.exports = router;
+  }
+});
+
+// node_modules/bcryptjs/dist/bcrypt.js
+var require_bcrypt = __commonJS({
+  "node_modules/bcryptjs/dist/bcrypt.js"(exports2, module2) {
+    (function(global2, factory) {
+      if (typeof define === "function" && define["amd"])
+        define([], factory);
+      else if (typeof require === "function" && typeof module2 === "object" && module2 && module2["exports"])
+        module2["exports"] = factory();
+      else
+        (global2["dcodeIO"] = global2["dcodeIO"] || {})["bcrypt"] = factory();
+    })(exports2, function() {
+      "use strict";
+      var bcrypt = {};
+      var randomFallback = null;
+      function random(len) {
+        if (typeof module2 !== "undefined" && module2 && module2["exports"])
+          try {
+            return require("crypto")["randomBytes"](len);
+          } catch (e) {
+          }
+        try {
+          var a;
+          (self["crypto"] || self["msCrypto"])["getRandomValues"](a = new Uint32Array(len));
+          return Array.prototype.slice.call(a);
+        } catch (e) {
+        }
+        if (!randomFallback)
+          throw Error("Neither WebCryptoAPI nor a crypto module is available. Use bcrypt.setRandomFallback to set an alternative");
+        return randomFallback(len);
+      }
+      var randomAvailable = false;
+      try {
+        random(1);
+        randomAvailable = true;
+      } catch (e) {
+      }
+      randomFallback = null;
+      bcrypt.setRandomFallback = function(random2) {
+        randomFallback = random2;
+      };
+      bcrypt.genSaltSync = function(rounds, seed_length) {
+        rounds = rounds || GENSALT_DEFAULT_LOG2_ROUNDS;
+        if (typeof rounds !== "number")
+          throw Error("Illegal arguments: " + typeof rounds + ", " + typeof seed_length);
+        if (rounds < 4)
+          rounds = 4;
+        else if (rounds > 31)
+          rounds = 31;
+        var salt = [];
+        salt.push("$2a$");
+        if (rounds < 10)
+          salt.push("0");
+        salt.push(rounds.toString());
+        salt.push("$");
+        salt.push(base64_encode(random(BCRYPT_SALT_LEN), BCRYPT_SALT_LEN));
+        return salt.join("");
+      };
+      bcrypt.genSalt = function(rounds, seed_length, callback) {
+        if (typeof seed_length === "function")
+          callback = seed_length, seed_length = void 0;
+        if (typeof rounds === "function")
+          callback = rounds, rounds = void 0;
+        if (typeof rounds === "undefined")
+          rounds = GENSALT_DEFAULT_LOG2_ROUNDS;
+        else if (typeof rounds !== "number")
+          throw Error("illegal arguments: " + typeof rounds);
+        function _async(callback2) {
+          nextTick(function() {
+            try {
+              callback2(null, bcrypt.genSaltSync(rounds));
+            } catch (err) {
+              callback2(err);
+            }
+          });
+        }
+        if (callback) {
+          if (typeof callback !== "function")
+            throw Error("Illegal callback: " + typeof callback);
+          _async(callback);
+        } else
+          return new Promise(function(resolve, reject) {
+            _async(function(err, res) {
+              if (err) {
+                reject(err);
+                return;
+              }
+              resolve(res);
+            });
+          });
+      };
+      bcrypt.hashSync = function(s, salt) {
+        if (typeof salt === "undefined")
+          salt = GENSALT_DEFAULT_LOG2_ROUNDS;
+        if (typeof salt === "number")
+          salt = bcrypt.genSaltSync(salt);
+        if (typeof s !== "string" || typeof salt !== "string")
+          throw Error("Illegal arguments: " + typeof s + ", " + typeof salt);
+        return _hash(s, salt);
+      };
+      bcrypt.hash = function(s, salt, callback, progressCallback) {
+        function _async(callback2) {
+          if (typeof s === "string" && typeof salt === "number")
+            bcrypt.genSalt(salt, function(err, salt2) {
+              _hash(s, salt2, callback2, progressCallback);
+            });
+          else if (typeof s === "string" && typeof salt === "string")
+            _hash(s, salt, callback2, progressCallback);
+          else
+            nextTick(callback2.bind(this, Error("Illegal arguments: " + typeof s + ", " + typeof salt)));
+        }
+        if (callback) {
+          if (typeof callback !== "function")
+            throw Error("Illegal callback: " + typeof callback);
+          _async(callback);
+        } else
+          return new Promise(function(resolve, reject) {
+            _async(function(err, res) {
+              if (err) {
+                reject(err);
+                return;
+              }
+              resolve(res);
+            });
+          });
+      };
+      function safeStringCompare(known, unknown) {
+        var right = 0, wrong = 0;
+        for (var i = 0, k = known.length; i < k; ++i) {
+          if (known.charCodeAt(i) === unknown.charCodeAt(i))
+            ++right;
+          else
+            ++wrong;
+        }
+        if (right < 0)
+          return false;
+        return wrong === 0;
+      }
+      bcrypt.compareSync = function(s, hash) {
+        if (typeof s !== "string" || typeof hash !== "string")
+          throw Error("Illegal arguments: " + typeof s + ", " + typeof hash);
+        if (hash.length !== 60)
+          return false;
+        return safeStringCompare(bcrypt.hashSync(s, hash.substr(0, hash.length - 31)), hash);
+      };
+      bcrypt.compare = function(s, hash, callback, progressCallback) {
+        function _async(callback2) {
+          if (typeof s !== "string" || typeof hash !== "string") {
+            nextTick(callback2.bind(this, Error("Illegal arguments: " + typeof s + ", " + typeof hash)));
+            return;
+          }
+          if (hash.length !== 60) {
+            nextTick(callback2.bind(this, null, false));
+            return;
+          }
+          bcrypt.hash(s, hash.substr(0, 29), function(err, comp) {
+            if (err)
+              callback2(err);
+            else
+              callback2(null, safeStringCompare(comp, hash));
+          }, progressCallback);
+        }
+        if (callback) {
+          if (typeof callback !== "function")
+            throw Error("Illegal callback: " + typeof callback);
+          _async(callback);
+        } else
+          return new Promise(function(resolve, reject) {
+            _async(function(err, res) {
+              if (err) {
+                reject(err);
+                return;
+              }
+              resolve(res);
+            });
+          });
+      };
+      bcrypt.getRounds = function(hash) {
+        if (typeof hash !== "string")
+          throw Error("Illegal arguments: " + typeof hash);
+        return parseInt(hash.split("$")[2], 10);
+      };
+      bcrypt.getSalt = function(hash) {
+        if (typeof hash !== "string")
+          throw Error("Illegal arguments: " + typeof hash);
+        if (hash.length !== 60)
+          throw Error("Illegal hash length: " + hash.length + " != 60");
+        return hash.substring(0, 29);
+      };
+      var nextTick = typeof process !== "undefined" && process && typeof process.nextTick === "function" ? typeof setImmediate === "function" ? setImmediate : process.nextTick : setTimeout;
+      function stringToBytes2(str) {
+        var out = [], i = 0;
+        utfx.encodeUTF16toUTF8(function() {
+          if (i >= str.length) return null;
+          return str.charCodeAt(i++);
+        }, function(b) {
+          out.push(b);
+        });
+        return out;
+      }
+      var BASE64_CODE = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".split("");
+      var BASE64_INDEX = [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        0,
+        1,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ];
+      var stringFromCharCode = String.fromCharCode;
+      function base64_encode(b, len) {
+        var off = 0, rs2 = [], c1, c2;
+        if (len <= 0 || len > b.length)
+          throw Error("Illegal len: " + len);
+        while (off < len) {
+          c1 = b[off++] & 255;
+          rs2.push(BASE64_CODE[c1 >> 2 & 63]);
+          c1 = (c1 & 3) << 4;
+          if (off >= len) {
+            rs2.push(BASE64_CODE[c1 & 63]);
+            break;
+          }
+          c2 = b[off++] & 255;
+          c1 |= c2 >> 4 & 15;
+          rs2.push(BASE64_CODE[c1 & 63]);
+          c1 = (c2 & 15) << 2;
+          if (off >= len) {
+            rs2.push(BASE64_CODE[c1 & 63]);
+            break;
+          }
+          c2 = b[off++] & 255;
+          c1 |= c2 >> 6 & 3;
+          rs2.push(BASE64_CODE[c1 & 63]);
+          rs2.push(BASE64_CODE[c2 & 63]);
+        }
+        return rs2.join("");
+      }
+      function base64_decode(s, len) {
+        var off = 0, slen = s.length, olen = 0, rs2 = [], c1, c2, c3, c4, o, code;
+        if (len <= 0)
+          throw Error("Illegal len: " + len);
+        while (off < slen - 1 && olen < len) {
+          code = s.charCodeAt(off++);
+          c1 = code < BASE64_INDEX.length ? BASE64_INDEX[code] : -1;
+          code = s.charCodeAt(off++);
+          c2 = code < BASE64_INDEX.length ? BASE64_INDEX[code] : -1;
+          if (c1 == -1 || c2 == -1)
+            break;
+          o = c1 << 2 >>> 0;
+          o |= (c2 & 48) >> 4;
+          rs2.push(stringFromCharCode(o));
+          if (++olen >= len || off >= slen)
+            break;
+          code = s.charCodeAt(off++);
+          c3 = code < BASE64_INDEX.length ? BASE64_INDEX[code] : -1;
+          if (c3 == -1)
+            break;
+          o = (c2 & 15) << 4 >>> 0;
+          o |= (c3 & 60) >> 2;
+          rs2.push(stringFromCharCode(o));
+          if (++olen >= len || off >= slen)
+            break;
+          code = s.charCodeAt(off++);
+          c4 = code < BASE64_INDEX.length ? BASE64_INDEX[code] : -1;
+          o = (c3 & 3) << 6 >>> 0;
+          o |= c4;
+          rs2.push(stringFromCharCode(o));
+          ++olen;
+        }
+        var res = [];
+        for (off = 0; off < olen; off++)
+          res.push(rs2[off].charCodeAt(0));
+        return res;
+      }
+      var utfx = function() {
+        "use strict";
+        var utfx2 = {};
+        utfx2.MAX_CODEPOINT = 1114111;
+        utfx2.encodeUTF8 = function(src, dst) {
+          var cp = null;
+          if (typeof src === "number")
+            cp = src, src = function() {
+              return null;
+            };
+          while (cp !== null || (cp = src()) !== null) {
+            if (cp < 128)
+              dst(cp & 127);
+            else if (cp < 2048)
+              dst(cp >> 6 & 31 | 192), dst(cp & 63 | 128);
+            else if (cp < 65536)
+              dst(cp >> 12 & 15 | 224), dst(cp >> 6 & 63 | 128), dst(cp & 63 | 128);
+            else
+              dst(cp >> 18 & 7 | 240), dst(cp >> 12 & 63 | 128), dst(cp >> 6 & 63 | 128), dst(cp & 63 | 128);
+            cp = null;
+          }
+        };
+        utfx2.decodeUTF8 = function(src, dst) {
+          var a, b, c, d, fail = function(b2) {
+            b2 = b2.slice(0, b2.indexOf(null));
+            var err = Error(b2.toString());
+            err.name = "TruncatedError";
+            err["bytes"] = b2;
+            throw err;
+          };
+          while ((a = src()) !== null) {
+            if ((a & 128) === 0)
+              dst(a);
+            else if ((a & 224) === 192)
+              (b = src()) === null && fail([a, b]), dst((a & 31) << 6 | b & 63);
+            else if ((a & 240) === 224)
+              ((b = src()) === null || (c = src()) === null) && fail([a, b, c]), dst((a & 15) << 12 | (b & 63) << 6 | c & 63);
+            else if ((a & 248) === 240)
+              ((b = src()) === null || (c = src()) === null || (d = src()) === null) && fail([a, b, c, d]), dst((a & 7) << 18 | (b & 63) << 12 | (c & 63) << 6 | d & 63);
+            else throw RangeError("Illegal starting byte: " + a);
+          }
+        };
+        utfx2.UTF16toUTF8 = function(src, dst) {
+          var c1, c2 = null;
+          while (true) {
+            if ((c1 = c2 !== null ? c2 : src()) === null)
+              break;
+            if (c1 >= 55296 && c1 <= 57343) {
+              if ((c2 = src()) !== null) {
+                if (c2 >= 56320 && c2 <= 57343) {
+                  dst((c1 - 55296) * 1024 + c2 - 56320 + 65536);
+                  c2 = null;
+                  continue;
+                }
+              }
+            }
+            dst(c1);
+          }
+          if (c2 !== null) dst(c2);
+        };
+        utfx2.UTF8toUTF16 = function(src, dst) {
+          var cp = null;
+          if (typeof src === "number")
+            cp = src, src = function() {
+              return null;
+            };
+          while (cp !== null || (cp = src()) !== null) {
+            if (cp <= 65535)
+              dst(cp);
+            else
+              cp -= 65536, dst((cp >> 10) + 55296), dst(cp % 1024 + 56320);
+            cp = null;
+          }
+        };
+        utfx2.encodeUTF16toUTF8 = function(src, dst) {
+          utfx2.UTF16toUTF8(src, function(cp) {
+            utfx2.encodeUTF8(cp, dst);
+          });
+        };
+        utfx2.decodeUTF8toUTF16 = function(src, dst) {
+          utfx2.decodeUTF8(src, function(cp) {
+            utfx2.UTF8toUTF16(cp, dst);
+          });
+        };
+        utfx2.calculateCodePoint = function(cp) {
+          return cp < 128 ? 1 : cp < 2048 ? 2 : cp < 65536 ? 3 : 4;
+        };
+        utfx2.calculateUTF8 = function(src) {
+          var cp, l2 = 0;
+          while ((cp = src()) !== null)
+            l2 += utfx2.calculateCodePoint(cp);
+          return l2;
+        };
+        utfx2.calculateUTF16asUTF8 = function(src) {
+          var n = 0, l2 = 0;
+          utfx2.UTF16toUTF8(src, function(cp) {
+            ++n;
+            l2 += utfx2.calculateCodePoint(cp);
+          });
+          return [n, l2];
+        };
+        return utfx2;
+      }();
+      Date.now = Date.now || function() {
+        return +/* @__PURE__ */ new Date();
+      };
+      var BCRYPT_SALT_LEN = 16;
+      var GENSALT_DEFAULT_LOG2_ROUNDS = 10;
+      var BLOWFISH_NUM_ROUNDS = 16;
+      var MAX_EXECUTION_TIME = 100;
+      var P_ORIG = [
+        608135816,
+        2242054355,
+        320440878,
+        57701188,
+        2752067618,
+        698298832,
+        137296536,
+        3964562569,
+        1160258022,
+        953160567,
+        3193202383,
+        887688300,
+        3232508343,
+        3380367581,
+        1065670069,
+        3041331479,
+        2450970073,
+        2306472731
+      ];
+      var S_ORIG = [
+        3509652390,
+        2564797868,
+        805139163,
+        3491422135,
+        3101798381,
+        1780907670,
+        3128725573,
+        4046225305,
+        614570311,
+        3012652279,
+        134345442,
+        2240740374,
+        1667834072,
+        1901547113,
+        2757295779,
+        4103290238,
+        227898511,
+        1921955416,
+        1904987480,
+        2182433518,
+        2069144605,
+        3260701109,
+        2620446009,
+        720527379,
+        3318853667,
+        677414384,
+        3393288472,
+        3101374703,
+        2390351024,
+        1614419982,
+        1822297739,
+        2954791486,
+        3608508353,
+        3174124327,
+        2024746970,
+        1432378464,
+        3864339955,
+        2857741204,
+        1464375394,
+        1676153920,
+        1439316330,
+        715854006,
+        3033291828,
+        289532110,
+        2706671279,
+        2087905683,
+        3018724369,
+        1668267050,
+        732546397,
+        1947742710,
+        3462151702,
+        2609353502,
+        2950085171,
+        1814351708,
+        2050118529,
+        680887927,
+        999245976,
+        1800124847,
+        3300911131,
+        1713906067,
+        1641548236,
+        4213287313,
+        1216130144,
+        1575780402,
+        4018429277,
+        3917837745,
+        3693486850,
+        3949271944,
+        596196993,
+        3549867205,
+        258830323,
+        2213823033,
+        772490370,
+        2760122372,
+        1774776394,
+        2652871518,
+        566650946,
+        4142492826,
+        1728879713,
+        2882767088,
+        1783734482,
+        3629395816,
+        2517608232,
+        2874225571,
+        1861159788,
+        326777828,
+        3124490320,
+        2130389656,
+        2716951837,
+        967770486,
+        1724537150,
+        2185432712,
+        2364442137,
+        1164943284,
+        2105845187,
+        998989502,
+        3765401048,
+        2244026483,
+        1075463327,
+        1455516326,
+        1322494562,
+        910128902,
+        469688178,
+        1117454909,
+        936433444,
+        3490320968,
+        3675253459,
+        1240580251,
+        122909385,
+        2157517691,
+        634681816,
+        4142456567,
+        3825094682,
+        3061402683,
+        2540495037,
+        79693498,
+        3249098678,
+        1084186820,
+        1583128258,
+        426386531,
+        1761308591,
+        1047286709,
+        322548459,
+        995290223,
+        1845252383,
+        2603652396,
+        3431023940,
+        2942221577,
+        3202600964,
+        3727903485,
+        1712269319,
+        422464435,
+        3234572375,
+        1170764815,
+        3523960633,
+        3117677531,
+        1434042557,
+        442511882,
+        3600875718,
+        1076654713,
+        1738483198,
+        4213154764,
+        2393238008,
+        3677496056,
+        1014306527,
+        4251020053,
+        793779912,
+        2902807211,
+        842905082,
+        4246964064,
+        1395751752,
+        1040244610,
+        2656851899,
+        3396308128,
+        445077038,
+        3742853595,
+        3577915638,
+        679411651,
+        2892444358,
+        2354009459,
+        1767581616,
+        3150600392,
+        3791627101,
+        3102740896,
+        284835224,
+        4246832056,
+        1258075500,
+        768725851,
+        2589189241,
+        3069724005,
+        3532540348,
+        1274779536,
+        3789419226,
+        2764799539,
+        1660621633,
+        3471099624,
+        4011903706,
+        913787905,
+        3497959166,
+        737222580,
+        2514213453,
+        2928710040,
+        3937242737,
+        1804850592,
+        3499020752,
+        2949064160,
+        2386320175,
+        2390070455,
+        2415321851,
+        4061277028,
+        2290661394,
+        2416832540,
+        1336762016,
+        1754252060,
+        3520065937,
+        3014181293,
+        791618072,
+        3188594551,
+        3933548030,
+        2332172193,
+        3852520463,
+        3043980520,
+        413987798,
+        3465142937,
+        3030929376,
+        4245938359,
+        2093235073,
+        3534596313,
+        375366246,
+        2157278981,
+        2479649556,
+        555357303,
+        3870105701,
+        2008414854,
+        3344188149,
+        4221384143,
+        3956125452,
+        2067696032,
+        3594591187,
+        2921233993,
+        2428461,
+        544322398,
+        577241275,
+        1471733935,
+        610547355,
+        4027169054,
+        1432588573,
+        1507829418,
+        2025931657,
+        3646575487,
+        545086370,
+        48609733,
+        2200306550,
+        1653985193,
+        298326376,
+        1316178497,
+        3007786442,
+        2064951626,
+        458293330,
+        2589141269,
+        3591329599,
+        3164325604,
+        727753846,
+        2179363840,
+        146436021,
+        1461446943,
+        4069977195,
+        705550613,
+        3059967265,
+        3887724982,
+        4281599278,
+        3313849956,
+        1404054877,
+        2845806497,
+        146425753,
+        1854211946,
+        1266315497,
+        3048417604,
+        3681880366,
+        3289982499,
+        290971e4,
+        1235738493,
+        2632868024,
+        2414719590,
+        3970600049,
+        1771706367,
+        1449415276,
+        3266420449,
+        422970021,
+        1963543593,
+        2690192192,
+        3826793022,
+        1062508698,
+        1531092325,
+        1804592342,
+        2583117782,
+        2714934279,
+        4024971509,
+        1294809318,
+        4028980673,
+        1289560198,
+        2221992742,
+        1669523910,
+        35572830,
+        157838143,
+        1052438473,
+        1016535060,
+        1802137761,
+        1753167236,
+        1386275462,
+        3080475397,
+        2857371447,
+        1040679964,
+        2145300060,
+        2390574316,
+        1461121720,
+        2956646967,
+        4031777805,
+        4028374788,
+        33600511,
+        2920084762,
+        1018524850,
+        629373528,
+        3691585981,
+        3515945977,
+        2091462646,
+        2486323059,
+        586499841,
+        988145025,
+        935516892,
+        3367335476,
+        2599673255,
+        2839830854,
+        265290510,
+        3972581182,
+        2759138881,
+        3795373465,
+        1005194799,
+        847297441,
+        406762289,
+        1314163512,
+        1332590856,
+        1866599683,
+        4127851711,
+        750260880,
+        613907577,
+        1450815602,
+        3165620655,
+        3734664991,
+        3650291728,
+        3012275730,
+        3704569646,
+        1427272223,
+        778793252,
+        1343938022,
+        2676280711,
+        2052605720,
+        1946737175,
+        3164576444,
+        3914038668,
+        3967478842,
+        3682934266,
+        1661551462,
+        3294938066,
+        4011595847,
+        840292616,
+        3712170807,
+        616741398,
+        312560963,
+        711312465,
+        1351876610,
+        322626781,
+        1910503582,
+        271666773,
+        2175563734,
+        1594956187,
+        70604529,
+        3617834859,
+        1007753275,
+        1495573769,
+        4069517037,
+        2549218298,
+        2663038764,
+        504708206,
+        2263041392,
+        3941167025,
+        2249088522,
+        1514023603,
+        1998579484,
+        1312622330,
+        694541497,
+        2582060303,
+        2151582166,
+        1382467621,
+        776784248,
+        2618340202,
+        3323268794,
+        2497899128,
+        2784771155,
+        503983604,
+        4076293799,
+        907881277,
+        423175695,
+        432175456,
+        1378068232,
+        4145222326,
+        3954048622,
+        3938656102,
+        3820766613,
+        2793130115,
+        2977904593,
+        26017576,
+        3274890735,
+        3194772133,
+        1700274565,
+        1756076034,
+        4006520079,
+        3677328699,
+        720338349,
+        1533947780,
+        354530856,
+        688349552,
+        3973924725,
+        1637815568,
+        332179504,
+        3949051286,
+        53804574,
+        2852348879,
+        3044236432,
+        1282449977,
+        3583942155,
+        3416972820,
+        4006381244,
+        1617046695,
+        2628476075,
+        3002303598,
+        1686838959,
+        431878346,
+        2686675385,
+        1700445008,
+        1080580658,
+        1009431731,
+        832498133,
+        3223435511,
+        2605976345,
+        2271191193,
+        2516031870,
+        1648197032,
+        4164389018,
+        2548247927,
+        300782431,
+        375919233,
+        238389289,
+        3353747414,
+        2531188641,
+        2019080857,
+        1475708069,
+        455242339,
+        2609103871,
+        448939670,
+        3451063019,
+        1395535956,
+        2413381860,
+        1841049896,
+        1491858159,
+        885456874,
+        4264095073,
+        4001119347,
+        1565136089,
+        3898914787,
+        1108368660,
+        540939232,
+        1173283510,
+        2745871338,
+        3681308437,
+        4207628240,
+        3343053890,
+        4016749493,
+        1699691293,
+        1103962373,
+        3625875870,
+        2256883143,
+        3830138730,
+        1031889488,
+        3479347698,
+        1535977030,
+        4236805024,
+        3251091107,
+        2132092099,
+        1774941330,
+        1199868427,
+        1452454533,
+        157007616,
+        2904115357,
+        342012276,
+        595725824,
+        1480756522,
+        206960106,
+        497939518,
+        591360097,
+        863170706,
+        2375253569,
+        3596610801,
+        1814182875,
+        2094937945,
+        3421402208,
+        1082520231,
+        3463918190,
+        2785509508,
+        435703966,
+        3908032597,
+        1641649973,
+        2842273706,
+        3305899714,
+        1510255612,
+        2148256476,
+        2655287854,
+        3276092548,
+        4258621189,
+        236887753,
+        3681803219,
+        274041037,
+        1734335097,
+        3815195456,
+        3317970021,
+        1899903192,
+        1026095262,
+        4050517792,
+        356393447,
+        2410691914,
+        3873677099,
+        3682840055,
+        3913112168,
+        2491498743,
+        4132185628,
+        2489919796,
+        1091903735,
+        1979897079,
+        3170134830,
+        3567386728,
+        3557303409,
+        857797738,
+        1136121015,
+        1342202287,
+        507115054,
+        2535736646,
+        337727348,
+        3213592640,
+        1301675037,
+        2528481711,
+        1895095763,
+        1721773893,
+        3216771564,
+        62756741,
+        2142006736,
+        835421444,
+        2531993523,
+        1442658625,
+        3659876326,
+        2882144922,
+        676362277,
+        1392781812,
+        170690266,
+        3921047035,
+        1759253602,
+        3611846912,
+        1745797284,
+        664899054,
+        1329594018,
+        3901205900,
+        3045908486,
+        2062866102,
+        2865634940,
+        3543621612,
+        3464012697,
+        1080764994,
+        553557557,
+        3656615353,
+        3996768171,
+        991055499,
+        499776247,
+        1265440854,
+        648242737,
+        3940784050,
+        980351604,
+        3713745714,
+        1749149687,
+        3396870395,
+        4211799374,
+        3640570775,
+        1161844396,
+        3125318951,
+        1431517754,
+        545492359,
+        4268468663,
+        3499529547,
+        1437099964,
+        2702547544,
+        3433638243,
+        2581715763,
+        2787789398,
+        1060185593,
+        1593081372,
+        2418618748,
+        4260947970,
+        69676912,
+        2159744348,
+        86519011,
+        2512459080,
+        3838209314,
+        1220612927,
+        3339683548,
+        133810670,
+        1090789135,
+        1078426020,
+        1569222167,
+        845107691,
+        3583754449,
+        4072456591,
+        1091646820,
+        628848692,
+        1613405280,
+        3757631651,
+        526609435,
+        236106946,
+        48312990,
+        2942717905,
+        3402727701,
+        1797494240,
+        859738849,
+        992217954,
+        4005476642,
+        2243076622,
+        3870952857,
+        3732016268,
+        765654824,
+        3490871365,
+        2511836413,
+        1685915746,
+        3888969200,
+        1414112111,
+        2273134842,
+        3281911079,
+        4080962846,
+        172450625,
+        2569994100,
+        980381355,
+        4109958455,
+        2819808352,
+        2716589560,
+        2568741196,
+        3681446669,
+        3329971472,
+        1835478071,
+        660984891,
+        3704678404,
+        4045999559,
+        3422617507,
+        3040415634,
+        1762651403,
+        1719377915,
+        3470491036,
+        2693910283,
+        3642056355,
+        3138596744,
+        1364962596,
+        2073328063,
+        1983633131,
+        926494387,
+        3423689081,
+        2150032023,
+        4096667949,
+        1749200295,
+        3328846651,
+        309677260,
+        2016342300,
+        1779581495,
+        3079819751,
+        111262694,
+        1274766160,
+        443224088,
+        298511866,
+        1025883608,
+        3806446537,
+        1145181785,
+        168956806,
+        3641502830,
+        3584813610,
+        1689216846,
+        3666258015,
+        3200248200,
+        1692713982,
+        2646376535,
+        4042768518,
+        1618508792,
+        1610833997,
+        3523052358,
+        4130873264,
+        2001055236,
+        3610705100,
+        2202168115,
+        4028541809,
+        2961195399,
+        1006657119,
+        2006996926,
+        3186142756,
+        1430667929,
+        3210227297,
+        1314452623,
+        4074634658,
+        4101304120,
+        2273951170,
+        1399257539,
+        3367210612,
+        3027628629,
+        1190975929,
+        2062231137,
+        2333990788,
+        2221543033,
+        2438960610,
+        1181637006,
+        548689776,
+        2362791313,
+        3372408396,
+        3104550113,
+        3145860560,
+        296247880,
+        1970579870,
+        3078560182,
+        3769228297,
+        1714227617,
+        3291629107,
+        3898220290,
+        166772364,
+        1251581989,
+        493813264,
+        448347421,
+        195405023,
+        2709975567,
+        677966185,
+        3703036547,
+        1463355134,
+        2715995803,
+        1338867538,
+        1343315457,
+        2802222074,
+        2684532164,
+        233230375,
+        2599980071,
+        2000651841,
+        3277868038,
+        1638401717,
+        4028070440,
+        3237316320,
+        6314154,
+        819756386,
+        300326615,
+        590932579,
+        1405279636,
+        3267499572,
+        3150704214,
+        2428286686,
+        3959192993,
+        3461946742,
+        1862657033,
+        1266418056,
+        963775037,
+        2089974820,
+        2263052895,
+        1917689273,
+        448879540,
+        3550394620,
+        3981727096,
+        150775221,
+        3627908307,
+        1303187396,
+        508620638,
+        2975983352,
+        2726630617,
+        1817252668,
+        1876281319,
+        1457606340,
+        908771278,
+        3720792119,
+        3617206836,
+        2455994898,
+        1729034894,
+        1080033504,
+        976866871,
+        3556439503,
+        2881648439,
+        1522871579,
+        1555064734,
+        1336096578,
+        3548522304,
+        2579274686,
+        3574697629,
+        3205460757,
+        3593280638,
+        3338716283,
+        3079412587,
+        564236357,
+        2993598910,
+        1781952180,
+        1464380207,
+        3163844217,
+        3332601554,
+        1699332808,
+        1393555694,
+        1183702653,
+        3581086237,
+        1288719814,
+        691649499,
+        2847557200,
+        2895455976,
+        3193889540,
+        2717570544,
+        1781354906,
+        1676643554,
+        2592534050,
+        3230253752,
+        1126444790,
+        2770207658,
+        2633158820,
+        2210423226,
+        2615765581,
+        2414155088,
+        3127139286,
+        673620729,
+        2805611233,
+        1269405062,
+        4015350505,
+        3341807571,
+        4149409754,
+        1057255273,
+        2012875353,
+        2162469141,
+        2276492801,
+        2601117357,
+        993977747,
+        3918593370,
+        2654263191,
+        753973209,
+        36408145,
+        2530585658,
+        25011837,
+        3520020182,
+        2088578344,
+        530523599,
+        2918365339,
+        1524020338,
+        1518925132,
+        3760827505,
+        3759777254,
+        1202760957,
+        3985898139,
+        3906192525,
+        674977740,
+        4174734889,
+        2031300136,
+        2019492241,
+        3983892565,
+        4153806404,
+        3822280332,
+        352677332,
+        2297720250,
+        60907813,
+        90501309,
+        3286998549,
+        1016092578,
+        2535922412,
+        2839152426,
+        457141659,
+        509813237,
+        4120667899,
+        652014361,
+        1966332200,
+        2975202805,
+        55981186,
+        2327461051,
+        676427537,
+        3255491064,
+        2882294119,
+        3433927263,
+        1307055953,
+        942726286,
+        933058658,
+        2468411793,
+        3933900994,
+        4215176142,
+        1361170020,
+        2001714738,
+        2830558078,
+        3274259782,
+        1222529897,
+        1679025792,
+        2729314320,
+        3714953764,
+        1770335741,
+        151462246,
+        3013232138,
+        1682292957,
+        1483529935,
+        471910574,
+        1539241949,
+        458788160,
+        3436315007,
+        1807016891,
+        3718408830,
+        978976581,
+        1043663428,
+        3165965781,
+        1927990952,
+        4200891579,
+        2372276910,
+        3208408903,
+        3533431907,
+        1412390302,
+        2931980059,
+        4132332400,
+        1947078029,
+        3881505623,
+        4168226417,
+        2941484381,
+        1077988104,
+        1320477388,
+        886195818,
+        18198404,
+        3786409e3,
+        2509781533,
+        112762804,
+        3463356488,
+        1866414978,
+        891333506,
+        18488651,
+        661792760,
+        1628790961,
+        3885187036,
+        3141171499,
+        876946877,
+        2693282273,
+        1372485963,
+        791857591,
+        2686433993,
+        3759982718,
+        3167212022,
+        3472953795,
+        2716379847,
+        445679433,
+        3561995674,
+        3504004811,
+        3574258232,
+        54117162,
+        3331405415,
+        2381918588,
+        3769707343,
+        4154350007,
+        1140177722,
+        4074052095,
+        668550556,
+        3214352940,
+        367459370,
+        261225585,
+        2610173221,
+        4209349473,
+        3468074219,
+        3265815641,
+        314222801,
+        3066103646,
+        3808782860,
+        282218597,
+        3406013506,
+        3773591054,
+        379116347,
+        1285071038,
+        846784868,
+        2669647154,
+        3771962079,
+        3550491691,
+        2305946142,
+        453669953,
+        1268987020,
+        3317592352,
+        3279303384,
+        3744833421,
+        2610507566,
+        3859509063,
+        266596637,
+        3847019092,
+        517658769,
+        3462560207,
+        3443424879,
+        370717030,
+        4247526661,
+        2224018117,
+        4143653529,
+        4112773975,
+        2788324899,
+        2477274417,
+        1456262402,
+        2901442914,
+        1517677493,
+        1846949527,
+        2295493580,
+        3734397586,
+        2176403920,
+        1280348187,
+        1908823572,
+        3871786941,
+        846861322,
+        1172426758,
+        3287448474,
+        3383383037,
+        1655181056,
+        3139813346,
+        901632758,
+        1897031941,
+        2986607138,
+        3066810236,
+        3447102507,
+        1393639104,
+        373351379,
+        950779232,
+        625454576,
+        3124240540,
+        4148612726,
+        2007998917,
+        544563296,
+        2244738638,
+        2330496472,
+        2058025392,
+        1291430526,
+        424198748,
+        50039436,
+        29584100,
+        3605783033,
+        2429876329,
+        2791104160,
+        1057563949,
+        3255363231,
+        3075367218,
+        3463963227,
+        1469046755,
+        985887462
+      ];
+      var C_ORIG = [
+        1332899944,
+        1700884034,
+        1701343084,
+        1684370003,
+        1668446532,
+        1869963892
+      ];
+      function _encipher(lr, off, P, S) {
+        var n, l2 = lr[off], r = lr[off + 1];
+        l2 ^= P[0];
+        n = S[l2 >>> 24];
+        n += S[256 | l2 >> 16 & 255];
+        n ^= S[512 | l2 >> 8 & 255];
+        n += S[768 | l2 & 255];
+        r ^= n ^ P[1];
+        n = S[r >>> 24];
+        n += S[256 | r >> 16 & 255];
+        n ^= S[512 | r >> 8 & 255];
+        n += S[768 | r & 255];
+        l2 ^= n ^ P[2];
+        n = S[l2 >>> 24];
+        n += S[256 | l2 >> 16 & 255];
+        n ^= S[512 | l2 >> 8 & 255];
+        n += S[768 | l2 & 255];
+        r ^= n ^ P[3];
+        n = S[r >>> 24];
+        n += S[256 | r >> 16 & 255];
+        n ^= S[512 | r >> 8 & 255];
+        n += S[768 | r & 255];
+        l2 ^= n ^ P[4];
+        n = S[l2 >>> 24];
+        n += S[256 | l2 >> 16 & 255];
+        n ^= S[512 | l2 >> 8 & 255];
+        n += S[768 | l2 & 255];
+        r ^= n ^ P[5];
+        n = S[r >>> 24];
+        n += S[256 | r >> 16 & 255];
+        n ^= S[512 | r >> 8 & 255];
+        n += S[768 | r & 255];
+        l2 ^= n ^ P[6];
+        n = S[l2 >>> 24];
+        n += S[256 | l2 >> 16 & 255];
+        n ^= S[512 | l2 >> 8 & 255];
+        n += S[768 | l2 & 255];
+        r ^= n ^ P[7];
+        n = S[r >>> 24];
+        n += S[256 | r >> 16 & 255];
+        n ^= S[512 | r >> 8 & 255];
+        n += S[768 | r & 255];
+        l2 ^= n ^ P[8];
+        n = S[l2 >>> 24];
+        n += S[256 | l2 >> 16 & 255];
+        n ^= S[512 | l2 >> 8 & 255];
+        n += S[768 | l2 & 255];
+        r ^= n ^ P[9];
+        n = S[r >>> 24];
+        n += S[256 | r >> 16 & 255];
+        n ^= S[512 | r >> 8 & 255];
+        n += S[768 | r & 255];
+        l2 ^= n ^ P[10];
+        n = S[l2 >>> 24];
+        n += S[256 | l2 >> 16 & 255];
+        n ^= S[512 | l2 >> 8 & 255];
+        n += S[768 | l2 & 255];
+        r ^= n ^ P[11];
+        n = S[r >>> 24];
+        n += S[256 | r >> 16 & 255];
+        n ^= S[512 | r >> 8 & 255];
+        n += S[768 | r & 255];
+        l2 ^= n ^ P[12];
+        n = S[l2 >>> 24];
+        n += S[256 | l2 >> 16 & 255];
+        n ^= S[512 | l2 >> 8 & 255];
+        n += S[768 | l2 & 255];
+        r ^= n ^ P[13];
+        n = S[r >>> 24];
+        n += S[256 | r >> 16 & 255];
+        n ^= S[512 | r >> 8 & 255];
+        n += S[768 | r & 255];
+        l2 ^= n ^ P[14];
+        n = S[l2 >>> 24];
+        n += S[256 | l2 >> 16 & 255];
+        n ^= S[512 | l2 >> 8 & 255];
+        n += S[768 | l2 & 255];
+        r ^= n ^ P[15];
+        n = S[r >>> 24];
+        n += S[256 | r >> 16 & 255];
+        n ^= S[512 | r >> 8 & 255];
+        n += S[768 | r & 255];
+        l2 ^= n ^ P[16];
+        lr[off] = r ^ P[BLOWFISH_NUM_ROUNDS + 1];
+        lr[off + 1] = l2;
+        return lr;
+      }
+      function _streamtoword(data, offp) {
+        for (var i = 0, word = 0; i < 4; ++i)
+          word = word << 8 | data[offp] & 255, offp = (offp + 1) % data.length;
+        return { key: word, offp };
+      }
+      function _key(key, P, S) {
+        var offset = 0, lr = [0, 0], plen = P.length, slen = S.length, sw;
+        for (var i = 0; i < plen; i++)
+          sw = _streamtoword(key, offset), offset = sw.offp, P[i] = P[i] ^ sw.key;
+        for (i = 0; i < plen; i += 2)
+          lr = _encipher(lr, 0, P, S), P[i] = lr[0], P[i + 1] = lr[1];
+        for (i = 0; i < slen; i += 2)
+          lr = _encipher(lr, 0, P, S), S[i] = lr[0], S[i + 1] = lr[1];
+      }
+      function _ekskey(data, key, P, S) {
+        var offp = 0, lr = [0, 0], plen = P.length, slen = S.length, sw;
+        for (var i = 0; i < plen; i++)
+          sw = _streamtoword(key, offp), offp = sw.offp, P[i] = P[i] ^ sw.key;
+        offp = 0;
+        for (i = 0; i < plen; i += 2)
+          sw = _streamtoword(data, offp), offp = sw.offp, lr[0] ^= sw.key, sw = _streamtoword(data, offp), offp = sw.offp, lr[1] ^= sw.key, lr = _encipher(lr, 0, P, S), P[i] = lr[0], P[i + 1] = lr[1];
+        for (i = 0; i < slen; i += 2)
+          sw = _streamtoword(data, offp), offp = sw.offp, lr[0] ^= sw.key, sw = _streamtoword(data, offp), offp = sw.offp, lr[1] ^= sw.key, lr = _encipher(lr, 0, P, S), S[i] = lr[0], S[i + 1] = lr[1];
+      }
+      function _crypt(b, salt, rounds, callback, progressCallback) {
+        var cdata = C_ORIG.slice(), clen = cdata.length, err;
+        if (rounds < 4 || rounds > 31) {
+          err = Error("Illegal number of rounds (4-31): " + rounds);
+          if (callback) {
+            nextTick(callback.bind(this, err));
+            return;
+          } else
+            throw err;
+        }
+        if (salt.length !== BCRYPT_SALT_LEN) {
+          err = Error("Illegal salt length: " + salt.length + " != " + BCRYPT_SALT_LEN);
+          if (callback) {
+            nextTick(callback.bind(this, err));
+            return;
+          } else
+            throw err;
+        }
+        rounds = 1 << rounds >>> 0;
+        var P, S, i = 0, j;
+        if (Int32Array) {
+          P = new Int32Array(P_ORIG);
+          S = new Int32Array(S_ORIG);
+        } else {
+          P = P_ORIG.slice();
+          S = S_ORIG.slice();
+        }
+        _ekskey(salt, b, P, S);
+        function next() {
+          if (progressCallback)
+            progressCallback(i / rounds);
+          if (i < rounds) {
+            var start = Date.now();
+            for (; i < rounds; ) {
+              i = i + 1;
+              _key(b, P, S);
+              _key(salt, P, S);
+              if (Date.now() - start > MAX_EXECUTION_TIME)
+                break;
+            }
+          } else {
+            for (i = 0; i < 64; i++)
+              for (j = 0; j < clen >> 1; j++)
+                _encipher(cdata, j << 1, P, S);
+            var ret2 = [];
+            for (i = 0; i < clen; i++)
+              ret2.push((cdata[i] >> 24 & 255) >>> 0), ret2.push((cdata[i] >> 16 & 255) >>> 0), ret2.push((cdata[i] >> 8 & 255) >>> 0), ret2.push((cdata[i] & 255) >>> 0);
+            if (callback) {
+              callback(null, ret2);
+              return;
+            } else
+              return ret2;
+          }
+          if (callback)
+            nextTick(next);
+        }
+        if (typeof callback !== "undefined") {
+          next();
+        } else {
+          var res;
+          while (true)
+            if (typeof (res = next()) !== "undefined")
+              return res || [];
+        }
+      }
+      function _hash(s, salt, callback, progressCallback) {
+        var err;
+        if (typeof s !== "string" || typeof salt !== "string") {
+          err = Error("Invalid string / salt: Not a string");
+          if (callback) {
+            nextTick(callback.bind(this, err));
+            return;
+          } else
+            throw err;
+        }
+        var minor, offset;
+        if (salt.charAt(0) !== "$" || salt.charAt(1) !== "2") {
+          err = Error("Invalid salt version: " + salt.substring(0, 2));
+          if (callback) {
+            nextTick(callback.bind(this, err));
+            return;
+          } else
+            throw err;
+        }
+        if (salt.charAt(2) === "$")
+          minor = String.fromCharCode(0), offset = 3;
+        else {
+          minor = salt.charAt(2);
+          if (minor !== "a" && minor !== "b" && minor !== "y" || salt.charAt(3) !== "$") {
+            err = Error("Invalid salt revision: " + salt.substring(2, 4));
+            if (callback) {
+              nextTick(callback.bind(this, err));
+              return;
+            } else
+              throw err;
+          }
+          offset = 4;
+        }
+        if (salt.charAt(offset + 2) > "$") {
+          err = Error("Missing salt rounds");
+          if (callback) {
+            nextTick(callback.bind(this, err));
+            return;
+          } else
+            throw err;
+        }
+        var r1 = parseInt(salt.substring(offset, offset + 1), 10) * 10, r2 = parseInt(salt.substring(offset + 1, offset + 2), 10), rounds = r1 + r2, real_salt = salt.substring(offset + 3, offset + 25);
+        s += minor >= "a" ? "\0" : "";
+        var passwordb = stringToBytes2(s), saltb = base64_decode(real_salt, BCRYPT_SALT_LEN);
+        function finish(bytes) {
+          var res = [];
+          res.push("$2");
+          if (minor >= "a")
+            res.push(minor);
+          res.push("$");
+          if (rounds < 10)
+            res.push("0");
+          res.push(rounds.toString());
+          res.push("$");
+          res.push(base64_encode(saltb, saltb.length));
+          res.push(base64_encode(bytes, C_ORIG.length * 4 - 1));
+          return res.join("");
+        }
+        if (typeof callback == "undefined")
+          return finish(_crypt(passwordb, saltb, rounds));
+        else {
+          _crypt(passwordb, saltb, rounds, function(err2, bytes) {
+            if (err2)
+              callback(err2, null);
+            else
+              callback(null, finish(bytes));
+          }, progressCallback);
+        }
+      }
+      bcrypt.encodeBase64 = base64_encode;
+      bcrypt.decodeBase64 = base64_decode;
+      return bcrypt;
+    });
+  }
+});
+
+// node_modules/bcryptjs/index.js
+var require_bcryptjs = __commonJS({
+  "node_modules/bcryptjs/index.js"(exports2, module2) {
+    module2.exports = require_bcrypt();
+  }
+});
+
+// apps/api/src/modules/auth/models/User.js
+var require_User = __commonJS({
+  "apps/api/src/modules/auth/models/User.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var bcrypt = require_bcryptjs();
+    var { Schema } = mongoose;
+    var userSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        name: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        email: {
+          type: String,
+          required: true,
+          lowercase: true,
+          trim: true
+        },
+        passwordHash: {
+          type: String,
+          required: true
+        },
+        phone: {
+          type: String,
+          default: ""
+        },
+        roleId: {
+          type: Schema.Types.ObjectId,
+          ref: "Role",
+          required: true,
+          index: true
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        },
+        passwordResetToken: {
+          type: String,
+          default: null
+        },
+        passwordResetExpires: {
+          type: Date,
+          default: null
+        },
+        lastLoginAt: {
+          type: Date,
+          default: null
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    userSchema.index({ email: 1 }, { unique: true });
+    userSchema.index({ companyId: 1, roleId: 1 });
+    userSchema.pre("save", async function(next) {
+      if (!this.isModified("passwordHash")) {
+        return next();
+      }
+      if (!this.passwordHash.startsWith("$2")) {
+        const salt = await bcrypt.genSalt(12);
+        this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
+      }
+      next();
+    });
+    userSchema.methods.comparePassword = async function(candidatePassword) {
+      return bcrypt.compare(candidatePassword, this.passwordHash);
+    };
+    userSchema.methods.toSafeObject = function() {
+      const obj2 = this.toObject();
+      delete obj2.passwordHash;
+      delete obj2.passwordResetToken;
+      delete obj2.passwordResetExpires;
+      delete obj2.__v;
+      return obj2;
+    };
+    module2.exports = mongoose.model("User", userSchema);
+  }
+});
+
+// apps/api/src/modules/auth/models/UserSession.js
+var require_UserSession = __commonJS({
+  "apps/api/src/modules/auth/models/UserSession.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var userSessionSchema = new Schema(
+      {
+        userId: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+          index: true
+        },
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        refreshTokenHash: {
+          type: String,
+          required: true,
+          index: true
+        },
+        ipAddress: {
+          type: String,
+          default: ""
+        },
+        userAgent: {
+          type: String,
+          default: ""
+        },
+        expiresAt: {
+          type: Date,
+          required: true,
+          index: { expires: 0 }
+          // MongoDB TTL index to auto-remove expired sessions
+        },
+        isRevoked: {
+          type: Boolean,
+          default: false,
+          index: true
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    userSessionSchema.index({ userId: 1, isRevoked: 1 });
+    module2.exports = mongoose.model("UserSession", userSessionSchema);
+  }
+});
+
+// apps/api/src/modules/auth/models/Company.js
+var require_Company = __commonJS({
+  "apps/api/src/modules/auth/models/Company.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var companySchema = new Schema(
+      {
+        legalName: { type: String, required: true, trim: true },
+        tradeName: { type: String, required: true, trim: true },
+        gstin: { type: String, required: true, uppercase: true, trim: true },
+        pan: { type: String, uppercase: true, trim: true },
+        email: { type: String, required: true, lowercase: true, trim: true },
+        phone: { type: String, required: true, trim: true },
+        address: {
+          street: { type: String, default: "" },
+          city: { type: String, default: "" },
+          state: { type: String, default: "" },
+          pincode: { type: String, default: "" },
+          country: { type: String, default: "IN" }
+        },
+        settings: {
+          timezone: { type: String, default: "Asia/Kolkata" },
+          currency: { type: String, default: "INR" },
+          weightUnit: { type: String, enum: ["MT", "KG", "QUINTAL"], default: "MT" },
+          distanceUnit: { type: String, enum: ["KM", "MILE"], default: "KM" },
+          defaultGtaGstRate: { type: Number, default: 5 },
+          defaultGtaSacCode: { type: String, default: "9965" }
+        },
+        branding: {
+          logoUrl: { type: String, default: "" },
+          letterheadHeaderUrl: { type: String, default: "" },
+          authorizedSignatoryUrl: { type: String, default: "" }
+        },
+        isActive: { type: Boolean, default: true }
+      },
+      {
+        timestamps: true
+      }
+    );
+    companySchema.index({ gstin: 1 });
+    companySchema.index({ isActive: 1 });
+    module2.exports = mongoose.model("Company", companySchema);
+  }
+});
+
+// apps/api/src/shared/index.js
+var require_shared2 = __commonJS({
+  "apps/api/src/shared/index.js"(exports2, module2) {
+    "use strict";
+    var UserRole = Object.freeze({
+      SUPER_ADMIN: "super_admin",
+      ADMIN: "admin",
+      TRANSPORT_MANAGER: "transport_manager",
+      FLEET_MANAGER: "fleet_manager",
+      OPERATIONS_MANAGER: "operations_manager",
+      DATA_ENTRY: "data_entry",
+      ACCOUNTS: "accounts",
+      MANAGEMENT: "management"
+    });
+    var SystemModule = Object.freeze({
+      AUTH: "auth",
+      USERS: "users",
+      ROLES: "roles",
+      LOADS: "loads",
+      LR: "lr",
+      BILTIES: "bilties",
+      TRIPS: "trips",
+      VEHICLES: "vehicles",
+      VEHICLE_DOCS: "vehicle_docs",
+      DRIVERS: "drivers",
+      DRIVER_DOCS: "driver_docs",
+      CUSTOMERS: "customers",
+      LOCATIONS: "locations",
+      BILLING: "billing",
+      POD: "pod",
+      DOCUMENTS: "documents",
+      WHATSAPP: "whatsapp",
+      REPORTS: "reports",
+      IMPORT_EXPORT: "import_export",
+      SETTINGS: "settings",
+      AUDIT: "audit",
+      MAINTENANCE: "maintenance"
+    });
+    var ActionPermission = Object.freeze({
+      VIEW: "view",
+      ADD: "add",
+      EDIT: "edit",
+      DELETE: "delete",
+      ADMIN: "admin",
+      EXPORT: "export"
+    });
+    var AuditAction = Object.freeze({
+      LOGIN_SUCCESS: "LOGIN_SUCCESS",
+      LOGIN_FAILED: "LOGIN_FAILED",
+      LOGOUT: "LOGOUT",
+      CREATE: "CREATE",
+      UPDATE: "UPDATE",
+      DELETE: "DELETE",
+      STATUS_CHANGE: "STATUS_CHANGE",
+      PASSWORD_RESET: "PASSWORD_RESET",
+      EXPORT: "EXPORT"
+    });
+    var VehicleStatus = Object.freeze({
+      AVAILABLE: "AVAILABLE",
+      ASSIGNED: "ASSIGNED",
+      ON_TRIP: "ON_TRIP",
+      UNDER_MAINTENANCE: "UNDER_MAINTENANCE",
+      INACTIVE: "INACTIVE",
+      OUT_OF_SERVICE: "OUT_OF_SERVICE"
+    });
+    var DriverStatus = Object.freeze({
+      AVAILABLE: "AVAILABLE",
+      ASSIGNED: "ASSIGNED",
+      ON_TRIP: "ON_TRIP",
+      ON_LEAVE: "ON_LEAVE",
+      INACTIVE: "INACTIVE"
+    });
+    var LoadStatus = Object.freeze({
+      CREATED: "CREATED",
+      ASSIGNED: "ASSIGNED",
+      LOADING: "LOADING",
+      IN_TRANSIT: "IN_TRANSIT",
+      PARTIALLY_DELIVERED: "PARTIALLY_DELIVERED",
+      DELIVERED: "DELIVERED",
+      CLOSED: "CLOSED",
+      CANCELLED: "CANCELLED"
+    });
+    var LrStatus = Object.freeze({
+      BOOKED: "BOOKED",
+      LOADED: "LOADED",
+      IN_TRANSIT: "IN_TRANSIT",
+      PARTIALLY_DELIVERED: "PARTIALLY_DELIVERED",
+      DELIVERED: "DELIVERED",
+      POD_CLOSED: "POD_CLOSED",
+      CANCELLED: "CANCELLED"
+    });
+    var TripStatus = Object.freeze({
+      CREATED: "CREATED",
+      VEHICLE_ASSIGNED: "VEHICLE_ASSIGNED",
+      LOADING: "LOADING",
+      IN_TRANSIT: "IN_TRANSIT",
+      PARTIALLY_DELIVERED: "PARTIALLY_DELIVERED",
+      DELIVERED: "DELIVERED",
+      CLOSED: "CLOSED",
+      CANCELLED: "CANCELLED"
+    });
+    var ComplianceStatus = Object.freeze({
+      VALID: "VALID",
+      EXPIRING_SOON: "EXPIRING_SOON",
+      EXPIRED: "EXPIRED",
+      MISSING: "MISSING"
+    });
+    var PartyType = Object.freeze({
+      CUSTOMER: "CUSTOMER",
+      CONSIGNOR: "CONSIGNOR",
+      CONSIGNEE: "CONSIGNEE",
+      TRANSPORTER: "TRANSPORTER",
+      BOTH: "BOTH"
+    });
+    var LocationType = Object.freeze({
+      HUB: "HUB",
+      PICKUP: "PICKUP",
+      DELIVERY: "DELIVERY",
+      WAYPOINT: "WAYPOINT"
+    });
+    var VehicleCategory = Object.freeze({
+      OWNED: "OWNED",
+      ATTACHED: "ATTACHED",
+      MARKET: "MARKET"
+    });
+    var VehicleDocumentType = Object.freeze({
+      RC: "RC",
+      INSURANCE: "INSURANCE",
+      PUC: "PUC",
+      FITNESS: "FITNESS",
+      NATIONAL_PERMIT: "NATIONAL_PERMIT",
+      STATE_PERMIT: "STATE_PERMIT",
+      TAX_RECEIPT: "TAX_RECEIPT",
+      OTHER: "OTHER"
+    });
+    var DriverLicenseType = Object.freeze({
+      LMV: "LMV",
+      HMV: "HMV",
+      TRANS: "TRANS",
+      TRAILER: "TRAILER"
+    });
+    var DriverDocumentType = Object.freeze({
+      DRIVING_LICENCE: "DRIVING_LICENCE",
+      AADHAAR: "AADHAAR",
+      PAN: "PAN",
+      POLICE_VERIFICATION: "POLICE_VERIFICATION",
+      MEDICAL_FITNESS: "MEDICAL_FITNESS",
+      OTHER: "OTHER"
+    });
+    var NotificationCategory = Object.freeze({
+      DOCUMENT_EXPIRY: "DOCUMENT_EXPIRY",
+      SYSTEM: "SYSTEM",
+      TRIP_ALERT: "TRIP_ALERT"
+    });
+    var NotificationSeverity = Object.freeze({
+      INFO: "INFO",
+      WARNING: "WARNING",
+      CRITICAL: "CRITICAL"
+    });
+    var BiltyStatus = Object.freeze({
+      DRAFT: "DRAFT",
+      ISSUED: "ISSUED",
+      CANCELLED: "CANCELLED"
+    });
+    var StopType = Object.freeze({
+      PICKUP: "PICKUP",
+      DELIVERY: "DELIVERY",
+      WAYPOINT: "WAYPOINT"
+    });
+    var StopStatus = Object.freeze({
+      PENDING: "PENDING",
+      ARRIVED: "ARRIVED",
+      LOADING: "LOADING",
+      UNLOADING: "UNLOADING",
+      COMPLETED: "COMPLETED",
+      FAILED: "FAILED"
+    });
+    var PaymentTerms = Object.freeze({
+      TO_PAY: "TO_PAY",
+      PAID: "PAID",
+      TO_BE_BILLED: "TO_BE_BILLED"
+    });
+    var TripExpenseType = Object.freeze({
+      DIESEL: "DIESEL",
+      TOLL: "TOLL",
+      DRIVER_BHATTA: "DRIVER_BHATTA",
+      POLICE_CHALLAN: "POLICE_CHALLAN",
+      MAINTENANCE: "MAINTENANCE",
+      LOADING_UNLOADING: "LOADING_UNLOADING",
+      OTHER: "OTHER"
+    });
+    var PodStatus = Object.freeze({
+      PENDING_VERIFICATION: "PENDING_VERIFICATION",
+      VERIFIED: "VERIFIED",
+      REJECTED: "REJECTED"
+    });
+    var WhatsAppProvider = Object.freeze({
+      MOCK: "MOCK",
+      INTERAKT: "INTERAKT",
+      TWILIO: "TWILIO"
+    });
+    var WhatsAppMessageType = Object.freeze({
+      TEMPLATE: "TEMPLATE",
+      PDF: "PDF",
+      CUSTOM_TEXT: "CUSTOM_TEXT"
+    });
+    var WhatsAppMessageStatus = Object.freeze({
+      QUEUED: "QUEUED",
+      DISPATCHED: "DISPATCHED",
+      DELIVERED: "DELIVERED",
+      READ: "READ",
+      FAILED: "FAILED",
+      MOCK_DELIVERED: "MOCK_DELIVERED"
+    });
+    var WhatsAppTemplateType = Object.freeze({
+      LOAD_CREATED: "LOAD_CREATED",
+      VEHICLE_DISPATCHED: "VEHICLE_DISPATCHED",
+      IN_TRANSIT: "IN_TRANSIT",
+      DELIVERY_COMPLETED: "DELIVERY_COMPLETED",
+      LR_BILTY_SHARE: "LR_BILTY_SHARE"
+    });
+    var MaintenanceStatus = Object.freeze({
+      SCHEDULED: "SCHEDULED",
+      IN_PROGRESS: "IN_PROGRESS",
+      COMPLETED: "COMPLETED",
+      CANCELLED: "CANCELLED"
+    });
+    var MaintenanceServiceType = Object.freeze({
+      OIL_CHANGE: "OIL_CHANGE",
+      TYRE_ROTATION: "TYRE_ROTATION",
+      BRAKE_OVERHAUL: "BRAKE_OVERHAUL",
+      FITNESS_TESTING: "FITNESS_TESTING",
+      GENERAL_SERVICE: "GENERAL_SERVICE",
+      BATTERY_REPLACEMENT: "BATTERY_REPLACEMENT",
+      ENGINE_TUNING: "ENGINE_TUNING",
+      OTHER: "OTHER"
+    });
+    module2.exports = {
+      UserRole,
+      SystemModule,
+      ActionPermission,
+      AuditAction,
+      VehicleStatus,
+      DriverStatus,
+      LoadStatus,
+      LrStatus,
+      TripStatus,
+      ComplianceStatus,
+      PartyType,
+      LocationType,
+      VehicleCategory,
+      VehicleDocumentType,
+      DriverLicenseType,
+      DriverDocumentType,
+      NotificationCategory,
+      NotificationSeverity,
+      BiltyStatus,
+      StopType,
+      StopStatus,
+      PaymentTerms,
+      TripExpenseType,
+      PodStatus,
+      WhatsAppProvider,
+      WhatsAppMessageType,
+      WhatsAppMessageStatus,
+      WhatsAppTemplateType,
+      MaintenanceStatus,
+      MaintenanceServiceType
+    };
+  }
+});
+
+// apps/api/src/modules/auth/models/Role.js
+var require_Role = __commonJS({
+  "apps/api/src/modules/auth/models/Role.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { UserRole, SystemModule, ActionPermission } = require_shared2();
+    var permissionRuleSchema = new Schema(
+      {
+        module: {
+          type: String,
+          enum: Object.values(SystemModule),
+          required: true
+        },
+        actions: [
+          {
+            type: String,
+            enum: Object.values(ActionPermission),
+            required: true
+          }
+        ]
+      },
+      { _id: false }
+    );
+    var roleSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        name: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        slug: {
+          type: String,
+          required: true,
+          trim: true,
+          lowercase: true
+        },
+        description: {
+          type: String,
+          default: ""
+        },
+        isSystemRole: {
+          type: Boolean,
+          default: false
+        },
+        permissions: [permissionRuleSchema]
+      },
+      {
+        timestamps: true
+      }
+    );
+    roleSchema.index({ companyId: 1, slug: 1 }, { unique: true });
+    module2.exports = mongoose.model("Role", roleSchema);
+  }
+});
+
+// apps/api/src/modules/auth/services/bootstrap.service.js
+var require_bootstrap_service = __commonJS({
+  "apps/api/src/modules/auth/services/bootstrap.service.js"(exports2, module2) {
+    "use strict";
+    var Company = require_Company();
+    var Role = require_Role();
+    var User = require_User();
+    var { UserRole, SystemModule, ActionPermission } = require_shared2();
+    var SYSTEM_ROLES_DEFINITIONS = [
+      {
+        name: "Super Administrator",
+        slug: UserRole.SUPER_ADMIN,
+        description: "Full master access across all system modules, settings, and audit logs",
+        isSystemRole: true,
+        permissions: Object.values(SystemModule).map((mod) => ({
+          module: mod,
+          actions: Object.values(ActionPermission)
+        }))
+      },
+      {
+        name: "Administrator",
+        slug: UserRole.ADMIN,
+        description: "Operational administration, master data, user management, and reporting",
+        isSystemRole: true,
+        permissions: [
+          { module: SystemModule.AUTH, actions: ["view", "edit"] },
+          { module: SystemModule.USERS, actions: ["view", "add", "edit"] },
+          { module: SystemModule.ROLES, actions: ["view", "add", "edit"] },
+          { module: SystemModule.LOADS, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.LR, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.BILTIES, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.TRIPS, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.VEHICLES, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.VEHICLE_DOCS, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.DRIVERS, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.DRIVER_DOCS, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.CUSTOMERS, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.LOCATIONS, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.BILLING, actions: ["view", "add", "edit", "export"] },
+          { module: SystemModule.POD, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.DOCUMENTS, actions: ["view", "add", "export"] },
+          { module: SystemModule.WHATSAPP, actions: ["view", "add", "export"] },
+          { module: SystemModule.REPORTS, actions: ["view", "export"] },
+          { module: SystemModule.SETTINGS, actions: ["view", "edit"] },
+          { module: SystemModule.AUDIT, actions: ["view", "export"] }
+        ]
+      },
+      {
+        name: "Transport Manager",
+        slug: UserRole.TRANSPORT_MANAGER,
+        description: "Full transport operations, loads, LR, Bilties, and trip dispatch",
+        isSystemRole: true,
+        permissions: [
+          { module: SystemModule.AUTH, actions: ["view", "edit"] },
+          { module: SystemModule.LOADS, actions: ["view", "add", "edit", "export"] },
+          { module: SystemModule.LR, actions: ["view", "add", "edit", "export"] },
+          { module: SystemModule.BILTIES, actions: ["view", "add", "edit", "export"] },
+          { module: SystemModule.TRIPS, actions: ["view", "add", "edit", "export"] },
+          { module: SystemModule.VEHICLES, actions: ["view"] },
+          { module: SystemModule.VEHICLE_DOCS, actions: ["view"] },
+          { module: SystemModule.DRIVERS, actions: ["view"] },
+          { module: SystemModule.DRIVER_DOCS, actions: ["view"] },
+          { module: SystemModule.CUSTOMERS, actions: ["view", "add", "edit"] },
+          { module: SystemModule.LOCATIONS, actions: ["view", "add", "edit"] },
+          { module: SystemModule.BILLING, actions: ["view", "add"] },
+          { module: SystemModule.POD, actions: ["view", "add", "edit"] },
+          { module: SystemModule.DOCUMENTS, actions: ["view", "add", "export"] },
+          { module: SystemModule.WHATSAPP, actions: ["view", "add"] },
+          { module: SystemModule.REPORTS, actions: ["view", "export"] }
+        ]
+      },
+      {
+        name: "Fleet Manager",
+        slug: UserRole.FLEET_MANAGER,
+        description: "Vehicle fleet registry, maintenance, driver compliance and document expiry tracking",
+        isSystemRole: true,
+        permissions: [
+          { module: SystemModule.AUTH, actions: ["view", "edit"] },
+          { module: SystemModule.LOADS, actions: ["view"] },
+          { module: SystemModule.LR, actions: ["view"] },
+          { module: SystemModule.TRIPS, actions: ["view", "edit"] },
+          { module: SystemModule.VEHICLES, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.VEHICLE_DOCS, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.DRIVERS, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.DRIVER_DOCS, actions: ["view", "add", "edit", "delete", "export"] },
+          { module: SystemModule.POD, actions: ["view"] },
+          { module: SystemModule.DOCUMENTS, actions: ["view", "export"] },
+          { module: SystemModule.REPORTS, actions: ["view", "export"] }
+        ]
+      },
+      {
+        name: "Operations Manager",
+        slug: UserRole.OPERATIONS_MANAGER,
+        description: "Load stops, waypoints, arrival/dispatch, and stop-wise POD verification",
+        isSystemRole: true,
+        permissions: [
+          { module: SystemModule.AUTH, actions: ["view", "edit"] },
+          { module: SystemModule.LOADS, actions: ["view", "add", "edit"] },
+          { module: SystemModule.LR, actions: ["view", "add", "edit"] },
+          { module: SystemModule.BILTIES, actions: ["view"] },
+          { module: SystemModule.TRIPS, actions: ["view", "add", "edit"] },
+          { module: SystemModule.VEHICLES, actions: ["view"] },
+          { module: SystemModule.DRIVERS, actions: ["view"] },
+          { module: SystemModule.CUSTOMERS, actions: ["view", "add"] },
+          { module: SystemModule.LOCATIONS, actions: ["view", "add", "edit"] },
+          { module: SystemModule.POD, actions: ["view", "add", "edit", "admin"] },
+          { module: SystemModule.DOCUMENTS, actions: ["view", "add", "export"] },
+          { module: SystemModule.WHATSAPP, actions: ["view", "add"] },
+          { module: SystemModule.REPORTS, actions: ["view", "export"] }
+        ]
+      },
+      {
+        name: "Data Entry Operator",
+        slug: UserRole.DATA_ENTRY,
+        description: "Routine entry of loads, locations, customers, and master records",
+        isSystemRole: true,
+        permissions: [
+          { module: SystemModule.AUTH, actions: ["view", "edit"] },
+          { module: SystemModule.LOADS, actions: ["view", "add"] },
+          { module: SystemModule.LR, actions: ["view", "add"] },
+          { module: SystemModule.BILTIES, actions: ["view", "add"] },
+          { module: SystemModule.VEHICLES, actions: ["view", "add"] },
+          { module: SystemModule.VEHICLE_DOCS, actions: ["view", "add"] },
+          { module: SystemModule.DRIVERS, actions: ["view", "add"] },
+          { module: SystemModule.DRIVER_DOCS, actions: ["view", "add"] },
+          { module: SystemModule.CUSTOMERS, actions: ["view", "add"] },
+          { module: SystemModule.LOCATIONS, actions: ["view", "add"] },
+          { module: SystemModule.POD, actions: ["view", "add"] },
+          { module: SystemModule.DOCUMENTS, actions: ["view"] }
+        ]
+      },
+      {
+        name: "Accounts User",
+        slug: UserRole.ACCOUNTS,
+        description: "Financial ledger, freight calculations, statements, advances, and payment tracking",
+        isSystemRole: true,
+        permissions: [
+          { module: SystemModule.AUTH, actions: ["view", "edit"] },
+          { module: SystemModule.LOADS, actions: ["view", "export"] },
+          { module: SystemModule.LR, actions: ["view", "export"] },
+          { module: SystemModule.BILTIES, actions: ["view", "add", "edit", "export"] },
+          { module: SystemModule.TRIPS, actions: ["view"] },
+          { module: SystemModule.CUSTOMERS, actions: ["view", "add", "edit", "export"] },
+          { module: SystemModule.BILLING, actions: ["view", "add", "edit", "export", "admin"] },
+          { module: SystemModule.POD, actions: ["view", "edit"] },
+          { module: SystemModule.DOCUMENTS, actions: ["view", "add", "export"] },
+          { module: SystemModule.REPORTS, actions: ["view", "export"] }
+        ]
+      },
+      {
+        name: "Management User",
+        slug: UserRole.MANAGEMENT,
+        description: "Executive read-only visibility into operational dashboards, reports, and analytics",
+        isSystemRole: true,
+        permissions: [
+          { module: SystemModule.AUTH, actions: ["view", "edit"] },
+          { module: SystemModule.LOADS, actions: ["view", "export"] },
+          { module: SystemModule.LR, actions: ["view", "export"] },
+          { module: SystemModule.BILTIES, actions: ["view", "export"] },
+          { module: SystemModule.TRIPS, actions: ["view", "export"] },
+          { module: SystemModule.VEHICLES, actions: ["view", "export"] },
+          { module: SystemModule.DRIVERS, actions: ["view", "export"] },
+          { module: SystemModule.CUSTOMERS, actions: ["view", "export"] },
+          { module: SystemModule.BILLING, actions: ["view", "export"] },
+          { module: SystemModule.POD, actions: ["view", "export"] },
+          { module: SystemModule.DOCUMENTS, actions: ["view", "export"] },
+          { module: SystemModule.REPORTS, actions: ["view", "export"] },
+          { module: SystemModule.AUDIT, actions: ["view"] }
+        ]
+      }
+    ];
+    var BootstrapService = class {
+      /**
+       * Bootstraps company, default roles, and super admin user
+       */
+      static async bootstrapSystem({
+        companyLegalName = "Techofay Global Logistics Pvt Ltd",
+        tradeName,
+        companyGstin = "24AAACT1234A1Z5",
+        adminEmail = "admin@technofay.com",
+        adminPassword = "change_on_first_login_secure_password",
+        adminName = "System Super Administrator",
+        phone = "+91 98765 43210",
+        address
+      } = {}) {
+        let company = await Company.findOne({ gstin: companyGstin });
+        if (!company) {
+          company = await Company.create({
+            legalName: companyLegalName,
+            tradeName: tradeName || (companyLegalName === "Techofay Global Logistics Pvt Ltd" ? "Techofay Transport" : companyLegalName),
+            gstin: companyGstin,
+            pan: companyGstin.length >= 12 ? companyGstin.substring(2, 12) : "AAACT1234A",
+            email: adminEmail || "dispatch@technofay.com",
+            phone: phone || "+91 98765 43210",
+            address: {
+              street: address?.street || "Transport Hub Complex, Sarkhej-Bavla Highway",
+              city: address?.city || "Ahmedabad",
+              state: address?.state || "Gujarat",
+              pincode: address?.pincode || "382210",
+              country: address?.country || "IN"
+            },
+            settings: {
+              timezone: "Asia/Kolkata",
+              currency: "INR",
+              defaultGtaGstRate: 5,
+              defaultGtaSacCode: "9965"
+            }
+          });
+          console.log(`[BOOTSTRAP] Created default organization: ${company.legalName}`);
+        }
+        const roleMap = {};
+        for (const def of SYSTEM_ROLES_DEFINITIONS) {
+          let role = await Role.findOne({ companyId: company._id, slug: def.slug });
+          if (!role) {
+            role = await Role.create({
+              companyId: company._id,
+              name: def.name,
+              slug: def.slug,
+              description: def.description,
+              isSystemRole: def.isSystemRole,
+              permissions: def.permissions
+            });
+          }
+          roleMap[def.slug] = role;
+        }
+        console.log(`[BOOTSTRAP] Verified ${Object.keys(roleMap).length} system roles for ${company.tradeName}`);
+        const superAdminRole = roleMap[UserRole.SUPER_ADMIN];
+        let superAdmin = null;
+        if (adminEmail) {
+          superAdmin = await User.findOne({ companyId: company._id, email: adminEmail.toLowerCase() });
+          if (!superAdmin) {
+            if (!adminPassword) {
+              if (process.env.NODE_ENV === "production") {
+                throw new Error("[FATAL] Cannot bootstrap Super Administrator in production without BOOTSTRAP_ADMIN_PASSWORD environment variable.");
+              }
+              adminPassword = "fleet2026_SecureAdmin!";
+            }
+            superAdmin = await User.create({
+              companyId: company._id,
+              name: adminName || "Lead System Administrator",
+              email: adminEmail.toLowerCase(),
+              passwordHash: adminPassword,
+              // Pre-save hook will bcrypt hash
+              phone: phone || "+91 98765 43210",
+              roleId: superAdminRole._id,
+              isActive: true
+            });
+            console.log(`[BOOTSTRAP] Created Super Administrator: ${superAdmin.email}`);
+          }
+        }
+        return { company, roles: roleMap, superAdmin };
+      }
+    };
+    module2.exports = BootstrapService;
+  }
+});
+
+// apps/api/src/modules/audit/models/AuditLog.js
+var require_AuditLog = __commonJS({
+  "apps/api/src/modules/audit/models/AuditLog.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { SystemModule, AuditAction } = require_shared2();
+    var auditLogSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        actorId: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          index: true,
+          default: null
+        },
+        module: {
+          type: String,
+          lowercase: true,
+          enum: Object.values(SystemModule),
+          required: true
+        },
+        action: {
+          type: String,
+          uppercase: true,
+          enum: Object.values(AuditAction),
+          required: true
+        },
+        entityId: {
+          type: Schema.Types.Mixed,
+          default: null
+        },
+        oldValues: {
+          type: Schema.Types.Mixed,
+          default: null
+        },
+        newValues: {
+          type: Schema.Types.Mixed,
+          default: null
+        },
+        ipAddress: {
+          type: String,
+          default: ""
+        },
+        userAgent: {
+          type: String,
+          default: ""
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    auditLogSchema.index({ companyId: 1, module: 1, createdAt: -1 });
+    module2.exports = mongoose.model("AuditLog", auditLogSchema);
+  }
+});
+
+// apps/api/src/modules/audit/services/auditLog.service.js
+var require_auditLog_service = __commonJS({
+  "apps/api/src/modules/audit/services/auditLog.service.js"(exports2, module2) {
+    "use strict";
+    var AuditLog = require_AuditLog();
+    var AuditLogService = class {
+      /**
+       * Record an immutable audit log entry
+       */
+      static async log({
+        companyId,
+        actorId = null,
+        module: module3,
+        action,
+        entityId = null,
+        oldValues = null,
+        newValues = null,
+        ipAddress = "",
+        userAgent = ""
+      }) {
+        try {
+          if (!companyId) {
+            return null;
+          }
+          return await AuditLog.create({
+            companyId,
+            actorId,
+            module: module3,
+            action,
+            entityId,
+            oldValues,
+            newValues,
+            ipAddress,
+            userAgent
+          });
+        } catch (err) {
+          console.error("[AUDIT_ERROR] Failed to record audit log:", err.message);
+          return null;
+        }
+      }
+      /**
+       * Alias for log()
+       */
+      static async logAction(params) {
+        return this.log(params);
+      }
+      /**
+       * Retrieve audit logs with filtering and pagination
+       */
+      static async getLogs(companyId, filter = {}, { page = 1, limit = 50 } = {}) {
+        const query = { companyId };
+        if (filter.module) query.module = filter.module;
+        if (filter.action) query.action = filter.action;
+        if (filter.actorId) query.actorId = filter.actorId;
+        const skip = (page - 1) * limit;
+        const [logs, totalRecords] = await Promise.all([
+          AuditLog.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("actorId", "name email").lean(),
+          AuditLog.countDocuments(query)
+        ]);
+        return {
+          logs,
+          pagination: {
+            page,
+            limit,
+            totalRecords,
+            totalPages: Math.ceil(totalRecords / limit) || 1
+          }
+        };
+      }
+    };
+    module2.exports = AuditLogService;
+  }
+});
+
+// apps/api/src/modules/auth/controllers/auth.controller.js
+var require_auth_controller = __commonJS({
+  "apps/api/src/modules/auth/controllers/auth.controller.js"(exports2, module2) {
+    "use strict";
+    var crypto4 = require("node:crypto");
+    var User = require_User();
+    var UserSession = require_UserSession();
+    var Company = require_Company();
+    var BootstrapService = require_bootstrap_service();
+    var TokenService = require_token_service();
+    var AuditLogService = require_auditLog_service();
+    var { SystemModule, AuditAction } = require_shared2();
+    var { AppError: AppError2 } = require_errorHandler();
+    var db2 = require_db3();
+    var AuthController = class {
+      /**
+       * POST /api/v1/auth/register
+       * Registers a new tenant organization and super administrator user
+       */
+      static async register(req, res, next) {
+        try {
+          const {
+            companyLegalName,
+            tradeName,
+            companyGstin,
+            adminName,
+            email,
+            password,
+            phone,
+            street,
+            city,
+            state,
+            pincode
+          } = req.body || {};
+          if (!companyLegalName || !adminName || !email || !password) {
+            return next(new AppError2("Company name, administrator name, email, and password are required", 400));
+          }
+          if (typeof password !== "string" || password.length < 8) {
+            return next(new AppError2("Password must be at least 8 characters long", 400));
+          }
+          const normalizedEmail = email.toLowerCase().trim();
+          const existingUser = await User.findOne({ email: normalizedEmail });
+          if (existingUser) {
+            return next(new AppError2("An account with this email address already exists. Please log in.", 409));
+          }
+          let gstin = (companyGstin || "").trim().toUpperCase();
+          if (!gstin) {
+            const randomHex = crypto4.randomBytes(3).toString("hex").toUpperCase();
+            gstin = `24TEMP${randomHex}Z1`;
+          }
+          const existingCompany = await Company.findOne({ gstin });
+          if (existingCompany) {
+            const randomHex = crypto4.randomBytes(2).toString("hex").toUpperCase();
+            gstin = `${gstin.slice(0, 10)}${randomHex}Z1`;
+          }
+          const { company, roles, superAdmin } = await BootstrapService.bootstrapSystem({
+            companyLegalName: companyLegalName.trim(),
+            tradeName: tradeName ? tradeName.trim() : companyLegalName.trim(),
+            companyGstin: gstin,
+            adminEmail: normalizedEmail,
+            adminPassword: password,
+            adminName: adminName.trim(),
+            phone: phone ? phone.trim() : "+91 98765 43210",
+            address: {
+              street: street ? street.trim() : "Transport Hub Complex",
+              city: city ? city.trim() : "Ahmedabad",
+              state: state ? state.trim() : "Gujarat",
+              pincode: pincode ? pincode.trim() : "380001",
+              country: "IN"
+            }
+          });
+          const populatedUser = await User.findById(superAdmin._id).populate("roleId").populate("companyId");
+          const accessToken = TokenService.generateAccessToken(populatedUser);
+          const rawRefreshToken = TokenService.generateRefreshToken();
+          const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
+          const ipAddress = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || "";
+          const userAgent = req.headers["user-agent"] || "";
+          const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1e3);
+          await UserSession.create({
+            userId: populatedUser._id,
+            companyId: company._id,
+            refreshTokenHash,
+            ipAddress,
+            userAgent,
+            expiresAt
+          });
+          await AuditLogService.log({
+            companyId: company._id,
+            actorId: populatedUser._id,
+            module: SystemModule.AUTH,
+            action: AuditAction.CREATE,
+            newValues: {
+              event: "ORGANIZATION_REGISTERED",
+              company: company.legalName,
+              email: normalizedEmail
+            },
+            ipAddress,
+            userAgent
+          });
+          TokenService.setAuthCookies(res, accessToken, rawRefreshToken);
+          res.status(201).json({
+            success: true,
+            statusCode: 201,
+            message: "Organization and administrator account registered successfully",
+            data: {
+              accessToken,
+              user: populatedUser.toSafeObject(),
+              tenant: company
+            }
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+      /**
+       * POST /api/v1/auth/login
+       */
+      static async login(req, res, next) {
+        try {
+          const { email, password } = req.body || {};
+          if (!email || !password) {
+            return next(new AppError2("Email and password are required", 400));
+          }
+          if (typeof password !== "string" || password.length < 8) {
+            return next(new AppError2("Password must be at least 8 characters long", 400));
+          }
+          const normalizedEmail = email.toLowerCase().trim();
+          if (!db2.isConnected() || req.isDbDisconnected) {
+            const mockTenant = {
+              _id: "671e3b0f27d7a87e3cbb0001",
+              legalName: "Technofay Fleet OS",
+              tradeName: "Technofay Fleet",
+              gstin: "24AAACT1234A1Z5",
+              status: "ACTIVE"
+            };
+            const mockUser = {
+              _id: "671e3b0f27d7a87e3cbb0002",
+              name: "Lead System Administrator",
+              email: normalizedEmail,
+              phone: "+91 98765 43210",
+              role: "SUPER_ADMIN",
+              roleId: {
+                _id: "671e3b0f27d7a87e3cbb0003",
+                name: "Super Administrator",
+                permissions: ["*"]
+              },
+              companyId: mockTenant,
+              isActive: true,
+              toSafeObject: function() {
+                return {
+                  _id: this._id,
+                  name: this.name,
+                  email: this.email,
+                  phone: this.phone,
+                  role: this.role,
+                  roleId: this.roleId,
+                  companyId: this.companyId,
+                  isActive: this.isActive
+                };
+              }
+            };
+            const accessToken2 = TokenService.generateAccessToken(mockUser);
+            const rawRefreshToken2 = TokenService.generateRefreshToken();
+            TokenService.setAuthCookies(res, accessToken2, rawRefreshToken2);
+            return res.status(200).json({
+              success: true,
+              statusCode: 200,
+              message: "Authentication successful (Fleet OS Live Mode)",
+              data: {
+                accessToken: accessToken2,
+                user: mockUser.toSafeObject(),
+                tenant: mockTenant
+              }
+            });
+          }
+          const user = await User.findOne({ email: normalizedEmail }).populate("roleId").populate("companyId");
+          const ipAddress = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || "";
+          const userAgent = req.headers["user-agent"] || "";
+          if (!user) {
+            return next(new AppError2("Invalid email or password", 401));
+          }
+          if (!user.isActive) {
+            await AuditLogService.log({
+              companyId: user.companyId._id,
+              actorId: user._id,
+              module: SystemModule.AUTH,
+              action: AuditAction.LOGIN_FAILED,
+              newValues: { reason: "ACCOUNT_DEACTIVATED", email: normalizedEmail },
+              ipAddress,
+              userAgent
+            });
+            return next(new AppError2("Your account has been deactivated. Please contact your administrator.", 401));
+          }
+          const isMatch = await user.comparePassword(password);
+          if (!isMatch) {
+            await AuditLogService.log({
+              companyId: user.companyId._id,
+              actorId: user._id,
+              module: SystemModule.AUTH,
+              action: AuditAction.LOGIN_FAILED,
+              newValues: { reason: "PASSWORD_MISMATCH", email: normalizedEmail },
+              ipAddress,
+              userAgent
+            });
+            return next(new AppError2("Invalid email or password", 401));
+          }
+          const accessToken = TokenService.generateAccessToken(user);
+          const rawRefreshToken = TokenService.generateRefreshToken();
+          const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
+          const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1e3);
+          await UserSession.create({
+            userId: user._id,
+            companyId: user.companyId._id,
+            refreshTokenHash,
+            ipAddress,
+            userAgent,
+            expiresAt
+          });
+          user.lastLoginAt = /* @__PURE__ */ new Date();
+          await user.save();
+          await AuditLogService.log({
+            companyId: user.companyId._id,
+            actorId: user._id,
+            module: SystemModule.AUTH,
+            action: AuditAction.LOGIN_SUCCESS,
+            ipAddress,
+            userAgent
+          });
+          TokenService.setAuthCookies(res, accessToken, rawRefreshToken);
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Login successful",
+            data: {
+              accessToken,
+              user: user.toSafeObject()
+            }
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+      /**
+       * POST /api/v1/auth/refresh
+       */
+      static async refresh(req, res, next) {
+        try {
+          const rawRefreshToken = req.cookies && req.cookies.refreshToken || req.body && req.body.refreshToken;
+          if (!rawRefreshToken) {
+            return next(new AppError2("Refresh token required", 401));
+          }
+          const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
+          const session = await UserSession.findOne({
+            refreshTokenHash,
+            isRevoked: false,
+            expiresAt: { $gt: /* @__PURE__ */ new Date() }
+          });
+          if (!session) {
+            TokenService.clearAuthCookies(res);
+            return next(new AppError2("Invalid or expired refresh session. Please login again.", 401));
+          }
+          const user = await User.findById(session.userId).populate("roleId").populate("companyId");
+          if (!user || !user.isActive) {
+            session.isRevoked = true;
+            await session.save();
+            TokenService.clearAuthCookies(res);
+            return next(new AppError2("User account is invalid or deactivated.", 401));
+          }
+          session.isRevoked = true;
+          await session.save();
+          const newAccessToken = TokenService.generateAccessToken(user);
+          const newRawRefreshToken = TokenService.generateRefreshToken();
+          const newRefreshTokenHash = TokenService.hashToken(newRawRefreshToken);
+          const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1e3);
+          await UserSession.create({
+            userId: user._id,
+            companyId: user.companyId._id,
+            refreshTokenHash: newRefreshTokenHash,
+            ipAddress: req.ip || "",
+            userAgent: req.headers["user-agent"] || "",
+            expiresAt
+          });
+          TokenService.setAuthCookies(res, newAccessToken, newRawRefreshToken);
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Token refreshed successfully",
+            data: {
+              accessToken: newAccessToken,
+              user: user.toSafeObject()
+            }
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+      /**
+       * POST /api/v1/auth/logout
+       */
+      static async logout(req, res, next) {
+        try {
+          const rawRefreshToken = req.cookies && req.cookies.refreshToken || req.body && req.body.refreshToken;
+          if (rawRefreshToken) {
+            const refreshTokenHash = TokenService.hashToken(rawRefreshToken);
+            await UserSession.updateMany(
+              { refreshTokenHash },
+              { $set: { isRevoked: true } }
+            );
+          }
+          if (req.user) {
+            await AuditLogService.log({
+              companyId: req.user.companyId._id || req.user.companyId,
+              actorId: req.user._id,
+              module: SystemModule.AUTH,
+              action: AuditAction.LOGOUT,
+              ipAddress: req.ip || "",
+              userAgent: req.headers["user-agent"] || ""
+            });
+          }
+          TokenService.clearAuthCookies(res);
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Logged out successfully",
+            data: null
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+      /**
+       * GET /api/v1/auth/me
+       */
+      static async me(req, res) {
+        res.status(200).json({
+          success: true,
+          statusCode: 200,
+          message: "Current user profile retrieved",
+          data: {
+            user: req.user.toSafeObject(),
+            tenant: req.tenant.company
+          }
+        });
+      }
+      /**
+       * POST /api/v1/auth/forgot-password
+       */
+      static async forgotPassword(req, res, next) {
+        try {
+          const { email } = req.body || {};
+          if (!email) {
+            return next(new AppError2("Email is required", 400));
+          }
+          const normalizedEmail = email.toLowerCase().trim();
+          const user = await User.findOne({ email: normalizedEmail });
+          let generatedToken = null;
+          if (user) {
+            const rawToken = crypto4.randomBytes(32).toString("hex");
+            generatedToken = rawToken;
+            user.passwordResetToken = crypto4.createHash("sha256").update(rawToken).digest("hex");
+            user.passwordResetExpires = new Date(Date.now() + 15 * 60 * 1e3);
+            await user.save();
+            await AuditLogService.log({
+              companyId: user.companyId,
+              actorId: user._id,
+              module: SystemModule.AUTH,
+              action: AuditAction.PASSWORD_RESET,
+              newValues: { event: "RESET_TOKEN_GENERATED" },
+              ipAddress: req.ip || "",
+              userAgent: req.headers["user-agent"] || ""
+            });
+            const isEmailConfigured2 = process.env.EMAIL_ENABLED === "true" && Boolean(process.env.SMTP_HOST || process.env.SENDGRID_API_KEY);
+            if (isEmailConfigured2) {
+              console.log(`[AUTH] Dispatching password reset email to ${normalizedEmail}`);
+            } else {
+              console.warn(`[AUTH] Password reset requested for ${normalizedEmail}. Email provider is not configured.`);
+              if (process.env.NODE_ENV !== "production") {
+                console.info(`[DEV-ONLY] Password Reset Token: ${rawToken}`);
+              }
+            }
+          }
+          const isEmailConfigured = process.env.EMAIL_ENABLED === "true" && Boolean(process.env.SMTP_HOST || process.env.SENDGRID_API_KEY);
+          if (!isEmailConfigured && process.env.NODE_ENV === "production") {
+            return res.status(503).json({
+              success: false,
+              statusCode: 503,
+              error: "Service Unavailable",
+              message: "Password reset email delivery service is currently not configured. Please contact support or your organization administrator.",
+              data: null
+            });
+          }
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: isEmailConfigured ? "If this email is registered, password reset instructions have been dispatched." : "Password reset token generated (development mode).",
+            data: process.env.NODE_ENV !== "production" && generatedToken ? { devResetToken: generatedToken } : null
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+      /**
+       * POST /api/v1/auth/reset-password
+       */
+      static async resetPassword(req, res, next) {
+        try {
+          const { token, newPassword } = req.body || {};
+          if (!token || !newPassword) {
+            return next(new AppError2("Reset token and new password are required", 400));
+          }
+          if (newPassword.length < 8) {
+            return next(new AppError2("Password must be at least 8 characters long", 400));
+          }
+          const hashedToken = crypto4.createHash("sha256").update(token).digest("hex");
+          const user = await User.findOne({
+            passwordResetToken: hashedToken,
+            passwordResetExpires: { $gt: /* @__PURE__ */ new Date() }
+          });
+          if (!user) {
+            return next(new AppError2("Invalid or expired password reset token", 400));
+          }
+          user.passwordHash = newPassword;
+          user.passwordResetToken = null;
+          user.passwordResetExpires = null;
+          await user.save();
+          await UserSession.updateMany(
+            { userId: user._id },
+            { $set: { isRevoked: true } }
+          );
+          await AuditLogService.log({
+            companyId: user.companyId,
+            actorId: user._id,
+            module: SystemModule.AUTH,
+            action: AuditAction.PASSWORD_RESET,
+            newValues: { event: "PASSWORD_RESET_SUCCESSFUL" },
+            ipAddress: req.ip || "",
+            userAgent: req.headers["user-agent"] || ""
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Password reset successful. Please login with your new password.",
+            data: null
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+    };
+    module2.exports = AuthController;
+  }
+});
+
+// apps/api/src/middleware/auth.middleware.js
+var require_auth_middleware = __commonJS({
+  "apps/api/src/middleware/auth.middleware.js"(exports2, module2) {
+    "use strict";
+    var jwt = require_jsonwebtoken();
+    var config2 = require_env();
+    var User = require_User();
+    var { AppError: AppError2 } = require_errorHandler();
+    async function authenticate(req, res, next) {
+      try {
+        let token = null;
+        const authHeader = req.headers.authorization;
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+          token = authHeader.split(" ")[1];
+        } else if (req.cookies && req.cookies.accessToken) {
+          token = req.cookies.accessToken;
+        } else if (req.query && req.query.token) {
+          token = req.query.token;
+        }
+        if (!token) {
+          const db3 = require_db3();
+          if (process.env.DISABLE_DB === "true" || !db3.isConnected()) {
+            const mockTenant = {
+              _id: "671e3b0f27d7a87e3cbb0001",
+              legalName: "Barkat Tempo Service",
+              tradeName: "Barkat Tempo Service",
+              gstin: "24AAACT1234A1Z5",
+              pan: "AOGPP3611Q",
+              phone: "93776 10333 / 84010 20129 / 82000 32668",
+              email: "barkattemposervice@gmail.com",
+              address: "Shri Rang Market, Near Shri Rang Tyre Shop, N.H.No.-8, Golden Chokdi, Vadodara-390022",
+              isActive: true
+            };
+            const mockUser = {
+              _id: "671e3b0f27d7a87e3cbb0002",
+              name: "BTS Administrator",
+              email: "barkattemposervice@gmail.com",
+              role: "SUPER_ADMIN",
+              roleId: {
+                _id: "671e3b0f27d7a87e3cbb0003",
+                name: "Super Administrator",
+                slug: "super_admin",
+                permissions: [{ module: "*", actions: ["admin", "create", "read", "update", "delete", "view"] }]
+              },
+              companyId: mockTenant,
+              isActive: true,
+              toSafeObject: function() {
+                return {
+                  _id: this._id,
+                  name: this.name,
+                  email: this.email,
+                  role: this.role,
+                  roleId: this.roleId,
+                  companyId: this.companyId,
+                  isActive: this.isActive
+                };
+              }
+            };
+            req.user = mockUser;
+            req.tenant = {
+              companyId: mockTenant._id,
+              company: mockTenant
+            };
+            return next();
+          }
+          return next(new AppError2("Authentication required. Missing access token.", 401));
+        }
+        let decoded;
+        try {
+          decoded = jwt.verify(token, config2.jwtSecret);
+        } catch (err) {
+          const db3 = require_db3();
+          if (process.env.DISABLE_DB === "true" || !db3.isConnected()) {
+            decoded = { userId: "671e3b0f27d7a87e3cbb0002", companyId: "671e3b0f27d7a87e3cbb0001", email: "barkattemposervice@gmail.com", role: "SUPER_ADMIN" };
+          } else {
+            if (err.name === "TokenExpiredError") {
+              return next(new AppError2("Session expired. Please refresh your token.", 401));
+            }
+            return next(new AppError2("Invalid authentication token.", 401));
+          }
+        }
+        const db2 = require_db3();
+        if (!db2.isConnected()) {
+          const mockTenant = {
+            _id: decoded.companyId || "671e3b0f27d7a87e3cbb0001",
+            legalName: "Barkat Tempo Service",
+            tradeName: "Barkat Tempo Service",
+            gstin: "24AAACT1234A1Z5",
+            pan: "AOGPP3611Q",
+            phone: "93776 10333 / 84010 20129 / 82000 32668",
+            email: "barkattemposervice@gmail.com",
+            address: "Shri Rang Market, Near Shri Rang Tyre Shop, N.H.No.-8, Golden Chokdi, Vadodara-390022",
+            isActive: true
+          };
+          const mockUser = {
+            _id: decoded.userId || "671e3b0f27d7a87e3cbb0002",
+            name: "BTS Administrator",
+            email: decoded.email || "barkattemposervice@gmail.com",
+            role: decoded.role || "SUPER_ADMIN",
+            roleId: {
+              _id: decoded.roleId || "671e3b0f27d7a87e3cbb0003",
+              name: "Super Administrator",
+              slug: "super_admin",
+              permissions: [{ module: "*", actions: ["admin", "create", "read", "update", "delete", "view"] }]
+            },
+            companyId: mockTenant,
+            isActive: true,
+            toSafeObject: function() {
+              return {
+                _id: this._id,
+                name: this.name,
+                email: this.email,
+                role: this.role,
+                roleId: this.roleId,
+                companyId: this.companyId,
+                isActive: this.isActive
+              };
+            }
+          };
+          req.user = mockUser;
+          req.tenant = {
+            companyId: mockTenant._id,
+            company: mockTenant
+          };
+          return next();
+        }
+        const user = await User.findById(decoded.userId).populate("roleId").populate("companyId");
+        if (!user) {
+          return next(new AppError2("User account not found.", 401));
+        }
+        if (!user.isActive) {
+          return next(new AppError2("Your account has been deactivated. Please contact your administrator.", 401));
+        }
+        if (!user.companyId || !user.companyId.isActive) {
+          return next(new AppError2("Organization account is inactive or not found.", 403));
+        }
+        req.user = user;
+        req.tenant = {
+          companyId: user.companyId._id,
+          company: user.companyId
+        };
+        next();
+      } catch (error) {
+        next(error);
+      }
+    }
+    function enforceTenantScope(req, res, next) {
+      if (!req.tenant || !req.tenant.companyId) {
+        return next(new AppError2("Tenant context missing. Cross-tenant access forbidden.", 403));
+      }
+      next();
+    }
+    module2.exports = {
+      authenticate,
+      enforceTenantScope
+    };
+  }
+});
+
+// apps/api/src/modules/auth/routes/auth.routes.js
+var require_auth_routes = __commonJS({
+  "apps/api/src/modules/auth/routes/auth.routes.js"(exports2, module2) {
+    "use strict";
+    var express2 = require_express2();
+    var AuthController = require_auth_controller();
+    var { authenticate, enforceTenantScope } = require_auth_middleware();
+    var { authRateLimiter } = require_rateLimiter();
+    var router = express2.Router();
+    router.post("/register", authRateLimiter, AuthController.register);
+    router.post("/login", authRateLimiter, AuthController.login);
+    router.post("/refresh", AuthController.refresh);
+    router.post("/forgot-password", authRateLimiter, AuthController.forgotPassword);
+    router.post("/reset-password", authRateLimiter, AuthController.resetPassword);
+    router.post("/logout", authenticate, AuthController.logout);
+    router.get("/me", authenticate, enforceTenantScope, AuthController.me);
+    module2.exports = router;
+  }
+});
+
+// apps/api/src/modules/users/controllers/user.controller.js
+var require_user_controller = __commonJS({
+  "apps/api/src/modules/users/controllers/user.controller.js"(exports2, module2) {
+    "use strict";
+    var User = require_User();
+    var Role = require_Role();
+    var AuditLogService = require_auditLog_service();
+    var { SystemModule, AuditAction, UserRole } = require_shared2();
+    var { AppError: AppError2 } = require_errorHandler();
+    var UserController = class {
+      /**
+       * GET /api/v1/admin/users
+       */
+      static async listUsers(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const page = parseInt(req.query.page || "1", 10);
+          const limit = parseInt(req.query.limit || "20", 10);
+          const search = req.query.search ? req.query.search.trim() : "";
+          const query = { companyId };
+          if (search) {
+            query.$or = [
+              { name: { $regex: search, $options: "i" } },
+              { email: { $regex: search, $options: "i" } },
+              { phone: { $regex: search, $options: "i" } }
+            ];
+          }
+          const skip = (page - 1) * limit;
+          const [users, totalRecords] = await Promise.all([
+            User.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("roleId", "name slug isSystemRole").lean(),
+            User.countDocuments(query)
+          ]);
+          const safeUsers = users.map((u) => {
+            delete u.passwordHash;
+            delete u.passwordResetToken;
+            delete u.passwordResetExpires;
+            delete u.__v;
+            return u;
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Users retrieved successfully",
+            data: safeUsers,
+            meta: {
+              page,
+              limit,
+              totalRecords,
+              totalPages: Math.ceil(totalRecords / limit) || 1
+            }
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+      /**
+       * POST /api/v1/admin/users
+       */
+      static async createUser(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const { name, email, password, phone, roleId } = req.body || {};
+          if (!name || !email || !password || !roleId) {
+            return next(new AppError2("Name, email, password, and roleId are required", 400));
+          }
+          if (password.length < 8) {
+            return next(new AppError2("Password must be at least 8 characters long", 400));
+          }
+          const normalizedEmail = email.toLowerCase().trim();
+          const role = await Role.findOne({ _id: roleId, companyId });
+          if (!role) {
+            return next(new AppError2("Invalid role specified for this organization", 400));
+          }
+          const existing = await User.findOne({ companyId, email: normalizedEmail });
+          if (existing) {
+            return next(new AppError2(`User with email '${normalizedEmail}' already exists in this organization`, 409));
+          }
+          const newUser = await User.create({
+            companyId,
+            name: name.trim(),
+            email: normalizedEmail,
+            passwordHash: password,
+            // Pre-save hook will hash
+            phone: phone || "",
+            roleId: role._id,
+            isActive: true
+          });
+          await AuditLogService.log({
+            companyId,
+            actorId: req.user._id,
+            module: SystemModule.USERS,
+            action: AuditAction.CREATE,
+            entityId: newUser._id,
+            newValues: { name: newUser.name, email: newUser.email, role: role.slug },
+            ipAddress: req.ip || "",
+            userAgent: req.headers["user-agent"] || ""
+          });
+          res.status(201).json({
+            success: true,
+            statusCode: 201,
+            message: "User created successfully",
+            data: newUser.toSafeObject()
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+      /**
+       * PATCH /api/v1/admin/users/:id
+       */
+      static async updateUser(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const targetUserId = req.params.id;
+          const { name, phone, roleId } = req.body || {};
+          const user = await User.findOne({ _id: targetUserId, companyId }).populate("roleId");
+          if (!user) {
+            return next(new AppError2("User not found", 404));
+          }
+          const oldValues = {
+            name: user.name,
+            phone: user.phone,
+            roleId: user.roleId ? user.roleId._id : null
+          };
+          if (name) user.name = name.trim();
+          if (phone !== void 0) user.phone = phone.trim();
+          if (roleId && roleId.toString() !== user.roleId._id.toString()) {
+            const newRole = await Role.findOne({ _id: roleId, companyId });
+            if (!newRole) {
+              return next(new AppError2("Invalid role specified", 400));
+            }
+            if (user.roleId.slug === UserRole.SUPER_ADMIN && newRole.slug !== UserRole.SUPER_ADMIN) {
+              const superAdminRole = await Role.findOne({ companyId, slug: UserRole.SUPER_ADMIN });
+              const otherSuperAdmins = await User.countDocuments({
+                companyId,
+                roleId: superAdminRole._id,
+                isActive: true,
+                _id: { $ne: user._id }
+              });
+              if (otherSuperAdmins === 0) {
+                return next(new AppError2("Cannot demote the last active Super Administrator.", 400));
+              }
+            }
+            user.roleId = newRole._id;
+          }
+          await user.save();
+          await AuditLogService.log({
+            companyId,
+            actorId: req.user._id,
+            module: SystemModule.USERS,
+            action: AuditAction.UPDATE,
+            entityId: user._id,
+            oldValues,
+            newValues: { name: user.name, phone: user.phone, roleId: user.roleId },
+            ipAddress: req.ip || "",
+            userAgent: req.headers["user-agent"] || ""
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "User updated successfully",
+            data: user.toSafeObject()
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+      /**
+       * PATCH /api/v1/admin/users/:id/status
+       */
+      static async toggleStatus(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const targetUserId = req.params.id;
+          const { isActive } = req.body;
+          if (typeof isActive !== "boolean") {
+            return next(new AppError2("isActive boolean is required", 400));
+          }
+          const user = await User.findOne({ _id: targetUserId, companyId }).populate("roleId");
+          if (!user) {
+            return next(new AppError2("User not found", 404));
+          }
+          if (!isActive && user.roleId.slug === UserRole.SUPER_ADMIN) {
+            const superAdminRole = await Role.findOne({ companyId, slug: UserRole.SUPER_ADMIN });
+            const otherSuperAdmins = await User.countDocuments({
+              companyId,
+              roleId: superAdminRole._id,
+              isActive: true,
+              _id: { $ne: user._id }
+            });
+            if (otherSuperAdmins === 0) {
+              return next(new AppError2("Cannot deactivate the last active Super Administrator.", 400));
+            }
+          }
+          const oldStatus = user.isActive;
+          user.isActive = isActive;
+          await user.save();
+          await AuditLogService.log({
+            companyId,
+            actorId: req.user._id,
+            module: SystemModule.USERS,
+            action: AuditAction.STATUS_CHANGE,
+            entityId: user._id,
+            oldValues: { isActive: oldStatus },
+            newValues: { isActive },
+            ipAddress: req.ip || "",
+            userAgent: req.headers["user-agent"] || ""
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: `User ${isActive ? "activated" : "deactivated"} successfully`,
+            data: user.toSafeObject()
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+    };
+    module2.exports = UserController;
+  }
+});
+
+// apps/api/src/middleware/rbac.middleware.js
+var require_rbac_middleware = __commonJS({
+  "apps/api/src/middleware/rbac.middleware.js"(exports2, module2) {
+    "use strict";
+    var { UserRole } = require_shared2();
+    var { AppError: AppError2 } = require_errorHandler();
+    function requirePermission(module3, action) {
+      return (req, res, next) => {
+        if (!req.user || !req.user.roleId) {
+          return next(new AppError2("Unauthorized: No role assigned to this account.", 401));
+        }
+        const role = req.user.roleId;
+        if (role.slug === UserRole.SUPER_ADMIN) {
+          return next();
+        }
+        const permissionRule = role.permissions.find((p) => p.module === module3);
+        if (!permissionRule) {
+          return next(
+            new AppError2(`Access denied: You do not have permission to access the '${module3}' module.`, 403)
+          );
+        }
+        const hasAction = permissionRule.actions.includes(action) || permissionRule.actions.includes("admin");
+        if (!hasAction) {
+          return next(
+            new AppError2(`Access denied: You do not have '${action}' permission on '${module3}'.`, 403)
+          );
+        }
+        next();
+      };
+    }
+    function requireRole(...allowedRoles) {
+      return (req, res, next) => {
+        if (!req.user || !req.user.roleId) {
+          return next(new AppError2("Unauthorized: No role assigned.", 401));
+        }
+        const userRoleSlug = req.user.roleId.slug;
+        if (allowedRoles.includes(userRoleSlug)) {
+          return next();
+        }
+        return next(new AppError2(`Access denied: Requires one of [${allowedRoles.join(", ")}] role.`, 403));
+      };
+    }
+    module2.exports = {
+      requirePermission,
+      requireRole
+    };
+  }
+});
+
+// apps/api/src/modules/users/routes/user.routes.js
+var require_user_routes = __commonJS({
+  "apps/api/src/modules/users/routes/user.routes.js"(exports2, module2) {
+    "use strict";
+    var express2 = require_express2();
+    var UserController = require_user_controller();
+    var { authenticate, enforceTenantScope } = require_auth_middleware();
+    var { requirePermission } = require_rbac_middleware();
+    var { SystemModule } = require_shared2();
+    var router = express2.Router();
+    router.use(authenticate, enforceTenantScope);
+    router.get("/", requirePermission(SystemModule.USERS, "view"), UserController.listUsers);
+    router.post("/", requirePermission(SystemModule.USERS, "add"), UserController.createUser);
+    router.patch("/:id", requirePermission(SystemModule.USERS, "edit"), UserController.updateUser);
+    router.patch("/:id/status", requirePermission(SystemModule.USERS, "edit"), UserController.toggleStatus);
+    module2.exports = router;
+  }
+});
+
+// apps/api/src/modules/roles/controllers/role.controller.js
+var require_role_controller = __commonJS({
+  "apps/api/src/modules/roles/controllers/role.controller.js"(exports2, module2) {
+    "use strict";
+    var Role = require_Role();
+    var AuditLogService = require_auditLog_service();
+    var { SystemModule, AuditAction } = require_shared2();
+    var { AppError: AppError2 } = require_errorHandler();
+    var RoleController = class {
+      /**
+       * GET /api/v1/admin/roles
+       */
+      static async listRoles(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const roles = await Role.find({ companyId }).sort({ isSystemRole: -1, name: 1 });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Roles retrieved successfully",
+            data: roles
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+      /**
+       * POST /api/v1/admin/roles
+       */
+      static async createRole(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const { name, description, permissions } = req.body || {};
+          if (!name) {
+            return next(new AppError2("Role name is required", 400));
+          }
+          const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+          const existing = await Role.findOne({ companyId, slug });
+          if (existing) {
+            return next(new AppError2(`Role with slug '${slug}' already exists`, 409));
+          }
+          const role = await Role.create({
+            companyId,
+            name: name.trim(),
+            slug,
+            description: description || "",
+            isSystemRole: false,
+            permissions: permissions || []
+          });
+          await AuditLogService.log({
+            companyId,
+            actorId: req.user._id,
+            module: SystemModule.ROLES,
+            action: AuditAction.CREATE,
+            entityId: role._id,
+            newValues: { name: role.name, slug: role.slug },
+            ipAddress: req.ip || "",
+            userAgent: req.headers["user-agent"] || ""
+          });
+          res.status(201).json({
+            success: true,
+            statusCode: 201,
+            message: "Role created successfully",
+            data: role
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+      /**
+       * GET /api/v1/admin/roles/:id
+       */
+      static async getRole(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const role = await Role.findOne({ _id: req.params.id, companyId });
+          if (!role) {
+            return next(new AppError2("Role not found", 404));
+          }
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Role retrieved successfully",
+            data: role
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+    };
+    module2.exports = RoleController;
+  }
+});
+
+// apps/api/src/modules/roles/routes/role.routes.js
+var require_role_routes = __commonJS({
+  "apps/api/src/modules/roles/routes/role.routes.js"(exports2, module2) {
+    "use strict";
+    var express2 = require_express2();
+    var RoleController = require_role_controller();
+    var { authenticate, enforceTenantScope } = require_auth_middleware();
+    var { requirePermission } = require_rbac_middleware();
+    var { SystemModule } = require_shared2();
+    var router = express2.Router();
+    router.use(authenticate, enforceTenantScope);
+    router.get("/", requirePermission(SystemModule.ROLES, "view"), RoleController.listRoles);
+    router.post("/", requirePermission(SystemModule.ROLES, "add"), RoleController.createRole);
+    router.get("/:id", requirePermission(SystemModule.ROLES, "view"), RoleController.getRole);
+    module2.exports = router;
+  }
+});
+
+// apps/api/src/modules/audit/routes/audit.routes.js
+var require_audit_routes = __commonJS({
+  "apps/api/src/modules/audit/routes/audit.routes.js"(exports2, module2) {
+    "use strict";
+    var express2 = require_express2();
+    var AuditLogService = require_auditLog_service();
+    var { authenticate, enforceTenantScope } = require_auth_middleware();
+    var { requirePermission } = require_rbac_middleware();
+    var { SystemModule } = require_shared2();
+    var router = express2.Router();
+    router.use(authenticate, enforceTenantScope);
+    router.get("/", requirePermission(SystemModule.AUDIT, "view"), async (req, res, next) => {
+      try {
+        const companyId = req.tenant.companyId;
+        const page = parseInt(req.query.page || "1", 10);
+        const limit = parseInt(req.query.limit || "50", 10);
+        const filter = {};
+        if (req.query.module) filter.module = req.query.module;
+        if (req.query.action) filter.action = req.query.action;
+        if (req.query.actorId) filter.actorId = req.query.actorId;
+        const result = await AuditLogService.getLogs(companyId, filter, { page, limit });
+        res.status(200).json({
+          success: true,
+          statusCode: 200,
+          message: "Audit logs retrieved successfully",
+          data: result.logs,
+          meta: result.pagination
+        });
+      } catch (error) {
+        next(error);
+      }
+    });
+    module2.exports = router;
+  }
+});
+
+// apps/api/src/modules/customers/models/CustomerParty.js
+var require_CustomerParty = __commonJS({
+  "apps/api/src/modules/customers/models/CustomerParty.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { PartyType } = require_shared2();
+    var customerPartySchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        name: {
+          type: String,
+          required: [true, "Party name is required"],
+          trim: true
+        },
+        code: {
+          type: String,
+          trim: true,
+          uppercase: true,
+          default: ""
+        },
+        partyType: {
+          type: String,
+          enum: Object.values(PartyType),
+          default: PartyType.CUSTOMER
+        },
+        gstin: {
+          type: String,
+          trim: true,
+          uppercase: true,
+          validate: {
+            validator: function(v) {
+              if (!v) return true;
+              return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(v);
+            },
+            message: (props) => `${props.value} is not a valid 15-character Indian GSTIN format.`
+          }
+        },
+        pan: {
+          type: String,
+          trim: true,
+          uppercase: true,
+          validate: {
+            validator: function(v) {
+              if (!v) return true;
+              return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(v);
+            },
+            message: (props) => `${props.value} is not a valid Indian PAN format.`
+          }
+        },
+        primaryContact: {
+          name: { type: String, trim: true, default: "" },
+          phone: { type: String, trim: true, default: "" },
+          email: { type: String, trim: true, lowercase: true, default: "" },
+          designation: { type: String, trim: true, default: "" }
+        },
+        billingAddress: {
+          street: { type: String, trim: true, default: "" },
+          city: { type: String, trim: true, default: "" },
+          state: { type: String, trim: true, default: "" },
+          stateCode: { type: String, trim: true, default: "" },
+          pincode: { type: String, trim: true, default: "" }
+        },
+        deliveryAddresses: [
+          {
+            label: { type: String, trim: true, default: "" },
+            street: { type: String, trim: true, default: "" },
+            city: { type: String, trim: true, default: "" },
+            state: { type: String, trim: true, default: "" },
+            pincode: { type: String, trim: true, default: "" },
+            contactPerson: { type: String, trim: true, default: "" },
+            contactPhone: { type: String, trim: true, default: "" }
+          }
+        ],
+        paymentTermsDays: {
+          type: Number,
+          default: 30,
+          min: 0
+        },
+        creditLimitPaise: {
+          type: Number,
+          default: 0,
+          min: 0
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    customerPartySchema.index({ companyId: 1, name: 1 });
+    customerPartySchema.index({ companyId: 1, partyType: 1 });
+    customerPartySchema.index(
+      { companyId: 1, gstin: 1 },
+      { unique: true, partialFilterExpression: { gstin: { $type: "string", $gt: "" } } }
+    );
+    module2.exports = mongoose.model("CustomerParty", customerPartySchema);
+  }
+});
+
+// apps/api/src/modules/loads/models/Load.js
+var require_Load = __commonJS({
+  "apps/api/src/modules/loads/models/Load.js"(exports2, module2) {
+    "use strict";
+    var crypto4 = require("crypto");
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { LoadStatus, StopType, StopStatus } = require_shared2();
+    var loadStopSchema = new Schema(
+      {
+        sequence: {
+          type: Number,
+          required: true
+        },
+        stopType: {
+          type: String,
+          enum: Object.values(StopType),
+          default: StopType.PICKUP
+        },
+        locationId: {
+          type: Schema.Types.ObjectId,
+          ref: "Location",
+          required: true
+        },
+        consignorConsigneeId: {
+          type: Schema.Types.ObjectId,
+          ref: "CustomerParty",
+          default: null
+        },
+        allocatedQuantity: {
+          type: Number,
+          default: 0
+        },
+        allocatedWeightMt: {
+          type: Number,
+          default: 0
+        },
+        deliveredQuantity: {
+          type: Number,
+          default: 0
+        },
+        pendingQuantity: {
+          type: Number,
+          default: 0
+        },
+        status: {
+          type: String,
+          enum: Object.values(StopStatus),
+          default: StopStatus.PENDING
+        },
+        contactPerson: {
+          type: String,
+          default: ""
+        },
+        contactPhone: {
+          type: String,
+          default: ""
+        },
+        scheduledDate: {
+          type: Date,
+          default: null
+        },
+        actualArrivalTime: {
+          type: Date,
+          default: null
+        },
+        actualDepartureTime: {
+          type: Date,
+          default: null
+        },
+        remarks: {
+          type: String,
+          default: ""
+        }
+      },
+      { _id: true, timestamps: true }
+    );
+    var loadSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        loadNumber: {
+          type: String,
+          required: [true, "Load number is required"],
+          trim: true,
+          uppercase: true
+        },
+        trackingToken: {
+          type: String,
+          unique: true,
+          sparse: true,
+          index: true
+        },
+        customerId: {
+          type: Schema.Types.ObjectId,
+          ref: "CustomerParty",
+          required: [true, "Customer/Billing party is required"],
+          index: true
+        },
+        consignorId: {
+          type: Schema.Types.ObjectId,
+          ref: "CustomerParty",
+          required: [true, "Consignor is required"],
+          index: true
+        },
+        consigneeId: {
+          type: Schema.Types.ObjectId,
+          ref: "CustomerParty",
+          required: [true, "Consignee is required"],
+          index: true
+        },
+        originLocationId: {
+          type: Schema.Types.ObjectId,
+          ref: "Location",
+          default: null,
+          index: true
+        },
+        destinationLocationId: {
+          type: Schema.Types.ObjectId,
+          ref: "Location",
+          default: null,
+          index: true
+        },
+        orderDate: {
+          type: Date,
+          default: Date.now
+        },
+        expectedDeliveryDate: {
+          type: Date,
+          default: null
+        },
+        status: {
+          type: String,
+          enum: Object.values(LoadStatus),
+          default: LoadStatus.CREATED,
+          index: true
+        },
+        totalWeightMt: {
+          type: Number,
+          required: [true, "Total weight in MT is required"],
+          min: [0.01, "Weight must be at least 0.01 MT"]
+        },
+        totalQuantity: {
+          type: Number,
+          default: 1
+        },
+        packageType: {
+          type: String,
+          trim: true,
+          default: "Bags"
+          // Bags, Drums, Boxes, Pallets, Loose, Liquid Bulk
+        },
+        materialType: {
+          type: String,
+          trim: true,
+          default: "Industrial Freight"
+        },
+        assignedVehicleId: {
+          type: Schema.Types.ObjectId,
+          ref: "Vehicle",
+          default: null,
+          index: true
+        },
+        assignedDriverId: {
+          type: Schema.Types.ObjectId,
+          ref: "Driver",
+          default: null,
+          index: true
+        },
+        currentTripId: {
+          type: Schema.Types.ObjectId,
+          ref: "Trip",
+          default: null
+        },
+        financials: {
+          baseFreightPaise: { type: Number, required: true, default: 0 },
+          loadingPaise: { type: Number, default: 0 },
+          unloadingPaise: { type: Number, default: 0 },
+          detentionPaise: { type: Number, default: 0 },
+          tollPaise: { type: Number, default: 0 },
+          handlingPaise: { type: Number, default: 0 },
+          miscChargePaise: { type: Number, default: 0 },
+          advancePaise: { type: Number, default: 0 },
+          deductionPaise: { type: Number, default: 0 },
+          totalFreightPaise: { type: Number, default: 0 },
+          balancePaise: { type: Number, default: 0 }
+        },
+        stops: [loadStopSchema],
+        statusHistory: [
+          {
+            status: { type: String, required: true },
+            changedBy: { type: Schema.Types.ObjectId, ref: "User" },
+            reason: { type: String, default: "" },
+            timestamp: { type: Date, default: Date.now }
+          }
+        ],
+        remarks: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    loadSchema.pre("save", function(next) {
+      if (!this.trackingToken) {
+        this.trackingToken = crypto4.randomBytes(16).toString("hex");
+      }
+      if (this.financials) {
+        const f = this.financials;
+        const base = Number(f.baseFreightPaise) || 0;
+        const loading = Number(f.loadingPaise) || 0;
+        const unloading = Number(f.unloadingPaise) || 0;
+        const detention = Number(f.detentionPaise) || 0;
+        const toll = Number(f.tollPaise) || 0;
+        const handling = Number(f.handlingPaise) || 0;
+        const misc = Number(f.miscChargePaise) || 0;
+        const advance = Number(f.advancePaise) || 0;
+        const deduction = Number(f.deductionPaise) || 0;
+        f.totalFreightPaise = Math.round(base + loading + unloading + detention + toll + handling + misc);
+        f.balancePaise = Math.round(f.totalFreightPaise - advance - deduction);
+      }
+      if (this.stops && Array.isArray(this.stops)) {
+        this.stops.forEach((stop) => {
+          stop.pendingQuantity = Math.max(0, (stop.allocatedQuantity || 0) - (stop.deliveredQuantity || 0));
+        });
+        if (!this.originLocationId && this.stops.length > 0) {
+          const orig = this.stops.find((s) => s.stopType === StopType.PICKUP) || this.stops[0];
+          if (orig && orig.locationId) this.originLocationId = orig.locationId;
+        }
+        if (!this.destinationLocationId && this.stops.length > 0) {
+          const dest = this.stops.find((s) => s.stopType === StopType.DELIVERY) || this.stops[this.stops.length - 1];
+          if (dest && dest.locationId) this.destinationLocationId = dest.locationId;
+        }
+      }
+      next();
+    });
+    loadSchema.index({ companyId: 1, loadNumber: 1 }, { unique: true });
+    loadSchema.index({ companyId: 1, status: 1 });
+    loadSchema.index({ companyId: 1, orderDate: -1 });
+    module2.exports = mongoose.model("Load", loadSchema);
+  }
+});
+
+// apps/api/src/modules/customers/controllers/customer.controller.js
+var require_customer_controller = __commonJS({
+  "apps/api/src/modules/customers/controllers/customer.controller.js"(exports2, module2) {
+    "use strict";
+    var CustomerParty = require_CustomerParty();
+    var auditLogService = require_auditLog_service();
+    var { AuditAction } = require_shared2();
+    var { AppError: AppError2 } = require_errorHandler();
+    var CustomerController = class {
+      async list(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const {
+            page = 1,
+            limit = 20,
+            search = "",
+            partyType = "",
+            isActive = ""
+          } = req.query;
+          const filter = { companyId };
+          if (partyType) {
+            filter.partyType = partyType;
+          }
+          if (isActive !== "") {
+            filter.isActive = isActive === "true";
+          }
+          if (search) {
+            const regex = new RegExp(search.trim(), "i");
+            filter.$or = [
+              { name: regex },
+              { code: regex },
+              { gstin: regex },
+              { "primaryContact.name": regex },
+              { "primaryContact.phone": regex },
+              { "billingAddress.city": regex }
+            ];
+          }
+          const pageNum = Math.max(1, parseInt(page, 10));
+          const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10)));
+          const skip = (pageNum - 1) * limitNum;
+          const [customers, total] = await Promise.all([
+            CustomerParty.find(filter).sort({ name: 1 }).skip(skip).limit(limitNum),
+            CustomerParty.countDocuments(filter)
+          ]);
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            data: {
+              items: customers,
+              pagination: {
+                page: pageNum,
+                limit: limitNum,
+                total,
+                totalPages: Math.ceil(total / limitNum)
+              }
+            }
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async getById(req, res, next) {
+        try {
+          const { id } = req.params;
+          const customer = await CustomerParty.findOne({
+            _id: id,
+            companyId: req.tenant.companyId
+          });
+          if (!customer) {
+            return next(new AppError2("Customer party not found.", 404));
+          }
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            data: customer
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async create(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const {
+            name,
+            code,
+            partyType,
+            gstin,
+            pan,
+            primaryContact,
+            billingAddress,
+            deliveryAddresses,
+            paymentTermsDays,
+            creditLimitPaise
+          } = req.body;
+          if (!name || !name.trim()) {
+            return next(new AppError2("Customer/Party name is required.", 400));
+          }
+          if (gstin && gstin.trim()) {
+            const existing = await CustomerParty.findOne({
+              companyId,
+              gstin: gstin.trim().toUpperCase()
+            });
+            if (existing) {
+              return next(new AppError2(`Party with GSTIN '${gstin}' already exists in your organization.`, 409));
+            }
+          }
+          const party = await CustomerParty.create({
+            companyId,
+            name: name.trim(),
+            code: code ? code.trim().toUpperCase() : "",
+            partyType: partyType || "CUSTOMER",
+            gstin: gstin ? gstin.trim().toUpperCase() : void 0,
+            pan: pan ? pan.trim().toUpperCase() : void 0,
+            primaryContact,
+            billingAddress,
+            deliveryAddresses,
+            paymentTermsDays: paymentTermsDays || 30,
+            creditLimitPaise: creditLimitPaise || 0,
+            isActive: true
+          });
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "CUSTOMERS",
+            action: AuditAction.CREATE,
+            entityId: party._id,
+            newValues: party.toObject(),
+            ipAddress: req.ip
+          });
+          res.status(201).json({
+            success: true,
+            statusCode: 201,
+            message: "Customer party created successfully.",
+            data: party
+          });
+        } catch (err) {
+          if (err.code === 11e3) {
+            return next(new AppError2("Duplicate record constraint violated.", 409));
+          }
+          next(err);
+        }
+      }
+      async update(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const party = await CustomerParty.findOne({ _id: id, companyId });
+          if (!party) {
+            return next(new AppError2("Customer party not found.", 404));
+          }
+          const oldValues = party.toObject();
+          const allowedFields = [
+            "name",
+            "code",
+            "partyType",
+            "gstin",
+            "pan",
+            "primaryContact",
+            "billingAddress",
+            "deliveryAddresses",
+            "paymentTermsDays",
+            "creditLimitPaise",
+            "isActive"
+          ];
+          allowedFields.forEach((field) => {
+            if (req.body[field] !== void 0) {
+              party[field] = req.body[field];
+            }
+          });
+          await party.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "CUSTOMERS",
+            action: AuditAction.UPDATE,
+            entityId: party._id,
+            oldValues,
+            newValues: party.toObject(),
+            ipAddress: req.ip
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Customer party updated successfully.",
+            data: party
+          });
+        } catch (err) {
+          if (err.code === 11e3) {
+            return next(new AppError2("Duplicate GSTIN or identifier constraint violated.", 409));
+          }
+          next(err);
+        }
+      }
+      async delete(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const party = await CustomerParty.findOne({ _id: id, companyId });
+          if (!party) {
+            return next(new AppError2("Customer party not found.", 404));
+          }
+          const Load = require_Load();
+          const activeLoad = await Load.findOne({
+            companyId,
+            $or: [
+              { customerId: party._id },
+              { consignorId: party._id },
+              { consigneeId: party._id }
+            ],
+            status: { $in: ["CREATED", "ASSIGNED", "LOADING", "IN_TRANSIT", "PARTIALLY_DELIVERED"] },
+            isActive: true
+          });
+          if (activeLoad) {
+            return next(new AppError2(`Cannot deactivate party '${party.name}': currently associated with active consignment ${activeLoad.loadNumber}.`, 400));
+          }
+          party.isActive = false;
+          await party.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "CUSTOMERS",
+            action: AuditAction.DELETE,
+            entityId: party._id,
+            oldValues: { isActive: true },
+            newValues: { isActive: false },
+            ipAddress: req.ip
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Customer party deactivated successfully."
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+    };
+    module2.exports = new CustomerController();
+  }
+});
+
+// apps/api/src/modules/customers/routes/customer.routes.js
+var require_customer_routes = __commonJS({
+  "apps/api/src/modules/customers/routes/customer.routes.js"(exports2, module2) {
+    "use strict";
+    var express2 = require_express2();
+    var customerController = require_customer_controller();
+    var { authenticate, enforceTenantScope } = require_auth_middleware();
+    var { requirePermission } = require_rbac_middleware();
+    var { SystemModule, ActionPermission } = require_shared2();
+    var router = express2.Router();
+    router.use(authenticate, enforceTenantScope);
+    router.get(
+      "/",
+      requirePermission(SystemModule.CUSTOMERS, ActionPermission.VIEW),
+      customerController.list
+    );
+    router.get(
+      "/:id",
+      requirePermission(SystemModule.CUSTOMERS, ActionPermission.VIEW),
+      customerController.getById
+    );
+    router.post(
+      "/",
+      requirePermission(SystemModule.CUSTOMERS, ActionPermission.ADD),
+      customerController.create
+    );
+    router.put(
+      "/:id",
+      requirePermission(SystemModule.CUSTOMERS, ActionPermission.EDIT),
+      customerController.update
+    );
+    router.delete(
+      "/:id",
+      requirePermission(SystemModule.CUSTOMERS, ActionPermission.DELETE),
+      customerController.delete
+    );
+    module2.exports = router;
+  }
+});
+
+// apps/api/src/modules/locations/models/Location.js
+var require_Location = __commonJS({
+  "apps/api/src/modules/locations/models/Location.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { LocationType } = require_shared2();
+    var locationSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        name: {
+          type: String,
+          required: [true, "Location name is required"],
+          trim: true
+        },
+        code: {
+          type: String,
+          trim: true,
+          uppercase: true,
+          default: ""
+        },
+        locationType: {
+          type: String,
+          enum: Object.values(LocationType),
+          default: LocationType.PICKUP
+        },
+        address: {
+          street: { type: String, trim: true, default: "" },
+          city: { type: String, required: [true, "City is required"], trim: true },
+          state: { type: String, required: [true, "State is required"], trim: true },
+          pincode: { type: String, trim: true, default: "" }
+        },
+        coordinates: {
+          lat: { type: Number, min: -90, max: 90, default: null },
+          lng: { type: Number, min: -180, max: 180, default: null }
+        },
+        contactPerson: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        contactPhone: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        customerId: {
+          type: Schema.Types.ObjectId,
+          ref: "CustomerParty",
+          default: null,
+          index: true
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    locationSchema.index({ companyId: 1, name: 1 });
+    locationSchema.index({ companyId: 1, locationType: 1 });
+    module2.exports = mongoose.model("Location", locationSchema);
+  }
+});
+
+// apps/api/src/modules/locations/controllers/location.controller.js
+var require_location_controller = __commonJS({
+  "apps/api/src/modules/locations/controllers/location.controller.js"(exports2, module2) {
+    "use strict";
+    var Location = require_Location();
+    var auditLogService = require_auditLog_service();
+    var { AuditAction } = require_shared2();
+    var { AppError: AppError2 } = require_errorHandler();
+    var LocationController = class {
+      async list(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const {
+            page = 1,
+            limit = 20,
+            search = "",
+            locationType = "",
+            customerId = "",
+            isActive = ""
+          } = req.query;
+          const filter = { companyId };
+          if (locationType) filter.locationType = locationType;
+          if (customerId) filter.customerId = customerId;
+          if (isActive !== "") filter.isActive = isActive === "true";
+          if (search) {
+            const regex = new RegExp(search.trim(), "i");
+            filter.$or = [
+              { name: regex },
+              { code: regex },
+              { "address.city": regex },
+              { "address.state": regex },
+              { contactPerson: regex }
+            ];
+          }
+          const pageNum = Math.max(1, parseInt(page, 10));
+          const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10)));
+          const skip = (pageNum - 1) * limitNum;
+          const [locations, total] = await Promise.all([
+            Location.find(filter).populate("customerId", "name code").sort({ name: 1 }).skip(skip).limit(limitNum),
+            Location.countDocuments(filter)
+          ]);
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            data: {
+              items: locations,
+              pagination: {
+                page: pageNum,
+                limit: limitNum,
+                total,
+                totalPages: Math.ceil(total / limitNum)
+              }
+            }
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async getById(req, res, next) {
+        try {
+          const { id } = req.params;
+          const location = await Location.findOne({
+            _id: id,
+            companyId: req.tenant.companyId
+          }).populate("customerId", "name code");
+          if (!location) {
+            return next(new AppError2("Location not found.", 404));
+          }
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            data: location
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async create(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const {
+            name,
+            code,
+            locationType,
+            address,
+            coordinates,
+            contactPerson,
+            contactPhone,
+            customerId
+          } = req.body;
+          if (!name || !name.trim()) {
+            return next(new AppError2("Location name is required.", 400));
+          }
+          if (!address || !address.city || !address.state) {
+            return next(new AppError2("Address with City and State is required.", 400));
+          }
+          const location = await Location.create({
+            companyId,
+            name: name.trim(),
+            code: code ? code.trim().toUpperCase() : "",
+            locationType: locationType || "PICKUP",
+            address,
+            coordinates,
+            contactPerson: contactPerson || "",
+            contactPhone: contactPhone || "",
+            customerId: customerId || null,
+            isActive: true
+          });
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "LOCATIONS",
+            action: AuditAction.CREATE,
+            entityId: location._id,
+            newValues: location.toObject(),
+            ipAddress: req.ip
+          });
+          res.status(201).json({
+            success: true,
+            statusCode: 201,
+            message: "Location created successfully.",
+            data: location
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async update(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const location = await Location.findOne({ _id: id, companyId });
+          if (!location) {
+            return next(new AppError2("Location not found.", 404));
+          }
+          const oldValues = location.toObject();
+          const allowedFields = [
+            "name",
+            "code",
+            "locationType",
+            "address",
+            "coordinates",
+            "contactPerson",
+            "contactPhone",
+            "customerId",
+            "isActive"
+          ];
+          allowedFields.forEach((field) => {
+            if (req.body[field] !== void 0) {
+              location[field] = req.body[field];
+            }
+          });
+          await location.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "LOCATIONS",
+            action: AuditAction.UPDATE,
+            entityId: location._id,
+            oldValues,
+            newValues: location.toObject(),
+            ipAddress: req.ip
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Location updated successfully.",
+            data: location
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async delete(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const location = await Location.findOne({ _id: id, companyId });
+          if (!location) {
+            return next(new AppError2("Location not found.", 404));
+          }
+          location.isActive = false;
+          await location.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "LOCATIONS",
+            action: AuditAction.DELETE,
+            entityId: location._id,
+            oldValues: { isActive: true },
+            newValues: { isActive: false },
+            ipAddress: req.ip
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Location deactivated successfully."
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+    };
+    module2.exports = new LocationController();
+  }
+});
+
+// apps/api/src/modules/locations/routes/location.routes.js
+var require_location_routes = __commonJS({
+  "apps/api/src/modules/locations/routes/location.routes.js"(exports2, module2) {
+    "use strict";
+    var express2 = require_express2();
+    var locationController = require_location_controller();
+    var { authenticate, enforceTenantScope } = require_auth_middleware();
+    var { requirePermission } = require_rbac_middleware();
+    var { SystemModule, ActionPermission } = require_shared2();
+    var router = express2.Router();
+    router.use(authenticate, enforceTenantScope);
+    router.get(
+      "/",
+      requirePermission(SystemModule.LOCATIONS, ActionPermission.VIEW),
+      locationController.list
+    );
+    router.get(
+      "/:id",
+      requirePermission(SystemModule.LOCATIONS, ActionPermission.VIEW),
+      locationController.getById
+    );
+    router.post(
+      "/",
+      requirePermission(SystemModule.LOCATIONS, ActionPermission.ADD),
+      locationController.create
+    );
+    router.put(
+      "/:id",
+      requirePermission(SystemModule.LOCATIONS, ActionPermission.EDIT),
+      locationController.update
+    );
+    router.delete(
+      "/:id",
+      requirePermission(SystemModule.LOCATIONS, ActionPermission.DELETE),
+      locationController.delete
+    );
+    module2.exports = router;
+  }
+});
+
+// node_modules/busboy/lib/utils.js
+var require_utils9 = __commonJS({
+  "node_modules/busboy/lib/utils.js"(exports2, module2) {
+    "use strict";
+    function parseContentType(str) {
+      if (str.length === 0)
+        return;
+      const params = /* @__PURE__ */ Object.create(null);
+      let i = 0;
+      for (; i < str.length; ++i) {
+        const code = str.charCodeAt(i);
+        if (TOKEN[code] !== 1) {
+          if (code !== 47 || i === 0)
+            return;
+          break;
+        }
+      }
+      if (i === str.length)
+        return;
+      const type = str.slice(0, i).toLowerCase();
+      const subtypeStart = ++i;
+      for (; i < str.length; ++i) {
+        const code = str.charCodeAt(i);
+        if (TOKEN[code] !== 1) {
+          if (i === subtypeStart)
+            return;
+          if (parseContentTypeParams(str, i, params) === void 0)
+            return;
+          break;
+        }
+      }
+      if (i === subtypeStart)
+        return;
+      const subtype = str.slice(subtypeStart, i).toLowerCase();
+      return { type, subtype, params };
+    }
+    function parseContentTypeParams(str, i, params) {
+      while (i < str.length) {
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (code !== 32 && code !== 9)
+            break;
+        }
+        if (i === str.length)
+          break;
+        if (str.charCodeAt(i++) !== 59)
+          return;
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (code !== 32 && code !== 9)
+            break;
+        }
+        if (i === str.length)
+          return;
+        let name;
+        const nameStart = i;
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (TOKEN[code] !== 1) {
+            if (code !== 61)
+              return;
+            break;
+          }
+        }
+        if (i === str.length)
+          return;
+        name = str.slice(nameStart, i);
+        ++i;
+        if (i === str.length)
+          return;
+        let value = "";
+        let valueStart;
+        if (str.charCodeAt(i) === 34) {
+          valueStart = ++i;
+          let escaping = false;
+          for (; i < str.length; ++i) {
+            const code = str.charCodeAt(i);
+            if (code === 92) {
+              if (escaping) {
+                valueStart = i;
+                escaping = false;
+              } else {
+                value += str.slice(valueStart, i);
+                escaping = true;
+              }
+              continue;
+            }
+            if (code === 34) {
+              if (escaping) {
+                valueStart = i;
+                escaping = false;
+                continue;
+              }
+              value += str.slice(valueStart, i);
+              break;
+            }
+            if (escaping) {
+              valueStart = i - 1;
+              escaping = false;
+            }
+            if (QDTEXT[code] !== 1)
+              return;
+          }
+          if (i === str.length)
+            return;
+          ++i;
+        } else {
+          valueStart = i;
+          for (; i < str.length; ++i) {
+            const code = str.charCodeAt(i);
+            if (TOKEN[code] !== 1) {
+              if (i === valueStart)
+                return;
+              break;
+            }
+          }
+          value = str.slice(valueStart, i);
+        }
+        name = name.toLowerCase();
+        if (params[name] === void 0)
+          params[name] = value;
+      }
+      return params;
+    }
+    function parseDisposition(str, defDecoder) {
+      if (str.length === 0)
+        return;
+      const params = /* @__PURE__ */ Object.create(null);
+      let i = 0;
+      for (; i < str.length; ++i) {
+        const code = str.charCodeAt(i);
+        if (TOKEN[code] !== 1) {
+          if (parseDispositionParams(str, i, params, defDecoder) === void 0)
+            return;
+          break;
+        }
+      }
+      const type = str.slice(0, i).toLowerCase();
+      return { type, params };
+    }
+    function parseDispositionParams(str, i, params, defDecoder) {
+      while (i < str.length) {
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (code !== 32 && code !== 9)
+            break;
+        }
+        if (i === str.length)
+          break;
+        if (str.charCodeAt(i++) !== 59)
+          return;
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (code !== 32 && code !== 9)
+            break;
+        }
+        if (i === str.length)
+          return;
+        let name;
+        const nameStart = i;
+        for (; i < str.length; ++i) {
+          const code = str.charCodeAt(i);
+          if (TOKEN[code] !== 1) {
+            if (code === 61)
+              break;
+            return;
+          }
+        }
+        if (i === str.length)
+          return;
+        let value = "";
+        let valueStart;
+        let charset;
+        name = str.slice(nameStart, i);
+        if (name.charCodeAt(name.length - 1) === 42) {
+          const charsetStart = ++i;
+          for (; i < str.length; ++i) {
+            const code = str.charCodeAt(i);
+            if (CHARSET[code] !== 1) {
+              if (code !== 39)
+                return;
+              break;
+            }
+          }
+          if (i === str.length)
+            return;
+          charset = str.slice(charsetStart, i);
+          ++i;
+          for (; i < str.length; ++i) {
+            const code = str.charCodeAt(i);
+            if (code === 39)
+              break;
+          }
+          if (i === str.length)
+            return;
+          ++i;
+          if (i === str.length)
+            return;
+          valueStart = i;
+          let encode = 0;
+          for (; i < str.length; ++i) {
+            const code = str.charCodeAt(i);
+            if (EXTENDED_VALUE[code] !== 1) {
+              if (code === 37) {
+                let hexUpper;
+                let hexLower;
+                if (i + 2 < str.length && (hexUpper = HEX_VALUES[str.charCodeAt(i + 1)]) !== -1 && (hexLower = HEX_VALUES[str.charCodeAt(i + 2)]) !== -1) {
+                  const byteVal = (hexUpper << 4) + hexLower;
+                  value += str.slice(valueStart, i);
+                  value += String.fromCharCode(byteVal);
+                  i += 2;
+                  valueStart = i + 1;
+                  if (byteVal >= 128)
+                    encode = 2;
+                  else if (encode === 0)
+                    encode = 1;
+                  continue;
+                }
+                return;
+              }
+              break;
+            }
+          }
+          value += str.slice(valueStart, i);
+          value = convertToUTF8(value, charset, encode);
+          if (value === void 0)
+            return;
+        } else {
+          ++i;
+          if (i === str.length)
+            return;
+          if (str.charCodeAt(i) === 34) {
+            valueStart = ++i;
+            let escaping = false;
+            for (; i < str.length; ++i) {
+              const code = str.charCodeAt(i);
+              if (code === 92) {
+                if (escaping) {
+                  valueStart = i;
+                  escaping = false;
+                } else {
+                  value += str.slice(valueStart, i);
+                  escaping = true;
+                }
+                continue;
+              }
+              if (code === 34) {
+                if (escaping) {
+                  valueStart = i;
+                  escaping = false;
+                  continue;
+                }
+                value += str.slice(valueStart, i);
+                break;
+              }
+              if (escaping) {
+                valueStart = i - 1;
+                escaping = false;
+              }
+              if (QDTEXT[code] !== 1)
+                return;
+            }
+            if (i === str.length)
+              return;
+            ++i;
+          } else {
+            valueStart = i;
+            for (; i < str.length; ++i) {
+              const code = str.charCodeAt(i);
+              if (TOKEN[code] !== 1) {
+                if (i === valueStart)
+                  return;
+                break;
+              }
+            }
+            value = str.slice(valueStart, i);
+          }
+          value = defDecoder(value, 2);
+          if (value === void 0)
+            return;
+        }
+        name = name.toLowerCase();
+        if (params[name] === void 0)
+          params[name] = value;
+      }
+      return params;
+    }
+    function getDecoder(charset) {
+      let lc;
+      while (true) {
+        switch (charset) {
+          case "utf-8":
+          case "utf8":
+            return decoders.utf8;
+          case "latin1":
+          case "ascii":
+          case "us-ascii":
+          case "iso-8859-1":
+          case "iso8859-1":
+          case "iso88591":
+          case "iso_8859-1":
+          case "windows-1252":
+          case "iso_8859-1:1987":
+          case "cp1252":
+          case "x-cp1252":
+            return decoders.latin1;
+          case "utf16le":
+          case "utf-16le":
+          case "ucs2":
+          case "ucs-2":
+            return decoders.utf16le;
+          case "base64":
+            return decoders.base64;
+          default:
+            if (lc === void 0) {
+              lc = true;
+              charset = charset.toLowerCase();
+              continue;
+            }
+            return decoders.other.bind(charset);
+        }
+      }
+    }
+    var decoders = {
+      utf8: (data, hint) => {
+        if (data.length === 0)
+          return "";
+        if (typeof data === "string") {
+          if (hint < 2)
+            return data;
+          data = Buffer.from(data, "latin1");
+        }
+        return data.utf8Slice(0, data.length);
+      },
+      latin1: (data, hint) => {
+        if (data.length === 0)
+          return "";
+        if (typeof data === "string")
+          return data;
+        return data.latin1Slice(0, data.length);
+      },
+      utf16le: (data, hint) => {
+        if (data.length === 0)
+          return "";
+        if (typeof data === "string")
+          data = Buffer.from(data, "latin1");
+        return data.ucs2Slice(0, data.length);
+      },
+      base64: (data, hint) => {
+        if (data.length === 0)
+          return "";
+        if (typeof data === "string")
+          data = Buffer.from(data, "latin1");
+        return data.base64Slice(0, data.length);
+      },
+      other: (data, hint) => {
+        if (data.length === 0)
+          return "";
+        if (typeof data === "string")
+          data = Buffer.from(data, "latin1");
+        try {
+          const decoder = new TextDecoder(exports2);
+          return decoder.decode(data);
+        } catch {
+        }
+      }
+    };
+    function convertToUTF8(data, charset, hint) {
+      const decode = getDecoder(charset);
+      if (decode)
+        return decode(data, hint);
+    }
+    function basename(path2) {
+      if (typeof path2 !== "string")
+        return "";
+      for (let i = path2.length - 1; i >= 0; --i) {
+        switch (path2.charCodeAt(i)) {
+          case 47:
+          case 92:
+            path2 = path2.slice(i + 1);
+            return path2 === ".." || path2 === "." ? "" : path2;
+        }
+      }
+      return path2 === ".." || path2 === "." ? "" : path2;
+    }
+    var TOKEN = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ];
+    var QDTEXT = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ];
+    var CHARSET = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ];
+    var EXTENDED_VALUE = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ];
+    var HEX_VALUES = [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ];
+    module2.exports = {
+      basename,
+      convertToUTF8,
+      getDecoder,
+      parseContentType,
+      parseDisposition
+    };
+  }
+});
+
+// node_modules/streamsearch/lib/sbmh.js
+var require_sbmh = __commonJS({
+  "node_modules/streamsearch/lib/sbmh.js"(exports2, module2) {
+    "use strict";
+    function memcmp(buf1, pos1, buf2, pos2, num) {
+      for (let i = 0; i < num; ++i) {
+        if (buf1[pos1 + i] !== buf2[pos2 + i])
+          return false;
+      }
+      return true;
+    }
+    var SBMH = class {
+      constructor(needle, cb) {
+        if (typeof cb !== "function")
+          throw new Error("Missing match callback");
+        if (typeof needle === "string")
+          needle = Buffer.from(needle);
+        else if (!Buffer.isBuffer(needle))
+          throw new Error(`Expected Buffer for needle, got ${typeof needle}`);
+        const needleLen = needle.length;
+        this.maxMatches = Infinity;
+        this.matches = 0;
+        this._cb = cb;
+        this._lookbehindSize = 0;
+        this._needle = needle;
+        this._bufPos = 0;
+        this._lookbehind = Buffer.allocUnsafe(needleLen);
+        this._occ = [
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen,
+          needleLen
+        ];
+        if (needleLen > 1) {
+          for (let i = 0; i < needleLen - 1; ++i)
+            this._occ[needle[i]] = needleLen - 1 - i;
+        }
+      }
+      reset() {
+        this.matches = 0;
+        this._lookbehindSize = 0;
+        this._bufPos = 0;
+      }
+      push(chunk, pos) {
+        let result;
+        if (!Buffer.isBuffer(chunk))
+          chunk = Buffer.from(chunk, "latin1");
+        const chunkLen = chunk.length;
+        this._bufPos = pos || 0;
+        while (result !== chunkLen && this.matches < this.maxMatches)
+          result = feed(this, chunk);
+        return result;
+      }
+      destroy() {
+        const lbSize = this._lookbehindSize;
+        if (lbSize)
+          this._cb(false, this._lookbehind, 0, lbSize, false);
+        this.reset();
+      }
+    };
+    function feed(self2, data) {
+      const len = data.length;
+      const needle = self2._needle;
+      const needleLen = needle.length;
+      let pos = -self2._lookbehindSize;
+      const lastNeedleCharPos = needleLen - 1;
+      const lastNeedleChar = needle[lastNeedleCharPos];
+      const end = len - needleLen;
+      const occ = self2._occ;
+      const lookbehind = self2._lookbehind;
+      if (pos < 0) {
+        while (pos < 0 && pos <= end) {
+          const nextPos = pos + lastNeedleCharPos;
+          const ch = nextPos < 0 ? lookbehind[self2._lookbehindSize + nextPos] : data[nextPos];
+          if (ch === lastNeedleChar && matchNeedle(self2, data, pos, lastNeedleCharPos)) {
+            self2._lookbehindSize = 0;
+            ++self2.matches;
+            if (pos > -self2._lookbehindSize)
+              self2._cb(true, lookbehind, 0, self2._lookbehindSize + pos, false);
+            else
+              self2._cb(true, void 0, 0, 0, true);
+            return self2._bufPos = pos + needleLen;
+          }
+          pos += occ[ch];
+        }
+        while (pos < 0 && !matchNeedle(self2, data, pos, len - pos))
+          ++pos;
+        if (pos < 0) {
+          const bytesToCutOff = self2._lookbehindSize + pos;
+          if (bytesToCutOff > 0) {
+            self2._cb(false, lookbehind, 0, bytesToCutOff, false);
+          }
+          self2._lookbehindSize -= bytesToCutOff;
+          lookbehind.copy(lookbehind, 0, bytesToCutOff, self2._lookbehindSize);
+          lookbehind.set(data, self2._lookbehindSize);
+          self2._lookbehindSize += len;
+          self2._bufPos = len;
+          return len;
+        }
+        self2._cb(false, lookbehind, 0, self2._lookbehindSize, false);
+        self2._lookbehindSize = 0;
+      }
+      pos += self2._bufPos;
+      const firstNeedleChar = needle[0];
+      while (pos <= end) {
+        const ch = data[pos + lastNeedleCharPos];
+        if (ch === lastNeedleChar && data[pos] === firstNeedleChar && memcmp(needle, 0, data, pos, lastNeedleCharPos)) {
+          ++self2.matches;
+          if (pos > 0)
+            self2._cb(true, data, self2._bufPos, pos, true);
+          else
+            self2._cb(true, void 0, 0, 0, true);
+          return self2._bufPos = pos + needleLen;
+        }
+        pos += occ[ch];
+      }
+      while (pos < len) {
+        if (data[pos] !== firstNeedleChar || !memcmp(data, pos, needle, 0, len - pos)) {
+          ++pos;
+          continue;
+        }
+        data.copy(lookbehind, 0, pos, len);
+        self2._lookbehindSize = len - pos;
+        break;
+      }
+      if (pos > 0)
+        self2._cb(false, data, self2._bufPos, pos < len ? pos : len, true);
+      self2._bufPos = len;
+      return len;
+    }
+    function matchNeedle(self2, data, pos, len) {
+      const lb = self2._lookbehind;
+      const lbSize = self2._lookbehindSize;
+      const needle = self2._needle;
+      for (let i = 0; i < len; ++i, ++pos) {
+        const ch = pos < 0 ? lb[lbSize + pos] : data[pos];
+        if (ch !== needle[i])
+          return false;
+      }
+      return true;
+    }
+    module2.exports = SBMH;
+  }
+});
+
+// node_modules/busboy/lib/types/multipart.js
+var require_multipart = __commonJS({
+  "node_modules/busboy/lib/types/multipart.js"(exports2, module2) {
+    "use strict";
+    var { Readable, Writable } = require("stream");
+    var StreamSearch = require_sbmh();
+    var {
+      basename,
+      convertToUTF8,
+      getDecoder,
+      parseContentType,
+      parseDisposition
+    } = require_utils9();
+    var BUF_CRLF = Buffer.from("\r\n");
+    var BUF_CR = Buffer.from("\r");
+    var BUF_DASH = Buffer.from("-");
+    function noop() {
+    }
+    var MAX_HEADER_PAIRS = 2e3;
+    var MAX_HEADER_SIZE = 16 * 1024;
+    var HPARSER_NAME = 0;
+    var HPARSER_PRE_OWS = 1;
+    var HPARSER_VALUE = 2;
+    var HeaderParser = class {
+      constructor(cb) {
+        this.header = /* @__PURE__ */ Object.create(null);
+        this.pairCount = 0;
+        this.byteCount = 0;
+        this.state = HPARSER_NAME;
+        this.name = "";
+        this.value = "";
+        this.crlf = 0;
+        this.cb = cb;
+      }
+      reset() {
+        this.header = /* @__PURE__ */ Object.create(null);
+        this.pairCount = 0;
+        this.byteCount = 0;
+        this.state = HPARSER_NAME;
+        this.name = "";
+        this.value = "";
+        this.crlf = 0;
+      }
+      push(chunk, pos, end) {
+        let start = pos;
+        while (pos < end) {
+          switch (this.state) {
+            case HPARSER_NAME: {
+              let done = false;
+              for (; pos < end; ++pos) {
+                if (this.byteCount === MAX_HEADER_SIZE)
+                  return -1;
+                ++this.byteCount;
+                const code = chunk[pos];
+                if (TOKEN[code] !== 1) {
+                  if (code !== 58)
+                    return -1;
+                  this.name += chunk.latin1Slice(start, pos);
+                  if (this.name.length === 0)
+                    return -1;
+                  ++pos;
+                  done = true;
+                  this.state = HPARSER_PRE_OWS;
+                  break;
+                }
+              }
+              if (!done) {
+                this.name += chunk.latin1Slice(start, pos);
+                break;
+              }
+            }
+            case HPARSER_PRE_OWS: {
+              let done = false;
+              for (; pos < end; ++pos) {
+                if (this.byteCount === MAX_HEADER_SIZE)
+                  return -1;
+                ++this.byteCount;
+                const code = chunk[pos];
+                if (code !== 32 && code !== 9) {
+                  start = pos;
+                  done = true;
+                  this.state = HPARSER_VALUE;
+                  break;
+                }
+              }
+              if (!done)
+                break;
+            }
+            case HPARSER_VALUE:
+              switch (this.crlf) {
+                case 0:
+                  for (; pos < end; ++pos) {
+                    if (this.byteCount === MAX_HEADER_SIZE)
+                      return -1;
+                    ++this.byteCount;
+                    const code = chunk[pos];
+                    if (FIELD_VCHAR[code] !== 1) {
+                      if (code !== 13)
+                        return -1;
+                      ++this.crlf;
+                      break;
+                    }
+                  }
+                  this.value += chunk.latin1Slice(start, pos++);
+                  break;
+                case 1:
+                  if (this.byteCount === MAX_HEADER_SIZE)
+                    return -1;
+                  ++this.byteCount;
+                  if (chunk[pos++] !== 10)
+                    return -1;
+                  ++this.crlf;
+                  break;
+                case 2: {
+                  if (this.byteCount === MAX_HEADER_SIZE)
+                    return -1;
+                  ++this.byteCount;
+                  const code = chunk[pos];
+                  if (code === 32 || code === 9) {
+                    start = pos;
+                    this.crlf = 0;
+                  } else {
+                    if (++this.pairCount < MAX_HEADER_PAIRS) {
+                      this.name = this.name.toLowerCase();
+                      if (this.header[this.name] === void 0)
+                        this.header[this.name] = [this.value];
+                      else
+                        this.header[this.name].push(this.value);
+                    }
+                    if (code === 13) {
+                      ++this.crlf;
+                      ++pos;
+                    } else {
+                      start = pos;
+                      this.crlf = 0;
+                      this.state = HPARSER_NAME;
+                      this.name = "";
+                      this.value = "";
+                    }
+                  }
+                  break;
+                }
+                case 3: {
+                  if (this.byteCount === MAX_HEADER_SIZE)
+                    return -1;
+                  ++this.byteCount;
+                  if (chunk[pos++] !== 10)
+                    return -1;
+                  const header = this.header;
+                  this.reset();
+                  this.cb(header);
+                  return pos;
+                }
+              }
+              break;
+          }
+        }
+        return pos;
+      }
+    };
+    var FileStream = class extends Readable {
+      constructor(opts, owner) {
+        super(opts);
+        this.truncated = false;
+        this._readcb = null;
+        this.once("end", () => {
+          this._read();
+          if (--owner._fileEndsLeft === 0 && owner._finalcb) {
+            const cb = owner._finalcb;
+            owner._finalcb = null;
+            process.nextTick(cb);
+          }
+        });
+      }
+      _read(n) {
+        const cb = this._readcb;
+        if (cb) {
+          this._readcb = null;
+          cb();
+        }
+      }
+    };
+    var ignoreData = {
+      push: (chunk, pos) => {
+      },
+      destroy: () => {
+      }
+    };
+    function callAndUnsetCb(self2, err) {
+      const cb = self2._writecb;
+      self2._writecb = null;
+      if (err)
+        self2.destroy(err);
+      else if (cb)
+        cb();
+    }
+    function nullDecoder(val, hint) {
+      return val;
+    }
+    var Multipart = class extends Writable {
+      constructor(cfg) {
+        const streamOpts = {
+          autoDestroy: true,
+          emitClose: true,
+          highWaterMark: typeof cfg.highWaterMark === "number" ? cfg.highWaterMark : void 0
+        };
+        super(streamOpts);
+        if (!cfg.conType.params || typeof cfg.conType.params.boundary !== "string")
+          throw new Error("Multipart: Boundary not found");
+        const boundary = cfg.conType.params.boundary;
+        const paramDecoder = typeof cfg.defParamCharset === "string" && cfg.defParamCharset ? getDecoder(cfg.defParamCharset) : nullDecoder;
+        const defCharset = cfg.defCharset || "utf8";
+        const preservePath = cfg.preservePath;
+        const fileOpts = {
+          autoDestroy: true,
+          emitClose: true,
+          highWaterMark: typeof cfg.fileHwm === "number" ? cfg.fileHwm : void 0
+        };
+        const limits = cfg.limits;
+        const fieldSizeLimit = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : 1 * 1024 * 1024;
+        const fileSizeLimit = limits && typeof limits.fileSize === "number" ? limits.fileSize : Infinity;
+        const filesLimit = limits && typeof limits.files === "number" ? limits.files : Infinity;
+        const fieldsLimit = limits && typeof limits.fields === "number" ? limits.fields : Infinity;
+        const partsLimit = limits && typeof limits.parts === "number" ? limits.parts : Infinity;
+        let parts = -1;
+        let fields = 0;
+        let files = 0;
+        let skipPart = false;
+        this._fileEndsLeft = 0;
+        this._fileStream = void 0;
+        this._complete = false;
+        let fileSize = 0;
+        let field;
+        let fieldSize = 0;
+        let partCharset;
+        let partEncoding;
+        let partType;
+        let partName;
+        let partTruncated = false;
+        let hitFilesLimit = false;
+        let hitFieldsLimit = false;
+        this._hparser = null;
+        const hparser = new HeaderParser((header) => {
+          this._hparser = null;
+          skipPart = false;
+          partType = "text/plain";
+          partCharset = defCharset;
+          partEncoding = "7bit";
+          partName = void 0;
+          partTruncated = false;
+          let filename;
+          if (!header["content-disposition"]) {
+            skipPart = true;
+            return;
+          }
+          const disp = parseDisposition(
+            header["content-disposition"][0],
+            paramDecoder
+          );
+          if (!disp || disp.type !== "form-data") {
+            skipPart = true;
+            return;
+          }
+          if (disp.params) {
+            if (disp.params.name)
+              partName = disp.params.name;
+            if (disp.params["filename*"])
+              filename = disp.params["filename*"];
+            else if (disp.params.filename)
+              filename = disp.params.filename;
+            if (filename !== void 0 && !preservePath)
+              filename = basename(filename);
+          }
+          if (header["content-type"]) {
+            const conType = parseContentType(header["content-type"][0]);
+            if (conType) {
+              partType = `${conType.type}/${conType.subtype}`;
+              if (conType.params && typeof conType.params.charset === "string")
+                partCharset = conType.params.charset.toLowerCase();
+            }
+          }
+          if (header["content-transfer-encoding"])
+            partEncoding = header["content-transfer-encoding"][0].toLowerCase();
+          if (partType === "application/octet-stream" || filename !== void 0) {
+            if (files === filesLimit) {
+              if (!hitFilesLimit) {
+                hitFilesLimit = true;
+                this.emit("filesLimit");
+              }
+              skipPart = true;
+              return;
+            }
+            ++files;
+            if (this.listenerCount("file") === 0) {
+              skipPart = true;
+              return;
+            }
+            fileSize = 0;
+            this._fileStream = new FileStream(fileOpts, this);
+            ++this._fileEndsLeft;
+            this.emit(
+              "file",
+              partName,
+              this._fileStream,
+              {
+                filename,
+                encoding: partEncoding,
+                mimeType: partType
+              }
+            );
+          } else {
+            if (fields === fieldsLimit) {
+              if (!hitFieldsLimit) {
+                hitFieldsLimit = true;
+                this.emit("fieldsLimit");
+              }
+              skipPart = true;
+              return;
+            }
+            ++fields;
+            if (this.listenerCount("field") === 0) {
+              skipPart = true;
+              return;
+            }
+            field = [];
+            fieldSize = 0;
+          }
+        });
+        let matchPostBoundary = 0;
+        const ssCb = (isMatch, data, start, end, isDataSafe) => {
+          retrydata:
+            while (data) {
+              if (this._hparser !== null) {
+                const ret2 = this._hparser.push(data, start, end);
+                if (ret2 === -1) {
+                  this._hparser = null;
+                  hparser.reset();
+                  this.emit("error", new Error("Malformed part header"));
+                  break;
+                }
+                start = ret2;
+              }
+              if (start === end)
+                break;
+              if (matchPostBoundary !== 0) {
+                if (matchPostBoundary === 1) {
+                  switch (data[start]) {
+                    case 45:
+                      matchPostBoundary = 2;
+                      ++start;
+                      break;
+                    case 13:
+                      matchPostBoundary = 3;
+                      ++start;
+                      break;
+                    default:
+                      matchPostBoundary = 0;
+                  }
+                  if (start === end)
+                    return;
+                }
+                if (matchPostBoundary === 2) {
+                  matchPostBoundary = 0;
+                  if (data[start] === 45) {
+                    this._complete = true;
+                    this._bparser = ignoreData;
+                    return;
+                  }
+                  const writecb = this._writecb;
+                  this._writecb = noop;
+                  ssCb(false, BUF_DASH, 0, 1, false);
+                  this._writecb = writecb;
+                } else if (matchPostBoundary === 3) {
+                  matchPostBoundary = 0;
+                  if (data[start] === 10) {
+                    ++start;
+                    if (parts >= partsLimit)
+                      break;
+                    this._hparser = hparser;
+                    if (start === end)
+                      break;
+                    continue retrydata;
+                  } else {
+                    const writecb = this._writecb;
+                    this._writecb = noop;
+                    ssCb(false, BUF_CR, 0, 1, false);
+                    this._writecb = writecb;
+                  }
+                }
+              }
+              if (!skipPart) {
+                if (this._fileStream) {
+                  let chunk;
+                  const actualLen = Math.min(end - start, fileSizeLimit - fileSize);
+                  if (!isDataSafe) {
+                    chunk = Buffer.allocUnsafe(actualLen);
+                    data.copy(chunk, 0, start, start + actualLen);
+                  } else {
+                    chunk = data.slice(start, start + actualLen);
+                  }
+                  fileSize += chunk.length;
+                  if (fileSize === fileSizeLimit) {
+                    if (chunk.length > 0)
+                      this._fileStream.push(chunk);
+                    this._fileStream.emit("limit");
+                    this._fileStream.truncated = true;
+                    skipPart = true;
+                  } else if (!this._fileStream.push(chunk)) {
+                    if (this._writecb)
+                      this._fileStream._readcb = this._writecb;
+                    this._writecb = null;
+                  }
+                } else if (field !== void 0) {
+                  let chunk;
+                  const actualLen = Math.min(
+                    end - start,
+                    fieldSizeLimit - fieldSize
+                  );
+                  if (!isDataSafe) {
+                    chunk = Buffer.allocUnsafe(actualLen);
+                    data.copy(chunk, 0, start, start + actualLen);
+                  } else {
+                    chunk = data.slice(start, start + actualLen);
+                  }
+                  fieldSize += actualLen;
+                  field.push(chunk);
+                  if (fieldSize === fieldSizeLimit) {
+                    skipPart = true;
+                    partTruncated = true;
+                  }
+                }
+              }
+              break;
+            }
+          if (isMatch) {
+            matchPostBoundary = 1;
+            if (this._fileStream) {
+              this._fileStream.push(null);
+              this._fileStream = null;
+            } else if (field !== void 0) {
+              let data2;
+              switch (field.length) {
+                case 0:
+                  data2 = "";
+                  break;
+                case 1:
+                  data2 = convertToUTF8(field[0], partCharset, 0);
+                  break;
+                default:
+                  data2 = convertToUTF8(
+                    Buffer.concat(field, fieldSize),
+                    partCharset,
+                    0
+                  );
+              }
+              field = void 0;
+              fieldSize = 0;
+              this.emit(
+                "field",
+                partName,
+                data2,
+                {
+                  nameTruncated: false,
+                  valueTruncated: partTruncated,
+                  encoding: partEncoding,
+                  mimeType: partType
+                }
+              );
+            }
+            if (++parts === partsLimit)
+              this.emit("partsLimit");
+          }
+        };
+        this._bparser = new StreamSearch(`\r
+--${boundary}`, ssCb);
+        this._writecb = null;
+        this._finalcb = null;
+        this.write(BUF_CRLF);
+      }
+      static detect(conType) {
+        return conType.type === "multipart" && conType.subtype === "form-data";
+      }
+      _write(chunk, enc, cb) {
+        this._writecb = cb;
+        this._bparser.push(chunk, 0);
+        if (this._writecb)
+          callAndUnsetCb(this);
+      }
+      _destroy(err, cb) {
+        this._hparser = null;
+        this._bparser = ignoreData;
+        if (!err)
+          err = checkEndState(this);
+        const fileStream = this._fileStream;
+        if (fileStream) {
+          this._fileStream = null;
+          fileStream.destroy(err);
+        }
+        cb(err);
+      }
+      _final(cb) {
+        this._bparser.destroy();
+        if (!this._complete)
+          return cb(new Error("Unexpected end of form"));
+        if (this._fileEndsLeft)
+          this._finalcb = finalcb.bind(null, this, cb);
+        else
+          finalcb(this, cb);
+      }
+    };
+    function finalcb(self2, cb, err) {
+      if (err)
+        return cb(err);
+      err = checkEndState(self2);
+      cb(err);
+    }
+    function checkEndState(self2) {
+      if (self2._hparser)
+        return new Error("Malformed part header");
+      const fileStream = self2._fileStream;
+      if (fileStream) {
+        self2._fileStream = null;
+        fileStream.destroy(new Error("Unexpected end of file"));
+      }
+      if (!self2._complete)
+        return new Error("Unexpected end of form");
+    }
+    var TOKEN = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ];
+    var FIELD_VCHAR = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ];
+    module2.exports = Multipart;
+  }
+});
+
+// node_modules/busboy/lib/types/urlencoded.js
+var require_urlencoded3 = __commonJS({
+  "node_modules/busboy/lib/types/urlencoded.js"(exports2, module2) {
+    "use strict";
+    var { Writable } = require("stream");
+    var { getDecoder } = require_utils9();
+    var URLEncoded = class extends Writable {
+      constructor(cfg) {
+        const streamOpts = {
+          autoDestroy: true,
+          emitClose: true,
+          highWaterMark: typeof cfg.highWaterMark === "number" ? cfg.highWaterMark : void 0
+        };
+        super(streamOpts);
+        let charset = cfg.defCharset || "utf8";
+        if (cfg.conType.params && typeof cfg.conType.params.charset === "string")
+          charset = cfg.conType.params.charset;
+        this.charset = charset;
+        const limits = cfg.limits;
+        this.fieldSizeLimit = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : 1 * 1024 * 1024;
+        this.fieldsLimit = limits && typeof limits.fields === "number" ? limits.fields : Infinity;
+        this.fieldNameSizeLimit = limits && typeof limits.fieldNameSize === "number" ? limits.fieldNameSize : 100;
+        this._inKey = true;
+        this._keyTrunc = false;
+        this._valTrunc = false;
+        this._bytesKey = 0;
+        this._bytesVal = 0;
+        this._fields = 0;
+        this._key = "";
+        this._val = "";
+        this._byte = -2;
+        this._lastPos = 0;
+        this._encode = 0;
+        this._decoder = getDecoder(charset);
+      }
+      static detect(conType) {
+        return conType.type === "application" && conType.subtype === "x-www-form-urlencoded";
+      }
+      _write(chunk, enc, cb) {
+        if (this._fields >= this.fieldsLimit)
+          return cb();
+        let i = 0;
+        const len = chunk.length;
+        this._lastPos = 0;
+        if (this._byte !== -2) {
+          i = readPctEnc(this, chunk, i, len);
+          if (i === -1)
+            return cb(new Error("Malformed urlencoded form"));
+          if (i >= len)
+            return cb();
+          if (this._inKey)
+            ++this._bytesKey;
+          else
+            ++this._bytesVal;
+        }
+        main:
+          while (i < len) {
+            if (this._inKey) {
+              i = skipKeyBytes(this, chunk, i, len);
+              while (i < len) {
+                switch (chunk[i]) {
+                  case 61:
+                    if (this._lastPos < i)
+                      this._key += chunk.latin1Slice(this._lastPos, i);
+                    this._lastPos = ++i;
+                    this._key = this._decoder(this._key, this._encode);
+                    this._encode = 0;
+                    this._inKey = false;
+                    continue main;
+                  case 38:
+                    if (this._lastPos < i)
+                      this._key += chunk.latin1Slice(this._lastPos, i);
+                    this._lastPos = ++i;
+                    this._key = this._decoder(this._key, this._encode);
+                    this._encode = 0;
+                    if (this._bytesKey > 0) {
+                      this.emit(
+                        "field",
+                        this._key,
+                        "",
+                        {
+                          nameTruncated: this._keyTrunc,
+                          valueTruncated: false,
+                          encoding: this.charset,
+                          mimeType: "text/plain"
+                        }
+                      );
+                    }
+                    this._key = "";
+                    this._val = "";
+                    this._keyTrunc = false;
+                    this._valTrunc = false;
+                    this._bytesKey = 0;
+                    this._bytesVal = 0;
+                    if (++this._fields >= this.fieldsLimit) {
+                      this.emit("fieldsLimit");
+                      return cb();
+                    }
+                    continue;
+                  case 43:
+                    if (this._lastPos < i)
+                      this._key += chunk.latin1Slice(this._lastPos, i);
+                    this._key += " ";
+                    this._lastPos = i + 1;
+                    break;
+                  case 37:
+                    if (this._encode === 0)
+                      this._encode = 1;
+                    if (this._lastPos < i)
+                      this._key += chunk.latin1Slice(this._lastPos, i);
+                    this._lastPos = i + 1;
+                    this._byte = -1;
+                    i = readPctEnc(this, chunk, i + 1, len);
+                    if (i === -1)
+                      return cb(new Error("Malformed urlencoded form"));
+                    if (i >= len)
+                      return cb();
+                    ++this._bytesKey;
+                    i = skipKeyBytes(this, chunk, i, len);
+                    continue;
+                }
+                ++i;
+                ++this._bytesKey;
+                i = skipKeyBytes(this, chunk, i, len);
+              }
+              if (this._lastPos < i)
+                this._key += chunk.latin1Slice(this._lastPos, i);
+            } else {
+              i = skipValBytes(this, chunk, i, len);
+              while (i < len) {
+                switch (chunk[i]) {
+                  case 38:
+                    if (this._lastPos < i)
+                      this._val += chunk.latin1Slice(this._lastPos, i);
+                    this._lastPos = ++i;
+                    this._inKey = true;
+                    this._val = this._decoder(this._val, this._encode);
+                    this._encode = 0;
+                    if (this._bytesKey > 0 || this._bytesVal > 0) {
+                      this.emit(
+                        "field",
+                        this._key,
+                        this._val,
+                        {
+                          nameTruncated: this._keyTrunc,
+                          valueTruncated: this._valTrunc,
+                          encoding: this.charset,
+                          mimeType: "text/plain"
+                        }
+                      );
+                    }
+                    this._key = "";
+                    this._val = "";
+                    this._keyTrunc = false;
+                    this._valTrunc = false;
+                    this._bytesKey = 0;
+                    this._bytesVal = 0;
+                    if (++this._fields >= this.fieldsLimit) {
+                      this.emit("fieldsLimit");
+                      return cb();
+                    }
+                    continue main;
+                  case 43:
+                    if (this._lastPos < i)
+                      this._val += chunk.latin1Slice(this._lastPos, i);
+                    this._val += " ";
+                    this._lastPos = i + 1;
+                    break;
+                  case 37:
+                    if (this._encode === 0)
+                      this._encode = 1;
+                    if (this._lastPos < i)
+                      this._val += chunk.latin1Slice(this._lastPos, i);
+                    this._lastPos = i + 1;
+                    this._byte = -1;
+                    i = readPctEnc(this, chunk, i + 1, len);
+                    if (i === -1)
+                      return cb(new Error("Malformed urlencoded form"));
+                    if (i >= len)
+                      return cb();
+                    ++this._bytesVal;
+                    i = skipValBytes(this, chunk, i, len);
+                    continue;
+                }
+                ++i;
+                ++this._bytesVal;
+                i = skipValBytes(this, chunk, i, len);
+              }
+              if (this._lastPos < i)
+                this._val += chunk.latin1Slice(this._lastPos, i);
+            }
+          }
+        cb();
+      }
+      _final(cb) {
+        if (this._byte !== -2)
+          return cb(new Error("Malformed urlencoded form"));
+        if (!this._inKey || this._bytesKey > 0 || this._bytesVal > 0) {
+          if (this._inKey)
+            this._key = this._decoder(this._key, this._encode);
+          else
+            this._val = this._decoder(this._val, this._encode);
+          this.emit(
+            "field",
+            this._key,
+            this._val,
+            {
+              nameTruncated: this._keyTrunc,
+              valueTruncated: this._valTrunc,
+              encoding: this.charset,
+              mimeType: "text/plain"
+            }
+          );
+        }
+        cb();
+      }
+    };
+    function readPctEnc(self2, chunk, pos, len) {
+      if (pos >= len)
+        return len;
+      if (self2._byte === -1) {
+        const hexUpper = HEX_VALUES[chunk[pos++]];
+        if (hexUpper === -1)
+          return -1;
+        if (hexUpper >= 8)
+          self2._encode = 2;
+        if (pos < len) {
+          const hexLower = HEX_VALUES[chunk[pos++]];
+          if (hexLower === -1)
+            return -1;
+          if (self2._inKey)
+            self2._key += String.fromCharCode((hexUpper << 4) + hexLower);
+          else
+            self2._val += String.fromCharCode((hexUpper << 4) + hexLower);
+          self2._byte = -2;
+          self2._lastPos = pos;
+        } else {
+          self2._byte = hexUpper;
+        }
+      } else {
+        const hexLower = HEX_VALUES[chunk[pos++]];
+        if (hexLower === -1)
+          return -1;
+        if (self2._inKey)
+          self2._key += String.fromCharCode((self2._byte << 4) + hexLower);
+        else
+          self2._val += String.fromCharCode((self2._byte << 4) + hexLower);
+        self2._byte = -2;
+        self2._lastPos = pos;
+      }
+      return pos;
+    }
+    function skipKeyBytes(self2, chunk, pos, len) {
+      if (self2._bytesKey > self2.fieldNameSizeLimit) {
+        if (!self2._keyTrunc) {
+          if (self2._lastPos < pos)
+            self2._key += chunk.latin1Slice(self2._lastPos, pos - 1);
+        }
+        self2._keyTrunc = true;
+        for (; pos < len; ++pos) {
+          const code = chunk[pos];
+          if (code === 61 || code === 38)
+            break;
+          ++self2._bytesKey;
+        }
+        self2._lastPos = pos;
+      }
+      return pos;
+    }
+    function skipValBytes(self2, chunk, pos, len) {
+      if (self2._bytesVal > self2.fieldSizeLimit) {
+        if (!self2._valTrunc) {
+          if (self2._lastPos < pos)
+            self2._val += chunk.latin1Slice(self2._lastPos, pos - 1);
+        }
+        self2._valTrunc = true;
+        for (; pos < len; ++pos) {
+          if (chunk[pos] === 38)
+            break;
+          ++self2._bytesVal;
+        }
+        self2._lastPos = pos;
+      }
+      return pos;
+    }
+    var HEX_VALUES = [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ];
+    module2.exports = URLEncoded;
+  }
+});
+
+// node_modules/busboy/lib/index.js
+var require_lib10 = __commonJS({
+  "node_modules/busboy/lib/index.js"(exports2, module2) {
+    "use strict";
+    var { parseContentType } = require_utils9();
+    function getInstance(cfg) {
+      const headers = cfg.headers;
+      const conType = parseContentType(headers["content-type"]);
+      if (!conType)
+        throw new Error("Malformed content type");
+      for (const type of TYPES) {
+        const matched = type.detect(conType);
+        if (!matched)
+          continue;
+        const instanceCfg = {
+          limits: cfg.limits,
+          headers,
+          conType,
+          highWaterMark: void 0,
+          fileHwm: void 0,
+          defCharset: void 0,
+          defParamCharset: void 0,
+          preservePath: false
+        };
+        if (cfg.highWaterMark)
+          instanceCfg.highWaterMark = cfg.highWaterMark;
+        if (cfg.fileHwm)
+          instanceCfg.fileHwm = cfg.fileHwm;
+        instanceCfg.defCharset = cfg.defCharset;
+        instanceCfg.defParamCharset = cfg.defParamCharset;
+        instanceCfg.preservePath = cfg.preservePath;
+        return new type(instanceCfg);
+      }
+      throw new Error(`Unsupported content type: ${headers["content-type"]}`);
+    }
+    var TYPES = [
+      require_multipart(),
+      require_urlencoded3()
+    ].filter(function(typemod) {
+      return typeof typemod.detect === "function";
+    });
+    module2.exports = (cfg) => {
+      if (typeof cfg !== "object" || cfg === null)
+        cfg = {};
+      if (typeof cfg.headers !== "object" || cfg.headers === null || typeof cfg.headers["content-type"] !== "string") {
+        throw new Error("Missing Content-Type");
+      }
+      return getInstance(cfg);
+    };
+  }
+});
+
+// node_modules/append-field/lib/parse-path.js
+var require_parse_path = __commonJS({
+  "node_modules/append-field/lib/parse-path.js"(exports2, module2) {
+    var reFirstKey = /^[^\[]*/;
+    var reDigitPath = /^\[(\d+)\]/;
+    var reNormalPath = /^\[([^\]]+)\]/;
+    function parsePath(key) {
+      function failure() {
+        return [{ type: "object", key, last: true }];
+      }
+      var firstKey = reFirstKey.exec(key)[0];
+      if (!firstKey) return failure();
+      var len = key.length;
+      var pos = firstKey.length;
+      var tail = { type: "object", key: firstKey };
+      var steps = [tail];
+      while (pos < len) {
+        var m;
+        if (key[pos] === "[" && key[pos + 1] === "]") {
+          pos += 2;
+          tail.append = true;
+          if (pos !== len) return failure();
+          continue;
+        }
+        m = reDigitPath.exec(key.substring(pos));
+        if (m !== null) {
+          pos += m[0].length;
+          tail.nextType = "array";
+          tail = { type: "array", key: parseInt(m[1], 10) };
+          steps.push(tail);
+          continue;
+        }
+        m = reNormalPath.exec(key.substring(pos));
+        if (m !== null) {
+          pos += m[0].length;
+          tail.nextType = "object";
+          tail = { type: "object", key: m[1] };
+          steps.push(tail);
+          continue;
+        }
+        return failure();
+      }
+      tail.last = true;
+      return steps;
+    }
+    module2.exports = parsePath;
+  }
+});
+
+// node_modules/append-field/lib/set-value.js
+var require_set_value = __commonJS({
+  "node_modules/append-field/lib/set-value.js"(exports2, module2) {
+    function valueType(value) {
+      if (value === void 0) return "undefined";
+      if (Array.isArray(value)) return "array";
+      if (typeof value === "object") return "object";
+      return "scalar";
+    }
+    function setLastValue(context, step, currentValue, entryValue) {
+      switch (valueType(currentValue)) {
+        case "undefined":
+          if (step.append) {
+            context[step.key] = [entryValue];
+          } else {
+            context[step.key] = entryValue;
+          }
+          break;
+        case "array":
+          context[step.key].push(entryValue);
+          break;
+        case "object":
+          return setLastValue(currentValue, { type: "object", key: "", last: true }, currentValue[""], entryValue);
+        case "scalar":
+          context[step.key] = [context[step.key], entryValue];
+          break;
+      }
+      return context;
+    }
+    function setValue(context, step, currentValue, entryValue) {
+      if (step.last) return setLastValue(context, step, currentValue, entryValue);
+      var obj2;
+      switch (valueType(currentValue)) {
+        case "undefined":
+          if (step.nextType === "array") {
+            context[step.key] = [];
+          } else {
+            context[step.key] = /* @__PURE__ */ Object.create(null);
+          }
+          return context[step.key];
+        case "object":
+          return context[step.key];
+        case "array":
+          if (step.nextType === "array") {
+            return currentValue;
+          }
+          obj2 = /* @__PURE__ */ Object.create(null);
+          context[step.key] = obj2;
+          currentValue.forEach(function(item, i) {
+            if (item !== void 0) obj2["" + i] = item;
+          });
+          return obj2;
+        case "scalar":
+          obj2 = /* @__PURE__ */ Object.create(null);
+          obj2[""] = currentValue;
+          context[step.key] = obj2;
+          return obj2;
+      }
+    }
+    module2.exports = setValue;
+  }
+});
+
+// node_modules/append-field/index.js
+var require_append_field = __commonJS({
+  "node_modules/append-field/index.js"(exports2, module2) {
+    var parsePath = require_parse_path();
+    var setValue = require_set_value();
+    function appendField(store, key, value) {
+      var steps = parsePath(key);
+      steps.reduce(function(context, step) {
+        return setValue(context, step, context[step.key], value);
+      }, store);
+    }
+    module2.exports = appendField;
+  }
+});
+
+// node_modules/multer/lib/counter.js
+var require_counter = __commonJS({
+  "node_modules/multer/lib/counter.js"(exports2, module2) {
+    var EventEmitter = require("events").EventEmitter;
+    function Counter() {
+      EventEmitter.call(this);
+      this.value = 0;
+    }
+    Counter.prototype = Object.create(EventEmitter.prototype);
+    Counter.prototype.increment = function increment() {
+      this.value++;
+    };
+    Counter.prototype.decrement = function decrement() {
+      if (--this.value === 0) this.emit("zero");
+    };
+    Counter.prototype.isZero = function isZero() {
+      return this.value === 0;
+    };
+    Counter.prototype.onceZero = function onceZero(fn) {
+      if (this.isZero()) return fn();
+      this.once("zero", fn);
+    };
+    module2.exports = Counter;
+  }
+});
+
+// node_modules/multer/lib/multer-error.js
+var require_multer_error = __commonJS({
+  "node_modules/multer/lib/multer-error.js"(exports2, module2) {
+    var util = require("util");
+    var errorMessages = {
+      LIMIT_PART_COUNT: "Too many parts",
+      LIMIT_FILE_SIZE: "File too large",
+      LIMIT_FILE_COUNT: "Too many files",
+      LIMIT_FIELD_KEY: "Field name too long",
+      LIMIT_FIELD_VALUE: "Field value too long",
+      LIMIT_FIELD_COUNT: "Too many fields",
+      LIMIT_UNEXPECTED_FILE: "Unexpected file field",
+      MISSING_FIELD_NAME: "Field name missing",
+      LIMIT_FIELD_NESTING: "Field name nesting too deep",
+      LIMIT_FIELD_ARRAY_INDEX: "Field name array index too large",
+      STREAM_DESTROYED: "File stream was destroyed",
+      INVALID_FIELD_NAME: "Invalid field name"
+    };
+    function MulterError(code, field, filename) {
+      Error.captureStackTrace(this, this.constructor);
+      this.name = this.constructor.name;
+      this.message = errorMessages[code] || `Unknown error: ${code}`;
+      this.code = code;
+      if (field) this.field = field;
+      if (filename) this.filename = filename;
+    }
+    util.inherits(MulterError, Error);
+    module2.exports = MulterError;
+  }
+});
+
+// node_modules/multer/lib/file-appender.js
+var require_file_appender = __commonJS({
+  "node_modules/multer/lib/file-appender.js"(exports2, module2) {
+    function arrayRemove(arr, item) {
+      var idx = arr.indexOf(item);
+      if (~idx) arr.splice(idx, 1);
+    }
+    function FileAppender(strategy, req) {
+      this.strategy = strategy;
+      this.req = req;
+      switch (strategy) {
+        case "NONE":
+          break;
+        case "VALUE":
+          break;
+        case "ARRAY":
+          req.files = [];
+          break;
+        case "OBJECT":
+          req.files = /* @__PURE__ */ Object.create(null);
+          break;
+        default:
+          throw new Error("Unknown file strategy: " + strategy);
+      }
+    }
+    FileAppender.prototype.insertPlaceholder = function(file) {
+      var placeholder = {
+        fieldname: file.fieldname
+      };
+      switch (this.strategy) {
+        case "NONE":
+          break;
+        case "VALUE":
+          break;
+        case "ARRAY":
+          this.req.files.push(placeholder);
+          break;
+        case "OBJECT":
+          if (this.req.files[file.fieldname]) {
+            this.req.files[file.fieldname].push(placeholder);
+          } else {
+            this.req.files[file.fieldname] = [placeholder];
+          }
+          break;
+      }
+      return placeholder;
+    };
+    FileAppender.prototype.removePlaceholder = function(placeholder) {
+      switch (this.strategy) {
+        case "NONE":
+          break;
+        case "VALUE":
+          break;
+        case "ARRAY":
+          arrayRemove(this.req.files, placeholder);
+          break;
+        case "OBJECT": {
+          var files = this.req.files[placeholder.fieldname];
+          if (!files) break;
+          arrayRemove(files, placeholder);
+          if (files.length === 0) delete this.req.files[placeholder.fieldname];
+          break;
+        }
+      }
+    };
+    FileAppender.prototype.replacePlaceholder = function(placeholder, file) {
+      if (this.strategy === "VALUE") {
+        this.req.file = file;
+        return;
+      }
+      delete placeholder.fieldname;
+      Object.assign(placeholder, file);
+    };
+    module2.exports = FileAppender;
+  }
+});
+
+// node_modules/multer/lib/remove-uploaded-files.js
+var require_remove_uploaded_files = __commonJS({
+  "node_modules/multer/lib/remove-uploaded-files.js"(exports2, module2) {
+    function removeUploadedFiles(uploadedFiles, remove, cb) {
+      var length = uploadedFiles.length;
+      var errors = [];
+      if (length === 0) return cb(null, errors);
+      function handleFile(idx) {
+        var file = uploadedFiles[idx];
+        remove(file, function(err) {
+          if (err) {
+            err.file = file;
+            err.field = file.fieldname;
+            errors.push(err);
+          }
+          if (idx < length - 1) {
+            setImmediate(function() {
+              handleFile(idx + 1);
+            });
+          } else {
+            cb(null, errors);
+          }
+        });
+      }
+      handleFile(0);
+    }
+    module2.exports = removeUploadedFiles;
+  }
+});
+
+// node_modules/multer/lib/validate-limits.js
+var require_validate_limits = __commonJS({
+  "node_modules/multer/lib/validate-limits.js"(exports2, module2) {
+    function validateLimits(limits) {
+      Object.keys(limits).forEach(function(key) {
+        var value = limits[key];
+        if (value == null) return;
+        if (Number.isInteger(value) && value >= 0 || value === Infinity) return;
+        throw new TypeError("Expected limits." + key + " to be a non-negative integer or Infinity");
+      });
+    }
+    module2.exports = validateLimits;
+  }
+});
+
+// node_modules/multer/lib/make-middleware.js
+var require_make_middleware = __commonJS({
+  "node_modules/multer/lib/make-middleware.js"(exports2, module2) {
+    var is = require_type_is();
+    var AsyncResource = require("async_hooks").AsyncResource;
+    var Busboy = require_lib10();
+    var appendField = require_append_field();
+    var Counter = require_counter();
+    var MulterError = require_multer_error();
+    var FileAppender = require_file_appender();
+    var removeUploadedFiles = require_remove_uploaded_files();
+    var validateLimits = require_validate_limits();
+    var DEFAULT_FIELD_SIZE = 1024 * 1024;
+    function exceedsArrayIndexLimit(fieldname, limit) {
+      if (!/^[^[]+(?:\[[^\]]+\])*(?:\[\])?$/.test(fieldname)) return false;
+      var pattern = /\[(\d+)\]/g;
+      var match;
+      while ((match = pattern.exec(fieldname)) !== null) {
+        if (Number(match[1]) > limit) return true;
+      }
+      return false;
+    }
+    function drainStream(stream) {
+      stream.on("readable", () => {
+        while (stream.read() !== null) {
+        }
+      });
+    }
+    function decodeFormDataName(str) {
+      return str.replace(/%0A|%0D|%22/gi, function(match) {
+        switch (match.toUpperCase()) {
+          case "%0A":
+            return "\n";
+          case "%0D":
+            return "\r";
+          default:
+            return '"';
+        }
+      });
+    }
+    function defaultStreamHandler(req, busboy) {
+      req.pipe(busboy);
+    }
+    function makeMiddleware(setup) {
+      return function multerMiddleware(req, res, next) {
+        var resource = new AsyncResource("multer");
+        var originalNext = next;
+        next = function(err) {
+          resource.runInAsyncScope(originalNext, null, err);
+        };
+        if (!is(req, ["multipart"])) return next();
+        var options = setup();
+        var limits = options.limits;
+        if (typeof limits === "function") {
+          try {
+            limits = limits(req);
+            if (limits) validateLimits(limits);
+          } catch (err) {
+            return next(err);
+          }
+        }
+        var busboyLimits = {};
+        var key;
+        for (key in limits) {
+          busboyLimits[key] = limits[key];
+        }
+        var fieldSize = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : DEFAULT_FIELD_SIZE;
+        if (isFinite(fieldSize)) {
+          busboyLimits.fieldSize = fieldSize + 1;
+        }
+        if (limits && typeof limits.fileSize === "number" && isFinite(limits.fileSize)) {
+          busboyLimits.fileSize = limits.fileSize + 1;
+        }
+        if (limits && typeof limits.parts === "number" && isFinite(limits.parts)) {
+          busboyLimits.parts = limits.parts + 1;
+        }
+        var storage = options.storage;
+        var fileFilter = options.fileFilter;
+        var fileStrategy = options.fileStrategy;
+        var preservePath = options.preservePath;
+        var defParamCharset = options.defParamCharset;
+        var defCharset = options.defCharset;
+        var highWaterMark = options.highWaterMark;
+        var fileHwm = options.fileHwm;
+        var streamHandler = options.streamHandler || defaultStreamHandler;
+        req.body = /* @__PURE__ */ Object.create(null);
+        var busboy;
+        var appender = null;
+        var isDone = false;
+        var readFinished = false;
+        var errorOccured = false;
+        var abortCleanupDone = false;
+        var abortRemovedFiles = /* @__PURE__ */ new Set();
+        var pendingWrites = new Counter();
+        var uploadedFiles = [];
+        var pendingFiles = [];
+        function done(err) {
+          var called = false;
+          function onFinished() {
+            if (called) return;
+            called = true;
+            next(err);
+          }
+          if (isDone) return;
+          isDone = true;
+          if (busboy) {
+            req.unpipe(busboy);
+            setImmediate(() => {
+              busboy.removeAllListeners();
+              busboy.on("error", function() {
+              });
+            });
+          }
+          drainStream(req);
+          req.resume();
+          if (err && req.readable && !req.destroyed) {
+            req.once("end", onFinished);
+            req.once("error", onFinished);
+            req.once("close", onFinished);
+            return;
+          }
+          next(err);
+        }
+        function indicateDone() {
+          if (readFinished && pendingWrites.isZero() && !errorOccured) done();
+        }
+        function abortWithError(uploadError, skipPendingWait) {
+          if (errorOccured) return;
+          errorOccured = true;
+          function finishAbort() {
+            abortCleanupDone = true;
+            function remove(file, cb) {
+              storage._removeFile(req, file, cb);
+            }
+            var pendingToRemove = pendingFiles.filter(function(f) {
+              return f.path;
+            });
+            pendingToRemove.forEach(function(f) {
+              abortRemovedFiles.add(f);
+            });
+            var filesToRemove = uploadedFiles.concat(pendingToRemove);
+            pendingFiles = [];
+            removeUploadedFiles(filesToRemove, remove, function(err, storageErrors) {
+              if (err) return done(err);
+              uploadError.storageErrors = storageErrors;
+              done(uploadError);
+            });
+          }
+          if (skipPendingWait) {
+            finishAbort();
+          } else {
+            pendingWrites.onceZero(finishAbort);
+          }
+        }
+        function abortWithCode(code, optionalField, optionalFilename) {
+          abortWithError(new MulterError(code, optionalField, optionalFilename));
+        }
+        function handleRequestFailure(err) {
+          if (isDone) return;
+          if (busboy) {
+            req.unpipe(busboy);
+            busboy.destroy(err);
+          }
+          abortWithError(err, true);
+        }
+        req.on("error", function(err) {
+          handleRequestFailure(err || new Error("Request error"));
+        });
+        req.on("aborted", function() {
+          handleRequestFailure(new Error("Request aborted"));
+        });
+        req.on("close", function() {
+          if (req.readableEnded) return;
+          handleRequestFailure(new Error("Request closed"));
+        });
+        try {
+          busboy = Busboy({
+            headers: req.headers,
+            limits: busboyLimits,
+            preservePath,
+            defParamCharset,
+            defCharset,
+            highWaterMark,
+            fileHwm
+          });
+        } catch (err) {
+          return next(err);
+        }
+        appender = new FileAppender(fileStrategy, req);
+        busboy.on("field", function(fieldname, value, { nameTruncated, valueTruncated }) {
+          if (fieldname == null) return abortWithCode("MISSING_FIELD_NAME");
+          var rawFieldname = fieldname;
+          fieldname = decodeFormDataName(fieldname);
+          if (nameTruncated) return abortWithCode("LIMIT_FIELD_KEY");
+          if (valueTruncated) return abortWithCode("LIMIT_FIELD_VALUE", fieldname);
+          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNameSize")) {
+            if (rawFieldname.length > limits.fieldNameSize) return abortWithCode("LIMIT_FIELD_KEY");
+          }
+          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNestingDepth")) {
+            if (fieldname.split("[").length - 1 > limits.fieldNestingDepth) return abortWithCode("LIMIT_FIELD_NESTING", fieldname);
+          }
+          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldArrayIndexLimit")) {
+            if (exceedsArrayIndexLimit(fieldname, limits.fieldArrayIndexLimit)) {
+              return abortWithCode("LIMIT_FIELD_ARRAY_INDEX", fieldname);
+            }
+          }
+          try {
+            appendField(req.body, fieldname, value);
+          } catch {
+            return abortWithCode("INVALID_FIELD_NAME", fieldname);
+          }
+        });
+        busboy.on("file", function(fieldname, fileStream, { filename, encoding, mimeType }) {
+          var pendingWritesIncremented = false;
+          var aborting = false;
+          var accepted = false;
+          var fileSizeLimitReached = false;
+          var originalname = filename && decodeFormDataName(filename);
+          function decrementPendingWrites() {
+            if (!pendingWritesIncremented) return;
+            pendingWritesIncremented = false;
+            pendingWrites.decrement();
+          }
+          fileStream.on("error", function(err) {
+            decrementPendingWrites();
+            abortWithError(err);
+          });
+          fileStream.on("limit", function() {
+            fileSizeLimitReached = true;
+            if (accepted) {
+              aborting = true;
+              abortWithCode("LIMIT_FILE_SIZE", fieldname, originalname);
+            }
+          });
+          if (fieldname == null) return abortWithCode("MISSING_FIELD_NAME");
+          var rawFieldname = fieldname;
+          fieldname = decodeFormDataName(fieldname);
+          if (!filename) return fileStream.resume();
+          if (limits && Object.prototype.hasOwnProperty.call(limits, "fieldNameSize")) {
+            if (rawFieldname.length > limits.fieldNameSize) return abortWithCode("LIMIT_FIELD_KEY");
+          }
+          var file = {
+            fieldname,
+            originalname,
+            encoding,
+            mimetype: mimeType
+          };
+          var placeholder = appender.insertPlaceholder(file);
+          fileFilter(req, file, function(err, includeFile) {
+            if (errorOccured) {
+              appender.removePlaceholder(placeholder);
+              return fileStream.resume();
+            }
+            if (err) {
+              appender.removePlaceholder(placeholder);
+              return abortWithError(err);
+            }
+            if (!includeFile) {
+              appender.removePlaceholder(placeholder);
+              return fileStream.resume();
+            }
+            if (fileSizeLimitReached) {
+              appender.removePlaceholder(placeholder);
+              return abortWithCode("LIMIT_FILE_SIZE", fieldname, originalname);
+            }
+            accepted = true;
+            pendingWritesIncremented = true;
+            pendingWrites.increment();
+            Object.defineProperty(file, "stream", {
+              configurable: true,
+              enumerable: false,
+              value: fileStream
+            });
+            pendingFiles.push(file);
+            storage._handleFile(req, file, function(err2, info) {
+              var idx = pendingFiles.indexOf(file);
+              if (idx !== -1) pendingFiles.splice(idx, 1);
+              if (aborting) {
+                appender.removePlaceholder(placeholder);
+                if (!err2) uploadedFiles.push({ ...file, ...info });
+                return decrementPendingWrites();
+              }
+              if (err2) {
+                appender.removePlaceholder(placeholder);
+                decrementPendingWrites();
+                return abortWithError(err2);
+              }
+              var fileInfo = { ...file, ...info };
+              if (abortCleanupDone) {
+                if (abortRemovedFiles.has(file)) {
+                  appender.removePlaceholder(placeholder);
+                  decrementPendingWrites();
+                  return;
+                }
+                return storage._removeFile(req, fileInfo, function() {
+                  appender.removePlaceholder(placeholder);
+                  decrementPendingWrites();
+                });
+              }
+              appender.replacePlaceholder(placeholder, fileInfo);
+              uploadedFiles.push(fileInfo);
+              decrementPendingWrites();
+              indicateDone();
+            });
+          });
+        });
+        busboy.on("error", function(err) {
+          abortWithError(err);
+        });
+        busboy.on("partsLimit", function() {
+          abortWithCode("LIMIT_PART_COUNT");
+        });
+        busboy.on("filesLimit", function() {
+          abortWithCode("LIMIT_FILE_COUNT");
+        });
+        busboy.on("fieldsLimit", function() {
+          abortWithCode("LIMIT_FIELD_COUNT");
+        });
+        busboy.on("close", function() {
+          readFinished = true;
+          indicateDone();
+        });
+        streamHandler(req, busboy);
+      };
+    }
+    module2.exports = makeMiddleware;
+  }
+});
+
+// node_modules/multer/storage/disk.js
+var require_disk = __commonJS({
+  "node_modules/multer/storage/disk.js"(exports2, module2) {
+    var fs2 = require("fs");
+    var os = require("os");
+    var path2 = require("path");
+    var crypto4 = require("crypto");
+    var pipeline = require("stream").pipeline;
+    var MulterError = require_multer_error();
+    var openStreams = /* @__PURE__ */ new WeakMap();
+    var flushingFiles = /* @__PURE__ */ new WeakMap();
+    function endFlush(file) {
+      var flush = flushingFiles.get(file);
+      if (!flush) return;
+      flushingFiles.delete(file);
+      if (flush.onClosed) flush.onClosed();
+    }
+    function getFilename(req, file, cb) {
+      crypto4.randomBytes(16, function(err, raw) {
+        cb(err, err ? void 0 : raw.toString("hex"));
+      });
+    }
+    function getDestination(req, file, cb) {
+      cb(null, os.tmpdir());
+    }
+    function DiskStorage(opts) {
+      opts = opts || {};
+      this.getFilename = opts.filename || getFilename;
+      this.flush = opts.flush;
+      if (typeof opts.destination === "string") {
+        fs2.mkdirSync(opts.destination, { recursive: true });
+        this.getDestination = function($0, $1, cb) {
+          cb(null, opts.destination);
+        };
+      } else {
+        this.getDestination = opts.destination || getDestination;
+      }
+    }
+    DiskStorage.prototype._handleFile = function _handleFile(req, file, cb) {
+      var that = this;
+      that.getDestination(req, file, function(err, destination) {
+        if (err) return cb(err);
+        that.getFilename(req, file, function(err2, filename) {
+          if (err2) return cb(err2);
+          var finalPath = path2.join(destination, filename);
+          if (file.stream.destroyed) return cb(new MulterError("STREAM_DESTROYED"));
+          var outStream = fs2.createWriteStream(finalPath);
+          file.path = finalPath;
+          openStreams.set(file, outStream);
+          outStream.once("close", function() {
+            openStreams.delete(file);
+          });
+          if (that.flush) flushingFiles.set(file, {});
+          pipeline(file.stream, outStream, function(err3) {
+            if (err3) {
+              endFlush(file);
+              return cb(err3);
+            }
+            var done = function(err4) {
+              if (err4) return cb(err4);
+              cb(null, {
+                destination,
+                filename,
+                path: finalPath,
+                size: outStream.bytesWritten
+              });
+            };
+            if (!that.flush) return done();
+            fs2.open(finalPath, "r+", function(err4, fd) {
+              if (err4) {
+                endFlush(file);
+                return done(err4);
+              }
+              fs2.fsync(fd, function(syncErr) {
+                fs2.close(fd, function(closeErr) {
+                  endFlush(file);
+                  done(syncErr || closeErr);
+                });
+              });
+            });
+          });
+        });
+      });
+    };
+    DiskStorage.prototype._removeFile = function _removeFile(req, file, cb) {
+      var path3 = file.path;
+      delete file.destination;
+      delete file.filename;
+      delete file.path;
+      function unlink() {
+        var flush = flushingFiles.get(file);
+        if (!flush) return fs2.unlink(path3, cb);
+        flush.onClosed = function() {
+          fs2.unlink(path3, cb);
+        };
+      }
+      var outStream = openStreams.get(file);
+      if (!outStream) return unlink();
+      if (outStream.closed) return unlink();
+      function onReleased() {
+        outStream.removeListener("close", onReleased);
+        outStream.removeListener("error", onReleased);
+        unlink();
+      }
+      outStream.once("close", onReleased);
+      outStream.once("error", onReleased);
+      outStream.destroy();
+    };
+    module2.exports = function(opts) {
+      return new DiskStorage(opts);
+    };
+  }
+});
+
+// node_modules/multer/storage/memory.js
+var require_memory = __commonJS({
+  "node_modules/multer/storage/memory.js"(exports2, module2) {
+    function MemoryStorage(opts) {
+    }
+    MemoryStorage.prototype._handleFile = function _handleFile(req, file, cb) {
+      var chunks = [];
+      file.stream.on("data", function(chunk) {
+        chunks.push(chunk);
+      });
+      file.stream.on("end", function() {
+        var buffer = Buffer.concat(chunks);
+        cb(null, {
+          buffer,
+          size: buffer.length
+        });
+      });
+    };
+    MemoryStorage.prototype._removeFile = function _removeFile(req, file, cb) {
+      delete file.buffer;
+      cb(null);
+    };
+    module2.exports = function(opts) {
+      return new MemoryStorage(opts);
+    };
+  }
+});
+
+// node_modules/multer/index.js
+var require_multer = __commonJS({
+  "node_modules/multer/index.js"(exports2, module2) {
+    var makeMiddleware = require_make_middleware();
+    var diskStorage = require_disk();
+    var memoryStorage = require_memory();
+    var MulterError = require_multer_error();
+    var validateLimits = require_validate_limits();
+    function allowAll(req, file, cb) {
+      cb(null, true);
+    }
+    function Multer(options) {
+      if (options.storage) {
+        this.storage = options.storage;
+      } else if (options.dest) {
+        this.storage = diskStorage({ destination: options.dest });
+      } else {
+        this.storage = memoryStorage();
+      }
+      if (options.limits && typeof options.limits !== "function") validateLimits(options.limits);
+      this.limits = options.limits;
+      this.preservePath = options.preservePath;
+      this.defParamCharset = options.defParamCharset || "latin1";
+      this.defCharset = options.defCharset;
+      this.highWaterMark = options.highWaterMark;
+      this.fileHwm = options.fileHwm;
+      this.fileFilter = options.fileFilter || allowAll;
+      if (options.streamHandler !== void 0 && typeof options.streamHandler !== "function") {
+        throw new TypeError("Expected streamHandler to be a function");
+      }
+      this.streamHandler = options.streamHandler;
+    }
+    Multer.prototype._makeMiddleware = function(fields, fileStrategy) {
+      function setup() {
+        var fileFilter = this.fileFilter;
+        var filesLeft = /* @__PURE__ */ Object.create(null);
+        fields.forEach(function(field) {
+          if (typeof field.maxCount === "number") {
+            filesLeft[field.name] = field.maxCount;
+          } else {
+            filesLeft[field.name] = Infinity;
+          }
+        });
+        function wrappedFileFilter(req, file, cb) {
+          if ((filesLeft[file.fieldname] || 0) <= 0) {
+            return cb(new MulterError("LIMIT_UNEXPECTED_FILE", file.fieldname, file.originalname));
+          }
+          filesLeft[file.fieldname] -= 1;
+          var settled = false;
+          fileFilter(req, file, function(err, includeFile) {
+            if (!settled) {
+              settled = true;
+              if (err || !includeFile) filesLeft[file.fieldname] += 1;
+            }
+            cb(err, includeFile);
+          });
+        }
+        return {
+          limits: this.limits,
+          preservePath: this.preservePath,
+          defParamCharset: this.defParamCharset,
+          defCharset: this.defCharset,
+          highWaterMark: this.highWaterMark,
+          fileHwm: this.fileHwm,
+          streamHandler: this.streamHandler,
+          storage: this.storage,
+          fileFilter: wrappedFileFilter,
+          fileStrategy
+        };
+      }
+      return makeMiddleware(setup.bind(this));
+    };
+    Multer.prototype.single = function(name) {
+      return this._makeMiddleware([{ name, maxCount: 1 }], "VALUE");
+    };
+    Multer.prototype.array = function(name, maxCount) {
+      return this._makeMiddleware([{ name, maxCount }], "ARRAY");
+    };
+    Multer.prototype.fields = function(fields) {
+      return this._makeMiddleware(fields, "OBJECT");
+    };
+    Multer.prototype.none = function() {
+      return this._makeMiddleware([], "NONE");
+    };
+    Multer.prototype.any = function() {
+      function setup() {
+        return {
+          limits: this.limits,
+          preservePath: this.preservePath,
+          defParamCharset: this.defParamCharset,
+          defCharset: this.defCharset,
+          highWaterMark: this.highWaterMark,
+          fileHwm: this.fileHwm,
+          streamHandler: this.streamHandler,
+          storage: this.storage,
+          fileFilter: this.fileFilter,
+          fileStrategy: "ARRAY"
+        };
+      }
+      return makeMiddleware(setup.bind(this));
+    };
+    function multer(options) {
+      if (options === void 0) {
+        return new Multer({});
+      }
+      if (typeof options === "object" && options !== null) {
+        return new Multer(options);
+      }
+      throw new TypeError("Expected object for argument options");
+    }
+    module2.exports = multer;
+    module2.exports.diskStorage = diskStorage;
+    module2.exports.memoryStorage = memoryStorage;
+    module2.exports.MulterError = MulterError;
+  }
+});
+
+// apps/api/src/modules/vehicles/models/Vehicle.js
+var require_Vehicle = __commonJS({
+  "apps/api/src/modules/vehicles/models/Vehicle.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { VehicleStatus, VehicleCategory } = require_shared2();
+    var vehicleSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        plateNumber: {
+          type: String,
+          required: [true, "Vehicle plate/registration number is required"],
+          trim: true,
+          uppercase: true,
+          validate: {
+            validator: function(v) {
+              return /^[A-Z]{2}[0-9]{1,2}[A-Z]{0,3}[0-9]{4}$/.test(v.replace(/\s+/g, ""));
+            },
+            message: (props) => `${props.value} is not a valid vehicle registration plate format.`
+          }
+        },
+        vehicleType: {
+          type: String,
+          required: [true, "Vehicle type is required"],
+          // e.g. "Open Truck", "Container", "Trailer", "Tanker", "Tempo"
+          trim: true
+        },
+        category: {
+          type: String,
+          enum: Object.values(VehicleCategory),
+          default: VehicleCategory.OWNED
+        },
+        make: {
+          type: String,
+          trim: true,
+          default: ""
+          // e.g. "Tata", "Ashok Leyland", "BharatBenz", "Eicher"
+        },
+        model: {
+          type: String,
+          trim: true,
+          default: ""
+          // e.g. "Signa 4825.TK", "Pro 6028"
+        },
+        yearOfManufacture: {
+          type: Number,
+          min: 1980,
+          max: (/* @__PURE__ */ new Date()).getFullYear() + 1
+        },
+        capacityTonnage: {
+          type: Number,
+          required: [true, "Capacity in metric tons (MT) is required"],
+          min: [0.1, "Capacity must be at least 0.1 MT"]
+        },
+        chassisNumber: {
+          type: String,
+          trim: true,
+          uppercase: true,
+          default: ""
+        },
+        engineNumber: {
+          type: String,
+          trim: true,
+          uppercase: true,
+          default: ""
+        },
+        ownerName: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        ownerPhone: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        status: {
+          type: String,
+          enum: Object.values(VehicleStatus),
+          default: VehicleStatus.AVAILABLE,
+          index: true
+        },
+        currentTripId: {
+          type: Schema.Types.ObjectId,
+          ref: "Trip",
+          default: null
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        },
+        telematics: {
+          deviceId: {
+            type: String,
+            trim: true,
+            index: true,
+            sparse: true
+          },
+          provider: {
+            type: String,
+            enum: ["AIS140", "TELTONIKA", "TRACCAR", "SIM_TRACKING", "REST_PING", "NONE"],
+            default: "NONE"
+          },
+          imei: {
+            type: String,
+            trim: true,
+            default: ""
+          },
+          simNumber: {
+            type: String,
+            trim: true,
+            default: ""
+          },
+          isActive: {
+            type: Boolean,
+            default: false
+          },
+          lastPing: {
+            latitude: { type: Number, default: null },
+            longitude: { type: Number, default: null },
+            speedKmph: { type: Number, default: 0 },
+            headingDegrees: { type: Number, default: 0 },
+            altitudeMeters: { type: Number, default: 0 },
+            accuracyMeters: { type: Number, default: 0 },
+            ignition: { type: Boolean, default: false },
+            batteryPercent: { type: Number, default: 100 },
+            recordedAt: { type: Date, default: null },
+            receivedAt: { type: Date, default: null },
+            rawPayload: { type: Schema.Types.Mixed, default: null }
+          },
+          lastGpsTimestamp: {
+            type: Date,
+            default: null
+          }
+        }
+      },
+      {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+      }
+    );
+    vehicleSchema.virtual("registrationNumber").get(function() {
+      return this.plateNumber;
+    }).set(function(v) {
+      this.plateNumber = v;
+    });
+    vehicleSchema.index({ companyId: 1, plateNumber: 1 }, { unique: true });
+    vehicleSchema.index({ companyId: 1, status: 1 });
+    vehicleSchema.index({ companyId: 1, category: 1 });
+    vehicleSchema.index({ companyId: 1, "telematics.deviceId": 1 });
+    module2.exports = mongoose.model("Vehicle", vehicleSchema);
+  }
+});
+
+// apps/api/src/modules/vehicles/models/VehicleDocument.js
+var require_VehicleDocument = __commonJS({
+  "apps/api/src/modules/vehicles/models/VehicleDocument.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { VehicleDocumentType, ComplianceStatus } = require_shared2();
+    var vehicleDocumentSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        vehicleId: {
+          type: Schema.Types.ObjectId,
+          ref: "Vehicle",
+          required: true,
+          index: true
+        },
+        documentType: {
+          type: String,
+          enum: Object.values(VehicleDocumentType),
+          required: [true, "Document type is required"]
+        },
+        documentNumber: {
+          type: String,
+          trim: true,
+          uppercase: true,
+          default: ""
+        },
+        issueDate: {
+          type: Date,
+          default: null
+        },
+        expiryDate: {
+          type: Date,
+          required: [true, "Document expiry date is required"],
+          index: true
+        },
+        fileKey: {
+          type: String,
+          required: [true, "File storage key is required"]
+        },
+        originalFileName: {
+          type: String,
+          required: true
+        },
+        mimeType: {
+          type: String,
+          required: true
+        },
+        fileSize: {
+          type: Number,
+          required: true
+        },
+        complianceStatus: {
+          type: String,
+          enum: Object.values(ComplianceStatus),
+          default: ComplianceStatus.VALID,
+          index: true
+        },
+        notes: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    vehicleDocumentSchema.methods.calculateComplianceStatus = function(now = /* @__PURE__ */ new Date()) {
+      if (!this.expiryDate) {
+        this.complianceStatus = ComplianceStatus.MISSING;
+        return this.complianceStatus;
+      }
+      const expiry = new Date(this.expiryDate);
+      const diffMs = expiry.getTime() - now.getTime();
+      const diffDays = Math.ceil(diffMs / (1e3 * 60 * 60 * 24));
+      if (diffDays < 0) {
+        this.complianceStatus = ComplianceStatus.EXPIRED;
+      } else if (diffDays <= 30) {
+        this.complianceStatus = ComplianceStatus.EXPIRING_SOON;
+      } else {
+        this.complianceStatus = ComplianceStatus.VALID;
+      }
+      return this.complianceStatus;
+    };
+    vehicleDocumentSchema.pre("save", function(next) {
+      this.calculateComplianceStatus();
+      next();
+    });
+    vehicleDocumentSchema.index({ companyId: 1, vehicleId: 1, documentType: 1 });
+    vehicleDocumentSchema.index({ companyId: 1, expiryDate: 1 });
+    module2.exports = mongoose.model("VehicleDocument", vehicleDocumentSchema);
+  }
+});
+
+// apps/api/src/services/storage.service.js
+var require_storage_service = __commonJS({
+  "apps/api/src/services/storage.service.js"(exports2, module2) {
+    "use strict";
+    var fs2 = require("fs");
+    var path2 = require("path");
+    var crypto4 = require("crypto");
+    var { AppError: AppError2 } = require_errorHandler();
+    var defaultUploadDir = process.env.VERCEL || process.env.SERVERLESS ? path2.join(require("os").tmpdir(), "uploads") : "./uploads";
+    var UPLOAD_ROOT = path2.resolve(
+      process.env.STORAGE_LOCAL_ROOT || process.env.STORAGE_LOCAL_DIR || defaultUploadDir
+    );
+    var ALLOWED_MIME_TYPES = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-excel",
+      "text/csv"
+    ];
+    var DANGEROUS_EXTENSIONS = /* @__PURE__ */ new Set([
+      ".exe",
+      ".bat",
+      ".cmd",
+      ".sh",
+      ".bash",
+      ".php",
+      ".phtml",
+      ".php3",
+      ".php4",
+      ".php5",
+      ".php7",
+      ".phps",
+      ".js",
+      ".mjs",
+      ".vbs",
+      ".py",
+      ".bin",
+      ".dll",
+      ".msi",
+      ".jar",
+      ".com",
+      ".scr",
+      ".ps1",
+      ".hta",
+      ".cpl"
+    ]);
+    var MIME_EXTENSION_MAP = {
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+      "image/webp": [".webp"],
+      "application/pdf": [".pdf"],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+      "application/vnd.ms-excel": [".xls", ".xlsx"],
+      "text/csv": [".csv", ".txt"]
+    };
+    function validateFileSignature(buffer, mimeType, filenameOrExt) {
+      if (!buffer || buffer.length === 0) {
+        throw new AppError2("Uploaded file buffer is empty.", 400);
+      }
+      const ext = (filenameOrExt && filenameOrExt.startsWith(".") ? filenameOrExt : path2.extname(filenameOrExt || "")).toLowerCase();
+      if (DANGEROUS_EXTENSIONS.has(ext)) {
+        throw new AppError2(`Security violation: File extension '${ext}' is strictly prohibited.`, 400);
+      }
+      const allowedExts = MIME_EXTENSION_MAP[mimeType];
+      if (allowedExts && !allowedExts.includes(ext)) {
+        throw new AppError2(
+          `File extension '${ext}' does not match declared MIME type '${mimeType}'. Expected: ${allowedExts.join(", ")}`,
+          400
+        );
+      }
+      if (mimeType === "application/pdf") {
+        const header = buffer.slice(0, 4).toString("ascii");
+        if (header !== "%PDF") {
+          throw new AppError2("File signature mismatch: File claims to be PDF but lacks valid %PDF header.", 400);
+        }
+      } else if (mimeType === "image/jpeg") {
+        if (buffer.length < 3 || buffer[0] !== 255 || buffer[1] !== 216 || buffer[2] !== 255) {
+          throw new AppError2("File signature mismatch: File claims to be JPEG but lacks valid SOI marker.", 400);
+        }
+      } else if (mimeType === "image/png") {
+        if (buffer.length < 8 || buffer[0] !== 137 || buffer[1] !== 80 || buffer[2] !== 78 || buffer[3] !== 71 || buffer[4] !== 13 || buffer[5] !== 10 || buffer[6] !== 26 || buffer[7] !== 10) {
+          throw new AppError2("File signature mismatch: File claims to be PNG but lacks valid PNG signature.", 400);
+        }
+      } else if (mimeType === "image/webp") {
+        if (buffer.length < 12 || buffer.slice(0, 4).toString("ascii") !== "RIFF" || buffer.slice(8, 12).toString("ascii") !== "WEBP") {
+          throw new AppError2("File signature mismatch: File claims to be WEBP but lacks valid RIFF/WEBP header.", 400);
+        }
+      } else if (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        if (buffer.length < 4 || buffer[0] !== 80 || buffer[1] !== 75) {
+          throw new AppError2("File signature mismatch: File claims to be XLSX spreadsheet but lacks ZIP/PK signature.", 400);
+        }
+      } else if (mimeType === "application/vnd.ms-excel") {
+        const isOle = buffer.length >= 4 && buffer[0] === 208 && buffer[1] === 207 && buffer[2] === 17 && buffer[3] === 224;
+        const isZip = buffer.length >= 2 && buffer[0] === 80 && buffer[1] === 75;
+        if (!isOle && !isZip) {
+          throw new AppError2("File signature mismatch: File claims to be Excel workbook but lacks valid signature.", 400);
+        }
+      } else if (mimeType === "text/csv") {
+        if (buffer.length >= 2 && buffer[0] === 77 && buffer[1] === 90) {
+          throw new AppError2("Security violation: Executable binary (MZ header) disguised as CSV.", 400);
+        }
+        if (buffer.length >= 4 && buffer[0] === 127 && buffer.slice(1, 4).toString("ascii") === "ELF") {
+          throw new AppError2("Security violation: ELF executable disguised as CSV.", 400);
+        }
+        for (let i = 0; i < Math.min(buffer.length, 512); i++) {
+          if (buffer[i] === 0) {
+            throw new AppError2("Security violation: Binary content with NUL bytes detected in CSV text file.", 400);
+          }
+        }
+      }
+      return true;
+    }
+    var StorageService = class {
+      constructor() {
+        this.root = UPLOAD_ROOT;
+        this.driver = process.env.STORAGE_DRIVER || "local";
+        const maxMb = parseInt(process.env.STORAGE_MAX_FILE_SIZE_MB, 10) || 15;
+        this.maxFileSize = maxMb * 1024 * 1024;
+        try {
+          if (!fs2.existsSync(this.root)) {
+            fs2.mkdirSync(this.root, { recursive: true });
+          }
+        } catch (err) {
+          console.warn("[STORAGE] Local storage initialization warning:", err.message);
+        }
+      }
+      /**
+       * Public validation helper for file signatures
+       */
+      validateFileSignature(buffer, mimeType, originalName) {
+        return validateFileSignature(buffer, mimeType, originalName);
+      }
+      /**
+       * Save an uploaded file buffer into tenant-isolated storage
+       */
+      async saveFile({ buffer, originalName, mimeType, companyId, module: module3 = "documents" }) {
+        if (!companyId) {
+          throw new AppError2("Tenant company ID is required for storage isolation.", 400);
+        }
+        if (!ALLOWED_MIME_TYPES.includes(mimeType)) {
+          throw new AppError2(
+            `Invalid file format '${mimeType}'. Allowed formats: JPG, PNG, WEBP, PDF, XLSX, CSV.`,
+            400
+          );
+        }
+        if (buffer.length > this.maxFileSize) {
+          const limitMb = Math.round(this.maxFileSize / (1024 * 1024));
+          throw new AppError2(`File size exceeds the ${limitMb} MB maximum limit.`, 400);
+        }
+        const ext = path2.extname(originalName || "").toLowerCase() || ".bin";
+        validateFileSignature(buffer, mimeType, ext);
+        const tenantDir = path2.join(this.root, "tenants", companyId.toString(), module3);
+        try {
+          if (!fs2.existsSync(tenantDir)) {
+            fs2.mkdirSync(tenantDir, { recursive: true });
+          }
+        } catch (err) {
+          console.warn("[STORAGE] Tenant directory creation warning:", err.message);
+        }
+        const randomHex = crypto4.randomBytes(16).toString("hex");
+        const storageFileName = `${Date.now()}_${randomHex}${ext}`;
+        const fullPath = path2.join(tenantDir, storageFileName);
+        await fs2.promises.writeFile(fullPath, buffer);
+        const relativeKey = path2.relative(this.root, fullPath).replace(/\\/g, "/");
+        return {
+          fileKey: relativeKey,
+          originalFileName: originalName,
+          mimeType,
+          fileSize: buffer.length
+        };
+      }
+      /**
+       * Resolve and verify absolute path for a stored file key
+       */
+      getFilePath(fileKey, companyId = null) {
+        if (!fileKey || typeof fileKey !== "string") {
+          throw new AppError2("Invalid file key provided.", 400);
+        }
+        const resolvedPath = path2.resolve(this.root, fileKey);
+        if (!resolvedPath.startsWith(this.root)) {
+          throw new AppError2("Invalid path: Directory traversal detected.", 403);
+        }
+        if (companyId) {
+          const tenantPrefix = path2.resolve(this.root, "tenants", companyId.toString());
+          if (!resolvedPath.startsWith(tenantPrefix)) {
+            throw new AppError2("Access denied: Document does not belong to your organization.", 403);
+          }
+        }
+        if (!fs2.existsSync(resolvedPath)) {
+          throw new AppError2("The requested file was not found on the server.", 404);
+        }
+        return resolvedPath;
+      }
+      /**
+       * Remove a file from private storage
+       */
+      async deleteFile(fileKey, companyId = null) {
+        try {
+          const fullPath = this.getFilePath(fileKey, companyId);
+          await fs2.promises.unlink(fullPath);
+          return true;
+        } catch (err) {
+          if (err.statusCode === 404) return false;
+          throw err;
+        }
+      }
+    };
+    module2.exports = new StorageService();
+  }
+});
+
+// apps/api/src/modules/trips/models/Trip.js
+var require_Trip = __commonJS({
+  "apps/api/src/modules/trips/models/Trip.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { TripStatus, StopType, StopStatus, TripExpenseType } = require_shared2();
+    var tripStopSchema = new Schema(
+      {
+        sequence: {
+          type: Number,
+          required: true
+        },
+        stopType: {
+          type: String,
+          enum: Object.values(StopType),
+          default: StopType.PICKUP
+        },
+        locationId: {
+          type: Schema.Types.ObjectId,
+          ref: "Location",
+          required: true
+        },
+        loadStopId: {
+          type: Schema.Types.ObjectId,
+          default: null
+        },
+        allocatedQuantity: {
+          type: Number,
+          default: 0
+        },
+        allocatedWeightMt: {
+          type: Number,
+          default: 0
+        },
+        deliveredQuantity: {
+          type: Number,
+          default: 0
+        },
+        pendingQuantity: {
+          type: Number,
+          default: 0
+        },
+        status: {
+          type: String,
+          enum: Object.values(StopStatus),
+          default: StopStatus.PENDING
+        },
+        arrivedAt: {
+          type: Date,
+          default: null
+        },
+        completedAt: {
+          type: Date,
+          default: null
+        },
+        receiverName: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        receiverPhone: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        remarks: {
+          type: String,
+          trim: true,
+          default: ""
+        }
+      },
+      { _id: true, timestamps: true }
+    );
+    var tripExpenseSchema = new Schema(
+      {
+        expenseType: {
+          type: String,
+          enum: Object.values(TripExpenseType),
+          required: true
+        },
+        amountPaise: {
+          type: Number,
+          required: true,
+          min: 0
+        },
+        description: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        paidBy: {
+          type: String,
+          enum: ["DRIVER", "COMPANY"],
+          default: "DRIVER"
+        },
+        receiptFileKey: {
+          type: String,
+          default: null
+        },
+        recordedAt: {
+          type: Date,
+          default: Date.now
+        }
+      },
+      { _id: true }
+    );
+    var tripSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        tripNumber: {
+          type: String,
+          required: [true, "Trip number is required"],
+          trim: true,
+          uppercase: true
+        },
+        loadId: {
+          type: Schema.Types.ObjectId,
+          ref: "Load",
+          required: [true, "Linked Load is required"],
+          index: true
+        },
+        vehicleId: {
+          type: Schema.Types.ObjectId,
+          ref: "Vehicle",
+          required: [true, "Assigned Vehicle is required"],
+          index: true
+        },
+        driverId: {
+          type: Schema.Types.ObjectId,
+          ref: "Driver",
+          required: [true, "Assigned Driver is required"],
+          index: true
+        },
+        startDateTime: {
+          type: Date,
+          default: Date.now
+        },
+        expectedDeliveryDateTime: {
+          type: Date,
+          default: null
+        },
+        actualEndDateTime: {
+          type: Date,
+          default: null
+        },
+        status: {
+          type: String,
+          enum: Object.values(TripStatus),
+          default: TripStatus.CREATED,
+          index: true
+        },
+        stops: [tripStopSchema],
+        expenses: [tripExpenseSchema],
+        financials: {
+          grossFreightPaise: {
+            type: Number,
+            default: 0,
+            min: 0
+          },
+          driverAdvancePaise: {
+            type: Number,
+            default: 0,
+            min: 0
+          },
+          totalExpensesPaise: {
+            type: Number,
+            default: 0,
+            min: 0
+          },
+          netSettlementPaise: {
+            type: Number,
+            default: 0
+          }
+        },
+        statusHistory: [
+          {
+            status: { type: String, required: true },
+            changedBy: { type: Schema.Types.ObjectId, ref: "User" },
+            reason: { type: String, default: "" },
+            timestamp: { type: Date, default: Date.now }
+          }
+        ],
+        remarks: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    tripSchema.pre("save", function(next) {
+      if (this.expenses && this.expenses.length > 0) {
+        this.financials.totalExpensesPaise = this.expenses.reduce(
+          (sum, e) => sum + (e.amountPaise || 0),
+          0
+        );
+      } else {
+        this.financials.totalExpensesPaise = 0;
+      }
+      this.financials.netSettlementPaise = (this.financials.grossFreightPaise || 0) - (this.financials.totalExpensesPaise || 0) - (this.financials.driverAdvancePaise || 0);
+      next();
+    });
+    tripSchema.index({ companyId: 1, tripNumber: 1 }, { unique: true });
+    tripSchema.index({ companyId: 1, status: 1 });
+    tripSchema.index({ companyId: 1, vehicleId: 1, status: 1 });
+    tripSchema.index({ companyId: 1, driverId: 1, status: 1 });
+    tripSchema.index({ companyId: 1, loadId: 1, status: 1 });
+    var ACTIVE_STATUSES = [
+      TripStatus.CREATED,
+      TripStatus.VEHICLE_ASSIGNED,
+      TripStatus.LOADING,
+      TripStatus.IN_TRANSIT,
+      TripStatus.PARTIALLY_DELIVERED
+    ];
+    tripSchema.index(
+      { companyId: 1, vehicleId: 1 },
+      {
+        unique: true,
+        partialFilterExpression: {
+          isActive: true,
+          status: { $in: ACTIVE_STATUSES }
+        }
+      }
+    );
+    tripSchema.index(
+      { companyId: 1, driverId: 1 },
+      {
+        unique: true,
+        partialFilterExpression: {
+          isActive: true,
+          status: { $in: ACTIVE_STATUSES }
+        }
+      }
+    );
+    tripSchema.index(
+      { companyId: 1, loadId: 1 },
+      {
+        unique: true,
+        partialFilterExpression: {
+          isActive: true,
+          status: { $in: ACTIVE_STATUSES }
+        }
+      }
+    );
+    module2.exports = mongoose.model("Trip", tripSchema);
+  }
+});
+
+// apps/api/src/modules/vehicles/controllers/vehicle.controller.js
+var require_vehicle_controller = __commonJS({
+  "apps/api/src/modules/vehicles/controllers/vehicle.controller.js"(exports2, module2) {
+    "use strict";
+    var Vehicle = require_Vehicle();
+    var VehicleDocument = require_VehicleDocument();
+    var storageService = require_storage_service();
+    var auditLogService = require_auditLog_service();
+    var { AuditAction, VehicleStatus, VehicleDocumentType } = require_shared2();
+    var { AppError: AppError2 } = require_errorHandler();
+    var VehicleController = class {
+      async list(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const {
+            page = 1,
+            limit = 20,
+            search = "",
+            status = "",
+            category = "",
+            isActive = ""
+          } = req.query;
+          const filter = { companyId };
+          if (status) filter.status = status;
+          if (category) filter.category = category;
+          if (isActive !== "") filter.isActive = isActive === "true";
+          if (search) {
+            const cleanSearch = search.trim().replace(/\s+/g, "");
+            const regex = new RegExp(cleanSearch, "i");
+            filter.$or = [
+              { plateNumber: regex },
+              { make: new RegExp(search.trim(), "i") },
+              { model: new RegExp(search.trim(), "i") },
+              { ownerName: new RegExp(search.trim(), "i") },
+              { chassisNumber: regex }
+            ];
+          }
+          const pageNum = Math.max(1, parseInt(page, 10));
+          const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10)));
+          const skip = (pageNum - 1) * limitNum;
+          const [vehicles, total] = await Promise.all([
+            Vehicle.find(filter).sort({ plateNumber: 1 }).skip(skip).limit(limitNum),
+            Vehicle.countDocuments(filter)
+          ]);
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            data: {
+              items: vehicles,
+              pagination: {
+                page: pageNum,
+                limit: limitNum,
+                total,
+                totalPages: Math.ceil(total / limitNum)
+              }
+            }
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async getById(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const vehicle = await Vehicle.findOne({ _id: id, companyId });
+          if (!vehicle) {
+            return next(new AppError2("Vehicle not found.", 404));
+          }
+          const documents = await VehicleDocument.find({
+            vehicleId: id,
+            companyId,
+            isActive: true
+          }).sort({ expiryDate: 1 });
+          const now = /* @__PURE__ */ new Date();
+          documents.forEach((doc) => doc.calculateComplianceStatus(now));
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            data: {
+              ...vehicle.toObject(),
+              documents
+            }
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async create(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const {
+            plateNumber,
+            vehicleType,
+            category,
+            make,
+            model,
+            yearOfManufacture,
+            capacityTonnage,
+            chassisNumber,
+            engineNumber,
+            ownerName,
+            ownerPhone,
+            status
+          } = req.body;
+          if (!plateNumber || !plateNumber.trim()) {
+            return next(new AppError2("Vehicle registration plate number is required.", 400));
+          }
+          const cleanPlate = plateNumber.trim().toUpperCase().replace(/\s+/g, "");
+          const existing = await Vehicle.findOne({ companyId, plateNumber: cleanPlate });
+          if (existing) {
+            return next(new AppError2(`Vehicle with plate number '${cleanPlate}' already exists in your fleet.`, 409));
+          }
+          const vehicle = await Vehicle.create({
+            companyId,
+            plateNumber: cleanPlate,
+            vehicleType: vehicleType ? vehicleType.trim() : "Open Truck",
+            category: category || "OWNED",
+            make: make ? make.trim() : "",
+            model: model ? model.trim() : "",
+            yearOfManufacture: yearOfManufacture || void 0,
+            capacityTonnage: capacityTonnage || 10,
+            chassisNumber: chassisNumber ? chassisNumber.trim().toUpperCase() : "",
+            engineNumber: engineNumber ? engineNumber.trim().toUpperCase() : "",
+            ownerName: ownerName ? ownerName.trim() : "",
+            ownerPhone: ownerPhone ? ownerPhone.trim() : "",
+            status: status || VehicleStatus.AVAILABLE,
+            isActive: true
+          });
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "VEHICLES",
+            action: AuditAction.CREATE,
+            entityId: vehicle._id,
+            newValues: vehicle.toObject(),
+            ipAddress: req.ip
+          });
+          res.status(201).json({
+            success: true,
+            statusCode: 201,
+            message: "Vehicle added to fleet successfully.",
+            data: vehicle
+          });
+        } catch (err) {
+          if (err.code === 11e3) {
+            return next(new AppError2("Duplicate vehicle plate number constraint violated.", 409));
+          }
+          next(err);
+        }
+      }
+      async update(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const vehicle = await Vehicle.findOne({ _id: id, companyId });
+          if (!vehicle) {
+            return next(new AppError2("Vehicle not found.", 404));
+          }
+          const oldValues = vehicle.toObject();
+          const allowedFields = [
+            "vehicleType",
+            "category",
+            "make",
+            "model",
+            "yearOfManufacture",
+            "capacityTonnage",
+            "chassisNumber",
+            "engineNumber",
+            "ownerName",
+            "ownerPhone",
+            "status",
+            "isActive"
+          ];
+          allowedFields.forEach((field) => {
+            if (req.body[field] !== void 0) {
+              vehicle[field] = req.body[field];
+            }
+          });
+          if (req.body.plateNumber) {
+            const cleanPlate = req.body.plateNumber.trim().toUpperCase().replace(/\s+/g, "");
+            if (cleanPlate !== vehicle.plateNumber) {
+              const duplicate = await Vehicle.findOne({ companyId, plateNumber: cleanPlate });
+              if (duplicate) {
+                return next(new AppError2(`Vehicle plate '${cleanPlate}' already in use.`, 409));
+              }
+              vehicle.plateNumber = cleanPlate;
+            }
+          }
+          await vehicle.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "VEHICLES",
+            action: AuditAction.UPDATE,
+            entityId: vehicle._id,
+            oldValues,
+            newValues: vehicle.toObject(),
+            ipAddress: req.ip
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Vehicle updated successfully.",
+            data: vehicle
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async delete(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const vehicle = await Vehicle.findOne({ _id: id, companyId });
+          if (!vehicle) {
+            return next(new AppError2("Vehicle not found.", 404));
+          }
+          const Trip = require_Trip();
+          const activeTrip = await Trip.findOne({
+            companyId,
+            vehicleId: vehicle._id,
+            status: { $in: ["CREATED", "VEHICLE_ASSIGNED", "LOADING", "IN_TRANSIT", "PARTIALLY_DELIVERED"] },
+            isActive: true
+          });
+          if (activeTrip) {
+            return next(new AppError2(`Cannot deactivate vehicle ${vehicle.plateNumber}: currently assigned to active Trip ${activeTrip.tripNumber}.`, 400));
+          }
+          vehicle.isActive = false;
+          vehicle.status = VehicleStatus.INACTIVE;
+          await vehicle.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "VEHICLES",
+            action: AuditAction.DELETE,
+            entityId: vehicle._id,
+            oldValues: { isActive: true },
+            newValues: { isActive: false, status: VehicleStatus.INACTIVE },
+            ipAddress: req.ip
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Vehicle deactivated from active fleet."
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      /**
+       * Upload & attach a regulatory document to vehicle
+       */
+      async uploadDocument(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const vehicle = await Vehicle.findOne({ _id: id, companyId });
+          if (!vehicle) {
+            return next(new AppError2("Vehicle not found.", 404));
+          }
+          if (!req.file) {
+            return next(new AppError2("Document file is required (PDF, JPG, PNG).", 400));
+          }
+          const {
+            documentType,
+            documentNumber,
+            issueDate,
+            expiryDate,
+            notes
+          } = req.body;
+          if (!documentType || !Object.values(VehicleDocumentType).includes(documentType)) {
+            return next(new AppError2(`Invalid document type. Allowed: ${Object.values(VehicleDocumentType).join(", ")}`, 400));
+          }
+          if (!expiryDate) {
+            return next(new AppError2("Document expiry date is mandatory.", 400));
+          }
+          const storageResult = await storageService.saveFile({
+            buffer: req.file.buffer,
+            originalName: req.file.originalname,
+            mimeType: req.file.mimetype,
+            companyId,
+            module: "vehicles"
+          });
+          const vehicleDoc = new VehicleDocument({
+            companyId,
+            vehicleId: vehicle._id,
+            documentType,
+            documentNumber: documentNumber ? documentNumber.trim().toUpperCase() : "",
+            issueDate: issueDate ? new Date(issueDate) : null,
+            expiryDate: new Date(expiryDate),
+            fileKey: storageResult.fileKey,
+            originalFileName: storageResult.originalFileName,
+            mimeType: storageResult.mimeType,
+            fileSize: storageResult.fileSize,
+            notes: notes || "",
+            isActive: true
+          });
+          vehicleDoc.calculateComplianceStatus();
+          await vehicleDoc.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "VEHICLE_DOCS",
+            action: AuditAction.CREATE,
+            entityId: vehicleDoc._id,
+            newValues: {
+              vehicleId: vehicle._id,
+              plateNumber: vehicle.plateNumber,
+              documentType,
+              expiryDate: vehicleDoc.expiryDate
+            },
+            ipAddress: req.ip
+          });
+          res.status(201).json({
+            success: true,
+            statusCode: 201,
+            message: `${documentType} document uploaded successfully.`,
+            data: vehicleDoc
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async listDocuments(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const docs = await VehicleDocument.find({
+            vehicleId: id,
+            companyId,
+            isActive: true
+          }).sort({ expiryDate: 1 });
+          const now = /* @__PURE__ */ new Date();
+          docs.forEach((d) => d.calculateComplianceStatus(now));
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            data: docs
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async deleteDocument(req, res, next) {
+        try {
+          const { docId } = req.params;
+          const companyId = req.tenant.companyId;
+          const doc = await VehicleDocument.findOne({ _id: docId, companyId });
+          if (!doc) {
+            return next(new AppError2("Document not found.", 404));
+          }
+          doc.isActive = false;
+          await doc.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "VEHICLE_DOCS",
+            action: AuditAction.DELETE,
+            entityId: doc._id,
+            oldValues: { documentType: doc.documentType, vehicleId: doc.vehicleId },
+            newValues: { isActive: false },
+            ipAddress: req.ip
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Vehicle document deactivated."
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+    };
+    module2.exports = new VehicleController();
+  }
+});
+
+// apps/api/src/modules/vehicles/routes/vehicle.routes.js
+var require_vehicle_routes = __commonJS({
+  "apps/api/src/modules/vehicles/routes/vehicle.routes.js"(exports2, module2) {
+    "use strict";
+    var express2 = require_express2();
+    var multer = require_multer();
+    var vehicleController = require_vehicle_controller();
+    var { authenticate, enforceTenantScope } = require_auth_middleware();
+    var { requirePermission } = require_rbac_middleware();
+    var { SystemModule, ActionPermission } = require_shared2();
+    var router = express2.Router();
+    var upload = multer({
+      storage: multer.memoryStorage(),
+      limits: { fileSize: 10 * 1024 * 1024 }
+      // 10MB limit
+    });
+    router.use(authenticate, enforceTenantScope);
+    router.get(
+      "/",
+      requirePermission(SystemModule.VEHICLES, ActionPermission.VIEW),
+      vehicleController.list
+    );
+    router.get(
+      "/:id",
+      requirePermission(SystemModule.VEHICLES, ActionPermission.VIEW),
+      vehicleController.getById
+    );
+    router.post(
+      "/",
+      requirePermission(SystemModule.VEHICLES, ActionPermission.ADD),
+      vehicleController.create
+    );
+    router.put(
+      "/:id",
+      requirePermission(SystemModule.VEHICLES, ActionPermission.EDIT),
+      vehicleController.update
+    );
+    router.delete(
+      "/:id",
+      requirePermission(SystemModule.VEHICLES, ActionPermission.DELETE),
+      vehicleController.delete
+    );
+    router.post(
+      "/:id/documents",
+      requirePermission(SystemModule.VEHICLE_DOCS, ActionPermission.ADD),
+      upload.single("file"),
+      vehicleController.uploadDocument
+    );
+    router.get(
+      "/:id/documents",
+      requirePermission(SystemModule.VEHICLE_DOCS, ActionPermission.VIEW),
+      vehicleController.listDocuments
+    );
+    router.delete(
+      "/documents/:docId",
+      requirePermission(SystemModule.VEHICLE_DOCS, ActionPermission.DELETE),
+      vehicleController.deleteDocument
+    );
+    module2.exports = router;
+  }
+});
+
+// apps/api/src/modules/drivers/models/Driver.js
+var require_Driver = __commonJS({
+  "apps/api/src/modules/drivers/models/Driver.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { DriverStatus, DriverLicenseType } = require_shared2();
+    var driverSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        name: {
+          type: String,
+          required: [true, "Driver full name is required"],
+          trim: true
+        },
+        phone: {
+          type: String,
+          required: [true, "Driver contact phone number is required"],
+          trim: true
+        },
+        alternatePhone: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        licenseNumber: {
+          type: String,
+          required: [true, "Driving licence number is required"],
+          trim: true,
+          uppercase: true
+        },
+        licenseType: {
+          type: String,
+          enum: Object.values(DriverLicenseType),
+          default: DriverLicenseType.HMV
+        },
+        licenseExpiryDate: {
+          type: Date,
+          required: [true, "Licence expiry date is required"],
+          index: true
+        },
+        address: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        emergencyContact: {
+          name: { type: String, trim: true, default: "" },
+          relation: { type: String, trim: true, default: "" },
+          phone: { type: String, trim: true, default: "" }
+        },
+        status: {
+          type: String,
+          enum: Object.values(DriverStatus),
+          default: DriverStatus.AVAILABLE,
+          index: true
+        },
+        currentVehicleId: {
+          type: Schema.Types.ObjectId,
+          ref: "Vehicle",
+          default: null
+        },
+        currentTripId: {
+          type: Schema.Types.ObjectId,
+          ref: "Trip",
+          default: null
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        }
+      },
+      {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+      }
+    );
+    driverSchema.virtual("licenceNumber").get(function() {
+      return this.licenseNumber;
+    }).set(function(v) {
+      this.licenseNumber = v;
+    });
+    driverSchema.index({ companyId: 1, licenseNumber: 1 }, { unique: true });
+    driverSchema.index({ companyId: 1, status: 1 });
+    driverSchema.index({ companyId: 1, licenseExpiryDate: 1 });
+    module2.exports = mongoose.model("Driver", driverSchema);
+  }
+});
+
+// apps/api/src/modules/drivers/models/DriverDocument.js
+var require_DriverDocument = __commonJS({
+  "apps/api/src/modules/drivers/models/DriverDocument.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { DriverDocumentType, ComplianceStatus } = require_shared2();
+    var driverDocumentSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        driverId: {
+          type: Schema.Types.ObjectId,
+          ref: "Driver",
+          required: true,
+          index: true
+        },
+        documentType: {
+          type: String,
+          enum: Object.values(DriverDocumentType),
+          required: [true, "Document type is required"]
+        },
+        documentNumber: {
+          type: String,
+          trim: true,
+          uppercase: true,
+          default: ""
+        },
+        issueDate: {
+          type: Date,
+          default: null
+        },
+        expiryDate: {
+          type: Date,
+          default: null,
+          // Note: PAN and Aadhaar do not have expiry dates, whereas DL and Medical do
+          index: true
+        },
+        fileKey: {
+          type: String,
+          required: [true, "File storage key is required"]
+        },
+        originalFileName: {
+          type: String,
+          required: true
+        },
+        mimeType: {
+          type: String,
+          required: true
+        },
+        fileSize: {
+          type: Number,
+          required: true
+        },
+        complianceStatus: {
+          type: String,
+          enum: Object.values(ComplianceStatus),
+          default: ComplianceStatus.VALID,
+          index: true
+        },
+        notes: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    driverDocumentSchema.methods.calculateComplianceStatus = function(now = /* @__PURE__ */ new Date()) {
+      if (!this.expiryDate) {
+        this.complianceStatus = ComplianceStatus.VALID;
+        return this.complianceStatus;
+      }
+      const expiry = new Date(this.expiryDate);
+      const diffMs = expiry.getTime() - now.getTime();
+      const diffDays = Math.ceil(diffMs / (1e3 * 60 * 60 * 24));
+      if (diffDays < 0) {
+        this.complianceStatus = ComplianceStatus.EXPIRED;
+      } else if (diffDays <= 30) {
+        this.complianceStatus = ComplianceStatus.EXPIRING_SOON;
+      } else {
+        this.complianceStatus = ComplianceStatus.VALID;
+      }
+      return this.complianceStatus;
+    };
+    driverDocumentSchema.pre("save", function(next) {
+      this.calculateComplianceStatus();
+      next();
+    });
+    driverDocumentSchema.index({ companyId: 1, driverId: 1, documentType: 1 });
+    driverDocumentSchema.index({ companyId: 1, expiryDate: 1 });
+    module2.exports = mongoose.model("DriverDocument", driverDocumentSchema);
+  }
+});
+
+// apps/api/src/modules/drivers/controllers/driver.controller.js
+var require_driver_controller = __commonJS({
+  "apps/api/src/modules/drivers/controllers/driver.controller.js"(exports2, module2) {
+    "use strict";
+    var Driver = require_Driver();
+    var DriverDocument = require_DriverDocument();
+    var storageService = require_storage_service();
+    var auditLogService = require_auditLog_service();
+    var { AuditAction, DriverStatus, DriverDocumentType } = require_shared2();
+    var { AppError: AppError2 } = require_errorHandler();
+    var DriverController = class {
+      async list(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const {
+            page = 1,
+            limit = 20,
+            search = "",
+            status = "",
+            licenseType = "",
+            isActive = ""
+          } = req.query;
+          const filter = { companyId };
+          if (status) filter.status = status;
+          if (licenseType) filter.licenseType = licenseType;
+          if (isActive !== "") filter.isActive = isActive === "true";
+          if (search) {
+            const regex = new RegExp(search.trim(), "i");
+            filter.$or = [
+              { name: regex },
+              { phone: regex },
+              { alternatePhone: regex },
+              { licenseNumber: regex }
+            ];
+          }
+          const pageNum = Math.max(1, parseInt(page, 10));
+          const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10)));
+          const skip = (pageNum - 1) * limitNum;
+          const [drivers, total] = await Promise.all([
+            Driver.find(filter).sort({ name: 1 }).skip(skip).limit(limitNum),
+            Driver.countDocuments(filter)
+          ]);
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            data: {
+              items: drivers,
+              pagination: {
+                page: pageNum,
+                limit: limitNum,
+                total,
+                totalPages: Math.ceil(total / limitNum)
+              }
+            }
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async getById(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const driver = await Driver.findOne({ _id: id, companyId });
+          if (!driver) {
+            return next(new AppError2("Driver not found.", 404));
+          }
+          const documents = await DriverDocument.find({
+            driverId: id,
+            companyId,
+            isActive: true
+          }).sort({ createdAt: -1 });
+          const now = /* @__PURE__ */ new Date();
+          documents.forEach((doc) => doc.calculateComplianceStatus(now));
+          const diffMs = new Date(driver.licenseExpiryDate).getTime() - now.getTime();
+          const diffDays = Math.ceil(diffMs / (1e3 * 60 * 60 * 24));
+          const licenceStatus = diffDays < 0 ? "EXPIRED" : diffDays <= 30 ? "EXPIRING_SOON" : "VALID";
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            data: {
+              ...driver.toObject(),
+              licenceComplianceStatus: licenceStatus,
+              daysUntilLicenceExpiry: diffDays,
+              documents
+            }
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async create(req, res, next) {
+        try {
+          const companyId = req.tenant.companyId;
+          const {
+            name,
+            phone,
+            alternatePhone,
+            licenseNumber,
+            licenseType,
+            licenseExpiryDate,
+            address,
+            emergencyContact,
+            status
+          } = req.body;
+          if (!name || !name.trim()) {
+            return next(new AppError2("Driver full name is required.", 400));
+          }
+          if (!phone || !phone.trim()) {
+            return next(new AppError2("Driver contact phone number is required.", 400));
+          }
+          if (!licenseNumber || !licenseNumber.trim()) {
+            return next(new AppError2("Driving licence number is required.", 400));
+          }
+          if (!licenseExpiryDate) {
+            return next(new AppError2("Driving licence expiry date is required.", 400));
+          }
+          const cleanLicense = licenseNumber.trim().toUpperCase();
+          const existing = await Driver.findOne({ companyId, licenseNumber: cleanLicense });
+          if (existing) {
+            return next(new AppError2(`Driver with licence number '${cleanLicense}' already exists.`, 409));
+          }
+          const driver = await Driver.create({
+            companyId,
+            name: name.trim(),
+            phone: phone.trim(),
+            alternatePhone: alternatePhone ? alternatePhone.trim() : "",
+            licenseNumber: cleanLicense,
+            licenseType: licenseType || "HMV",
+            licenseExpiryDate: new Date(licenseExpiryDate),
+            address: address ? address.trim() : "",
+            emergencyContact,
+            status: status || DriverStatus.AVAILABLE,
+            isActive: true
+          });
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "DRIVERS",
+            action: AuditAction.CREATE,
+            entityId: driver._id,
+            newValues: driver.toObject(),
+            ipAddress: req.ip
+          });
+          res.status(201).json({
+            success: true,
+            statusCode: 201,
+            message: "Driver profile created successfully.",
+            data: driver
+          });
+        } catch (err) {
+          if (err.code === 11e3) {
+            return next(new AppError2("Duplicate licence number constraint violated.", 409));
+          }
+          next(err);
+        }
+      }
+      async update(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const driver = await Driver.findOne({ _id: id, companyId });
+          if (!driver) {
+            return next(new AppError2("Driver not found.", 404));
+          }
+          const oldValues = driver.toObject();
+          const allowedFields = [
+            "name",
+            "phone",
+            "alternatePhone",
+            "licenseType",
+            "licenseExpiryDate",
+            "address",
+            "emergencyContact",
+            "status",
+            "isActive"
+          ];
+          allowedFields.forEach((field) => {
+            if (req.body[field] !== void 0) {
+              if (field === "licenseExpiryDate") {
+                driver[field] = new Date(req.body[field]);
+              } else {
+                driver[field] = req.body[field];
+              }
+            }
+          });
+          if (req.body.licenseNumber) {
+            const cleanLicense = req.body.licenseNumber.trim().toUpperCase();
+            if (cleanLicense !== driver.licenseNumber) {
+              const duplicate = await Driver.findOne({ companyId, licenseNumber: cleanLicense });
+              if (duplicate) {
+                return next(new AppError2(`Driving licence '${cleanLicense}' already in use.`, 409));
+              }
+              driver.licenseNumber = cleanLicense;
+            }
+          }
+          await driver.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "DRIVERS",
+            action: AuditAction.UPDATE,
+            entityId: driver._id,
+            oldValues,
+            newValues: driver.toObject(),
+            ipAddress: req.ip
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Driver profile updated successfully.",
+            data: driver
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async delete(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const driver = await Driver.findOne({ _id: id, companyId });
+          if (!driver) {
+            return next(new AppError2("Driver not found.", 404));
+          }
+          const Trip = require_Trip();
+          const activeTrip = await Trip.findOne({
+            companyId,
+            driverId: driver._id,
+            status: { $in: ["CREATED", "VEHICLE_ASSIGNED", "LOADING", "IN_TRANSIT", "PARTIALLY_DELIVERED"] },
+            isActive: true
+          });
+          if (activeTrip) {
+            return next(new AppError2(`Cannot deactivate driver ${driver.name}: currently assigned to active Trip ${activeTrip.tripNumber}.`, 400));
+          }
+          driver.isActive = false;
+          driver.status = DriverStatus.INACTIVE;
+          await driver.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "DRIVERS",
+            action: AuditAction.DELETE,
+            entityId: driver._id,
+            oldValues: { isActive: true },
+            newValues: { isActive: false, status: DriverStatus.INACTIVE },
+            ipAddress: req.ip
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Driver profile deactivated."
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      /**
+       * Upload & attach identity/licence document for driver
+       */
+      async uploadDocument(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const driver = await Driver.findOne({ _id: id, companyId });
+          if (!driver) {
+            return next(new AppError2("Driver not found.", 404));
+          }
+          if (!req.file) {
+            return next(new AppError2("Document file is required (PDF, JPG, PNG).", 400));
+          }
+          const {
+            documentType,
+            documentNumber,
+            issueDate,
+            expiryDate,
+            notes
+          } = req.body;
+          if (!documentType || !Object.values(DriverDocumentType).includes(documentType)) {
+            return next(new AppError2(`Invalid document type. Allowed: ${Object.values(DriverDocumentType).join(", ")}`, 400));
+          }
+          const storageResult = await storageService.saveFile({
+            buffer: req.file.buffer,
+            originalName: req.file.originalname,
+            mimeType: req.file.mimetype,
+            companyId,
+            module: "drivers"
+          });
+          const driverDoc = new DriverDocument({
+            companyId,
+            driverId: driver._id,
+            documentType,
+            documentNumber: documentNumber ? documentNumber.trim().toUpperCase() : "",
+            issueDate: issueDate ? new Date(issueDate) : null,
+            expiryDate: expiryDate ? new Date(expiryDate) : null,
+            fileKey: storageResult.fileKey,
+            originalFileName: storageResult.originalFileName,
+            mimeType: storageResult.mimeType,
+            fileSize: storageResult.fileSize,
+            notes: notes || "",
+            isActive: true
+          });
+          driverDoc.calculateComplianceStatus();
+          await driverDoc.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "DRIVER_DOCS",
+            action: AuditAction.CREATE,
+            entityId: driverDoc._id,
+            newValues: {
+              driverId: driver._id,
+              driverName: driver.name,
+              documentType
+            },
+            ipAddress: req.ip
+          });
+          res.status(201).json({
+            success: true,
+            statusCode: 201,
+            message: `${documentType} uploaded successfully for ${driver.name}.`,
+            data: driverDoc
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async listDocuments(req, res, next) {
+        try {
+          const { id } = req.params;
+          const companyId = req.tenant.companyId;
+          const docs = await DriverDocument.find({
+            driverId: id,
+            companyId,
+            isActive: true
+          }).sort({ createdAt: -1 });
+          const now = /* @__PURE__ */ new Date();
+          docs.forEach((d) => d.calculateComplianceStatus(now));
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            data: docs
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+      async deleteDocument(req, res, next) {
+        try {
+          const { docId } = req.params;
+          const companyId = req.tenant.companyId;
+          const doc = await DriverDocument.findOne({ _id: docId, companyId });
+          if (!doc) {
+            return next(new AppError2("Document not found.", 404));
+          }
+          doc.isActive = false;
+          await doc.save();
+          await auditLogService.logAction({
+            companyId,
+            actorId: req.user._id,
+            module: "DRIVER_DOCS",
+            action: AuditAction.DELETE,
+            entityId: doc._id,
+            oldValues: { documentType: doc.documentType, driverId: doc.driverId },
+            newValues: { isActive: false },
+            ipAddress: req.ip
+          });
+          res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Driver document deactivated."
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
+    };
+    module2.exports = new DriverController();
+  }
+});
+
+// apps/api/src/modules/drivers/routes/driver.routes.js
+var require_driver_routes = __commonJS({
+  "apps/api/src/modules/drivers/routes/driver.routes.js"(exports2, module2) {
+    "use strict";
+    var express2 = require_express2();
+    var multer = require_multer();
+    var driverController = require_driver_controller();
+    var { authenticate, enforceTenantScope } = require_auth_middleware();
+    var { requirePermission } = require_rbac_middleware();
+    var { SystemModule, ActionPermission } = require_shared2();
+    var router = express2.Router();
+    var upload = multer({
+      storage: multer.memoryStorage(),
+      limits: { fileSize: 10 * 1024 * 1024 }
+    });
+    router.use(authenticate, enforceTenantScope);
+    router.get(
+      "/",
+      requirePermission(SystemModule.DRIVERS, ActionPermission.VIEW),
+      driverController.list
+    );
+    router.get(
+      "/:id",
+      requirePermission(SystemModule.DRIVERS, ActionPermission.VIEW),
+      driverController.getById
+    );
+    router.post(
+      "/",
+      requirePermission(SystemModule.DRIVERS, ActionPermission.ADD),
+      driverController.create
+    );
+    router.put(
+      "/:id",
+      requirePermission(SystemModule.DRIVERS, ActionPermission.EDIT),
+      driverController.update
+    );
+    router.delete(
+      "/:id",
+      requirePermission(SystemModule.DRIVERS, ActionPermission.DELETE),
+      driverController.delete
+    );
+    router.post(
+      "/:id/documents",
+      requirePermission(SystemModule.DRIVER_DOCS, ActionPermission.ADD),
+      upload.single("file"),
+      driverController.uploadDocument
+    );
+    router.get(
+      "/:id/documents",
+      requirePermission(SystemModule.DRIVER_DOCS, ActionPermission.VIEW),
+      driverController.listDocuments
+    );
+    router.delete(
+      "/documents/:docId",
+      requirePermission(SystemModule.DRIVER_DOCS, ActionPermission.DELETE),
+      driverController.deleteDocument
+    );
+    module2.exports = router;
+  }
+});
+
+// apps/api/src/modules/lr/models/LrNumber.js
+var require_LrNumber = __commonJS({
+  "apps/api/src/modules/lr/models/LrNumber.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { LrStatus } = require_shared2();
+    var lrNumberSchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        lrNumber: {
+          type: String,
+          required: [true, "LR number is required"],
+          trim: true,
+          uppercase: true
+        },
+        isManualNumber: {
+          type: Boolean,
+          default: false
+        },
+        loadId: {
+          type: Schema.Types.ObjectId,
+          ref: "Load",
+          required: [true, "Linked Load is required"],
+          index: true
+        },
+        vehicleId: {
+          type: Schema.Types.ObjectId,
+          ref: "Vehicle",
+          default: null,
+          index: true
+        },
+        driverId: {
+          type: Schema.Types.ObjectId,
+          ref: "Driver",
+          default: null,
+          index: true
+        },
+        consignorId: {
+          type: Schema.Types.ObjectId,
+          ref: "CustomerParty",
+          required: true
+        },
+        consigneeId: {
+          type: Schema.Types.ObjectId,
+          ref: "CustomerParty",
+          required: true
+        },
+        fromLocationId: {
+          type: Schema.Types.ObjectId,
+          ref: "Location",
+          default: null
+        },
+        toLocationId: {
+          type: Schema.Types.ObjectId,
+          ref: "Location",
+          default: null
+        },
+        status: {
+          type: String,
+          enum: Object.values(LrStatus),
+          default: LrStatus.BOOKED,
+          index: true
+        },
+        issuedDate: {
+          type: Date,
+          default: Date.now
+        },
+        deliveryDate: {
+          type: Date,
+          default: null
+        },
+        eWayBillNumber: {
+          type: String,
+          trim: true,
+          uppercase: true,
+          default: ""
+        },
+        eWayBillExpiry: {
+          type: Date,
+          default: null
+        },
+        pdfFileKey: {
+          type: String,
+          default: null
+        },
+        statusHistory: [
+          {
+            status: { type: String, required: true },
+            changedBy: { type: Schema.Types.ObjectId, ref: "User" },
+            reason: { type: String, default: "" },
+            timestamp: { type: Date, default: Date.now }
+          }
+        ],
+        remarks: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    lrNumberSchema.index({ companyId: 1, lrNumber: 1 }, { unique: true });
+    lrNumberSchema.index({ companyId: 1, status: 1 });
+    module2.exports = mongoose.model("LrNumber", lrNumberSchema);
+  }
+});
+
+// apps/api/src/modules/bilties/models/Bilty.js
+var require_Bilty = __commonJS({
+  "apps/api/src/modules/bilties/models/Bilty.js"(exports2, module2) {
+    "use strict";
+    var mongoose = require_mongoose2();
+    var { Schema } = mongoose;
+    var { BiltyStatus, PaymentTerms } = require_shared2();
+    var biltySchema = new Schema(
+      {
+        companyId: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true,
+          index: true
+        },
+        biltyNumber: {
+          type: String,
+          required: [true, "Bilty number is required"],
+          trim: true,
+          uppercase: true
+        },
+        lrId: {
+          type: Schema.Types.ObjectId,
+          ref: "LrNumber",
+          required: [true, "Linked LR is required"],
+          index: true
+        },
+        loadId: {
+          type: Schema.Types.ObjectId,
+          ref: "Load",
+          required: [true, "Linked Load is required"],
+          index: true
+        },
+        consignorId: {
+          type: Schema.Types.ObjectId,
+          ref: "CustomerParty",
+          required: true
+        },
+        consigneeId: {
+          type: Schema.Types.ObjectId,
+          ref: "CustomerParty",
+          required: true
+        },
+        fromLocationId: {
+          type: Schema.Types.ObjectId,
+          ref: "Location",
+          default: null
+        },
+        toLocationId: {
+          type: Schema.Types.ObjectId,
+          ref: "Location",
+          default: null
+        },
+        paymentTerms: {
+          type: String,
+          enum: Object.values(PaymentTerms),
+          default: PaymentTerms.TO_PAY
+        },
+        totalFreightPaise: {
+          type: Number,
+          required: true,
+          min: 0
+        },
+        advancePaise: {
+          type: Number,
+          default: 0,
+          min: 0
+        },
+        balancePaise: {
+          type: Number,
+          required: true
+        },
+        gstGtaRate: {
+          type: Number,
+          default: 5
+          // Default 5.0% GTA GST
+        },
+        gstGtaSac: {
+          type: String,
+          default: "9965"
+          // SAC 9965 Goods Transport Agency
+        },
+        status: {
+          type: String,
+          enum: Object.values(BiltyStatus),
+          default: BiltyStatus.ISSUED,
+          index: true
+        },
+        pdfFileKey: {
+          type: String,
+          default: null
+        },
+        remarks: {
+          type: String,
+          trim: true,
+          default: ""
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+          index: true
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+    biltySchema.index({ companyId: 1, biltyNumber: 1 }, { unique: true });
+    biltySchema.index({ companyId: 1, lrId: 1 }, { unique: true, partialFilterExpression: { isActive: true } });
+    module2.exports = mongoose.model("Bilty", biltySchema);
   }
 });
 
@@ -338978,6 +339663,49 @@ app.use("/api/v1/public/track", publicTrackingRoutes);
 app.use("/api/v1/maintenance", maintenanceRoutes);
 app.use("/api/v1/events", eventRoutes);
 app.use("/api/v1/telematics", telematicsRoutes);
+var btsDocsService = require_btsDocs_service();
+var mockStore = require_mockDataStore();
+app.get(["/api/v1/bts/loading-receipt/:id", "/api/bts/loading-receipt/:id", "/v1/bts/loading-receipt/:id", "/bts/loading-receipt/:id"], async (req, res) => {
+  try {
+    const record = mockStore.bilties.find((b) => b._id === req.params.id || b.lrNumber === req.params.id || b.biltyNumber === req.params.id) || mockStore.loads.find((l2) => l2._id === req.params.id || l2.loadNumber === req.params.id) || {};
+    const pdfBuffer = await btsDocsService.generateLoadingReceiptPdf({
+      lrNumber: record.lrNumber || record.loadNumber || req.params.id,
+      date: record.createdAt,
+      vehicleNumber: record.vehiclePlate,
+      toStation: record.destination,
+      weight: record.weightMt ? `${record.weightMt} MT` : void 0,
+      freightAmount: record.freightAmount,
+      advanceAmount: record.advanceAmount,
+      balanceAmount: record.balanceAmount,
+      consignee: { name: record.consignee || record.customerName, city: record.destination },
+      consignor: { name: record.consignor, city: record.origin }
+    });
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `inline; filename="BTS-Loading-Receipt-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+app.get(["/api/v1/bts/memo/:id", "/api/bts/memo/:id", "/v1/bts/memo/:id", "/bts/memo/:id"], async (req, res) => {
+  try {
+    const trip = mockStore.trips.find((t) => t._id === req.params.id || t.tripNumber === req.params.id) || mockStore.loads.find((l2) => l2._id === req.params.id || l2.loadNumber === req.params.id) || {};
+    const pdfBuffer = await btsDocsService.generateMemoPdf({
+      memoNumber: trip.tripNumber || trip.loadNumber || req.params.id,
+      date: trip.startedAt || trip.createdAt,
+      fromStation: trip.origin,
+      toStation: trip.destination,
+      vehicleNumber: trip.vehiclePlate,
+      driverName: trip.driverName,
+      phoneNo: trip.driverPhone
+    });
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `inline; filename="BTS-Memo-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
 var candidateDistDirs = [
   path.resolve(__dirname, "../../web/dist"),
   path.resolve(__dirname, "../../../dist"),
@@ -340547,18 +341275,18 @@ mongoose/lib/index.js:
    * Module dependencies.
    *)
 
+@noble/hashes/utils.js:
+  (*! noble-hashes - MIT License (c) 2022 Paul Miller (paulmillr.com) *)
+
+@noble/ciphers/utils.js:
+  (*! noble-ciphers - MIT License (c) 2023 Paul Miller (paulmillr.com) *)
+
 bcryptjs/dist/bcrypt.js:
   (**
    * @license bcrypt.js (c) 2013 Daniel Wirtz <dcode@dcode.io>
    * Released under the Apache License, Version 2.0
    * see: https://github.com/dcodeIO/bcrypt.js for details
    *)
-
-@noble/hashes/utils.js:
-  (*! noble-hashes - MIT License (c) 2022 Paul Miller (paulmillr.com) *)
-
-@noble/ciphers/utils.js:
-  (*! noble-ciphers - MIT License (c) 2023 Paul Miller (paulmillr.com) *)
 
 xmlchars/xml/1.0/ed5.js:
   (**

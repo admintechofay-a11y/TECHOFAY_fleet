@@ -8,6 +8,7 @@ const express = require('express');
 const crypto = require('node:crypto');
 const mockStore = require('../services/mockDataStore');
 const TokenService = require('../modules/auth/services/token.service');
+const btsDocsService = require('../services/btsDocs.service');
 
 const router = express.Router();
 
@@ -455,12 +456,38 @@ router.post('/loads/:id/status', (req, res) => {
   return ok(res, load, `Load status transitioned to ${load.status}`);
 });
 
-router.get('/loads/:id/pdf', (req, res) => {
-  res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `inline; filename="Load-${req.params.id}.pdf"`);
-  // Return small valid PDF stub
-  const minimalPdf = Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000101 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n178\n%%EOF\n');
-  return res.send(minimalPdf);
+router.get(['/loads/:id/pdf', '/loads/:id/loading-slip'], async (req, res) => {
+  try {
+    const load = mockStore.loads.find((l) => l._id === req.params.id || l.loadNumber === req.params.id) || {};
+    const isMemo = req.query?.type === 'memo';
+    const pdfBuffer = isMemo
+      ? await btsDocsService.generateMemoPdf({
+          memoNumber: load.loadNumber || req.params.id,
+          date: load.createdAt,
+          fromStation: load.origin,
+          toStation: load.destination,
+          vehicleNumber: load.vehiclePlate,
+          driverName: load.driverName
+        })
+      : await btsDocsService.generateLoadingReceiptPdf({
+          lrNumber: load.loadNumber || req.params.id,
+          date: load.createdAt,
+          vehicleNumber: load.vehiclePlate,
+          toStation: load.destination,
+          weight: load.weightMt ? `${load.weightMt} MT` : undefined,
+          freightAmount: load.freightAmount,
+          advanceAmount: load.advanceAmount,
+          balanceAmount: load.balanceAmount,
+          consignee: { name: load.consignee || load.customerName, city: load.destination }
+        });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="BTS-${isMemo ? 'Memo' : 'Loading-Receipt'}-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    console.error('Error generating load PDF:', err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // ==========================================
@@ -517,18 +544,74 @@ router.get('/lr', (req, res) => {
   return paginated(res, result);
 });
 
-router.get('/bilties/:id/pdf', (req, res) => {
-  res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `inline; filename="Bilty-${req.params.id}.pdf"`);
-  const minimalPdf = Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000101 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n178\n%%EOF\n');
-  return res.send(minimalPdf);
+router.get('/bilties/:id/pdf', async (req, res) => {
+  try {
+    const bilty = mockStore.bilties.find((b) => b._id === req.params.id || b.biltyNumber === req.params.id || b.lrNumber === req.params.id) || {};
+    const isMemo = req.query?.type === 'memo';
+    const pdfBuffer = isMemo
+      ? await btsDocsService.generateMemoPdf({
+          memoNumber: bilty.biltyNumber || bilty.lrNumber || req.params.id,
+          date: bilty.createdAt,
+          fromStation: bilty.origin,
+          toStation: bilty.destination,
+          vehicleNumber: bilty.vehiclePlate,
+          driverName: bilty.driverName
+        })
+      : await btsDocsService.generateLoadingReceiptPdf({
+          lrNumber: bilty.lrNumber || bilty.biltyNumber || req.params.id,
+          date: bilty.createdAt,
+          vehicleNumber: bilty.vehiclePlate,
+          toStation: bilty.destination,
+          weight: bilty.weightMt ? `${bilty.weightMt} MT` : undefined,
+          freightAmount: bilty.freightAmount,
+          advanceAmount: bilty.advanceAmount,
+          balanceAmount: bilty.balanceAmount,
+          consignee: { name: bilty.consignee, city: bilty.destination },
+          consignor: { name: bilty.consignor, city: bilty.origin }
+        });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="BTS-${isMemo ? 'Memo' : 'Bilty'}-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    console.error('Error generating bilty PDF:', err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
 });
 
-router.get('/lr/:id/pdf', (req, res) => {
-  res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `inline; filename="LR-${req.params.id}.pdf"`);
-  const minimalPdf = Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000101 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n178\n%%EOF\n');
-  return res.send(minimalPdf);
+router.get('/lr/:id/pdf', async (req, res) => {
+  try {
+    const lr = mockStore.bilties.find((b) => b._id === req.params.id || b.lrNumber === req.params.id || b.biltyNumber === req.params.id) || {};
+    const isMemo = req.query?.type === 'memo';
+    const pdfBuffer = isMemo
+      ? await btsDocsService.generateMemoPdf({
+          memoNumber: lr.lrNumber || req.params.id,
+          date: lr.createdAt,
+          fromStation: lr.origin,
+          toStation: lr.destination,
+          vehicleNumber: lr.vehiclePlate,
+          driverName: lr.driverName
+        })
+      : await btsDocsService.generateLoadingReceiptPdf({
+          lrNumber: lr.lrNumber || req.params.id,
+          date: lr.createdAt,
+          vehicleNumber: lr.vehiclePlate,
+          toStation: lr.destination,
+          weight: lr.weightMt ? `${lr.weightMt} MT` : undefined,
+          freightAmount: lr.freightAmount,
+          advanceAmount: lr.advanceAmount,
+          balanceAmount: lr.balanceAmount,
+          consignee: { name: lr.consignee, city: lr.destination },
+          consignor: { name: lr.consignor, city: lr.origin }
+        });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="BTS-${isMemo ? 'Memo' : 'Loading-Receipt'}-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    console.error('Error generating LR PDF:', err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // ==========================================
@@ -582,6 +665,79 @@ router.post('/trips/:id/expenses', (req, res) => {
   trip.expenses.push(newExpense);
   trip.totalExpenses = trip.expenses.reduce((s, e) => s + (e.amount || 0), 0);
   return ok(res, trip, 'Expense recorded', 201);
+});
+
+router.get(['/trips/:id/pdf', '/trips/:id/sheet'], async (req, res) => {
+  try {
+    const trip = mockStore.trips.find((t) => t._id === req.params.id || t.tripNumber === req.params.id) || {};
+    const pdfBuffer = await btsDocsService.generateMemoPdf({
+      memoNumber: trip.tripNumber || req.params.id,
+      date: trip.startedAt || trip.createdAt,
+      fromStation: trip.origin,
+      toStation: trip.destination,
+      vehicleNumber: trip.vehiclePlate,
+      driverName: trip.driverName,
+      phoneNo: trip.driverPhone,
+      ownerName: 'Barkat Tempo Service',
+      transporterName: 'Barkat Tempo Service',
+      driverAdvance: 33000,
+      driverBalance: 35500
+    });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="BTS-Memo-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    console.error('Error generating trip memo PDF:', err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Dedicated Barkat Tempo Service Document Endpoints
+router.get('/bts/loading-receipt/:id', async (req, res) => {
+  try {
+    const record =
+      mockStore.bilties.find((b) => b._id === req.params.id || b.lrNumber === req.params.id || b.biltyNumber === req.params.id) ||
+      mockStore.loads.find((l) => l._id === req.params.id || l.loadNumber === req.params.id) || {};
+    const pdfBuffer = await btsDocsService.generateLoadingReceiptPdf({
+      lrNumber: record.lrNumber || record.loadNumber || req.params.id,
+      date: record.createdAt,
+      vehicleNumber: record.vehiclePlate,
+      toStation: record.destination,
+      weight: record.weightMt ? `${record.weightMt} MT` : undefined,
+      freightAmount: record.freightAmount,
+      advanceAmount: record.advanceAmount,
+      balanceAmount: record.balanceAmount,
+      consignee: { name: record.consignee || record.customerName, city: record.destination },
+      consignor: { name: record.consignor, city: record.origin }
+    });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="BTS-Loading-Receipt-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.get('/bts/memo/:id', async (req, res) => {
+  try {
+    const trip =
+      mockStore.trips.find((t) => t._id === req.params.id || t.tripNumber === req.params.id) ||
+      mockStore.loads.find((l) => l._id === req.params.id || l.loadNumber === req.params.id) || {};
+    const pdfBuffer = await btsDocsService.generateMemoPdf({
+      memoNumber: trip.tripNumber || trip.loadNumber || req.params.id,
+      date: trip.startedAt || trip.createdAt,
+      fromStation: trip.origin,
+      toStation: trip.destination,
+      vehicleNumber: trip.vehiclePlate,
+      driverName: trip.driverName,
+      phoneNo: trip.driverPhone
+    });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="BTS-Memo-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // ==========================================
@@ -656,6 +812,27 @@ router.post('/maintenance', (req, res) => {
   };
   mockStore.maintenance.unshift(newMaint);
   return ok(res, newMaint, 'Maintenance record created', 201);
+});
+
+router.get('/maintenance/:id/job-card', async (req, res) => {
+  try {
+    const m = mockStore.maintenance.find((item) => item._id === req.params.id) || {
+      _id: req.params.id,
+      vehiclePlate: 'GJ-06-AX-8912',
+      serviceType: 'PREVENTIVE',
+      costPaise: 450000,
+      serviceCenter: 'BTS Workshop Baroda',
+      description: 'Periodic inspection and scheduled maintenance',
+      createdAt: new Date()
+    };
+    const pdfService = require('../services/pdf.service');
+    const pdfBuffer = await pdfService.generateMaintenancePdf(m, mockStore.tenant);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="BTS-JobCard-${req.params.id}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // ==========================================

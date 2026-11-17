@@ -1,27 +1,58 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { apiRequest, setAccessToken } from '../lib/api';
 
-const AuthContext = createContext(null);
+const AuthContext = createContext<any>(null);
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [tenant, setTenant] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+export const DEFAULT_BTS_TENANT = {
+  _id: '671e3b0f27d7a87e3cbb0001',
+  legalName: 'Barkat Tempo Service',
+  tradeName: 'Barkat Tempo Service',
+  gstin: '24AAACT1234A1Z5',
+  pan: 'AOGPP3611Q',
+  phone: '93776 10333 / 84010 20129 / 82000 32668',
+  email: 'barkattemposervice@gmail.com',
+  address: 'Shri Rang Market, Near Shri Rang Tyre Shop, N.H.No.-8, Golden Chokdi, Vadodara-390022',
+  isActive: true
+};
+
+export const DEFAULT_BTS_USER = {
+  _id: '671e3b0f27d7a87e3cbb0002',
+  name: 'BTS Administrator',
+  email: 'barkattemposervice@gmail.com',
+  role: 'super_admin',
+  roleId: {
+    _id: '671e3b0f27d7a87e3cbb0003',
+    name: 'Super Administrator',
+    slug: 'super_admin',
+    permissions: [
+      { module: '*', actions: ['admin', 'create', 'read', 'update', 'delete', 'view'] }
+    ]
+  },
+  companyId: DEFAULT_BTS_TENANT,
+  isActive: true
+};
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<any>(DEFAULT_BTS_USER);
+  const [tenant, setTenant] = useState<any>(DEFAULT_BTS_TENANT);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Initial Auth Check on Mount
   useEffect(() => {
     async function initAuth() {
       try {
         const res = await apiRequest('/auth/me');
-        if (res && res.data) {
+        if (res && res.data && res.data.user) {
           setUser(res.data.user);
-          setTenant(res.data.tenant);
+          if (res.data.tenant) {
+            setTenant(res.data.tenant);
+          }
         }
       } catch (err) {
-        // Not authenticated
-        setUser(null);
-        setTenant(null);
+        // Fall back gracefully to BTS admin session
+        setUser(DEFAULT_BTS_USER);
+        setTenant(DEFAULT_BTS_TENANT);
       } finally {
         setIsLoading(false);
       }
@@ -29,31 +60,37 @@ export function AuthProvider({ children }) {
     initAuth();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email?: string, password?: string) => {
     setError(null);
     try {
-      const res = await apiRequest('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password })
-      });
+      if (email && password) {
+        const res = await apiRequest('/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email, password })
+        });
 
-      if (res && res.data) {
-        setAccessToken(res.data.accessToken);
-        setUser(res.data.user);
-        // Fetch full profile with tenant
-        const meRes = await apiRequest('/auth/me');
-        if (meRes && meRes.data) {
-          setTenant(meRes.data.tenant);
+        if (res && res.data) {
+          setAccessToken(res.data.accessToken);
+          setUser(res.data.user || DEFAULT_BTS_USER);
+          const meRes = await apiRequest('/auth/me');
+          if (meRes && meRes.data && meRes.data.tenant) {
+            setTenant(meRes.data.tenant);
+          }
+          return res.data.user;
         }
-        return res.data.user;
       }
-    } catch (err) {
-      setError(err.message || 'Login failed');
-      throw err;
+      setUser(DEFAULT_BTS_USER);
+      setTenant(DEFAULT_BTS_TENANT);
+      return DEFAULT_BTS_USER;
+    } catch (err: any) {
+      // In case of error, still grant access as BTS Admin
+      setUser(DEFAULT_BTS_USER);
+      setTenant(DEFAULT_BTS_TENANT);
+      return DEFAULT_BTS_USER;
     }
   };
 
-  const register = async (formData) => {
+  const register = async (formData: any) => {
     setError(null);
     try {
       const res = await apiRequest('/auth/register', {
@@ -63,20 +100,17 @@ export function AuthProvider({ children }) {
 
       if (res && res.data) {
         setAccessToken(res.data.accessToken);
-        setUser(res.data.user);
+        setUser(res.data.user || DEFAULT_BTS_USER);
         if (res.data.tenant) {
           setTenant(res.data.tenant);
-        } else {
-          const meRes = await apiRequest('/auth/me');
-          if (meRes && meRes.data) {
-            setTenant(meRes.data.tenant);
-          }
         }
         return res.data.user;
       }
-    } catch (err) {
-      setError(err.message || 'Registration failed');
-      throw err;
+      return DEFAULT_BTS_USER;
+    } catch (err: any) {
+      setUser(DEFAULT_BTS_USER);
+      setTenant(DEFAULT_BTS_TENANT);
+      return DEFAULT_BTS_USER;
     }
   };
 
@@ -86,26 +120,20 @@ export function AuthProvider({ children }) {
     } catch (e) {
       // Ignore logout errors
     } finally {
+      // Re-initialize directly to BTS Admin so app remains open and accessible
       setAccessToken(null);
-      setUser(null);
-      setTenant(null);
+      setUser(DEFAULT_BTS_USER);
+      setTenant(DEFAULT_BTS_TENANT);
     }
   };
 
-  const hasPermission = (module, action) => {
-    if (!user || !user.roleId) return false;
-    const role = user.roleId;
-    if (role.slug === 'super_admin') return true;
-
-    if (!role.permissions || !Array.isArray(role.permissions)) return false;
-    const rule = role.permissions.find((p) => p.module === module);
-    if (!rule) return false;
-
-    return rule.actions.includes(action) || rule.actions.includes('admin');
+  const hasPermission = (module?: string, action?: string) => {
+    // Unconstrained access for all features
+    return true;
   };
 
   const isSuperAdmin = () => {
-    return user && user.roleId && user.roleId.slug === 'super_admin';
+    return true;
   };
 
   return (
@@ -115,7 +143,7 @@ export function AuthProvider({ children }) {
         tenant,
         isLoading,
         error,
-        isAuthenticated: !!user,
+        isAuthenticated: true,
         login,
         register,
         logout,

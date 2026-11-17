@@ -9,34 +9,34 @@ interface NavigationContextType {
 const NavigationContext = createContext<NavigationContextType | null>(null);
 
 const PAGE_TITLES: Record<string, string> = {
-  '/app/dashboard': 'Dashboard — Technofay Fleet',
-  '/app/loads': 'Loads Management — Technofay Fleet',
-  '/app/lr': 'LR Numbers — Technofay Fleet',
-  '/app/bilties': 'Bilty / Consignments — Technofay Fleet',
-  '/app/trips': 'Trips & Dispatch — Technofay Fleet',
-  '/app/vehicles': 'Fleet & Vehicles — Technofay Fleet',
-  '/app/drivers': 'Drivers & Compliance — Technofay Fleet',
-  '/app/compliance': 'Expiry & Compliance — Technofay Fleet',
-  '/app/maintenance': 'Fleet Maintenance — Technofay Fleet',
-  '/app/customers': 'Customers & Parties — Technofay Fleet',
-  '/app/locations': 'Location Master — Technofay Fleet',
-  '/app/deliveries': 'Deliveries & POD — Technofay Fleet',
-  '/app/billing': 'Freight & Billing — Technofay Fleet',
-  '/app/bulk-data': 'Bulk Data & Excel — Technofay Fleet',
-  '/app/whatsapp': 'WhatsApp Dispatch — Technofay Fleet',
-  '/app/messages': 'WhatsApp Dispatch — Technofay Fleet',
-  '/app/reports': 'Reports & Analytics — Technofay Fleet',
-  '/app/admin/users': 'User Management — Technofay Fleet',
-  '/app/admin/roles': 'Roles & Matrix — Technofay Fleet',
-  '/app/admin/audit': 'Audit Trail — Technofay Fleet',
-  '/app/admin/settings': 'System Settings — Technofay Fleet',
-  '/track': 'Public Tracking — Technofay Fleet',
-  '/login': 'Sign In — Technofay Fleet',
-  '/register': 'Register Fleet — Technofay Fleet',
-  '/signup': 'Register Fleet — Technofay Fleet',
-  '/privacy': 'Privacy Policy — Technofay Fleet',
-  '/terms': 'Terms of Service — Technofay Fleet',
-  '/contact': 'Contact Support — Technofay Fleet'
+  '/app/dashboard': 'Dashboard — Barkat Tempo Service',
+  '/app/loads': 'Loads Management — Barkat Tempo Service',
+  '/app/lr': 'LR Numbers & Receipts — Barkat Tempo Service',
+  '/app/bilties': 'Bilty / Consignments — Barkat Tempo Service',
+  '/app/trips': 'Trips & Dispatch — Barkat Tempo Service',
+  '/app/vehicles': 'Fleet & Vehicles — Barkat Tempo Service',
+  '/app/drivers': 'Drivers & Compliance — Barkat Tempo Service',
+  '/app/compliance': 'Expiry & Compliance — Barkat Tempo Service',
+  '/app/maintenance': 'Fleet Maintenance — Barkat Tempo Service',
+  '/app/customers': 'Customers & Parties — Barkat Tempo Service',
+  '/app/locations': 'Location Master — Barkat Tempo Service',
+  '/app/deliveries': 'Deliveries & POD — Barkat Tempo Service',
+  '/app/billing': 'Freight & Billing — Barkat Tempo Service',
+  '/app/bulk-data': 'Bulk Data & Excel — Barkat Tempo Service',
+  '/app/whatsapp': 'WhatsApp Dispatch — Barkat Tempo Service',
+  '/app/messages': 'WhatsApp Dispatch — Barkat Tempo Service',
+  '/app/reports': 'Reports & Analytics — Barkat Tempo Service',
+  '/app/admin/users': 'User Management — Barkat Tempo Service',
+  '/app/admin/roles': 'Roles & Matrix — Barkat Tempo Service',
+  '/app/admin/audit': 'Audit Trail — Barkat Tempo Service',
+  '/app/admin/settings': 'System Settings — Barkat Tempo Service',
+  '/track': 'Public Tracking — Barkat Tempo Service',
+  '/login': 'Sign In — Barkat Tempo Service',
+  '/register': 'Register Fleet — Barkat Tempo Service',
+  '/signup': 'Register Fleet — Barkat Tempo Service',
+  '/privacy': 'Privacy Policy — Barkat Tempo Service',
+  '/terms': 'Terms of Service — Barkat Tempo Service',
+  '/contact': 'Contact Support — Barkat Tempo Service'
 };
 
 export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -53,9 +53,9 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (PAGE_TITLES[basePath]) {
         document.title = PAGE_TITLES[basePath];
       } else if (basePath.startsWith('/track/')) {
-        document.title = 'Live Consignment Tracking — Technofay Fleet';
+        document.title = 'Live Consignment Tracking — Barkat Tempo Service';
       } else {
-        document.title = 'Technofay Fleet OS — Enterprise Logistics';
+        document.title = 'Barkat Tempo Service — Fleet & Transport OS';
       }
     }
   }, []);

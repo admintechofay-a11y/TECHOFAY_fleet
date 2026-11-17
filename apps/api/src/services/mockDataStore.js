@@ -10,19 +10,19 @@ const TokenService = require('../modules/auth/services/token.service');
 // Default Indian Logistics Tenant Profile
 const defaultTenant = {
   _id: '671e3b0f27d7a87e3cbb0001',
-  legalName: 'Garuda Express Logistics Pvt Ltd',
-  tradeName: 'Garuda Logistics',
-  gstin: '24AABCG1234A1Z5',
-  pan: 'AABCG1234A',
+  legalName: 'Barkat Tempo Service',
+  tradeName: 'Barkat Tempo Service',
+  gstin: '24AAACT1234A1Z5',
+  pan: 'AOGPP3611Q',
   status: 'ACTIVE',
   isActive: true,
-  phone: '+91 98251 12345',
-  email: 'ops@garudalogistics.com',
+  phone: '93776 10333 / 84010 20129 / 82000 32668',
+  email: 'barkattemposervice@gmail.com',
   address: {
-    street: 'Plot 42, Transport Nagar, Narol Ring Road',
-    city: 'Ahmedabad',
+    street: 'Shri Rang Market, Near Shri Rang Tyre Shop, N.H.No.-8, Golden Chokdi',
+    city: 'Vadodara',
     state: 'Gujarat',
-    pincode: '382405',
+    pincode: '390022',
     country: 'IN'
   },
   settings: {
@@ -81,9 +81,9 @@ const defaultUsers = [
   {
     _id: '671e3b0f27d7a87e3cbb0002',
     companyId: defaultTenant,
-    name: 'Vikramaditya Rao',
-    email: 'admin@technofay.com',
-    phone: '+91 98251 12345',
+    name: 'BTS Administrator',
+    email: 'barkattemposervice@gmail.com',
+    phone: '93776 10333',
     role: 'SUPER_ADMIN',
     roleId: defaultRoles[0],
     isActive: true,
