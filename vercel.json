@@ -13,21 +13,21 @@
   },
   "rewrites": [
     {
-      "source": "/api",
+      "source": "/assets/(.*)",
       "destination": {
-        "service": "api"
+        "service": "web"
       }
     },
     {
-      "source": "/api/(.*)",
+      "source": "/((?!api/).*\\..*)",
       "destination": {
-        "service": "api"
+        "service": "web"
       }
     },
     {
       "source": "/(.*)",
       "destination": {
-        "service": "web"
+        "service": "api"
       }
     }
   ]

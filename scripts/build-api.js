@@ -74,10 +74,17 @@ fs.mkdirSync(path.dirname(apiOutfile), { recursive: true });
 fs.writeFileSync(apiOutfile, bundleCode, 'utf8');
 console.log('[BUILD-API] Saved bundles to apps/api/index.js and api/index.js');
 
-// 4. Also copy web dist into apps/api/dist if available
+// 4. Also copy web dist into apps/api/dist and apps/api/src/assets if available
 const webDist = path.resolve(__dirname, '../apps/web/dist');
 const apiDist = path.resolve(__dirname, '../apps/api/dist');
+const apiAssetsDir = path.resolve(__dirname, '../apps/api/src/assets');
 if (fs.existsSync(webDist)) {
   fs.cpSync(webDist, apiDist, { recursive: true });
   console.log('[BUILD-API] Synced apps/web/dist to apps/api/dist for static fallthrough.');
+  const indexFile = path.join(webDist, 'index.html');
+  if (fs.existsSync(indexFile)) {
+    fs.mkdirSync(apiAssetsDir, { recursive: true });
+    fs.copyFileSync(indexFile, path.join(apiAssetsDir, 'index.html'));
+    console.log('[BUILD-API] Copied index.html to apps/api/src/assets/index.html for embedded delivery.');
+  }
 }

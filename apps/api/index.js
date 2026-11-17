@@ -62529,15 +62529,15 @@ var require_methods3 = __commonJS({
         arr[i] = value;
         return this;
       },
-      _markModified(elem, embeddedPath) {
+      _markModified(elem, embeddedPath2) {
         const parent = this[arrayParentSymbol];
         let dirtyPath;
         if (parent) {
           dirtyPath = this[arrayPathSymbol];
           if (arguments.length) {
-            if (embeddedPath != null) {
+            if (embeddedPath2 != null) {
               const index = elem.__index;
-              dirtyPath = dirtyPath + "." + index + "." + embeddedPath;
+              dirtyPath = dirtyPath + "." + index + "." + embeddedPath2;
             } else {
               dirtyPath = dirtyPath + "." + elem;
             }
@@ -341403,15 +341403,47 @@ var candidateDistDirs = [
   path.resolve(process.cwd(), "dist")
 ];
 var staticDist = candidateDistDirs.find((d) => fs.existsSync(d) && fs.existsSync(path.join(d, "index.html")));
+var embeddedHtml = "";
+var embeddedPath = path.resolve(__dirname, "./assets/index.html");
+if (fs.existsSync(embeddedPath)) {
+  try {
+    embeddedHtml = fs.readFileSync(embeddedPath, "utf8");
+  } catch (_2) {
+  }
+}
 if (staticDist) {
   app.use(express.static(staticDist));
-  app.get("*", (req, res, next) => {
-    if (req.originalUrl.startsWith("/api") || req.originalUrl.startsWith("/v1")) {
-      return next();
-    }
-    res.sendFile(path.join(staticDist, "index.html"));
-  });
 }
+app.get("*", (req, res, next) => {
+  if (req.originalUrl.startsWith("/api") || req.originalUrl.startsWith("/v1")) {
+    return next();
+  }
+  if (staticDist && fs.existsSync(path.join(staticDist, "index.html"))) {
+    return res.sendFile(path.join(staticDist, "index.html"));
+  }
+  if (embeddedHtml) {
+    res.type("html");
+    return res.send(embeddedHtml);
+  }
+  res.type("html");
+  return res.send(`<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Barkat Tempo Service \u2014 Fleet & Transport Operations Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-CWLGBy-p.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BtPn3MoF.css">
+  </head>
+  <body class="bg-slate-900 text-slate-100 antialiased font-sans">
+    <div id="root"></div>
+  </body>
+</html>`);
+});
 app.use("*", (req, res, next) => {
   next(new AppError(`Cannot ${req.method} ${req.originalUrl}. Route not found.`, 404));
 });
