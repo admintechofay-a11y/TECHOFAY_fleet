@@ -178,8 +178,8 @@ class BtsDocsService {
         y += 14;
 
         // Consignee / To
-        const toParty = data.consignee?.name || data.customer?.name || data.toParty || data.consignor?.name || 'M/S. RELIANCE INDUSTRIES LTD / GUJARAT DISTRIBUTORS';
-        const toCity = data.consignee?.city || data.deliveryLocation?.city || data.toStation || 'SURAT / MUMBAI';
+        const toParty = data.consignee?.name || data.customer?.name || data.toParty || data.consignor?.name || '-';
+        const toCity = data.consignee?.city || data.deliveryLocation?.city || data.toStation || '';
 
         doc.font('Helvetica-Bold').fontSize(10.5).fillColor(this.darkText);
         doc.text('To,', margin + 10, y);
@@ -202,13 +202,13 @@ class BtsDocsService {
         const labelColWidth = 180;
         const valueColWidth = printableWidth - 20 - labelColWidth;
 
-        const vehicleNo = data.vehicle?.registrationNumber || data.vehicleNumber || 'GJ-06-AX-8912';
-        const station = data.toStation || data.destination || data.deliveryLocation?.name || 'Surat / Vapi Hub';
-        const weight = data.weight || (data.weightMt ? `${data.weightMt} MT` : '15.50 MT (15,500 KGS)');
-        const freightRate = data.rate || data.freightAmount || 32500;
-        const advanceAmount = data.advanceAmount !== undefined ? data.advanceAmount : 15000;
-        const balanceAmount = data.balanceAmount !== undefined ? data.balanceAmount : (Number(freightRate) - Number(advanceAmount));
-        const paymentMode = data.paymentTerm || data.paymentMode || 'To Pay / To be billed';
+        const vehicleNo = data.vehicle?.registrationNumber || data.vehicleNumber || '-';
+        const station = data.toStation || data.destination || data.deliveryLocation?.name || '-';
+        const weight = data.weight || (data.weightMt ? `${data.weightMt} MT` : '-');
+        const freightRate = Number(data.rate || data.freightAmount || 0);
+        const advanceAmount = Number(data.advanceAmount !== undefined ? data.advanceAmount : (data.advancePaid || 0));
+        const balanceAmount = Number(data.balanceAmount !== undefined ? data.balanceAmount : Math.max(0, freightRate - advanceAmount));
+        const paymentMode = data.paymentTerm || data.paymentMode || 'To Pay';
 
         const fields = [
           { label: 'We have sent Truck / Tempo No.', value: vehicleNo, bold: true },
@@ -455,14 +455,14 @@ class BtsDocsService {
         const colW = printableWidth / 2;
         const rowH = 18;
 
-        const fromStation = data.fromStation || data.originLocation?.name || 'Vadodara Hub';
-        const toStation = data.toStation || data.destinationLocation?.name || 'Vapi / Mumbai Terminal';
-        const truckNo = data.vehicle?.registrationNumber || data.vehicleNumber || 'GJ-06-AX-8912';
-        const driverName = data.driver?.name || data.driverName || 'Ramesh Patel';
-        const ownerName = data.ownerName || data.vehicle?.ownerName || 'Barkat Tempo Service';
-        const phoneNo = data.driver?.phone || data.phoneNo || '98765 43210';
-        const ownerAddress = data.ownerAddress || 'Golden Chokdi, Vadodara';
-        const transporterName = data.transporterName || 'BTS Logistics Division';
+        const fromStation = data.fromStation || data.originLocation?.name || '-';
+        const toStation = data.toStation || data.destinationLocation?.name || '-';
+        const truckNo = data.vehicle?.registrationNumber || data.vehicleNumber || '-';
+        const driverName = data.driver?.name || data.driverName || '-';
+        const ownerName = data.ownerName || data.vehicle?.ownerName || company.tradeName || 'Barkat Tempo Service';
+        const phoneNo = data.driver?.phone || data.phoneNo || '-';
+        const ownerAddress = data.ownerAddress || (company.address ? `${company.address.street}, ${company.address.city}` : 'Golden Chokdi, Vadodara');
+        const transporterName = data.transporterName || company.tradeName || 'Barkat Tempo Service';
 
         const tripDetails = [
           [
@@ -551,38 +551,39 @@ class BtsDocsService {
           hx += col.width;
         });
 
-        // Consignment Rows (extract from data or mock realistic items)
-        const items = data.items || [
-          { name: 'Reliance Industries Hazira (LR-001)', freight: 28000, advance: 15000, balance: 13000, topay: 0 },
-          { name: 'Gujarat Glass Works Ltd (LR-002)', freight: 18500, advance: 8000, balance: 10500, topay: 0 },
-          { name: 'L&T Heavy Engineering Baroda', freight: 22000, advance: 10000, balance: 12000, topay: 0 },
-          { name: 'General Consignment Parcel', freight: 6500, advance: 0, balance: 0, topay: 6500 }
-        ];
+        // Consignment Rows (extract from data or empty)
+        const items = data.items || (data.freightAmount ? [{ name: data.goodsDescription || 'Consignment Freight', freight: data.freightAmount, advance: data.advanceAmount || 0, balance: data.balanceAmount || 0, topay: 0 }] : []);
 
         let rY = freightTableY + ftHeaderH;
-        items.slice(0, 5).forEach((item, idx) => {
-          if (idx % 2 === 1) {
-            doc.rect(margin + 4, rY, printableWidth - 8, ftRowH).fill('#f8fafc');
-          }
-
-          let cx = margin + 4;
-          ftCols.forEach((col) => {
-            let val = '';
-            if (col.key === 'name') val = item.name;
-            else if (item[col.key] !== undefined) val = `₹ ${this._formatInr(item[col.key])}`;
-
-            doc.font('Helvetica')
-              .fontSize(7.5)
-              .fillColor(this.darkText)
-              .text(val, cx + 4, rY + 4, {
-                width: col.width - 8,
-                align: col.align || 'left'
-              });
-            cx += col.width;
-          });
-
+        if (items.length === 0) {
+          doc.rect(margin + 4, rY, printableWidth - 8, ftRowH).fill('#ffffff');
+          doc.font('Helvetica-Oblique').fontSize(8).fillColor('#64748b').text('No freight line items recorded for this trip memo', margin + 14, rY + 5);
           rY += ftRowH;
-        });
+        } else {
+          items.slice(0, 5).forEach((item, idx) => {
+            if (idx % 2 === 1) {
+              doc.rect(margin + 4, rY, printableWidth - 8, ftRowH).fill('#f8fafc');
+            }
+
+            let cx = margin + 4;
+            ftCols.forEach((col) => {
+              let val = '';
+              if (col.key === 'name') val = item.name;
+              else if (item[col.key] !== undefined) val = `₹ ${this._formatInr(item[col.key])}`;
+
+              doc.font('Helvetica')
+                .fontSize(7.5)
+                .fillColor(this.darkText)
+                .text(val, cx + 4, rY + 4, {
+                  width: col.width - 8,
+                  align: col.align || 'left'
+                });
+              cx += col.width;
+            });
+
+            rY += ftRowH;
+          });
+        }
 
         // Freight Table Outline
         doc.rect(margin + 4, freightTableY, printableWidth - 8, rY - freightTableY)
@@ -597,10 +598,10 @@ class BtsDocsService {
         const halfWidth = (printableWidth - 14) / 2;
 
         // Left Table: Driver Financial Summary
-        const leftAdvance = data.driverAdvance || 33000;
-        const leftBalance = data.driverBalance || 35500;
-        const leftLocal = data.localFreight || 2500;
-        const leftHamali = data.hamali || 1800;
+        const leftAdvance = Number(data.driverAdvance || data.advanceAmount || 0);
+        const leftBalance = Number(data.driverBalance || data.balanceAmount || 0);
+        const leftLocal = Number(data.localFreight || 0);
+        const leftHamali = Number(data.hamali || 0);
         const leftTotal = leftAdvance + leftBalance + leftLocal + leftHamali;
 
         const leftRows = [
@@ -612,15 +613,15 @@ class BtsDocsService {
         ];
 
         // Right Table: Office Charges & Deductions Breakdown
-        const comm = data.commission || 1500;
-        const tapal = data.tapal || 150;
-        const guide = data.guide || 200;
-        const crane = data.craneGodown || 800;
-        const incHamali = data.incomingHamali || 600;
-        const localRight = data.localDeduction || 500;
-        const handLoan = data.handLoan || 2000;
-        const memoHandLoan = data.memoHandLoan || 1000;
-        const diesel = data.diesel || 14000;
+        const comm = Number(data.commission || 0);
+        const tapal = Number(data.tapal || 0);
+        const guide = Number(data.guide || 0);
+        const crane = Number(data.craneGodown || 0);
+        const incHamali = Number(data.incomingHamali || 0);
+        const localRight = Number(data.localDeduction || 0);
+        const handLoan = Number(data.handLoan || 0);
+        const memoHandLoan = Number(data.memoHandLoan || 0);
+        const diesel = Number(data.diesel || 0);
         const rightTotal = comm + tapal + guide + crane + incHamali + localRight + handLoan + memoHandLoan + diesel;
 
         const rightRows = [

@@ -63,68 +63,11 @@ router.use((req, res, next) => {
 
 // In-Memory state for WhatsApp Messages and Compliance Notifications
 if (!mockStore.whatsappMessages) {
-  mockStore.whatsappMessages = [
-    {
-      _id: 'wa_msg_101',
-      recipientPhone: '+91 98200 11990',
-      recipientName: 'Gaurav Mehta (Asian Paints)',
-      templateName: 'DELIVERY_COMPLETED',
-      messageType: 'TEMPLATE',
-      renderedMessage: '✅ Consignment Delivered Successfully. Load LD-2026-0001 has arrived at Mumbai JNPT. Proof of Delivery verified.',
-      documentFileName: 'BTS-Loading-Receipt-LD-2026-0001.pdf',
-      provider: 'META_WHATSAPP_CLOUD',
-      providerMessageId: 'wamid.HBgMOTE5ODIwMDExOTkwFQIAERgSRjQ2OTg0M0IxMjM0NTY3OAA=',
-      status: 'DELIVERED',
-      retryCount: 0,
-      maxRetries: 3,
-      deliveredAt: new Date(Date.now() - 3600000).toISOString(),
-      createdAt: new Date(Date.now() - 3600000).toISOString(),
-      relatedEntity: { entityType: 'LOAD', referenceNumber: 'LD-2026-0001' }
-    },
-    {
-      _id: 'wa_msg_102',
-      recipientPhone: '+91 98250 77662',
-      recipientName: 'Ketan Trivedi (Adani Wilmar)',
-      templateName: 'LOAD_DISPATCHED',
-      messageType: 'TEMPLATE',
-      renderedMessage: '🚚 Barkat Tempo Service: Consignment LD-2026-0002 dispatched via MH12CD5678. Driver: Vikram Singh.',
-      provider: 'META_WHATSAPP_CLOUD',
-      providerMessageId: 'wamid.HBgMOTE5ODIwMDExOTkwFQIAERgSRjQ2OTg0M0IxMjM0NTY3OUI=',
-      status: 'DELIVERED',
-      retryCount: 0,
-      maxRetries: 3,
-      deliveredAt: new Date(Date.now() - 7200000).toISOString(),
-      createdAt: new Date(Date.now() - 7200000).toISOString(),
-      relatedEntity: { entityType: 'TRIP', referenceNumber: 'TRP-2026-002' }
-    }
-  ];
+  mockStore.whatsappMessages = [];
 }
 
 if (!mockStore.complianceNotifications) {
-  mockStore.complianceNotifications = [
-    {
-      _id: 'notif_1',
-      title: 'Vehicle Insurance Expiring Soon',
-      message: 'Comprehensive Commercial Insurance for MH12CD5678 expires in 17 days (2026-11-15). Renew promptly to avoid transit penalties.',
-      severity: 'WARNING',
-      entityType: 'VEHICLE',
-      referenceNumber: 'MH12CD5678',
-      daysLeft: 17,
-      isRead: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      _id: 'notif_2',
-      title: 'Fitness Certificate Verification Valid',
-      message: 'Fitness certification for GJ01AB1234 is verified and valid for 62 days.',
-      severity: 'INFO',
-      entityType: 'VEHICLE',
-      referenceNumber: 'GJ01AB1234',
-      daysLeft: 62,
-      isRead: true,
-      createdAt: new Date(Date.now() - 86400000).toISOString()
-    }
-  ];
+  mockStore.complianceNotifications = [];
 }
 
 if (!mockStore.bulkJobs) {
@@ -225,37 +168,93 @@ router.get('/dashboard/trends', (req, res) => {
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+
+    const dayLoads = mockStore.loads.filter((l) => {
+      const lDate = l.createdAt ? new Date(l.createdAt).toISOString().split('T')[0] : '';
+      return lDate === dateStr;
+    });
+
+    const dayTrips = mockStore.trips.filter((t) => {
+      const tDate = (t.startedAt || t.createdAt) ? new Date(t.startedAt || t.createdAt).toISOString().split('T')[0] : '';
+      return tDate === dateStr;
+    });
+
+    const loadCount = dayLoads.length;
+    const freight = dayLoads.reduce((sum, l) => sum + (l.freightAmount || 0), 0);
+    const weightMt = dayLoads.reduce((sum, l) => sum + (l.weightMt || l.totalWeightMt || 0), 0);
+    const tripCount = dayTrips.length;
+    const expenses = dayTrips.reduce((sum, t) => sum + (t.totalExpenses || 0), 0);
+
     trends.push({
-      date: d.toISOString().split('T')[0],
-      loadCount: Math.floor(4 + (i % 3)),
-      freight: Math.floor(120000 + (i * 15000)),
-      weightMt: Math.floor(90 + (i * 12)),
-      tripCount: Math.floor(3 + (i % 2)),
-      expenses: Math.floor(25000 + (i * 3000))
+      date: dateStr,
+      loadCount,
+      freight,
+      weightMt,
+      tripCount,
+      expenses
     });
   }
   return ok(res, trends, 'Trend series loaded');
 });
 
 router.get('/dashboard/alerts', (req, res) => {
-  const alerts = [
-    {
-      id: 'alt_1',
-      severity: 'WARNING',
-      type: 'COMPLIANCE',
-      title: 'Vehicle Insurance Expiring Soon',
-      message: 'Insurance for MH12CD5678 expires in 17 days. Renew to avoid transit penalties.',
-      link: '/app/compliance'
-    },
-    {
-      id: 'alt_2',
-      severity: 'INFO',
-      type: 'TRIP',
-      title: 'Active High-Value Consignment',
-      message: 'Trip TRP-2026-003 carrying Hot Rolled Steel Coils is currently passing Jaipur corridor.',
-      link: '/app/trips'
+  const alerts = [];
+  const now = Date.now();
+
+  mockStore.vehicles.forEach((v) => {
+    (v.documents || []).forEach((doc) => {
+      if (!doc.expiryDate) return;
+      const exp = new Date(doc.expiryDate).getTime();
+      const daysLeft = Math.ceil((exp - now) / (1000 * 60 * 60 * 24));
+      if (daysLeft <= 0) {
+        alerts.push({
+          id: `alt_v_exp_${doc._id || doc.documentNumber || Math.random()}`,
+          severity: 'CRITICAL',
+          type: 'COMPLIANCE',
+          title: `Vehicle ${doc.documentType || 'Document'} Expired`,
+          message: `${doc.documentType || 'Document'} for vehicle ${v.plateNumber} expired ${Math.abs(daysLeft)} days ago.`,
+          link: '/app/compliance'
+        });
+      } else if (daysLeft <= 30) {
+        alerts.push({
+          id: `alt_v_warn_${doc._id || doc.documentNumber || Math.random()}`,
+          severity: 'WARNING',
+          type: 'COMPLIANCE',
+          title: `Vehicle ${doc.documentType || 'Document'} Expiring Soon`,
+          message: `${doc.documentType || 'Document'} for vehicle ${v.plateNumber} expires in ${daysLeft} days.`,
+          link: '/app/compliance'
+        });
+      }
+    });
+  });
+
+  mockStore.drivers.forEach((d) => {
+    if (d.licenseExpiry) {
+      const exp = new Date(d.licenseExpiry).getTime();
+      const daysLeft = Math.ceil((exp - now) / (1000 * 60 * 60 * 24));
+      if (daysLeft <= 0) {
+        alerts.push({
+          id: `alt_d_exp_${d._id}`,
+          severity: 'CRITICAL',
+          type: 'COMPLIANCE',
+          title: 'Driver License Expired',
+          message: `Driving license for ${d.name} expired ${Math.abs(daysLeft)} days ago.`,
+          link: '/app/drivers'
+        });
+      } else if (daysLeft <= 30) {
+        alerts.push({
+          id: `alt_d_warn_${d._id}`,
+          severity: 'WARNING',
+          type: 'COMPLIANCE',
+          title: 'Driver License Expiring Soon',
+          message: `Driving license for ${d.name} expires in ${daysLeft} days.`,
+          link: '/app/drivers'
+        });
+      }
     }
-  ];
+  });
+
   return ok(res, alerts, 'Active operational alerts');
 });
 
@@ -538,9 +537,9 @@ router.post('/loads', (req, res) => {
   const b = req.body || {};
   const loadNum = 'LD-2026-' + String(mockStore.loads.length + 1).padStart(4, '0');
   
-  const customer = mockStore.customers.find((c) => c._id === b.customerId) || mockStore.customers[0];
+  const customer = mockStore.customers.find((c) => c._id === b.customerId);
   const consignor = mockStore.customers.find((c) => c._id === (b.consignorId || b.customerId)) || customer;
-  const consignee = mockStore.customers.find((c) => c._id === (b.consigneeId || b.customerId)) || mockStore.customers[4] || customer;
+  const consignee = mockStore.customers.find((c) => c._id === (b.consigneeId || b.customerId)) || customer;
   
   const f = b.financials || {};
   const basePaise = f.baseFreightPaise || Math.round((parseFloat(b.freightAmount) || 45000) * 100);
@@ -561,7 +560,7 @@ router.post('/loads', (req, res) => {
 
   const stops = Array.isArray(b.stops) && b.stops.length > 0
     ? b.stops.map((s, idx) => {
-        const loc = mockStore.locations.find((l) => l._id === s.locationId) || { name: s.locationName || 'Hub', city: 'Vadodara', address: 'NH-48' };
+        const loc = mockStore.locations.find((l) => l._id === s.locationId) || { name: s.locationName || (idx === 0 ? (b.originCity || 'Origin') : (b.destinationCity || 'Destination')), city: idx === 0 ? (b.originCity || 'Vadodara') : (b.destinationCity || 'Surat'), address: 'Transit Hub' };
         return {
           _id: 'stp_' + Date.now() + '_' + idx,
           sequence: s.sequence || (idx + 1),
@@ -578,8 +577,8 @@ router.post('/loads', (req, res) => {
           _id: 'stp_' + Date.now() + '_1',
           sequence: 1,
           stopType: 'PICKUP',
-          locationId: mockStore.locations[0],
-          locationName: mockStore.locations[0]?.name || 'Vadodara Hub',
+          locationId: mockStore.locations[0] || null,
+          locationName: mockStore.locations[0]?.name || b.originCity || 'Vadodara Hub',
           allocatedQuantity: qty,
           allocatedWeightMt: weight,
           status: 'PENDING'
@@ -588,40 +587,37 @@ router.post('/loads', (req, res) => {
           _id: 'stp_' + Date.now() + '_2',
           sequence: 2,
           stopType: 'DELIVERY',
-          locationId: mockStore.locations[2] || mockStore.locations[0],
-          locationName: mockStore.locations[2]?.name || 'Mumbai Terminal',
+          locationId: mockStore.locations[1] || mockStore.locations[0] || null,
+          locationName: mockStore.locations[1]?.name || b.destinationCity || 'Surat / Mumbai Hub',
           allocatedQuantity: qty,
           allocatedWeightMt: weight,
           status: 'PENDING'
         }
       ];
 
+  const customerObj = customer
+    ? { _id: customer._id, name: customer.legalName, legalName: customer.legalName, phone: customer.phone }
+    : { _id: 'cust_direct', name: b.customerName || b.consignorName || 'Consignor Shipper', legalName: b.customerName || b.consignorName || 'Consignor Shipper', phone: b.customerPhone || '' };
+
+  const consignorObj = consignor
+    ? { _id: consignor._id, name: consignor.legalName, legalName: consignor.legalName, phone: consignor.phone }
+    : { _id: 'consignor_direct', name: b.consignorName || b.customerName || 'Consignor Shipper', legalName: b.consignorName || b.customerName || 'Consignor Shipper', phone: b.consignorPhone || '' };
+
+  const consigneeObj = consignee
+    ? { _id: consignee._id, name: consignee.legalName, legalName: consignee.legalName, phone: consignee.phone }
+    : { _id: 'consignee_direct', name: b.consigneeName || 'Consignee Receiver', legalName: b.consigneeName || 'Consignee Receiver', phone: b.consigneePhone || '' };
+
   const newLoad = {
     _id: 'ld_' + crypto.randomBytes(6).toString('hex'),
     companyId: mockStore.tenant._id,
     loadNumber: loadNum,
     orderDate: new Date().toISOString(),
-    customerId: {
-      _id: customer._id,
-      name: customer.legalName,
-      legalName: customer.legalName,
-      phone: customer.phone
-    },
-    customer,
-    consignorId: {
-      _id: consignor._id,
-      name: consignor.legalName,
-      legalName: consignor.legalName,
-      phone: consignor.phone
-    },
-    consigneeId: {
-      _id: consignee._id,
-      name: consignee.legalName,
-      legalName: consignee.legalName,
-      phone: consignee.phone
-    },
-    consignorName: consignor.legalName,
-    consigneeName: consignee.legalName,
+    customerId: customerObj,
+    customer: customer || null,
+    consignorId: consignorObj,
+    consigneeId: consigneeObj,
+    consignorName: consignorObj.legalName,
+    consigneeName: consigneeObj.legalName,
     originCity: b.originCity || stops[0]?.locationName || 'Vadodara, GJ',
     origin: b.originCity || stops[0]?.locationName || 'Vadodara, GJ',
     destinationCity: b.destinationCity || stops[stops.length - 1]?.locationName || 'Mumbai, MH',
@@ -655,7 +651,6 @@ router.post('/loads', (req, res) => {
     sacCode: '9965',
     createdAt: new Date()
   };
-
   mockStore.loads.unshift(newLoad);
   return ok(res, newLoad, 'Load order created successfully', 201);
 });
@@ -793,17 +788,17 @@ router.post('/bilties', (req, res) => {
     loadNumber: b.loadNumber || 'LD-2026-0001',
     loadId: { _id: 'ld_demo', loadNumber: b.loadNumber || 'LD-2026-0001' },
     lrId: { _id: 'lr_demo', lrNumber: lrNum },
-    vehiclePlate: b.vehiclePlate || 'GJ01AB1234',
-    vehicleId: { plateNumber: b.vehiclePlate || 'GJ01AB1234', vehicleType: 'Heavy Commercial Vehicle (HCV)' },
-    driverName: b.driverName || 'Ramesh Patel',
-    driverId: { name: b.driverName || 'Ramesh Patel', phone: '93776 10333' },
-    consignor: b.consignor || 'Reliance Industries Limited',
-    consignorId: { name: b.consignor || 'Reliance Industries Limited', phone: '93776 10333' },
-    consignee: b.consignee || 'Asian Paints Limited',
-    consigneeId: { name: b.consignee || 'Asian Paints Limited', phone: '93776 10333' },
-    origin: b.origin || 'Ahmedabad Central Hub',
-    destination: b.destination || 'Mumbai Nhava Sheva',
-    goodsDescription: b.goodsDescription || 'Industrial Consignment',
+    vehiclePlate: b.vehiclePlate || '',
+    vehicleId: { plateNumber: b.vehiclePlate || '', vehicleType: 'Vehicle' },
+    driverName: b.driverName || '',
+    driverId: { name: b.driverName || '', phone: '' },
+    consignor: b.consignor || '',
+    consignorId: { name: b.consignor || '', phone: '' },
+    consignee: b.consignee || '',
+    consigneeId: { name: b.consignee || '', phone: '' },
+    origin: b.origin || '',
+    destination: b.destination || '',
+    goodsDescription: b.goodsDescription || 'General Goods',
     weightMt: parseFloat(b.weightMt || '28.0'),
     freightAmount: freight,
     advanceAmount: advance,
@@ -852,17 +847,17 @@ router.post('/lr', (req, res) => {
     loadNumber: b.loadNumber || 'LD-2026-0001',
     loadId: { _id: 'ld_demo', loadNumber: b.loadNumber || 'LD-2026-0001' },
     lrId: { _id: 'lr_demo', lrNumber: lrNum },
-    vehiclePlate: b.vehiclePlate || 'GJ01AB1234',
-    vehicleId: { plateNumber: b.vehiclePlate || 'GJ01AB1234', vehicleType: 'Heavy Commercial Vehicle (HCV)' },
-    driverName: b.driverName || 'Ramesh Patel',
-    driverId: { name: b.driverName || 'Ramesh Patel', phone: '93776 10333' },
-    consignor: b.consignor || 'Reliance Industries Limited',
-    consignorId: { name: b.consignor || 'Reliance Industries Limited', phone: '93776 10333' },
-    consignee: b.consignee || 'Asian Paints Limited',
-    consigneeId: { name: b.consignee || 'Asian Paints Limited', phone: '93776 10333' },
-    origin: b.origin || 'Vadodara Central Hub',
-    destination: b.destination || 'Mumbai Nhava Sheva',
-    goodsDescription: b.goodsDescription || 'Commercial Consignment',
+    vehiclePlate: b.vehiclePlate || '',
+    vehicleId: { plateNumber: b.vehiclePlate || '', vehicleType: 'Vehicle' },
+    driverName: b.driverName || '',
+    driverId: { name: b.driverName || '', phone: '' },
+    consignor: b.consignor || '',
+    consignorId: { name: b.consignor || '', phone: '' },
+    consignee: b.consignee || '',
+    consigneeId: { name: b.consignee || '', phone: '' },
+    origin: b.origin || '',
+    destination: b.destination || '',
+    goodsDescription: b.goodsDescription || 'Commercial Goods',
     weightMt: parseFloat(b.weightMt || '28.0'),
     freightAmount: freight,
     advanceAmount: advance,
@@ -973,9 +968,9 @@ router.get('/trips/:id', (req, res) => {
 
 router.post('/trips', (req, res) => {
   const b = req.body || {};
-  const load = mockStore.loads.find((l) => l._id === b.loadId) || mockStore.loads[0];
-  const vehicle = mockStore.vehicles.find((v) => v._id === b.vehicleId) || mockStore.vehicles[0];
-  const driver = mockStore.drivers.find((d) => d._id === b.driverId) || mockStore.drivers[0];
+  const load = mockStore.loads.find((l) => l._id === b.loadId || l.loadNumber === b.loadNumber);
+  const vehicle = mockStore.vehicles.find((v) => v._id === b.vehicleId || v.plateNumber === b.vehiclePlate);
+  const driver = mockStore.drivers.find((d) => d._id === b.driverId || d.name === b.driverName);
 
   const tripNumber = 'TRP-2026-' + String(mockStore.trips.length + 1).padStart(3, '0');
 
@@ -995,64 +990,59 @@ router.post('/trips', (req, res) => {
           _id: 'trp_stp_' + Date.now() + '_1',
           sequence: 1,
           stopType: 'PICKUP',
-          locationName: 'Vadodara Central Logistics Hub',
+          locationName: load?.originCity || 'Vadodara Central Logistics Hub',
           status: 'COMPLETED',
-          allocatedQuantity: 50,
-          deliveredQuantity: 50,
-          allocatedWeightMt: 25.0
+          allocatedQuantity: load?.totalQuantity || 50,
+          deliveredQuantity: load?.totalQuantity || 50,
+          allocatedWeightMt: load?.totalWeightMt || 25.0
         },
         {
           _id: 'trp_stp_' + Date.now() + '_2',
           sequence: 2,
           stopType: 'DELIVERY',
-          locationName: 'Destination Hub',
+          locationName: load?.destinationCity || 'Destination Hub',
           status: 'PENDING',
-          allocatedQuantity: 50,
+          allocatedQuantity: load?.totalQuantity || 50,
           deliveredQuantity: 0,
-          allocatedWeightMt: 25.0
+          allocatedWeightMt: load?.totalWeightMt || 25.0
         }
       ];
+
+  const loadIdObj = load ? { _id: load._id, loadNumber: load.loadNumber } : (b.loadId ? { _id: b.loadId, loadNumber: b.loadNumber || 'LD-DIRECT' } : null);
+  const vehicleIdObj = vehicle
+    ? { _id: vehicle._id, plateNumber: vehicle.plateNumber, vehicleType: vehicle.vehicleType, capacityTonnage: vehicle.capacityTonnage }
+    : (b.vehiclePlate ? { _id: b.vehicleId || 'veh_direct', plateNumber: b.vehiclePlate, vehicleType: 'HCV' } : null);
+  const driverIdObj = driver
+    ? { _id: driver._id, name: driver.name, phone: driver.phone, licenseNumber: driver.licenseNumber }
+    : (b.driverName ? { _id: b.driverId || 'drv_direct', name: b.driverName, phone: b.driverPhone || '' } : null);
 
   const newTrip = {
     _id: 'trp_' + crypto.randomBytes(6).toString('hex'),
     companyId: mockStore.tenant._id,
     tripNumber,
-    loadId: {
-      _id: load._id,
-      loadNumber: load.loadNumber
-    },
-    loadNumber: load.loadNumber,
-    vehicleId: {
-      _id: vehicle._id,
-      plateNumber: vehicle.plateNumber,
-      vehicleType: vehicle.vehicleType,
-      capacityTonnage: vehicle.capacityTonnage
-    },
-    vehiclePlate: vehicle.plateNumber,
-    driverId: {
-      _id: driver._id,
-      name: driver.name,
-      phone: driver.phone,
-      licenseNumber: driver.licenseNumber
-    },
-    driverName: driver.name,
-    driverPhone: driver.phone,
-    origin: load.originCity || 'Vadodara, Gujarat',
-    destination: load.destinationCity || 'Mumbai, Maharashtra',
+    loadId: loadIdObj,
+    loadNumber: load?.loadNumber || b.loadNumber || '',
+    vehicleId: vehicleIdObj,
+    vehiclePlate: vehicle?.plateNumber || b.vehiclePlate || '',
+    driverId: driverIdObj,
+    driverName: driver?.name || b.driverName || '',
+    driverPhone: driver?.phone || b.driverPhone || '',
+    origin: load?.originCity || b.origin || 'Vadodara, Gujarat',
+    destination: load?.destinationCity || b.destination || 'Surat, Gujarat',
     status: 'IN_TRANSIT',
     odometerStart: parseInt(b.odometerStart || '140000', 10),
-    totalDistanceKm: 480,
-    currentLocation: 'NH-48 Golden Chokdi Outbound, Speed: 54 km/h',
-    driverAdvancePaise: b.driverAdvancePaise || 1500000,
+    totalDistanceKm: b.totalDistanceKm || 320,
+    currentLocation: 'In Transit',
+    driverAdvancePaise: b.driverAdvancePaise || Math.round((parseFloat(b.driverAdvance || 0) * 100)),
     stops,
     expenses: [],
     totalExpenses: 0,
     startedAt: new Date()
   };
 
-  vehicle.status = 'ON_TRIP';
-  driver.status = 'ON_TRIP';
-  load.status = 'IN_TRANSIT';
+  if (vehicle) vehicle.status = 'ON_TRIP';
+  if (driver) driver.status = 'ON_TRIP';
+  if (load) load.status = 'IN_TRANSIT';
 
   mockStore.trips.unshift(newTrip);
   return ok(res, newTrip, 'Trip dispatched successfully', 201);
@@ -1232,16 +1222,16 @@ router.get('/pod', (req, res) => {
 
 router.post('/pod', upload.single('file'), (req, res) => {
   const b = req.body || {};
-  const trip = mockStore.trips.find((t) => t._id === b.tripId) || mockStore.trips[0];
+  const trip = mockStore.trips.find((t) => t._id === b.tripId);
   const originalFileName = req.file ? req.file.originalname : (b.fileName || 'pod_signed_receipt.pdf');
   const newPod = {
     _id: 'pod_' + crypto.randomBytes(6).toString('hex'),
     companyId: mockStore.tenant._id,
     podNumber: 'POD-2026-' + String(mockStore.pods.length + 1).padStart(4, '0'),
-    loadId: trip?.loadId || { _id: 'ld_demo', loadNumber: 'LD-2026-0001' },
-    loadNumber: trip?.loadNumber || 'LD-2026-0001',
-    tripId: trip ? { _id: trip._id, tripNumber: trip.tripNumber } : { _id: 'trp_demo', tripNumber: 'TRP-2026-001' },
-    tripNumber: trip?.tripNumber || 'TRP-2026-001',
+    loadId: trip?.loadId || null,
+    loadNumber: trip?.loadNumber || b.loadNumber || '',
+    tripId: trip ? { _id: trip._id, tripNumber: trip.tripNumber } : null,
+    tripNumber: trip?.tripNumber || b.tripNumber || '',
     status: 'PENDING_VERIFICATION',
     quantityDelivered: parseInt(b.quantityDelivered || '1', 10),
     receivedBy: b.receiverName || b.receivedBy || 'Consignee Gate In Charge',
@@ -1269,16 +1259,18 @@ router.post(['/pod/:id/verify', '/pod/:id/verify-direct'], (req, res) => {
 router.get('/pod/:id/download', async (req, res) => {
   try {
     const pod = mockStore.pods.find((p) => p._id === req.params.id) || {};
+    const trip = pod.tripId ? mockStore.trips.find((t) => t._id === (pod.tripId._id || pod.tripId)) : null;
+    const load = pod.loadId ? mockStore.loads.find((l) => l._id === (pod.loadId._id || pod.loadId)) : null;
     const pdfBuffer = await btsDocsService.generateLoadingReceiptPdf({
-      lrNumber: pod.podNumber || 'POD-2026',
+      lrNumber: pod.podNumber || pod.loadNumber || 'POD-DOCUMENT',
       date: pod.createdAt || new Date(),
-      vehicleNumber: 'GJ-01-AB-1234',
-      toStation: 'Mumbai Nhava Sheva',
-      weight: '32.5 MT',
-      freightAmount: 68500,
-      advanceAmount: 35000,
-      balanceAmount: 33500,
-      consignee: { name: pod.receivedBy || 'Consignee Manager', city: 'Mumbai' }
+      vehicleNumber: trip?.vehiclePlate || load?.vehiclePlate || '-',
+      toStation: trip?.destination || load?.destinationCity || '-',
+      weight: load?.totalWeightMt ? `${load.totalWeightMt} MT` : '-',
+      freightAmount: load?.freightAmount || 0,
+      advanceAmount: load?.advancePaid || 0,
+      balanceAmount: load?.balanceDue || 0,
+      consignee: { name: pod.receivedBy || load?.consigneeName || 'Consignee Receiver', city: trip?.destination || load?.destinationCity || '' }
     });
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="BTS-POD-${req.params.id}.pdf"`);
@@ -1338,9 +1330,41 @@ router.get('/documents/:id/download', async (req, res) => {
 // 11. COMPLIANCE & EXPIRES
 // ==========================================
 router.get('/compliance/overview', (req, res) => {
+  let docTotal = 0;
+  let docValid = 0;
+  let docExpiring = 0;
+  let docExpired = 0;
+  const now = Date.now();
+
+  mockStore.vehicles.forEach((v) => {
+    (v.documents || []).forEach((doc) => {
+      docTotal++;
+      const daysLeft = doc.expiryDate ? Math.ceil((new Date(doc.expiryDate).getTime() - now) / (1000 * 60 * 60 * 24)) : 999;
+      if (daysLeft <= 0) docExpired++;
+      else if (daysLeft <= 30) docExpiring++;
+      else docValid++;
+    });
+  });
+
+  let driverTotal = mockStore.drivers.length;
+  let driverValid = 0;
+  let driverExpiring = 0;
+  let driverExpired = 0;
+
+  mockStore.drivers.forEach((d) => {
+    if (d.licenseExpiry) {
+      const daysLeft = Math.ceil((new Date(d.licenseExpiry).getTime() - now) / (1000 * 60 * 60 * 24));
+      if (daysLeft <= 0) driverExpired++;
+      else if (daysLeft <= 30) driverExpiring++;
+      else driverValid++;
+    } else {
+      driverValid++;
+    }
+  });
+
   return ok(res, {
-    documents: { total: 12, valid: 11, expiringSoon: 1, expired: 0 },
-    drivers: { total: 5, valid: 5, expiringSoon: 0, expired: 0 }
+    documents: { total: docTotal, valid: docValid, expiringSoon: docExpiring, expired: docExpired },
+    drivers: { total: driverTotal, valid: driverValid, expiringSoon: driverExpiring, expired: driverExpired }
   });
 });
 
@@ -1352,10 +1376,14 @@ router.get('/compliance/notifications', (req, res) => {
 });
 
 router.post('/compliance/scan', (req, res) => {
+  let docCount = 0;
+  mockStore.vehicles.forEach((v) => {
+    docCount += (v.documents || []).length;
+  });
   return ok(res, {
-    scannedVehicleDocuments: 12,
-    scannedDrivers: 5,
-    notificationsCreated: 1
+    scannedVehicleDocuments: docCount,
+    scannedDrivers: mockStore.drivers.length,
+    notificationsCreated: mockStore.complianceNotifications.length
   }, 'Regulatory audit scan complete');
 });
 
@@ -1371,12 +1399,55 @@ router.post('/compliance/notifications/read-all', (req, res) => {
 });
 
 router.get('/compliance', (req, res) => {
+  const documents = [];
+  const now = Date.now();
+  let expired = 0;
+  let expiring15Days = 0;
+  let expiring30Days = 0;
+
+  mockStore.vehicles.forEach((v) => {
+    (v.documents || []).forEach((doc) => {
+      const daysLeft = doc.expiryDate ? Math.ceil((new Date(doc.expiryDate).getTime() - now) / (1000 * 60 * 60 * 24)) : 999;
+      let status = 'VALID';
+      if (daysLeft <= 0) { status = 'EXPIRED'; expired++; }
+      else if (daysLeft <= 15) { status = 'EXPIRING_SOON'; expiring15Days++; }
+      else if (daysLeft <= 30) { status = 'EXPIRING_SOON'; expiring30Days++; }
+
+      documents.push({
+        _id: doc._id || ('doc_' + Math.random().toString(36).slice(2, 8)),
+        type: 'VEHICLE',
+        entityName: v.plateNumber,
+        docType: doc.documentType || 'RC',
+        expiryDate: doc.expiryDate,
+        daysLeft,
+        status
+      });
+    });
+  });
+
+  mockStore.drivers.forEach((d) => {
+    if (d.licenseExpiry) {
+      const daysLeft = Math.ceil((new Date(d.licenseExpiry).getTime() - now) / (1000 * 60 * 60 * 24));
+      let status = 'VALID';
+      if (daysLeft <= 0) { status = 'EXPIRED'; expired++; }
+      else if (daysLeft <= 15) { status = 'EXPIRING_SOON'; expiring15Days++; }
+      else if (daysLeft <= 30) { status = 'EXPIRING_SOON'; expiring30Days++; }
+
+      documents.push({
+        _id: 'lic_' + d._id,
+        type: 'DRIVER',
+        entityName: d.name,
+        docType: 'DRIVING_LICENCE',
+        expiryDate: d.licenseExpiry,
+        daysLeft,
+        status
+      });
+    }
+  });
+
   return ok(res, {
-    summary: { expired: 0, expiring15Days: 1, expiring30Days: 2 },
-    documents: [
-      { _id: 'cmp_1', type: 'VEHICLE', entityName: 'MH12CD5678', docType: 'INSURANCE', expiryDate: '2026-11-15', daysLeft: 17, status: 'EXPIRING_SOON' },
-      { _id: 'cmp_2', type: 'VEHICLE', entityName: 'GJ01AB1234', docType: 'FITNESS', expiryDate: '2026-12-30', daysLeft: 62, status: 'VALID' }
-    ]
+    summary: { expired, expiring15Days, expiring30Days },
+    documents
   });
 });
 
@@ -1408,22 +1479,19 @@ router.get('/maintenance', (req, res) => {
 
 router.post('/maintenance', (req, res) => {
   const b = req.body || {};
-  const vehicle = mockStore.vehicles.find((v) => v._id === b.vehicleId) || mockStore.vehicles[0];
-  const costRupees = b.costRupees ? parseFloat(b.costRupees) : (b.costPaise ? b.costPaise / 100 : 10000);
+  const vehicle = mockStore.vehicles.find((v) => v._id === b.vehicleId || v.plateNumber === b.vehiclePlate);
+  const vehicleObj = vehicle
+    ? { _id: vehicle._id, plateNumber: vehicle.plateNumber, vehicleType: vehicle.vehicleType, make: vehicle.make, model: vehicle.model, status: vehicle.status }
+    : { _id: b.vehicleId || 'veh_direct', plateNumber: b.vehiclePlate || 'Vehicle', vehicleType: 'HCV' };
+  const vehiclePlate = vehicle?.plateNumber || b.vehiclePlate || '';
+  const costRupees = b.costRupees ? parseFloat(b.costRupees) : (b.costPaise ? b.costPaise / 100 : 0);
   
   const newMaint = {
     _id: 'maint_' + crypto.randomBytes(6).toString('hex'),
     companyId: mockStore.tenant._id,
     maintenanceNumber: 'MAINT-2026-' + String(mockStore.maintenance.length + 1).padStart(3, '0'),
-    vehicleId: {
-      _id: vehicle._id,
-      plateNumber: vehicle.plateNumber,
-      vehicleType: vehicle.vehicleType,
-      make: vehicle.make,
-      model: vehicle.model,
-      status: vehicle.status
-    },
-    vehiclePlate: vehicle.plateNumber,
+    vehicleId: vehicleObj,
+    vehiclePlate: vehiclePlate,
     serviceType: b.serviceType || 'GENERAL_SERVICE',
     maintenanceType: b.serviceType || 'GENERAL_SERVICE',
     priority: b.priority || 'MEDIUM',
@@ -1461,16 +1529,10 @@ router.patch('/maintenance/:id/status', (req, res) => {
 
 router.get('/maintenance/:id/job-card', async (req, res) => {
   try {
-    const m = mockStore.maintenance.find((item) => item._id === req.params.id) || {
-      _id: req.params.id,
-      maintenanceNumber: 'MAINT-2026-001',
-      vehiclePlate: 'GJ01AB1234',
-      serviceType: 'PREVENTIVE',
-      costPaise: 450000,
-      serviceCenter: { name: 'BTS Workshop Baroda', city: 'Vadodara' },
-      description: 'Periodic inspection and scheduled maintenance',
-      createdAt: new Date()
-    };
+    const m = mockStore.maintenance.find((item) => item._id === req.params.id);
+    if (!m) {
+      return res.status(404).json({ success: false, message: 'Maintenance record not found' });
+    }
     const pdfBuffer = await pdfService.generateMaintenancePdf(m, mockStore.tenant);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `inline; filename="BTS-JobCard-${req.params.id}.pdf"`);
@@ -1834,19 +1896,59 @@ router.get(['/reports/freight', '/reports/financials'], (req, res) => {
 });
 
 router.get('/reports/compliance', (req, res) => {
-  const docs = [
-    { _id: 'cmp_1', type: 'VEHICLE', entityName: 'MH12CD5678', docType: 'INSURANCE', expiryDate: '2026-11-15', daysLeft: 17, status: 'EXPIRING_SOON' },
-    { _id: 'cmp_2', type: 'VEHICLE', entityName: 'GJ01AB1234', docType: 'FITNESS', expiryDate: '2026-12-30', daysLeft: 62, status: 'VALID' },
-    { _id: 'cmp_3', type: 'DRIVER', entityName: 'Ramesh Patel', docType: 'DRIVING_LICENCE', expiryDate: '2035-05-14', daysLeft: 3098, status: 'VALID' }
-  ];
+  const docs = [];
+  const now = Date.now();
+  let validDocs = 0;
+  let expiringDocs = 0;
+  let expiredDocs = 0;
+
+  mockStore.vehicles.forEach((v) => {
+    (v.documents || []).forEach((doc) => {
+      const daysLeft = doc.expiryDate ? Math.ceil((new Date(doc.expiryDate).getTime() - now) / (1000 * 60 * 60 * 24)) : 999;
+      let status = 'VALID';
+      if (daysLeft <= 0) { status = 'EXPIRED'; expiredDocs++; }
+      else if (daysLeft <= 30) { status = 'EXPIRING_SOON'; expiringDocs++; }
+      else { validDocs++; }
+
+      docs.push({
+        _id: doc._id || ('doc_' + Math.random().toString(36).slice(2, 8)),
+        type: 'VEHICLE',
+        entityName: v.plateNumber,
+        docType: doc.documentType || 'RC',
+        expiryDate: doc.expiryDate,
+        daysLeft,
+        status
+      });
+    });
+  });
+
+  mockStore.drivers.forEach((d) => {
+    if (d.licenseExpiry) {
+      const daysLeft = Math.ceil((new Date(d.licenseExpiry).getTime() - now) / (1000 * 60 * 60 * 24));
+      let status = 'VALID';
+      if (daysLeft <= 0) { status = 'EXPIRED'; expiredDocs++; }
+      else if (daysLeft <= 30) { status = 'EXPIRING_SOON'; expiringDocs++; }
+      else { validDocs++; }
+
+      docs.push({
+        _id: 'lic_' + d._id,
+        type: 'DRIVER',
+        entityName: d.name,
+        docType: 'DRIVING_LICENCE',
+        expiryDate: d.licenseExpiry,
+        daysLeft,
+        status
+      });
+    }
+  });
 
   return ok(res, {
     data: docs,
     summary: {
       totalDocs: docs.length,
-      validDocs: 2,
-      expiringDocs: 1,
-      expiredDocs: 0
+      validDocs,
+      expiringDocs,
+      expiredDocs
     }
   });
 });
@@ -1951,96 +2053,60 @@ router.all(['/admin/settings'], (req, res, next) => {
 // 17. PUBLIC TRACKING & INQUIRIES
 // ==========================================
 router.get(['/public/track', '/public/track/:trackingId'], (req, res) => {
-  const tid = (req.params.trackingId || req.query.q || req.query.lr || req.query.load || 'TRP-2026-003').toUpperCase();
-  const trip = mockStore.trips[1] || mockStore.trips[0];
-  const load = mockStore.loads[1] || mockStore.loads[0];
+  const tid = (req.params.trackingId || req.query.q || req.query.lr || req.query.load || '').trim().toUpperCase();
+  if (!tid) {
+    return res.status(400).json({ success: false, message: 'Please provide a valid tracking number (LR, Bilty, Load, or Trip #)' });
+  }
+
+  const trip = mockStore.trips.find((t) => t.tripNumber === tid || t._id === tid);
+  const load = mockStore.loads.find((l) => l.loadNumber === tid || l._id === tid);
+  const bilty = mockStore.bilties.find((b) => b.lrNumber === tid || b.biltyNumber === tid || b._id === tid);
+
+  if (!trip && !load && !bilty) {
+    return res.status(404).json({ success: false, message: `No active consignment found for tracking reference: ${tid}` });
+  }
+
+  const activeTrip = trip || (load?.tripId ? mockStore.trips.find((t) => t._id === load.tripId._id) : null);
+  const activeLoad = load || (bilty?.loadNumber ? mockStore.loads.find((l) => l.loadNumber === bilty.loadNumber) : null);
+  const activeBilty = bilty || (activeLoad?.loadNumber ? mockStore.bilties.find((b) => b.loadNumber === activeLoad.loadNumber) : null);
 
   const trackingPayload = {
     trackingNumber: tid,
-    lrNumber: tid.startsWith('LR') ? tid : 'LR-2026-00102',
-    biltyNumber: tid.startsWith('BL') ? tid : 'BL-2026-00102',
-    loadNumber: load.loadNumber || 'LD-2026-0002',
-    tripNumber: trip.tripNumber || 'TRP-2026-002',
-    currentStatus: trip.status || 'IN_TRANSIT',
-    statusLabel: trip.status === 'CLOSED' || trip.status === 'DELIVERED' ? 'Delivered' : 'In Transit',
-    materialType: load.cargoType || 'Refined Industrial Bulk Consignment',
-    totalQuantity: load.totalQuantity || 140,
-    totalWeightMt: load.totalWeightMt || 28.0,
+    lrNumber: activeBilty?.lrNumber || tid,
+    biltyNumber: activeBilty?.biltyNumber || tid,
+    loadNumber: activeLoad?.loadNumber || tid,
+    tripNumber: activeTrip?.tripNumber || tid,
+    currentStatus: activeTrip?.status || activeLoad?.status || activeBilty?.status || 'IN_TRANSIT',
+    statusLabel: (activeTrip?.status === 'CLOSED' || activeLoad?.status === 'DELIVERED') ? 'Delivered' : 'In Transit',
+    materialType: activeLoad?.cargoType || activeLoad?.goodsDescription || activeBilty?.goodsDescription || 'General Cargo',
+    totalQuantity: activeLoad?.totalQuantity || activeLoad?.packageCount || 0,
+    totalWeightMt: activeLoad?.totalWeightMt || activeLoad?.weightMt || activeBilty?.weightMt || 0,
     parties: {
-      consignor: load.consignorName || 'Adani Wilmar Limited',
-      consignee: load.consigneeName || 'UltraTech Cement Limited'
+      consignor: activeLoad?.consignorName || activeBilty?.consignor || '',
+      consignee: activeLoad?.consigneeName || activeBilty?.consignee || ''
     },
     vehicle: {
-      type: trip.vehicleId?.vehicleType || 'Multi-Axle Truck',
-      maskedPlateNumber: trip.vehiclePlate || 'MH12CD5678'
+      type: activeTrip?.vehicleId?.vehicleType || activeLoad?.vehicleType || 'Truck',
+      maskedPlateNumber: activeTrip?.vehiclePlate || activeLoad?.vehiclePlate || activeBilty?.vehiclePlate || ''
     },
-    pickupDate: trip.startedAt || new Date().toISOString(),
-    expectedDeliveryDate: new Date(Date.now() + 43200000).toISOString(),
+    pickupDate: activeTrip?.startedAt || activeLoad?.createdAt || new Date().toISOString(),
+    expectedDeliveryDate: activeLoad?.expectedDeliveryDate || new Date().toISOString(),
     milestones: [
       {
         code: 'ORDER_PLACED',
         title: 'Consignment Created',
-        description: 'Load registered and scheduled for dispatch at Barkat Tempo Service',
+        description: 'Load registered at Barkat Tempo Service',
         status: 'COMPLETED',
-        timestamp: new Date(Date.now() - 86400000).toISOString()
-      },
-      {
-        code: 'VEHICLE_ASSIGNED',
-        title: 'Vehicle & Driver Assigned',
-        description: `Vehicle ${trip.vehiclePlate} and Driver ${trip.driverName} allocated`,
-        status: 'COMPLETED',
-        timestamp: new Date(Date.now() - 54000000).toISOString()
-      },
-      {
-        code: 'IN_TRANSIT',
-        title: 'Outbound On-Road Transit',
-        description: 'Consignment in transit across NH-48 commercial corridor',
-        status: 'IN_PROGRESS',
-        timestamp: new Date(Date.now() - 21600000).toISOString()
-      },
-      {
-        code: 'DELIVERED',
-        title: 'Destination Delivery',
-        description: 'Arrival at destination warehouse and POD stamp authentication',
-        status: trip.status === 'CLOSED' ? 'COMPLETED' : 'PENDING',
-        timestamp: trip.status === 'CLOSED' ? new Date().toISOString() : null
+        timestamp: activeLoad?.createdAt || new Date().toISOString()
       }
     ],
-    waypoints: [
-      {
-        sequence: 1,
-        name: 'Mundra Port Logistics Terminal, Gujarat',
-        city: 'Mundra',
-        state: 'Gujarat',
-        stopType: 'PICKUP',
-        status: 'COMPLETED',
-        coordinates: { lat: 22.8398, lng: 69.7042 }
-      },
-      {
-        sequence: 2,
-        name: 'Pune Chakan Auto Corridor Terminal, Maharashtra',
-        city: 'Pune',
-        state: 'Maharashtra',
-        stopType: 'DELIVERY',
-        status: trip.status === 'CLOSED' ? 'COMPLETED' : 'PENDING',
-        coordinates: { lat: 18.7512, lng: 73.8541 }
-      }
-    ],
-    podVerified: trip.status === 'CLOSED',
-    podNumber: trip.status === 'CLOSED' ? 'POD-2026-0001' : null,
-    podReceiver: trip.status === 'CLOSED' ? 'Gaurav Mehta' : null,
-    telematics: {
-      isLiveGps: true,
-      locationSource: 'TELEMATICS_GPS',
-      coordinates: { lat: 20.9467, lng: 72.952 },
-      speedKmph: 62,
-      lastSeenAt: new Date().toISOString(),
-      disclaimer: 'Live AIS-140 GPS telematics feed from vehicle on-board unit.'
-    },
+    waypoints: [],
+    podVerified: activeTrip?.status === 'CLOSED' || activeLoad?.status === 'DELIVERED',
+    telematics: null,
     lastUpdated: new Date().toISOString()
   };
 
-  return ok(res, trackingPayload);
+  return ok(res, trackingPayload, 'Consignment tracking details retrieved');
 });
 
 // ==========================================

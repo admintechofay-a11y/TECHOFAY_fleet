@@ -103,18 +103,18 @@ class MasterImportExportService {
         ];
         sampleRows = [
           {
-            name: 'Adani Logistics Ltd',
-            code: 'CUST-ADANI',
+            name: 'Sample Logistics Client',
+            code: 'CUST-001',
             partyType: 'CUSTOMER',
             gstin: '24AAACA1234A1Z5',
             pan: 'AAACA1234A',
-            contactName: 'Ramesh Patel',
+            contactName: 'Operations Lead',
             phone: '9876543210',
-            email: 'logistics@adani.example.com',
-            street: 'Mundra Port Complex',
-            city: 'Mundra',
+            email: 'operations@example.com',
+            street: 'Industrial Complex',
+            city: 'Vadodara',
             state: 'Gujarat',
-            pincode: '370421',
+            pincode: '390022',
             paymentTermsDays: 30
           }
         ];
@@ -163,17 +163,17 @@ class MasterImportExportService {
         ];
         sampleRows = [
           {
-            plateNumber: 'GJ01AB1234',
-            vehicleType: 'Trailer 40ft',
+            plateNumber: 'GJ06XX0000',
+            vehicleType: 'Heavy Commercial Vehicle (HCV)',
             category: 'OWNED',
             capacityTonnage: 35.5,
             make: 'Tata Motors',
-            model: 'Signa 4825.TK',
-            yearOfManufacture: 2023,
+            model: 'Signa',
+            yearOfManufacture: 2024,
             chassisNumber: 'MAT623000P1234567',
             engineNumber: 'CUMMINS250B1234',
-            ownerName: 'Technofay Fleet Ops',
-            ownerPhone: '9898012345'
+            ownerName: 'Barkat Tempo Service',
+            ownerPhone: '93776 10333'
           }
         ];
         break;

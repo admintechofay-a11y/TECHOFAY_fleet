@@ -94679,1271 +94679,15 @@ var require_mockDataStore = __commonJS({
         }
       }
     ];
-    var defaultVehicles = [
-      {
-        _id: "671e3b0f27d7a87e3cbb0010",
-        companyId: defaultTenant._id,
-        plateNumber: "GJ01AB1234",
-        vehicleType: "Heavy Commercial Vehicle (HCV)",
-        category: "OWNED",
-        make: "Tata Motors",
-        model: "Signa 4825.TK",
-        yearOfManufacture: 2024,
-        capacityTonnage: 48,
-        fuelType: "DIESEL",
-        status: "AVAILABLE",
-        isActive: true,
-        ownerName: "Barkat Tempo Service",
-        ownerPhone: "93776 10333",
-        currentLocation: "Ahmedabad Central Hub",
-        documents: [
-          { _id: "doc_v1_rc", documentType: "RC", documentNumber: "GJ01-2024-RC-9812", expiryDate: "2039-03-15", status: "VERIFIED" },
-          { _id: "doc_v1_ins", documentType: "INSURANCE", documentNumber: "ICICI-LOMB-7721", expiryDate: "2027-02-10", status: "VERIFIED" },
-          { _id: "doc_v1_fit", documentType: "FITNESS", documentNumber: "GJ-RTO-FIT-4412", expiryDate: "2026-12-30", status: "VERIFIED" }
-        ],
-        createdAt: /* @__PURE__ */ new Date("2026-01-10T10:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0011",
-        companyId: defaultTenant._id,
-        plateNumber: "MH12CD5678",
-        vehicleType: "Multi-Axle Truck",
-        category: "OWNED",
-        make: "Ashok Leyland",
-        model: "AVTR 3520",
-        yearOfManufacture: 2023,
-        capacityTonnage: 35,
-        fuelType: "DIESEL",
-        status: "ON_TRIP",
-        isActive: true,
-        ownerName: "Barkat Tempo Service",
-        ownerPhone: "93776 10333",
-        currentLocation: "In Transit: Surat - Mumbai Highway",
-        documents: [
-          { _id: "doc_v2_rc", documentType: "RC", documentNumber: "MH12-2023-RC-5541", expiryDate: "2038-08-20", status: "VERIFIED" },
-          { _id: "doc_v2_ins", documentType: "INSURANCE", documentNumber: "NEW-INDIA-8841", expiryDate: "2026-11-15", status: "VERIFIED" }
-        ],
-        createdAt: /* @__PURE__ */ new Date("2026-01-12T11:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0012",
-        companyId: defaultTenant._id,
-        plateNumber: "DL01GH3456",
-        vehicleType: "Tractor Trailer",
-        category: "ATTACHED",
-        make: "BharatBenz",
-        model: "5528TT",
-        yearOfManufacture: 2024,
-        capacityTonnage: 55,
-        fuelType: "DIESEL",
-        status: "ON_TRIP",
-        isActive: true,
-        ownerName: "North Logistics Partners",
-        ownerPhone: "+91 98110 55432",
-        currentLocation: "In Transit: Kotputli - Delhi Corridor",
-        documents: [
-          { _id: "doc_v3_rc", documentType: "RC", documentNumber: "DL01-2024-RC-1092", expiryDate: "2039-01-10", status: "VERIFIED" }
-        ],
-        createdAt: /* @__PURE__ */ new Date("2026-01-15T09:30:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0013",
-        companyId: defaultTenant._id,
-        plateNumber: "GJ06EF9012",
-        vehicleType: "Open Body Truck",
-        category: "MARKET",
-        make: "Eicher Motors",
-        model: "Pro 6035",
-        yearOfManufacture: 2022,
-        capacityTonnage: 28,
-        fuelType: "DIESEL",
-        status: "AVAILABLE",
-        isActive: true,
-        ownerName: "Baroda Transport Fleet",
-        ownerPhone: "+91 98240 77123",
-        currentLocation: "Vadodara Logistics Yard",
-        documents: [],
-        createdAt: /* @__PURE__ */ new Date("2026-01-18T14:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0014",
-        companyId: defaultTenant._id,
-        plateNumber: "KA04JK7890",
-        vehicleType: "Heavy Commercial Vehicle (HCV)",
-        category: "OWNED",
-        make: "Mahindra",
-        model: "Blazo X 49",
-        yearOfManufacture: 2023,
-        capacityTonnage: 49,
-        fuelType: "DIESEL",
-        status: "UNDER_MAINTENANCE",
-        isActive: true,
-        ownerName: "Barkat Tempo Service",
-        ownerPhone: "93776 10333",
-        currentLocation: "Ahmedabad Authorized Workshop",
-        documents: [],
-        createdAt: /* @__PURE__ */ new Date("2026-01-20T16:00:00.000Z")
-      }
-    ];
-    var defaultDrivers = [
-      {
-        _id: "671e3b0f27d7a87e3cbb0020",
-        companyId: defaultTenant._id,
-        name: "Ramesh Patel",
-        phone: "+91 98251 11223",
-        licenseNumber: "GJ01-2015-001234",
-        licenseExpiry: "2035-05-14",
-        status: "AVAILABLE",
-        experienceYears: 12,
-        bloodGroup: "B+",
-        isActive: true,
-        assignedVehicleId: "671e3b0f27d7a87e3cbb0010",
-        createdAt: /* @__PURE__ */ new Date("2026-01-10T10:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0021",
-        companyId: defaultTenant._id,
-        name: "Vikram Singh",
-        phone: "+91 98251 22334",
-        licenseNumber: "MH12-2017-005678",
-        licenseExpiry: "2037-08-22",
-        status: "ON_TRIP",
-        experienceYears: 9,
-        bloodGroup: "O+",
-        isActive: true,
-        assignedVehicleId: "671e3b0f27d7a87e3cbb0011",
-        createdAt: /* @__PURE__ */ new Date("2026-01-12T11:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0022",
-        companyId: defaultTenant._id,
-        name: "Suresh Sharma",
-        phone: "+91 98251 33445",
-        licenseNumber: "DL04-2018-009012",
-        licenseExpiry: "2038-03-10",
-        status: "ON_TRIP",
-        experienceYears: 7,
-        bloodGroup: "A+",
-        isActive: true,
-        assignedVehicleId: "671e3b0f27d7a87e3cbb0012",
-        createdAt: /* @__PURE__ */ new Date("2026-01-15T09:30:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0023",
-        companyId: defaultTenant._id,
-        name: "Rajesh Kumar",
-        phone: "+91 98251 44556",
-        licenseNumber: "RJ14-2019-003456",
-        licenseExpiry: "2039-11-19",
-        status: "AVAILABLE",
-        experienceYears: 15,
-        bloodGroup: "AB+",
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date("2026-01-18T14:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0024",
-        companyId: defaultTenant._id,
-        name: "Mohammed Ali",
-        phone: "+91 98251 55667",
-        licenseNumber: "KA05-2020-007890",
-        licenseExpiry: "2040-07-05",
-        status: "ON_LEAVE",
-        experienceYears: 6,
-        bloodGroup: "O-",
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date("2026-01-20T16:00:00.000Z")
-      }
-    ];
-    var defaultCustomers = [
-      {
-        _id: "671e3b0f27d7a87e3cbb0030",
-        companyId: defaultTenant._id,
-        name: "Reliance Industries Limited",
-        legalName: "Reliance Industries Limited",
-        tradeName: "Reliance Petrochemicals Hazira",
-        gstin: "24AAACR1234A1Z1",
-        pan: "AAACR1234A",
-        type: "CONSIGNOR",
-        contactPerson: "Sanjay Deshmukh",
-        email: "logistics.hazira@ril.com",
-        phone: "+91 98250 99881",
-        billingAddress: { street: "Hazira Manufacturing Division", city: "Surat", state: "Gujarat", pincode: "394510", country: "IN" },
-        creditPeriodDays: 30,
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date("2026-01-05T09:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0031",
-        companyId: defaultTenant._id,
-        name: "Adani Wilmar Limited",
-        legalName: "Adani Wilmar Limited",
-        tradeName: "Adani Wilmar Mundra Port",
-        gstin: "24AAACA5678B1Z2",
-        pan: "AAACA5678B",
-        type: "BOTH",
-        contactPerson: "Ketan Trivedi",
-        email: "freight.mundra@adaniwilmar.in",
-        phone: "+91 98250 77662",
-        billingAddress: { street: "Fortune House, Navrangpura", city: "Ahmedabad", state: "Gujarat", pincode: "380009", country: "IN" },
-        creditPeriodDays: 45,
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date("2026-01-06T10:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0032",
-        companyId: defaultTenant._id,
-        name: "Tata Steel Limited",
-        legalName: "Tata Steel Limited",
-        tradeName: "Tata Steel Tubes Division",
-        gstin: "27AAACT9012C1Z3",
-        pan: "AAACT9012C",
-        type: "CONSIGNOR",
-        contactPerson: "Abhinav Sen",
-        email: "outbound.shipping@tatasteel.com",
-        phone: "+91 98300 44331",
-        billingAddress: { street: "Bombay House, 24 Homi Mody Street", city: "Mumbai", state: "Maharashtra", pincode: "400001", country: "IN" },
-        creditPeriodDays: 30,
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date("2026-01-07T11:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0033",
-        companyId: defaultTenant._id,
-        name: "UltraTech Cement Limited",
-        legalName: "UltraTech Cement Limited",
-        tradeName: "UltraTech Kovaya Works",
-        gstin: "24AAACU3456D1Z4",
-        pan: "AAACU3456D",
-        type: "CONSIGNEE",
-        contactPerson: "Mahesh Joshi",
-        email: "dispatch.kovaya@adityabirla.com",
-        phone: "+91 98250 33221",
-        billingAddress: { street: "Kovaya Works, Rajula", city: "Amreli", state: "Gujarat", pincode: "365541", country: "IN" },
-        creditPeriodDays: 15,
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date("2026-01-08T12:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0034",
-        companyId: defaultTenant._id,
-        name: "Asian Paints Limited",
-        legalName: "Asian Paints Limited",
-        tradeName: "Asian Paints Industrial Center",
-        gstin: "27AAACA7890E1Z5",
-        pan: "AAACA7890E",
-        type: "CONSIGNEE",
-        contactPerson: "Gaurav Mehta",
-        email: "central.supply@asianpaints.com",
-        phone: "+91 98200 11990",
-        billingAddress: { street: "6A Shantiniketan, Santacruz East", city: "Mumbai", state: "Maharashtra", pincode: "400055", country: "IN" },
-        creditPeriodDays: 30,
-        isActive: true,
-        createdAt: /* @__PURE__ */ new Date("2026-01-09T13:00:00.000Z")
-      }
-    ];
-    var defaultLocations = [
-      {
-        _id: "671e3b0f27d7a87e3cbb0040",
-        companyId: defaultTenant._id,
-        name: "Ahmedabad Central Transport Hub",
-        code: "AMD-HUB-01",
-        city: "Ahmedabad",
-        state: "Gujarat",
-        address: "Narol Transport Nagar, National Highway 48",
-        pincode: "382405",
-        hubType: "CENTRAL_HUB",
-        coordinates: { lat: 22.9812, lng: 72.6021 },
-        isActive: true
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0041",
-        companyId: defaultTenant._id,
-        name: "Mundra Port Container Terminal",
-        code: "MUN-PORT-01",
-        city: "Mundra",
-        state: "Gujarat",
-        address: "APSEZ Terminal, Mundra Port Special Economic Zone",
-        pincode: "370421",
-        hubType: "PORT_TERMINAL",
-        coordinates: { lat: 22.8398, lng: 69.7042 },
-        isActive: true
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0042",
-        companyId: defaultTenant._id,
-        name: "Nhava Sheva JNPT Port Yard",
-        code: "BOM-JNPT-01",
-        city: "Navi Mumbai",
-        state: "Maharashtra",
-        address: "Jawaharlal Nehru Port Trust Logistics Park, Uran",
-        pincode: "400707",
-        hubType: "PORT_TERMINAL",
-        coordinates: { lat: 18.9501, lng: 72.9514 },
-        isActive: true
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0043",
-        companyId: defaultTenant._id,
-        name: "Delhi NCR Logistics Logistics Center",
-        code: "DEL-NCR-01",
-        city: "Gurugram",
-        state: "Haryana",
-        address: "Bilaspur Logistics Cluster, NH-48",
-        pincode: "122413",
-        hubType: "CENTRAL_HUB",
-        coordinates: { lat: 28.3241, lng: 76.8412 },
-        isActive: true
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0044",
-        companyId: defaultTenant._id,
-        name: "Pune Chakan Auto Corridor Hub",
-        code: "PUN-CHK-01",
-        city: "Pune",
-        state: "Maharashtra",
-        address: "Chakan MIDC Phase 2, Talegaon Road",
-        pincode: "410501",
-        hubType: "WAREHOUSE",
-        coordinates: { lat: 18.7512, lng: 73.8541 },
-        isActive: true
-      }
-    ];
-    var defaultLoads = [
-      {
-        _id: "671e3b0f27d7a87e3cbb0050",
-        companyId: defaultTenant._id,
-        loadNumber: "LD-2026-0001",
-        orderDate: "2026-01-20T08:00:00.000Z",
-        customerId: {
-          _id: defaultCustomers[0]._id,
-          name: defaultCustomers[0].legalName,
-          legalName: defaultCustomers[0].legalName,
-          tradeName: defaultCustomers[0].tradeName,
-          phone: defaultCustomers[0].phone
-        },
-        customer: defaultCustomers[0],
-        consignorId: {
-          _id: defaultCustomers[0]._id,
-          name: defaultCustomers[0].legalName,
-          legalName: defaultCustomers[0].legalName,
-          phone: defaultCustomers[0].phone
-        },
-        consigneeId: {
-          _id: defaultCustomers[4]._id,
-          name: defaultCustomers[4].legalName,
-          legalName: defaultCustomers[4].legalName,
-          phone: defaultCustomers[4].phone
-        },
-        consignorName: "Reliance Industries Limited",
-        consigneeName: "Asian Paints Limited",
-        originLocationId: defaultLocations[0]._id,
-        originCity: "Ahmedabad, GJ",
-        origin: "Ahmedabad, GJ",
-        destinationLocationId: defaultLocations[2]._id,
-        destinationCity: "Mumbai JNPT, MH",
-        destination: "Mumbai JNPT, MH",
-        cargoType: "Polymers & Petrochemicals",
-        packageType: "JUMBO_BAGS",
-        totalWeightMt: 32.5,
-        weightMt: 32.5,
-        totalQuantity: 65,
-        quantity: 65,
-        unit: "BAGS",
-        freightAmount: 68500,
-        advancePaid: 35e3,
-        balanceDue: 33500,
-        financials: {
-          baseFreightRupees: 68500,
-          totalFreightRupees: 68500,
-          advanceRupees: 35e3,
-          balanceRupees: 33500,
-          baseFreightPaise: 685e4,
-          totalFreightPaise: 685e4,
-          advancePaise: 35e5,
-          balancePaise: 335e4
-        },
-        status: "DELIVERED",
-        assignedVehicleId: {
-          _id: defaultVehicles[0]._id,
-          plateNumber: defaultVehicles[0].plateNumber,
-          vehicleType: defaultVehicles[0].vehicleType,
-          capacityTonnage: defaultVehicles[0].capacityTonnage,
-          status: defaultVehicles[0].status
-        },
-        assignedVehiclePlate: defaultVehicles[0].plateNumber,
-        vehiclePlate: defaultVehicles[0].plateNumber,
-        assignedDriverId: {
-          _id: defaultDrivers[0]._id,
-          name: defaultDrivers[0].name,
-          phone: defaultDrivers[0].phone,
-          licenseNumber: defaultDrivers[0].licenseNumber
-        },
-        assignedDriverName: defaultDrivers[0].name,
-        driverName: defaultDrivers[0].name,
-        stops: [
-          {
-            _id: "stp_ld1_1",
-            sequence: 1,
-            stopType: "PICKUP",
-            locationId: { _id: defaultLocations[0]._id, name: defaultLocations[0].name, city: defaultLocations[0].city, address: defaultLocations[0].address },
-            allocatedQuantity: 65,
-            allocatedWeightMt: 32.5,
-            status: "COMPLETED"
-          },
-          {
-            _id: "stp_ld1_2",
-            sequence: 2,
-            stopType: "DELIVERY",
-            locationId: { _id: defaultLocations[2]._id, name: defaultLocations[2].name, city: defaultLocations[2].city, address: defaultLocations[2].address },
-            allocatedQuantity: 65,
-            allocatedWeightMt: 32.5,
-            status: "COMPLETED"
-          }
-        ],
-        gtaGstRate: 5,
-        gtaGstAmount: 3425,
-        sacCode: "9965",
-        createdAt: /* @__PURE__ */ new Date("2026-01-20T08:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0051",
-        companyId: defaultTenant._id,
-        loadNumber: "LD-2026-0002",
-        orderDate: "2026-01-22T09:30:00.000Z",
-        customerId: {
-          _id: defaultCustomers[1]._id,
-          name: defaultCustomers[1].legalName,
-          legalName: defaultCustomers[1].legalName,
-          tradeName: defaultCustomers[1].tradeName,
-          phone: defaultCustomers[1].phone
-        },
-        customer: defaultCustomers[1],
-        consignorId: {
-          _id: defaultCustomers[1]._id,
-          name: defaultCustomers[1].legalName,
-          legalName: defaultCustomers[1].legalName,
-          phone: defaultCustomers[1].phone
-        },
-        consigneeId: {
-          _id: defaultCustomers[3]._id,
-          name: defaultCustomers[3].legalName,
-          legalName: defaultCustomers[3].legalName,
-          phone: defaultCustomers[3].phone
-        },
-        consignorName: "Adani Wilmar Limited",
-        consigneeName: "UltraTech Cement Limited",
-        originLocationId: defaultLocations[1]._id,
-        originCity: "Mundra Port, GJ",
-        origin: "Mundra Port, GJ",
-        destinationLocationId: defaultLocations[4]._id,
-        destinationCity: "Pune Chakan, MH",
-        destination: "Pune Chakan, MH",
-        cargoType: "Refined Edible Bulk Oils",
-        packageType: "BARRELS",
-        totalWeightMt: 28,
-        weightMt: 28,
-        totalQuantity: 140,
-        quantity: 140,
-        unit: "DRUMS",
-        freightAmount: 84e3,
-        advancePaid: 45e3,
-        balanceDue: 39e3,
-        financials: {
-          baseFreightRupees: 84e3,
-          totalFreightRupees: 84e3,
-          advanceRupees: 45e3,
-          balanceRupees: 39e3,
-          baseFreightPaise: 84e5,
-          totalFreightPaise: 84e5,
-          advancePaise: 45e5,
-          balancePaise: 39e5
-        },
-        status: "IN_TRANSIT",
-        assignedVehicleId: {
-          _id: defaultVehicles[1]._id,
-          plateNumber: defaultVehicles[1].plateNumber,
-          vehicleType: defaultVehicles[1].vehicleType,
-          capacityTonnage: defaultVehicles[1].capacityTonnage,
-          status: defaultVehicles[1].status
-        },
-        assignedVehiclePlate: defaultVehicles[1].plateNumber,
-        vehiclePlate: defaultVehicles[1].plateNumber,
-        assignedDriverId: {
-          _id: defaultDrivers[1]._id,
-          name: defaultDrivers[1].name,
-          phone: defaultDrivers[1].phone,
-          licenseNumber: defaultDrivers[1].licenseNumber
-        },
-        assignedDriverName: defaultDrivers[1].name,
-        driverName: defaultDrivers[1].name,
-        stops: [
-          {
-            _id: "stp_ld2_1",
-            sequence: 1,
-            stopType: "PICKUP",
-            locationId: { _id: defaultLocations[1]._id, name: defaultLocations[1].name, city: defaultLocations[1].city, address: defaultLocations[1].address },
-            allocatedQuantity: 140,
-            allocatedWeightMt: 28,
-            status: "COMPLETED"
-          },
-          {
-            _id: "stp_ld2_2",
-            sequence: 2,
-            stopType: "DELIVERY",
-            locationId: { _id: defaultLocations[4]._id, name: defaultLocations[4].name, city: defaultLocations[4].city, address: defaultLocations[4].address },
-            allocatedQuantity: 140,
-            allocatedWeightMt: 28,
-            status: "IN_TRANSIT"
-          }
-        ],
-        gtaGstRate: 5,
-        gtaGstAmount: 4200,
-        sacCode: "9965",
-        createdAt: /* @__PURE__ */ new Date("2026-01-22T09:30:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0052",
-        companyId: defaultTenant._id,
-        loadNumber: "LD-2026-0003",
-        orderDate: "2026-01-23T11:00:00.000Z",
-        customerId: {
-          _id: defaultCustomers[2]._id,
-          name: defaultCustomers[2].legalName,
-          legalName: defaultCustomers[2].legalName,
-          tradeName: defaultCustomers[2].tradeName,
-          phone: defaultCustomers[2].phone
-        },
-        customer: defaultCustomers[2],
-        consignorId: {
-          _id: defaultCustomers[2]._id,
-          name: defaultCustomers[2].legalName,
-          legalName: defaultCustomers[2].legalName,
-          phone: defaultCustomers[2].phone
-        },
-        consigneeId: {
-          _id: defaultCustomers[0]._id,
-          name: defaultCustomers[0].legalName,
-          legalName: defaultCustomers[0].legalName,
-          phone: defaultCustomers[0].phone
-        },
-        consignorName: "Tata Steel Limited",
-        consigneeName: "Reliance Industries Limited",
-        originLocationId: defaultLocations[0]._id,
-        originCity: "Ahmedabad Hub, GJ",
-        origin: "Ahmedabad Hub, GJ",
-        destinationLocationId: defaultLocations[3]._id,
-        destinationCity: "Delhi NCR Bilaspur, HR",
-        destination: "Delhi NCR Bilaspur, HR",
-        cargoType: "Hot Rolled Steel Coils",
-        packageType: "BUNDLES",
-        totalWeightMt: 42,
-        weightMt: 42,
-        totalQuantity: 8,
-        quantity: 8,
-        unit: "COILS",
-        freightAmount: 125e3,
-        advancePaid: 6e4,
-        balanceDue: 65e3,
-        financials: {
-          baseFreightRupees: 125e3,
-          totalFreightRupees: 125e3,
-          advanceRupees: 6e4,
-          balanceRupees: 65e3,
-          baseFreightPaise: 125e5,
-          totalFreightPaise: 125e5,
-          advancePaise: 6e6,
-          balancePaise: 65e5
-        },
-        status: "IN_TRANSIT",
-        assignedVehicleId: {
-          _id: defaultVehicles[2]._id,
-          plateNumber: defaultVehicles[2].plateNumber,
-          vehicleType: defaultVehicles[2].vehicleType,
-          capacityTonnage: defaultVehicles[2].capacityTonnage,
-          status: defaultVehicles[2].status
-        },
-        assignedVehiclePlate: defaultVehicles[2].plateNumber,
-        vehiclePlate: defaultVehicles[2].plateNumber,
-        assignedDriverId: {
-          _id: defaultDrivers[2]._id,
-          name: defaultDrivers[2].name,
-          phone: defaultDrivers[2].phone,
-          licenseNumber: defaultDrivers[2].licenseNumber
-        },
-        assignedDriverName: defaultDrivers[2].name,
-        driverName: defaultDrivers[2].name,
-        stops: [
-          {
-            _id: "stp_ld3_1",
-            sequence: 1,
-            stopType: "PICKUP",
-            locationId: { _id: defaultLocations[0]._id, name: defaultLocations[0].name, city: defaultLocations[0].city, address: defaultLocations[0].address },
-            allocatedQuantity: 8,
-            allocatedWeightMt: 42,
-            status: "COMPLETED"
-          },
-          {
-            _id: "stp_ld3_2",
-            sequence: 2,
-            stopType: "DELIVERY",
-            locationId: { _id: defaultLocations[3]._id, name: defaultLocations[3].name, city: defaultLocations[3].city, address: defaultLocations[3].address },
-            allocatedQuantity: 8,
-            allocatedWeightMt: 42,
-            status: "IN_TRANSIT"
-          }
-        ],
-        gtaGstRate: 5,
-        gtaGstAmount: 6250,
-        sacCode: "9965",
-        createdAt: /* @__PURE__ */ new Date("2026-01-23T11:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0053",
-        companyId: defaultTenant._id,
-        loadNumber: "LD-2026-0004",
-        orderDate: "2026-01-24T14:15:00.000Z",
-        customerId: {
-          _id: defaultCustomers[3]._id,
-          name: defaultCustomers[3].legalName,
-          legalName: defaultCustomers[3].legalName,
-          tradeName: defaultCustomers[3].tradeName,
-          phone: defaultCustomers[3].phone
-        },
-        customer: defaultCustomers[3],
-        consignorId: {
-          _id: defaultCustomers[3]._id,
-          name: defaultCustomers[3].legalName,
-          legalName: defaultCustomers[3].legalName,
-          phone: defaultCustomers[3].phone
-        },
-        consigneeId: {
-          _id: defaultCustomers[4]._id,
-          name: defaultCustomers[4].legalName,
-          legalName: defaultCustomers[4].legalName,
-          phone: defaultCustomers[4].phone
-        },
-        consignorName: "UltraTech Cement Limited",
-        consigneeName: "Asian Paints Limited",
-        originLocationId: defaultLocations[0]._id,
-        originCity: "Amreli Works, GJ",
-        origin: "Amreli Works, GJ",
-        destinationLocationId: defaultLocations[0]._id,
-        destinationCity: "Ahmedabad Yard, GJ",
-        destination: "Ahmedabad Yard, GJ",
-        cargoType: "Packaged Grade 53 Cement",
-        packageType: "PALLETS",
-        totalWeightMt: 35,
-        weightMt: 35,
-        totalQuantity: 700,
-        quantity: 700,
-        unit: "BAGS",
-        freightAmount: 42e3,
-        advancePaid: 2e4,
-        balanceDue: 22e3,
-        financials: {
-          baseFreightRupees: 42e3,
-          totalFreightRupees: 42e3,
-          advanceRupees: 2e4,
-          balanceRupees: 22e3,
-          baseFreightPaise: 42e5,
-          totalFreightPaise: 42e5,
-          advancePaise: 2e6,
-          balancePaise: 22e5
-        },
-        status: "VEHICLE_ASSIGNED",
-        assignedVehicleId: {
-          _id: defaultVehicles[3]._id,
-          plateNumber: defaultVehicles[3].plateNumber,
-          vehicleType: defaultVehicles[3].vehicleType,
-          capacityTonnage: defaultVehicles[3].capacityTonnage,
-          status: defaultVehicles[3].status
-        },
-        assignedVehiclePlate: defaultVehicles[3].plateNumber,
-        vehiclePlate: defaultVehicles[3].plateNumber,
-        assignedDriverId: {
-          _id: defaultDrivers[3]._id,
-          name: defaultDrivers[3].name,
-          phone: defaultDrivers[3].phone,
-          licenseNumber: defaultDrivers[3].licenseNumber
-        },
-        assignedDriverName: defaultDrivers[3].name,
-        driverName: defaultDrivers[3].name,
-        stops: [
-          {
-            _id: "stp_ld4_1",
-            sequence: 1,
-            stopType: "PICKUP",
-            locationId: { _id: defaultLocations[0]._id, name: "Amreli Works Logistics Gate", city: "Amreli", address: "Amreli Works, Gujarat" },
-            allocatedQuantity: 700,
-            allocatedWeightMt: 35,
-            status: "PENDING"
-          },
-          {
-            _id: "stp_ld4_2",
-            sequence: 2,
-            stopType: "DELIVERY",
-            locationId: { _id: defaultLocations[0]._id, name: defaultLocations[0].name, city: defaultLocations[0].city, address: defaultLocations[0].address },
-            allocatedQuantity: 700,
-            allocatedWeightMt: 35,
-            status: "PENDING"
-          }
-        ],
-        gtaGstRate: 5,
-        gtaGstAmount: 2100,
-        sacCode: "9965",
-        createdAt: /* @__PURE__ */ new Date("2026-01-24T14:15:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0054",
-        companyId: defaultTenant._id,
-        loadNumber: "LD-2026-0005",
-        orderDate: "2026-01-25T16:00:00.000Z",
-        customerId: {
-          _id: defaultCustomers[0]._id,
-          name: defaultCustomers[0].legalName,
-          legalName: defaultCustomers[0].legalName,
-          tradeName: defaultCustomers[0].tradeName,
-          phone: defaultCustomers[0].phone
-        },
-        customer: defaultCustomers[0],
-        consignorId: {
-          _id: defaultCustomers[0]._id,
-          name: defaultCustomers[0].legalName,
-          legalName: defaultCustomers[0].legalName,
-          phone: defaultCustomers[0].phone
-        },
-        consigneeId: {
-          _id: defaultCustomers[1]._id,
-          name: defaultCustomers[1].legalName,
-          legalName: defaultCustomers[1].legalName,
-          phone: defaultCustomers[1].phone
-        },
-        consignorName: "Reliance Industries Limited",
-        consigneeName: "Adani Wilmar Limited",
-        originLocationId: defaultLocations[0]._id,
-        originCity: "Surat Hazira, GJ",
-        origin: "Surat Hazira, GJ",
-        destinationLocationId: defaultLocations[2]._id,
-        destinationCity: "Mumbai Port, MH",
-        destination: "Mumbai Port, MH",
-        cargoType: "Chemical Intermediate Drums",
-        packageType: "BARRELS",
-        totalWeightMt: 24,
-        weightMt: 24,
-        totalQuantity: 120,
-        quantity: 120,
-        unit: "DRUMS",
-        freightAmount: 38e3,
-        advancePaid: 0,
-        balanceDue: 38e3,
-        financials: {
-          baseFreightRupees: 38e3,
-          totalFreightRupees: 38e3,
-          advanceRupees: 0,
-          balanceRupees: 38e3,
-          baseFreightPaise: 38e5,
-          totalFreightPaise: 38e5,
-          advancePaise: 0,
-          balancePaise: 38e5
-        },
-        status: "CREATED",
-        stops: [
-          {
-            _id: "stp_ld5_1",
-            sequence: 1,
-            stopType: "PICKUP",
-            locationId: { _id: defaultLocations[0]._id, name: "Hazira Chemical Gate", city: "Surat", address: "Hazira Manufacturing Division" },
-            allocatedQuantity: 120,
-            allocatedWeightMt: 24,
-            status: "PENDING"
-          },
-          {
-            _id: "stp_ld5_2",
-            sequence: 2,
-            stopType: "DELIVERY",
-            locationId: { _id: defaultLocations[2]._id, name: defaultLocations[2].name, city: defaultLocations[2].city, address: defaultLocations[2].address },
-            allocatedQuantity: 120,
-            allocatedWeightMt: 24,
-            status: "PENDING"
-          }
-        ],
-        gtaGstRate: 5,
-        gtaGstAmount: 1900,
-        sacCode: "9965",
-        createdAt: /* @__PURE__ */ new Date("2026-01-25T16:00:00.000Z")
-      }
-    ];
-    var defaultBilties = [
-      {
-        _id: "671e3b0f27d7a87e3cbb0060",
-        companyId: defaultTenant._id,
-        biltyNumber: "BL-2026-00101",
-        lrNumber: "LR-2026-00101",
-        loadId: {
-          _id: defaultLoads[0]._id,
-          loadNumber: defaultLoads[0].loadNumber
-        },
-        loadNumber: defaultLoads[0].loadNumber,
-        lrId: {
-          _id: "671e3b0f27d7a87e3cbb0060",
-          lrNumber: "LR-2026-00101"
-        },
-        vehicleId: {
-          _id: defaultVehicles[0]._id,
-          plateNumber: defaultVehicles[0].plateNumber,
-          vehicleType: defaultVehicles[0].vehicleType
-        },
-        vehiclePlate: defaultVehicles[0].plateNumber,
-        driverId: {
-          _id: defaultDrivers[0]._id,
-          name: defaultDrivers[0].name,
-          phone: defaultDrivers[0].phone
-        },
-        driverName: defaultDrivers[0].name,
-        driverPhone: defaultDrivers[0].phone,
-        consignorId: {
-          _id: defaultCustomers[0]._id,
-          name: defaultCustomers[0].legalName,
-          phone: defaultCustomers[0].phone,
-          gstin: defaultCustomers[0].gstin
-        },
-        consignor: defaultCustomers[0].legalName,
-        consigneeId: {
-          _id: defaultCustomers[4]._id,
-          name: defaultCustomers[4].legalName,
-          phone: defaultCustomers[4].phone,
-          gstin: defaultCustomers[4].gstin
-        },
-        consignee: defaultCustomers[4].legalName,
-        consignorGstin: defaultCustomers[0].gstin,
-        consigneeGstin: defaultCustomers[4].gstin,
-        origin: "Ahmedabad Central Hub",
-        destination: "Mumbai Nhava Sheva",
-        goodsDescription: "Industrial Polymers 32.5 MT",
-        weightMt: 32.5,
-        packagesCount: 65,
-        freightRate: 2100,
-        freightAmount: 68500,
-        advanceAmount: 35e3,
-        balanceAmount: 33500,
-        gstRate: 5,
-        gstAmount: 3425,
-        gstPayableBy: "CONSIGNOR",
-        status: "DELIVERED",
-        createdAt: /* @__PURE__ */ new Date("2026-01-20T08:30:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0061",
-        companyId: defaultTenant._id,
-        biltyNumber: "BL-2026-00102",
-        lrNumber: "LR-2026-00102",
-        loadId: {
-          _id: defaultLoads[1]._id,
-          loadNumber: defaultLoads[1].loadNumber
-        },
-        loadNumber: defaultLoads[1].loadNumber,
-        lrId: {
-          _id: "671e3b0f27d7a87e3cbb0061",
-          lrNumber: "LR-2026-00102"
-        },
-        vehicleId: {
-          _id: defaultVehicles[1]._id,
-          plateNumber: defaultVehicles[1].plateNumber,
-          vehicleType: defaultVehicles[1].vehicleType
-        },
-        vehiclePlate: defaultVehicles[1].plateNumber,
-        driverId: {
-          _id: defaultDrivers[1]._id,
-          name: defaultDrivers[1].name,
-          phone: defaultDrivers[1].phone
-        },
-        driverName: defaultDrivers[1].name,
-        driverPhone: defaultDrivers[1].phone,
-        consignorId: {
-          _id: defaultCustomers[1]._id,
-          name: defaultCustomers[1].legalName,
-          phone: defaultCustomers[1].phone,
-          gstin: defaultCustomers[1].gstin
-        },
-        consignor: defaultCustomers[1].legalName,
-        consigneeId: {
-          _id: defaultCustomers[3]._id,
-          name: defaultCustomers[3].legalName,
-          phone: defaultCustomers[3].phone,
-          gstin: defaultCustomers[3].gstin
-        },
-        consignee: defaultCustomers[3].legalName,
-        consignorGstin: defaultCustomers[1].gstin,
-        consigneeGstin: defaultCustomers[3].gstin,
-        origin: "Mundra Port Container Terminal",
-        destination: "Pune Chakan Auto Corridor",
-        goodsDescription: "Refined Edible Bulk Oils 28 MT",
-        weightMt: 28,
-        packagesCount: 140,
-        freightRate: 3e3,
-        freightAmount: 84e3,
-        advanceAmount: 45e3,
-        balanceAmount: 39e3,
-        gstRate: 5,
-        gstAmount: 4200,
-        gstPayableBy: "CONSIGNOR",
-        status: "IN_TRANSIT",
-        createdAt: /* @__PURE__ */ new Date("2026-01-22T10:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0062",
-        companyId: defaultTenant._id,
-        biltyNumber: "BL-2026-00103",
-        lrNumber: "LR-2026-00103",
-        loadId: {
-          _id: defaultLoads[2]._id,
-          loadNumber: defaultLoads[2].loadNumber
-        },
-        loadNumber: defaultLoads[2].loadNumber,
-        lrId: {
-          _id: "671e3b0f27d7a87e3cbb0062",
-          lrNumber: "LR-2026-00103"
-        },
-        vehicleId: {
-          _id: defaultVehicles[2]._id,
-          plateNumber: defaultVehicles[2].plateNumber,
-          vehicleType: defaultVehicles[2].vehicleType
-        },
-        vehiclePlate: defaultVehicles[2].plateNumber,
-        driverId: {
-          _id: defaultDrivers[2]._id,
-          name: defaultDrivers[2].name,
-          phone: defaultDrivers[2].phone
-        },
-        driverName: defaultDrivers[2].name,
-        driverPhone: defaultDrivers[2].phone,
-        consignorId: {
-          _id: defaultCustomers[2]._id,
-          name: defaultCustomers[2].legalName,
-          phone: defaultCustomers[2].phone,
-          gstin: defaultCustomers[2].gstin
-        },
-        consignor: defaultCustomers[2].legalName,
-        consigneeId: {
-          _id: defaultCustomers[0]._id,
-          name: defaultCustomers[0].legalName,
-          phone: defaultCustomers[0].phone,
-          gstin: defaultCustomers[0].gstin
-        },
-        consignee: defaultCustomers[0].legalName,
-        consignorGstin: defaultCustomers[2].gstin,
-        consigneeGstin: defaultCustomers[0].gstin,
-        origin: "Ahmedabad Central Hub",
-        destination: "Delhi NCR Bilaspur Logistics",
-        goodsDescription: "Hot Rolled Steel Coils 42 MT",
-        weightMt: 42,
-        packagesCount: 8,
-        freightRate: 2976,
-        freightAmount: 125e3,
-        advanceAmount: 6e4,
-        balanceAmount: 65e3,
-        gstRate: 5,
-        gstAmount: 6250,
-        gstPayableBy: "CONSIGNOR",
-        status: "IN_TRANSIT",
-        createdAt: /* @__PURE__ */ new Date("2026-01-23T11:30:00.000Z")
-      }
-    ];
-    var defaultTrips = [
-      {
-        _id: "671e3b0f27d7a87e3cbb0070",
-        companyId: defaultTenant._id,
-        tripNumber: "TRP-2026-001",
-        loadId: {
-          _id: defaultLoads[0]._id,
-          loadNumber: defaultLoads[0].loadNumber
-        },
-        loadNumber: defaultLoads[0].loadNumber,
-        vehicleId: {
-          _id: defaultVehicles[0]._id,
-          plateNumber: defaultVehicles[0].plateNumber,
-          vehicleType: defaultVehicles[0].vehicleType,
-          capacityTonnage: defaultVehicles[0].capacityTonnage
-        },
-        vehiclePlate: defaultVehicles[0].plateNumber,
-        driverId: {
-          _id: defaultDrivers[0]._id,
-          name: defaultDrivers[0].name,
-          phone: defaultDrivers[0].phone,
-          licenseNumber: defaultDrivers[0].licenseNumber
-        },
-        driverName: defaultDrivers[0].name,
-        driverPhone: defaultDrivers[0].phone,
-        origin: "Ahmedabad, Gujarat",
-        destination: "Mumbai, Maharashtra",
-        status: "CLOSED",
-        odometerStart: 142100,
-        odometerEnd: 142640,
-        totalDistanceKm: 540,
-        stops: [
-          {
-            _id: "trp_stp_1_1",
-            sequence: 1,
-            stopType: "PICKUP",
-            locationName: "Ahmedabad Central Transport Hub",
-            status: "COMPLETED",
-            allocatedQuantity: 65,
-            deliveredQuantity: 65,
-            allocatedWeightMt: 32.5
-          },
-          {
-            _id: "trp_stp_1_2",
-            sequence: 2,
-            stopType: "DELIVERY",
-            locationName: "Nhava Sheva JNPT Port Yard",
-            status: "COMPLETED",
-            allocatedQuantity: 65,
-            deliveredQuantity: 65,
-            allocatedWeightMt: 32.5
-          }
-        ],
-        expenses: [
-          { _id: "exp_1", category: "FUEL", amount: 14200, notes: "HPCL Highway Pump Vadodara" },
-          { _id: "exp_2", category: "TOLL", amount: 2850, notes: "Fastag Automatic Deductions NH-48" },
-          { _id: "exp_3", category: "DRIVER_ALLOWANCE", amount: 2500, notes: "Bata / Food allowance" }
-        ],
-        totalExpenses: 19550,
-        startedAt: /* @__PURE__ */ new Date("2026-01-20T09:00:00.000Z"),
-        completedAt: /* @__PURE__ */ new Date("2026-01-21T18:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0071",
-        companyId: defaultTenant._id,
-        tripNumber: "TRP-2026-002",
-        loadId: {
-          _id: defaultLoads[1]._id,
-          loadNumber: defaultLoads[1].loadNumber
-        },
-        loadNumber: defaultLoads[1].loadNumber,
-        vehicleId: {
-          _id: defaultVehicles[1]._id,
-          plateNumber: defaultVehicles[1].plateNumber,
-          vehicleType: defaultVehicles[1].vehicleType,
-          capacityTonnage: defaultVehicles[1].capacityTonnage
-        },
-        vehiclePlate: defaultVehicles[1].plateNumber,
-        driverId: {
-          _id: defaultDrivers[1]._id,
-          name: defaultDrivers[1].name,
-          phone: defaultDrivers[1].phone,
-          licenseNumber: defaultDrivers[1].licenseNumber
-        },
-        driverName: defaultDrivers[1].name,
-        driverPhone: defaultDrivers[1].phone,
-        origin: "Mundra Port, Gujarat",
-        destination: "Pune Chakan, Maharashtra",
-        status: "IN_TRANSIT",
-        odometerStart: 98450,
-        totalDistanceKm: 890,
-        currentLocation: "NH-48 Near Navsari Bypass, Speed: 62 km/h",
-        stops: [
-          {
-            _id: "trp_stp_2_1",
-            sequence: 1,
-            stopType: "PICKUP",
-            locationName: "Mundra Port Container Terminal",
-            status: "COMPLETED",
-            allocatedQuantity: 140,
-            deliveredQuantity: 140,
-            allocatedWeightMt: 28
-          },
-          {
-            _id: "trp_stp_2_2",
-            sequence: 2,
-            stopType: "DELIVERY",
-            locationName: "Pune Chakan Auto Corridor Hub",
-            status: "PENDING",
-            allocatedQuantity: 140,
-            deliveredQuantity: 0,
-            allocatedWeightMt: 28
-          }
-        ],
-        expenses: [
-          { _id: "exp_4", category: "FUEL", amount: 18400, notes: "IOCL Mundra Exit" },
-          { _id: "exp_5", category: "TOLL", amount: 3100, notes: "Fastag Samakhiyali Toll" }
-        ],
-        totalExpenses: 21500,
-        startedAt: /* @__PURE__ */ new Date("2026-01-22T10:30:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0072",
-        companyId: defaultTenant._id,
-        tripNumber: "TRP-2026-003",
-        loadId: {
-          _id: defaultLoads[2]._id,
-          loadNumber: defaultLoads[2].loadNumber
-        },
-        loadNumber: defaultLoads[2].loadNumber,
-        vehicleId: {
-          _id: defaultVehicles[2]._id,
-          plateNumber: defaultVehicles[2].plateNumber,
-          vehicleType: defaultVehicles[2].vehicleType,
-          capacityTonnage: defaultVehicles[2].capacityTonnage
-        },
-        vehiclePlate: defaultVehicles[2].plateNumber,
-        driverId: {
-          _id: defaultDrivers[2]._id,
-          name: defaultDrivers[2].name,
-          phone: defaultDrivers[2].phone,
-          licenseNumber: defaultDrivers[2].licenseNumber
-        },
-        driverName: defaultDrivers[2].name,
-        driverPhone: defaultDrivers[2].phone,
-        origin: "Ahmedabad, Gujarat",
-        destination: "Delhi NCR, Haryana",
-        status: "IN_TRANSIT",
-        odometerStart: 72100,
-        totalDistanceKm: 950,
-        currentLocation: "NH-48 Near Jaipur Express Corridor, Speed: 58 km/h",
-        stops: [
-          {
-            _id: "trp_stp_3_1",
-            sequence: 1,
-            stopType: "PICKUP",
-            locationName: "Ahmedabad Central Transport Hub",
-            status: "COMPLETED",
-            allocatedQuantity: 8,
-            deliveredQuantity: 8,
-            allocatedWeightMt: 42
-          },
-          {
-            _id: "trp_stp_3_2",
-            sequence: 2,
-            stopType: "DELIVERY",
-            locationName: "Delhi NCR Logistics Center",
-            status: "PENDING",
-            allocatedQuantity: 8,
-            deliveredQuantity: 0,
-            allocatedWeightMt: 42
-          }
-        ],
-        expenses: [
-          { _id: "exp_6", category: "FUEL", amount: 22e3, notes: "BPCL Himatnagar Bypass" }
-        ],
-        totalExpenses: 22e3,
-        startedAt: /* @__PURE__ */ new Date("2026-01-23T12:00:00.000Z")
-      }
-    ];
-    var defaultPods = [
-      {
-        _id: "671e3b0f27d7a87e3cbb0080",
-        companyId: defaultTenant._id,
-        podNumber: "POD-2026-0001",
-        loadId: {
-          _id: defaultLoads[0]._id,
-          loadNumber: defaultLoads[0].loadNumber
-        },
-        loadNumber: defaultLoads[0].loadNumber,
-        tripId: {
-          _id: "671e3b0f27d7a87e3cbb0070",
-          tripNumber: "TRP-2026-001"
-        },
-        tripNumber: "TRP-2026-001",
-        status: "VERIFIED",
-        receivedBy: "Gaurav Mehta (Warehouse Manager)",
-        receiverPhone: "+91 98200 11990",
-        quantityDelivered: 65,
-        deliveredAt: /* @__PURE__ */ new Date("2026-01-21T17:30:00.000Z"),
-        verifiedAt: /* @__PURE__ */ new Date("2026-01-21T19:00:00.000Z"),
-        verifiedBy: "Lead System Administrator",
-        remarks: "Goods delivered in sound condition. Clean receipt stamped without shortage or damage.",
-        documentUrl: "/storage/demo/pod_signed_0001.pdf",
-        fileName: "pod_LD_2026_0001.pdf",
-        createdAt: /* @__PURE__ */ new Date("2026-01-21T17:45:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0081",
-        companyId: defaultTenant._id,
-        podNumber: "POD-2026-0002",
-        loadId: {
-          _id: defaultLoads[1]._id,
-          loadNumber: defaultLoads[1].loadNumber
-        },
-        loadNumber: defaultLoads[1].loadNumber,
-        tripId: {
-          _id: "671e3b0f27d7a87e3cbb0071",
-          tripNumber: "TRP-2026-002"
-        },
-        tripNumber: "TRP-2026-002",
-        status: "PENDING_VERIFICATION",
-        quantityDelivered: 140,
-        receivedBy: "Ketan Trivedi (Security Gate)",
-        receiverPhone: "+91 98250 77662",
-        remarks: "Consignment received at gate. Awaiting warehouse stamp verification.",
-        documentUrl: "/storage/demo/pod_signed_0002.pdf",
-        fileName: "pod_LD_2026_0002.pdf",
-        createdAt: /* @__PURE__ */ new Date("2026-01-22T10:30:00.000Z")
-      }
-    ];
-    var defaultMaintenance = [
-      {
-        _id: "671e3b0f27d7a87e3cbb0090",
-        companyId: defaultTenant._id,
-        maintenanceNumber: "MAINT-2026-001",
-        vehicleId: {
-          _id: defaultVehicles[4]._id,
-          plateNumber: defaultVehicles[4].plateNumber,
-          vehicleType: defaultVehicles[4].vehicleType,
-          make: defaultVehicles[4].make,
-          model: defaultVehicles[4].model,
-          status: defaultVehicles[4].status
-        },
-        vehiclePlate: defaultVehicles[4].plateNumber,
-        serviceType: "SCHEDULED_SERVICE",
-        maintenanceType: "SCHEDULED_SERVICE",
-        priority: "HIGH",
-        serviceCenter: {
-          name: "Mahindra Trucks Authorized Workshop Narol",
-          city: "Ahmedabad",
-          contactPhone: "+91 98251 00112"
-        },
-        cost: 18500,
-        costPaise: 185e4,
-        odometer: 64200,
-        odometerReadingKm: 64200,
-        status: "IN_PROGRESS",
-        description: "Engine oil replacement, fuel filter overhaul, transmission fluid check and brake adjustment.",
-        scheduledDate: "2026-01-25",
-        createdAt: /* @__PURE__ */ new Date("2026-01-24T10:00:00.000Z")
-      },
-      {
-        _id: "671e3b0f27d7a87e3cbb0091",
-        companyId: defaultTenant._id,
-        maintenanceNumber: "MAINT-2026-002",
-        vehicleId: {
-          _id: defaultVehicles[0]._id,
-          plateNumber: defaultVehicles[0].plateNumber,
-          vehicleType: defaultVehicles[0].vehicleType,
-          make: defaultVehicles[0].make,
-          model: defaultVehicles[0].model,
-          status: defaultVehicles[0].status
-        },
-        vehiclePlate: defaultVehicles[0].plateNumber,
-        serviceType: "PREVENTIVE",
-        maintenanceType: "PREVENTIVE",
-        priority: "MEDIUM",
-        serviceCenter: {
-          name: "Tata Commercial Service Hub Sanand",
-          city: "Ahmedabad",
-          contactPhone: "+91 98251 00334"
-        },
-        cost: 12400,
-        costPaise: 124e4,
-        odometer: 141e3,
-        odometerReadingKm: 141e3,
-        status: "COMPLETED",
-        description: "Heavy duty brake pad replacement and wheel alignment inspection.",
-        scheduledDate: "2026-01-18",
-        completedDate: "2026-01-18",
-        createdAt: /* @__PURE__ */ new Date("2026-01-17T09:00:00.000Z")
-      }
-    ];
+    var defaultVehicles = [];
+    var defaultDrivers = [];
+    var defaultCustomers = [];
+    var defaultLocations = [];
+    var defaultLoads = [];
+    var defaultBilties = [];
+    var defaultTrips = [];
+    var defaultPods = [];
+    var defaultMaintenance = [];
     var MockDataStore = class {
       constructor() {
         this.tenant = { ...defaultTenant };
@@ -95958,6 +94702,9 @@ var require_mockDataStore = __commonJS({
         this.trips = [...defaultTrips];
         this.pods = [...defaultPods];
         this.maintenance = [...defaultMaintenance];
+        this.whatsappMessages = [];
+        this.complianceNotifications = [];
+        this.bulkJobs = [];
         this.auditLogs = [];
         this.settings = { ...defaultTenant.settings };
       }
@@ -96017,6 +94764,11 @@ var require_mockDataStore = __commonJS({
       // Dashboard KPI Metrics Aggregation
       getMetrics() {
         const totalLoads = this.loads.length;
+        const todayStr = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+        const loadsToday = this.loads.filter((l2) => {
+          const d = l2.createdAt ? new Date(l2.createdAt).toISOString().split("T")[0] : "";
+          return d === todayStr;
+        }).length;
         const activeTrips = this.trips.filter((t) => t.status === "IN_TRANSIT").length;
         const availableVehicles = this.vehicles.filter((v) => v.status === "AVAILABLE").length;
         const onTripVehicles = this.vehicles.filter((v) => v.status === "ON_TRIP").length;
@@ -96027,16 +94779,37 @@ var require_mockDataStore = __commonJS({
         const totalAdvanceReceived = this.loads.reduce((sum, l2) => sum + (l2.advancePaid || 0), 0);
         const totalBalanceDue = this.loads.reduce((sum, l2) => sum + (l2.balanceDue || 0), 0);
         const totalExpenses = this.trips.reduce((sum, t) => sum + (t.totalExpenses || 0), 0);
+        let expiredDocs = 0;
+        let expiring15Days = 0;
+        let expiring30Days = 0;
+        const now = Date.now();
+        const checkDoc = (doc) => {
+          if (!doc || !doc.expiryDate) return;
+          const exp = new Date(doc.expiryDate).getTime();
+          const diffDays = Math.ceil((exp - now) / (1e3 * 60 * 60 * 24));
+          if (diffDays <= 0) expiredDocs++;
+          else if (diffDays <= 15) expiring15Days++;
+          else if (diffDays <= 30) expiring30Days++;
+        };
+        this.vehicles.forEach((v) => (v.documents || []).forEach(checkDoc));
+        this.drivers.forEach((d) => {
+          if (d.licenseExpiry) checkDoc({ expiryDate: d.licenseExpiry });
+          (d.documents || []).forEach(checkDoc);
+        });
+        const waTotal = (this.whatsappMessages || []).length;
+        const waSuccess = (this.whatsappMessages || []).filter((m) => m.status === "DELIVERED" || m.status === "SENT").length;
+        const waFailed = (this.whatsappMessages || []).filter((m) => m.status === "FAILED").length;
+        const waRate = waTotal > 0 ? Math.round(waSuccess / waTotal * 100) : 100;
         return {
           loads: {
             total: totalLoads,
-            today: 4,
+            today: loadsToday,
             byStatus: {
               CREATED: this.loads.filter((l2) => l2.status === "CREATED").length,
               VEHICLE_ASSIGNED: this.loads.filter((l2) => l2.status === "VEHICLE_ASSIGNED").length,
               IN_TRANSIT: this.loads.filter((l2) => l2.status === "IN_TRANSIT").length,
               DELIVERED: this.loads.filter((l2) => l2.status === "DELIVERED").length,
-              CANCELLED: 0
+              CANCELLED: this.loads.filter((l2) => l2.status === "CANCELLED").length
             },
             totalWeightMt: this.loads.reduce((sum, l2) => sum + (l2.weightMt || 0), 0)
           },
@@ -96045,7 +94818,7 @@ var require_mockDataStore = __commonJS({
             active: activeTrips,
             closed: this.trips.filter((t) => t.status === "CLOSED").length,
             byStatus: {
-              CREATED: 0,
+              CREATED: this.trips.filter((t) => t.status === "CREATED").length,
               IN_TRANSIT: activeTrips,
               CLOSED: this.trips.filter((t) => t.status === "CLOSED").length
             },
@@ -96083,23 +94856,23 @@ var require_mockDataStore = __commonJS({
             grossMargin: totalFreightBilled - totalExpenses
           },
           compliance: {
-            expired: 0,
-            expiring15Days: 1,
-            expiring30Days: 2,
-            vehicles: { expired: 0, expiring15: 1, expiring30: 1 },
-            drivers: { expired: 0, expiring15: 0, expiring30: 1 }
+            expired: expiredDocs,
+            expiring15Days,
+            expiring30Days,
+            vehicles: { expired: 0, expiring15: 0, expiring30: 0 },
+            drivers: { expired: 0, expiring15: 0, expiring30: 0 }
           },
           pod: {
             pendingSubmission: this.pods.filter((p) => p.status === "PENDING_SUBMISSION").length,
             pendingVerification: this.pods.filter((p) => p.status === "SUBMITTED").length,
             verified: this.pods.filter((p) => p.status === "VERIFIED").length,
-            rejected: 0
+            rejected: this.pods.filter((p) => p.status === "REJECTED").length
           },
           whatsapp: {
-            total: 48,
-            successful: 47,
-            failed: 1,
-            deliverySuccessRate: 98
+            total: waTotal,
+            successful: waSuccess,
+            failed: waFailed,
+            deliverySuccessRate: waRate
           }
         };
       }
@@ -247573,8 +246346,8 @@ var require_btsDocs_service = __commonJS({
             y += 24;
             doc.moveTo(margin + 4, y).lineTo(pageWidth - margin - 4, y).lineWidth(0.5).strokeColor("#94a3b8").stroke();
             y += 14;
-            const toParty = data.consignee?.name || data.customer?.name || data.toParty || data.consignor?.name || "M/S. RELIANCE INDUSTRIES LTD / GUJARAT DISTRIBUTORS";
-            const toCity = data.consignee?.city || data.deliveryLocation?.city || data.toStation || "SURAT / MUMBAI";
+            const toParty = data.consignee?.name || data.customer?.name || data.toParty || data.consignor?.name || "-";
+            const toCity = data.consignee?.city || data.deliveryLocation?.city || data.toStation || "";
             doc.font("Helvetica-Bold").fontSize(10.5).fillColor(this.darkText);
             doc.text("To,", margin + 10, y);
             doc.font("Helvetica").fontSize(10.5).fillColor("#0f172a");
@@ -247590,13 +246363,13 @@ var require_btsDocs_service = __commonJS({
             const rowHeight = 24;
             const labelColWidth = 180;
             const valueColWidth = printableWidth - 20 - labelColWidth;
-            const vehicleNo = data.vehicle?.registrationNumber || data.vehicleNumber || "GJ-06-AX-8912";
-            const station = data.toStation || data.destination || data.deliveryLocation?.name || "Surat / Vapi Hub";
-            const weight = data.weight || (data.weightMt ? `${data.weightMt} MT` : "15.50 MT (15,500 KGS)");
-            const freightRate = data.rate || data.freightAmount || 32500;
-            const advanceAmount = data.advanceAmount !== void 0 ? data.advanceAmount : 15e3;
-            const balanceAmount = data.balanceAmount !== void 0 ? data.balanceAmount : Number(freightRate) - Number(advanceAmount);
-            const paymentMode = data.paymentTerm || data.paymentMode || "To Pay / To be billed";
+            const vehicleNo = data.vehicle?.registrationNumber || data.vehicleNumber || "-";
+            const station = data.toStation || data.destination || data.deliveryLocation?.name || "-";
+            const weight = data.weight || (data.weightMt ? `${data.weightMt} MT` : "-");
+            const freightRate = Number(data.rate || data.freightAmount || 0);
+            const advanceAmount = Number(data.advanceAmount !== void 0 ? data.advanceAmount : data.advancePaid || 0);
+            const balanceAmount = Number(data.balanceAmount !== void 0 ? data.balanceAmount : Math.max(0, freightRate - advanceAmount));
+            const paymentMode = data.paymentTerm || data.paymentMode || "To Pay";
             const fields = [
               { label: "We have sent Truck / Tempo No.", value: vehicleNo, bold: true },
               { label: "For Station", value: station, bold: true },
@@ -247729,14 +246502,14 @@ var require_btsDocs_service = __commonJS({
             const infoY = y;
             const colW = printableWidth / 2;
             const rowH = 18;
-            const fromStation = data.fromStation || data.originLocation?.name || "Vadodara Hub";
-            const toStation = data.toStation || data.destinationLocation?.name || "Vapi / Mumbai Terminal";
-            const truckNo = data.vehicle?.registrationNumber || data.vehicleNumber || "GJ-06-AX-8912";
-            const driverName = data.driver?.name || data.driverName || "Ramesh Patel";
-            const ownerName = data.ownerName || data.vehicle?.ownerName || "Barkat Tempo Service";
-            const phoneNo = data.driver?.phone || data.phoneNo || "98765 43210";
-            const ownerAddress = data.ownerAddress || "Golden Chokdi, Vadodara";
-            const transporterName = data.transporterName || "BTS Logistics Division";
+            const fromStation = data.fromStation || data.originLocation?.name || "-";
+            const toStation = data.toStation || data.destinationLocation?.name || "-";
+            const truckNo = data.vehicle?.registrationNumber || data.vehicleNumber || "-";
+            const driverName = data.driver?.name || data.driverName || "-";
+            const ownerName = data.ownerName || data.vehicle?.ownerName || company.tradeName || "Barkat Tempo Service";
+            const phoneNo = data.driver?.phone || data.phoneNo || "-";
+            const ownerAddress = data.ownerAddress || (company.address ? `${company.address.street}, ${company.address.city}` : "Golden Chokdi, Vadodara");
+            const transporterName = data.transporterName || company.tradeName || "Barkat Tempo Service";
             const tripDetails = [
               [
                 { label: "From", value: fromStation },
@@ -247787,38 +246560,39 @@ var require_btsDocs_service = __commonJS({
               });
               hx += col.width;
             });
-            const items = data.items || [
-              { name: "Reliance Industries Hazira (LR-001)", freight: 28e3, advance: 15e3, balance: 13e3, topay: 0 },
-              { name: "Gujarat Glass Works Ltd (LR-002)", freight: 18500, advance: 8e3, balance: 10500, topay: 0 },
-              { name: "L&T Heavy Engineering Baroda", freight: 22e3, advance: 1e4, balance: 12e3, topay: 0 },
-              { name: "General Consignment Parcel", freight: 6500, advance: 0, balance: 0, topay: 6500 }
-            ];
+            const items = data.items || (data.freightAmount ? [{ name: data.goodsDescription || "Consignment Freight", freight: data.freightAmount, advance: data.advanceAmount || 0, balance: data.balanceAmount || 0, topay: 0 }] : []);
             let rY = freightTableY + ftHeaderH;
-            items.slice(0, 5).forEach((item, idx) => {
-              if (idx % 2 === 1) {
-                doc.rect(margin + 4, rY, printableWidth - 8, ftRowH).fill("#f8fafc");
-              }
-              let cx = margin + 4;
-              ftCols.forEach((col) => {
-                let val = "";
-                if (col.key === "name") val = item.name;
-                else if (item[col.key] !== void 0) val = `\u20B9 ${this._formatInr(item[col.key])}`;
-                doc.font("Helvetica").fontSize(7.5).fillColor(this.darkText).text(val, cx + 4, rY + 4, {
-                  width: col.width - 8,
-                  align: col.align || "left"
-                });
-                cx += col.width;
-              });
+            if (items.length === 0) {
+              doc.rect(margin + 4, rY, printableWidth - 8, ftRowH).fill("#ffffff");
+              doc.font("Helvetica-Oblique").fontSize(8).fillColor("#64748b").text("No freight line items recorded for this trip memo", margin + 14, rY + 5);
               rY += ftRowH;
-            });
+            } else {
+              items.slice(0, 5).forEach((item, idx) => {
+                if (idx % 2 === 1) {
+                  doc.rect(margin + 4, rY, printableWidth - 8, ftRowH).fill("#f8fafc");
+                }
+                let cx = margin + 4;
+                ftCols.forEach((col) => {
+                  let val = "";
+                  if (col.key === "name") val = item.name;
+                  else if (item[col.key] !== void 0) val = `\u20B9 ${this._formatInr(item[col.key])}`;
+                  doc.font("Helvetica").fontSize(7.5).fillColor(this.darkText).text(val, cx + 4, rY + 4, {
+                    width: col.width - 8,
+                    align: col.align || "left"
+                  });
+                  cx += col.width;
+                });
+                rY += ftRowH;
+              });
+            }
             doc.rect(margin + 4, freightTableY, printableWidth - 8, rY - freightTableY).lineWidth(0.6).strokeColor("#94a3b8").stroke();
             y = rY + 10;
             const dualGridY = y;
             const halfWidth = (printableWidth - 14) / 2;
-            const leftAdvance = data.driverAdvance || 33e3;
-            const leftBalance = data.driverBalance || 35500;
-            const leftLocal = data.localFreight || 2500;
-            const leftHamali = data.hamali || 1800;
+            const leftAdvance = Number(data.driverAdvance || data.advanceAmount || 0);
+            const leftBalance = Number(data.driverBalance || data.balanceAmount || 0);
+            const leftLocal = Number(data.localFreight || 0);
+            const leftHamali = Number(data.hamali || 0);
             const leftTotal = leftAdvance + leftBalance + leftLocal + leftHamali;
             const leftRows = [
               { label: "Advance", value: `\u20B9 ${this._formatInr(leftAdvance)}` },
@@ -247827,15 +246601,15 @@ var require_btsDocs_service = __commonJS({
               { label: "Hamali", value: `\u20B9 ${this._formatInr(leftHamali)}` },
               { label: "Total", value: `\u20B9 ${this._formatInr(leftTotal)}`, bold: true, color: this.primaryColor }
             ];
-            const comm = data.commission || 1500;
-            const tapal = data.tapal || 150;
-            const guide = data.guide || 200;
-            const crane = data.craneGodown || 800;
-            const incHamali = data.incomingHamali || 600;
-            const localRight = data.localDeduction || 500;
-            const handLoan = data.handLoan || 2e3;
-            const memoHandLoan = data.memoHandLoan || 1e3;
-            const diesel = data.diesel || 14e3;
+            const comm = Number(data.commission || 0);
+            const tapal = Number(data.tapal || 0);
+            const guide = Number(data.guide || 0);
+            const crane = Number(data.craneGodown || 0);
+            const incHamali = Number(data.incomingHamali || 0);
+            const localRight = Number(data.localDeduction || 0);
+            const handLoan = Number(data.handLoan || 0);
+            const memoHandLoan = Number(data.memoHandLoan || 0);
+            const diesel = Number(data.diesel || 0);
             const rightTotal = comm + tapal + guide + crane + incHamali + localRight + handLoan + memoHandLoan + diesel;
             const rightRows = [
               { label: "Commission", value: `\u20B9 ${this._formatInr(comm)}` },
@@ -253257,67 +252031,10 @@ var require_mockRouter = __commonJS({
       next();
     });
     if (!mockStore2.whatsappMessages) {
-      mockStore2.whatsappMessages = [
-        {
-          _id: "wa_msg_101",
-          recipientPhone: "+91 98200 11990",
-          recipientName: "Gaurav Mehta (Asian Paints)",
-          templateName: "DELIVERY_COMPLETED",
-          messageType: "TEMPLATE",
-          renderedMessage: "\u2705 Consignment Delivered Successfully. Load LD-2026-0001 has arrived at Mumbai JNPT. Proof of Delivery verified.",
-          documentFileName: "BTS-Loading-Receipt-LD-2026-0001.pdf",
-          provider: "META_WHATSAPP_CLOUD",
-          providerMessageId: "wamid.HBgMOTE5ODIwMDExOTkwFQIAERgSRjQ2OTg0M0IxMjM0NTY3OAA=",
-          status: "DELIVERED",
-          retryCount: 0,
-          maxRetries: 3,
-          deliveredAt: new Date(Date.now() - 36e5).toISOString(),
-          createdAt: new Date(Date.now() - 36e5).toISOString(),
-          relatedEntity: { entityType: "LOAD", referenceNumber: "LD-2026-0001" }
-        },
-        {
-          _id: "wa_msg_102",
-          recipientPhone: "+91 98250 77662",
-          recipientName: "Ketan Trivedi (Adani Wilmar)",
-          templateName: "LOAD_DISPATCHED",
-          messageType: "TEMPLATE",
-          renderedMessage: "\u{1F69A} Barkat Tempo Service: Consignment LD-2026-0002 dispatched via MH12CD5678. Driver: Vikram Singh.",
-          provider: "META_WHATSAPP_CLOUD",
-          providerMessageId: "wamid.HBgMOTE5ODIwMDExOTkwFQIAERgSRjQ2OTg0M0IxMjM0NTY3OUI=",
-          status: "DELIVERED",
-          retryCount: 0,
-          maxRetries: 3,
-          deliveredAt: new Date(Date.now() - 72e5).toISOString(),
-          createdAt: new Date(Date.now() - 72e5).toISOString(),
-          relatedEntity: { entityType: "TRIP", referenceNumber: "TRP-2026-002" }
-        }
-      ];
+      mockStore2.whatsappMessages = [];
     }
     if (!mockStore2.complianceNotifications) {
-      mockStore2.complianceNotifications = [
-        {
-          _id: "notif_1",
-          title: "Vehicle Insurance Expiring Soon",
-          message: "Comprehensive Commercial Insurance for MH12CD5678 expires in 17 days (2026-11-15). Renew promptly to avoid transit penalties.",
-          severity: "WARNING",
-          entityType: "VEHICLE",
-          referenceNumber: "MH12CD5678",
-          daysLeft: 17,
-          isRead: false,
-          createdAt: (/* @__PURE__ */ new Date()).toISOString()
-        },
-        {
-          _id: "notif_2",
-          title: "Fitness Certificate Verification Valid",
-          message: "Fitness certification for GJ01AB1234 is verified and valid for 62 days.",
-          severity: "INFO",
-          entityType: "VEHICLE",
-          referenceNumber: "GJ01AB1234",
-          daysLeft: 62,
-          isRead: true,
-          createdAt: new Date(Date.now() - 864e5).toISOString()
-        }
-      ];
+      mockStore2.complianceNotifications = [];
     }
     if (!mockStore2.bulkJobs) {
       mockStore2.bulkJobs = [];
@@ -253402,36 +252119,85 @@ var require_mockRouter = __commonJS({
       for (let i = days - 1; i >= 0; i--) {
         const d = new Date(today);
         d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split("T")[0];
+        const dayLoads = mockStore2.loads.filter((l2) => {
+          const lDate = l2.createdAt ? new Date(l2.createdAt).toISOString().split("T")[0] : "";
+          return lDate === dateStr;
+        });
+        const dayTrips = mockStore2.trips.filter((t) => {
+          const tDate = t.startedAt || t.createdAt ? new Date(t.startedAt || t.createdAt).toISOString().split("T")[0] : "";
+          return tDate === dateStr;
+        });
+        const loadCount = dayLoads.length;
+        const freight = dayLoads.reduce((sum, l2) => sum + (l2.freightAmount || 0), 0);
+        const weightMt = dayLoads.reduce((sum, l2) => sum + (l2.weightMt || l2.totalWeightMt || 0), 0);
+        const tripCount = dayTrips.length;
+        const expenses = dayTrips.reduce((sum, t) => sum + (t.totalExpenses || 0), 0);
         trends.push({
-          date: d.toISOString().split("T")[0],
-          loadCount: Math.floor(4 + i % 3),
-          freight: Math.floor(12e4 + i * 15e3),
-          weightMt: Math.floor(90 + i * 12),
-          tripCount: Math.floor(3 + i % 2),
-          expenses: Math.floor(25e3 + i * 3e3)
+          date: dateStr,
+          loadCount,
+          freight,
+          weightMt,
+          tripCount,
+          expenses
         });
       }
       return ok(res, trends, "Trend series loaded");
     });
     router.get("/dashboard/alerts", (req, res) => {
-      const alerts = [
-        {
-          id: "alt_1",
-          severity: "WARNING",
-          type: "COMPLIANCE",
-          title: "Vehicle Insurance Expiring Soon",
-          message: "Insurance for MH12CD5678 expires in 17 days. Renew to avoid transit penalties.",
-          link: "/app/compliance"
-        },
-        {
-          id: "alt_2",
-          severity: "INFO",
-          type: "TRIP",
-          title: "Active High-Value Consignment",
-          message: "Trip TRP-2026-003 carrying Hot Rolled Steel Coils is currently passing Jaipur corridor.",
-          link: "/app/trips"
+      const alerts = [];
+      const now = Date.now();
+      mockStore2.vehicles.forEach((v) => {
+        (v.documents || []).forEach((doc) => {
+          if (!doc.expiryDate) return;
+          const exp = new Date(doc.expiryDate).getTime();
+          const daysLeft = Math.ceil((exp - now) / (1e3 * 60 * 60 * 24));
+          if (daysLeft <= 0) {
+            alerts.push({
+              id: `alt_v_exp_${doc._id || doc.documentNumber || Math.random()}`,
+              severity: "CRITICAL",
+              type: "COMPLIANCE",
+              title: `Vehicle ${doc.documentType || "Document"} Expired`,
+              message: `${doc.documentType || "Document"} for vehicle ${v.plateNumber} expired ${Math.abs(daysLeft)} days ago.`,
+              link: "/app/compliance"
+            });
+          } else if (daysLeft <= 30) {
+            alerts.push({
+              id: `alt_v_warn_${doc._id || doc.documentNumber || Math.random()}`,
+              severity: "WARNING",
+              type: "COMPLIANCE",
+              title: `Vehicle ${doc.documentType || "Document"} Expiring Soon`,
+              message: `${doc.documentType || "Document"} for vehicle ${v.plateNumber} expires in ${daysLeft} days.`,
+              link: "/app/compliance"
+            });
+          }
+        });
+      });
+      mockStore2.drivers.forEach((d) => {
+        if (d.licenseExpiry) {
+          const exp = new Date(d.licenseExpiry).getTime();
+          const daysLeft = Math.ceil((exp - now) / (1e3 * 60 * 60 * 24));
+          if (daysLeft <= 0) {
+            alerts.push({
+              id: `alt_d_exp_${d._id}`,
+              severity: "CRITICAL",
+              type: "COMPLIANCE",
+              title: "Driver License Expired",
+              message: `Driving license for ${d.name} expired ${Math.abs(daysLeft)} days ago.`,
+              link: "/app/drivers"
+            });
+          } else if (daysLeft <= 30) {
+            alerts.push({
+              id: `alt_d_warn_${d._id}`,
+              severity: "WARNING",
+              type: "COMPLIANCE",
+              title: "Driver License Expiring Soon",
+              message: `Driving license for ${d.name} expires in ${daysLeft} days.`,
+              link: "/app/drivers"
+            });
+          }
         }
-      ];
+      });
       return ok(res, alerts, "Active operational alerts");
     });
     router.get("/telematics/status", (req, res) => {
@@ -253672,9 +252438,9 @@ var require_mockRouter = __commonJS({
     router.post("/loads", (req, res) => {
       const b = req.body || {};
       const loadNum = "LD-2026-" + String(mockStore2.loads.length + 1).padStart(4, "0");
-      const customer = mockStore2.customers.find((c) => c._id === b.customerId) || mockStore2.customers[0];
+      const customer = mockStore2.customers.find((c) => c._id === b.customerId);
       const consignor = mockStore2.customers.find((c) => c._id === (b.consignorId || b.customerId)) || customer;
-      const consignee = mockStore2.customers.find((c) => c._id === (b.consigneeId || b.customerId)) || mockStore2.customers[4] || customer;
+      const consignee = mockStore2.customers.find((c) => c._id === (b.consigneeId || b.customerId)) || customer;
       const f = b.financials || {};
       const basePaise = f.baseFreightPaise || Math.round((parseFloat(b.freightAmount) || 45e3) * 100);
       const loadingPaise = f.loadingPaise || 0;
@@ -253690,7 +252456,7 @@ var require_mockRouter = __commonJS({
       const weight = parseFloat(b.totalWeightMt || b.weightMt || "25.0");
       const qty = parseInt(b.totalQuantity || b.quantity || "50", 10);
       const stops = Array.isArray(b.stops) && b.stops.length > 0 ? b.stops.map((s, idx) => {
-        const loc = mockStore2.locations.find((l2) => l2._id === s.locationId) || { name: s.locationName || "Hub", city: "Vadodara", address: "NH-48" };
+        const loc = mockStore2.locations.find((l2) => l2._id === s.locationId) || { name: s.locationName || (idx === 0 ? b.originCity || "Origin" : b.destinationCity || "Destination"), city: idx === 0 ? b.originCity || "Vadodara" : b.destinationCity || "Surat", address: "Transit Hub" };
         return {
           _id: "stp_" + Date.now() + "_" + idx,
           sequence: s.sequence || idx + 1,
@@ -253706,8 +252472,8 @@ var require_mockRouter = __commonJS({
           _id: "stp_" + Date.now() + "_1",
           sequence: 1,
           stopType: "PICKUP",
-          locationId: mockStore2.locations[0],
-          locationName: mockStore2.locations[0]?.name || "Vadodara Hub",
+          locationId: mockStore2.locations[0] || null,
+          locationName: mockStore2.locations[0]?.name || b.originCity || "Vadodara Hub",
           allocatedQuantity: qty,
           allocatedWeightMt: weight,
           status: "PENDING"
@@ -253716,39 +252482,27 @@ var require_mockRouter = __commonJS({
           _id: "stp_" + Date.now() + "_2",
           sequence: 2,
           stopType: "DELIVERY",
-          locationId: mockStore2.locations[2] || mockStore2.locations[0],
-          locationName: mockStore2.locations[2]?.name || "Mumbai Terminal",
+          locationId: mockStore2.locations[1] || mockStore2.locations[0] || null,
+          locationName: mockStore2.locations[1]?.name || b.destinationCity || "Surat / Mumbai Hub",
           allocatedQuantity: qty,
           allocatedWeightMt: weight,
           status: "PENDING"
         }
       ];
+      const customerObj = customer ? { _id: customer._id, name: customer.legalName, legalName: customer.legalName, phone: customer.phone } : { _id: "cust_direct", name: b.customerName || b.consignorName || "Consignor Shipper", legalName: b.customerName || b.consignorName || "Consignor Shipper", phone: b.customerPhone || "" };
+      const consignorObj = consignor ? { _id: consignor._id, name: consignor.legalName, legalName: consignor.legalName, phone: consignor.phone } : { _id: "consignor_direct", name: b.consignorName || b.customerName || "Consignor Shipper", legalName: b.consignorName || b.customerName || "Consignor Shipper", phone: b.consignorPhone || "" };
+      const consigneeObj = consignee ? { _id: consignee._id, name: consignee.legalName, legalName: consignee.legalName, phone: consignee.phone } : { _id: "consignee_direct", name: b.consigneeName || "Consignee Receiver", legalName: b.consigneeName || "Consignee Receiver", phone: b.consigneePhone || "" };
       const newLoad = {
         _id: "ld_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
         loadNumber: loadNum,
         orderDate: (/* @__PURE__ */ new Date()).toISOString(),
-        customerId: {
-          _id: customer._id,
-          name: customer.legalName,
-          legalName: customer.legalName,
-          phone: customer.phone
-        },
-        customer,
-        consignorId: {
-          _id: consignor._id,
-          name: consignor.legalName,
-          legalName: consignor.legalName,
-          phone: consignor.phone
-        },
-        consigneeId: {
-          _id: consignee._id,
-          name: consignee.legalName,
-          legalName: consignee.legalName,
-          phone: consignee.phone
-        },
-        consignorName: consignor.legalName,
-        consigneeName: consignee.legalName,
+        customerId: customerObj,
+        customer: customer || null,
+        consignorId: consignorObj,
+        consigneeId: consigneeObj,
+        consignorName: consignorObj.legalName,
+        consigneeName: consigneeObj.legalName,
         originCity: b.originCity || stops[0]?.locationName || "Vadodara, GJ",
         origin: b.originCity || stops[0]?.locationName || "Vadodara, GJ",
         destinationCity: b.destinationCity || stops[stops.length - 1]?.locationName || "Mumbai, MH",
@@ -253898,17 +252652,17 @@ var require_mockRouter = __commonJS({
         loadNumber: b.loadNumber || "LD-2026-0001",
         loadId: { _id: "ld_demo", loadNumber: b.loadNumber || "LD-2026-0001" },
         lrId: { _id: "lr_demo", lrNumber: lrNum },
-        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
-        vehicleId: { plateNumber: b.vehiclePlate || "GJ01AB1234", vehicleType: "Heavy Commercial Vehicle (HCV)" },
-        driverName: b.driverName || "Ramesh Patel",
-        driverId: { name: b.driverName || "Ramesh Patel", phone: "93776 10333" },
-        consignor: b.consignor || "Reliance Industries Limited",
-        consignorId: { name: b.consignor || "Reliance Industries Limited", phone: "93776 10333" },
-        consignee: b.consignee || "Asian Paints Limited",
-        consigneeId: { name: b.consignee || "Asian Paints Limited", phone: "93776 10333" },
-        origin: b.origin || "Ahmedabad Central Hub",
-        destination: b.destination || "Mumbai Nhava Sheva",
-        goodsDescription: b.goodsDescription || "Industrial Consignment",
+        vehiclePlate: b.vehiclePlate || "",
+        vehicleId: { plateNumber: b.vehiclePlate || "", vehicleType: "Vehicle" },
+        driverName: b.driverName || "",
+        driverId: { name: b.driverName || "", phone: "" },
+        consignor: b.consignor || "",
+        consignorId: { name: b.consignor || "", phone: "" },
+        consignee: b.consignee || "",
+        consigneeId: { name: b.consignee || "", phone: "" },
+        origin: b.origin || "",
+        destination: b.destination || "",
+        goodsDescription: b.goodsDescription || "General Goods",
         weightMt: parseFloat(b.weightMt || "28.0"),
         freightAmount: freight,
         advanceAmount: advance,
@@ -253952,17 +252706,17 @@ var require_mockRouter = __commonJS({
         loadNumber: b.loadNumber || "LD-2026-0001",
         loadId: { _id: "ld_demo", loadNumber: b.loadNumber || "LD-2026-0001" },
         lrId: { _id: "lr_demo", lrNumber: lrNum },
-        vehiclePlate: b.vehiclePlate || "GJ01AB1234",
-        vehicleId: { plateNumber: b.vehiclePlate || "GJ01AB1234", vehicleType: "Heavy Commercial Vehicle (HCV)" },
-        driverName: b.driverName || "Ramesh Patel",
-        driverId: { name: b.driverName || "Ramesh Patel", phone: "93776 10333" },
-        consignor: b.consignor || "Reliance Industries Limited",
-        consignorId: { name: b.consignor || "Reliance Industries Limited", phone: "93776 10333" },
-        consignee: b.consignee || "Asian Paints Limited",
-        consigneeId: { name: b.consignee || "Asian Paints Limited", phone: "93776 10333" },
-        origin: b.origin || "Vadodara Central Hub",
-        destination: b.destination || "Mumbai Nhava Sheva",
-        goodsDescription: b.goodsDescription || "Commercial Consignment",
+        vehiclePlate: b.vehiclePlate || "",
+        vehicleId: { plateNumber: b.vehiclePlate || "", vehicleType: "Vehicle" },
+        driverName: b.driverName || "",
+        driverId: { name: b.driverName || "", phone: "" },
+        consignor: b.consignor || "",
+        consignorId: { name: b.consignor || "", phone: "" },
+        consignee: b.consignee || "",
+        consigneeId: { name: b.consignee || "", phone: "" },
+        origin: b.origin || "",
+        destination: b.destination || "",
+        goodsDescription: b.goodsDescription || "Commercial Goods",
         weightMt: parseFloat(b.weightMt || "28.0"),
         freightAmount: freight,
         advanceAmount: advance,
@@ -254058,9 +252812,9 @@ var require_mockRouter = __commonJS({
     });
     router.post("/trips", (req, res) => {
       const b = req.body || {};
-      const load = mockStore2.loads.find((l2) => l2._id === b.loadId) || mockStore2.loads[0];
-      const vehicle = mockStore2.vehicles.find((v) => v._id === b.vehicleId) || mockStore2.vehicles[0];
-      const driver = mockStore2.drivers.find((d) => d._id === b.driverId) || mockStore2.drivers[0];
+      const load = mockStore2.loads.find((l2) => l2._id === b.loadId || l2.loadNumber === b.loadNumber);
+      const vehicle = mockStore2.vehicles.find((v) => v._id === b.vehicleId || v.plateNumber === b.vehiclePlate);
+      const driver = mockStore2.drivers.find((d) => d._id === b.driverId || d.name === b.driverName);
       const tripNumber = "TRP-2026-" + String(mockStore2.trips.length + 1).padStart(3, "0");
       const stops = load && Array.isArray(load.stops) && load.stops.length > 0 ? load.stops.map((s, idx) => ({
         _id: "trp_stp_" + Date.now() + "_" + idx,
@@ -254076,62 +252830,52 @@ var require_mockRouter = __commonJS({
           _id: "trp_stp_" + Date.now() + "_1",
           sequence: 1,
           stopType: "PICKUP",
-          locationName: "Vadodara Central Logistics Hub",
+          locationName: load?.originCity || "Vadodara Central Logistics Hub",
           status: "COMPLETED",
-          allocatedQuantity: 50,
-          deliveredQuantity: 50,
-          allocatedWeightMt: 25
+          allocatedQuantity: load?.totalQuantity || 50,
+          deliveredQuantity: load?.totalQuantity || 50,
+          allocatedWeightMt: load?.totalWeightMt || 25
         },
         {
           _id: "trp_stp_" + Date.now() + "_2",
           sequence: 2,
           stopType: "DELIVERY",
-          locationName: "Destination Hub",
+          locationName: load?.destinationCity || "Destination Hub",
           status: "PENDING",
-          allocatedQuantity: 50,
+          allocatedQuantity: load?.totalQuantity || 50,
           deliveredQuantity: 0,
-          allocatedWeightMt: 25
+          allocatedWeightMt: load?.totalWeightMt || 25
         }
       ];
+      const loadIdObj = load ? { _id: load._id, loadNumber: load.loadNumber } : b.loadId ? { _id: b.loadId, loadNumber: b.loadNumber || "LD-DIRECT" } : null;
+      const vehicleIdObj = vehicle ? { _id: vehicle._id, plateNumber: vehicle.plateNumber, vehicleType: vehicle.vehicleType, capacityTonnage: vehicle.capacityTonnage } : b.vehiclePlate ? { _id: b.vehicleId || "veh_direct", plateNumber: b.vehiclePlate, vehicleType: "HCV" } : null;
+      const driverIdObj = driver ? { _id: driver._id, name: driver.name, phone: driver.phone, licenseNumber: driver.licenseNumber } : b.driverName ? { _id: b.driverId || "drv_direct", name: b.driverName, phone: b.driverPhone || "" } : null;
       const newTrip = {
         _id: "trp_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
         tripNumber,
-        loadId: {
-          _id: load._id,
-          loadNumber: load.loadNumber
-        },
-        loadNumber: load.loadNumber,
-        vehicleId: {
-          _id: vehicle._id,
-          plateNumber: vehicle.plateNumber,
-          vehicleType: vehicle.vehicleType,
-          capacityTonnage: vehicle.capacityTonnage
-        },
-        vehiclePlate: vehicle.plateNumber,
-        driverId: {
-          _id: driver._id,
-          name: driver.name,
-          phone: driver.phone,
-          licenseNumber: driver.licenseNumber
-        },
-        driverName: driver.name,
-        driverPhone: driver.phone,
-        origin: load.originCity || "Vadodara, Gujarat",
-        destination: load.destinationCity || "Mumbai, Maharashtra",
+        loadId: loadIdObj,
+        loadNumber: load?.loadNumber || b.loadNumber || "",
+        vehicleId: vehicleIdObj,
+        vehiclePlate: vehicle?.plateNumber || b.vehiclePlate || "",
+        driverId: driverIdObj,
+        driverName: driver?.name || b.driverName || "",
+        driverPhone: driver?.phone || b.driverPhone || "",
+        origin: load?.originCity || b.origin || "Vadodara, Gujarat",
+        destination: load?.destinationCity || b.destination || "Surat, Gujarat",
         status: "IN_TRANSIT",
         odometerStart: parseInt(b.odometerStart || "140000", 10),
-        totalDistanceKm: 480,
-        currentLocation: "NH-48 Golden Chokdi Outbound, Speed: 54 km/h",
-        driverAdvancePaise: b.driverAdvancePaise || 15e5,
+        totalDistanceKm: b.totalDistanceKm || 320,
+        currentLocation: "In Transit",
+        driverAdvancePaise: b.driverAdvancePaise || Math.round(parseFloat(b.driverAdvance || 0) * 100),
         stops,
         expenses: [],
         totalExpenses: 0,
         startedAt: /* @__PURE__ */ new Date()
       };
-      vehicle.status = "ON_TRIP";
-      driver.status = "ON_TRIP";
-      load.status = "IN_TRANSIT";
+      if (vehicle) vehicle.status = "ON_TRIP";
+      if (driver) driver.status = "ON_TRIP";
+      if (load) load.status = "IN_TRANSIT";
       mockStore2.trips.unshift(newTrip);
       return ok(res, newTrip, "Trip dispatched successfully", 201);
     });
@@ -254280,16 +253024,16 @@ var require_mockRouter = __commonJS({
     });
     router.post("/pod", upload.single("file"), (req, res) => {
       const b = req.body || {};
-      const trip = mockStore2.trips.find((t) => t._id === b.tripId) || mockStore2.trips[0];
+      const trip = mockStore2.trips.find((t) => t._id === b.tripId);
       const originalFileName = req.file ? req.file.originalname : b.fileName || "pod_signed_receipt.pdf";
       const newPod = {
         _id: "pod_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
         podNumber: "POD-2026-" + String(mockStore2.pods.length + 1).padStart(4, "0"),
-        loadId: trip?.loadId || { _id: "ld_demo", loadNumber: "LD-2026-0001" },
-        loadNumber: trip?.loadNumber || "LD-2026-0001",
-        tripId: trip ? { _id: trip._id, tripNumber: trip.tripNumber } : { _id: "trp_demo", tripNumber: "TRP-2026-001" },
-        tripNumber: trip?.tripNumber || "TRP-2026-001",
+        loadId: trip?.loadId || null,
+        loadNumber: trip?.loadNumber || b.loadNumber || "",
+        tripId: trip ? { _id: trip._id, tripNumber: trip.tripNumber } : null,
+        tripNumber: trip?.tripNumber || b.tripNumber || "",
         status: "PENDING_VERIFICATION",
         quantityDelivered: parseInt(b.quantityDelivered || "1", 10),
         receivedBy: b.receiverName || b.receivedBy || "Consignee Gate In Charge",
@@ -254315,16 +253059,18 @@ var require_mockRouter = __commonJS({
     router.get("/pod/:id/download", async (req, res) => {
       try {
         const pod = mockStore2.pods.find((p) => p._id === req.params.id) || {};
+        const trip = pod.tripId ? mockStore2.trips.find((t) => t._id === (pod.tripId._id || pod.tripId)) : null;
+        const load = pod.loadId ? mockStore2.loads.find((l2) => l2._id === (pod.loadId._id || pod.loadId)) : null;
         const pdfBuffer = await btsDocsService2.generateLoadingReceiptPdf({
-          lrNumber: pod.podNumber || "POD-2026",
+          lrNumber: pod.podNumber || pod.loadNumber || "POD-DOCUMENT",
           date: pod.createdAt || /* @__PURE__ */ new Date(),
-          vehicleNumber: "GJ-01-AB-1234",
-          toStation: "Mumbai Nhava Sheva",
-          weight: "32.5 MT",
-          freightAmount: 68500,
-          advanceAmount: 35e3,
-          balanceAmount: 33500,
-          consignee: { name: pod.receivedBy || "Consignee Manager", city: "Mumbai" }
+          vehicleNumber: trip?.vehiclePlate || load?.vehiclePlate || "-",
+          toStation: trip?.destination || load?.destinationCity || "-",
+          weight: load?.totalWeightMt ? `${load.totalWeightMt} MT` : "-",
+          freightAmount: load?.freightAmount || 0,
+          advanceAmount: load?.advancePaid || 0,
+          balanceAmount: load?.balanceDue || 0,
+          consignee: { name: pod.receivedBy || load?.consigneeName || "Consignee Receiver", city: trip?.destination || load?.destinationCity || "" }
         });
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", `attachment; filename="BTS-POD-${req.params.id}.pdf"`);
@@ -254376,9 +253122,37 @@ var require_mockRouter = __commonJS({
       }
     });
     router.get("/compliance/overview", (req, res) => {
+      let docTotal = 0;
+      let docValid = 0;
+      let docExpiring = 0;
+      let docExpired = 0;
+      const now = Date.now();
+      mockStore2.vehicles.forEach((v) => {
+        (v.documents || []).forEach((doc) => {
+          docTotal++;
+          const daysLeft = doc.expiryDate ? Math.ceil((new Date(doc.expiryDate).getTime() - now) / (1e3 * 60 * 60 * 24)) : 999;
+          if (daysLeft <= 0) docExpired++;
+          else if (daysLeft <= 30) docExpiring++;
+          else docValid++;
+        });
+      });
+      let driverTotal = mockStore2.drivers.length;
+      let driverValid = 0;
+      let driverExpiring = 0;
+      let driverExpired = 0;
+      mockStore2.drivers.forEach((d) => {
+        if (d.licenseExpiry) {
+          const daysLeft = Math.ceil((new Date(d.licenseExpiry).getTime() - now) / (1e3 * 60 * 60 * 24));
+          if (daysLeft <= 0) driverExpired++;
+          else if (daysLeft <= 30) driverExpiring++;
+          else driverValid++;
+        } else {
+          driverValid++;
+        }
+      });
       return ok(res, {
-        documents: { total: 12, valid: 11, expiringSoon: 1, expired: 0 },
-        drivers: { total: 5, valid: 5, expiringSoon: 0, expired: 0 }
+        documents: { total: docTotal, valid: docValid, expiringSoon: docExpiring, expired: docExpired },
+        drivers: { total: driverTotal, valid: driverValid, expiringSoon: driverExpiring, expired: driverExpired }
       });
     });
     router.get("/compliance/notifications", (req, res) => {
@@ -254388,10 +253162,14 @@ var require_mockRouter = __commonJS({
       });
     });
     router.post("/compliance/scan", (req, res) => {
+      let docCount = 0;
+      mockStore2.vehicles.forEach((v) => {
+        docCount += (v.documents || []).length;
+      });
       return ok(res, {
-        scannedVehicleDocuments: 12,
-        scannedDrivers: 5,
-        notificationsCreated: 1
+        scannedVehicleDocuments: docCount,
+        scannedDrivers: mockStore2.drivers.length,
+        notificationsCreated: mockStore2.complianceNotifications.length
       }, "Regulatory audit scan complete");
     });
     router.patch("/compliance/notifications/:id/read", (req, res) => {
@@ -254404,12 +253182,64 @@ var require_mockRouter = __commonJS({
       return ok(res, null, "All notifications marked as read");
     });
     router.get("/compliance", (req, res) => {
+      const documents = [];
+      const now = Date.now();
+      let expired = 0;
+      let expiring15Days = 0;
+      let expiring30Days = 0;
+      mockStore2.vehicles.forEach((v) => {
+        (v.documents || []).forEach((doc) => {
+          const daysLeft = doc.expiryDate ? Math.ceil((new Date(doc.expiryDate).getTime() - now) / (1e3 * 60 * 60 * 24)) : 999;
+          let status = "VALID";
+          if (daysLeft <= 0) {
+            status = "EXPIRED";
+            expired++;
+          } else if (daysLeft <= 15) {
+            status = "EXPIRING_SOON";
+            expiring15Days++;
+          } else if (daysLeft <= 30) {
+            status = "EXPIRING_SOON";
+            expiring30Days++;
+          }
+          documents.push({
+            _id: doc._id || "doc_" + Math.random().toString(36).slice(2, 8),
+            type: "VEHICLE",
+            entityName: v.plateNumber,
+            docType: doc.documentType || "RC",
+            expiryDate: doc.expiryDate,
+            daysLeft,
+            status
+          });
+        });
+      });
+      mockStore2.drivers.forEach((d) => {
+        if (d.licenseExpiry) {
+          const daysLeft = Math.ceil((new Date(d.licenseExpiry).getTime() - now) / (1e3 * 60 * 60 * 24));
+          let status = "VALID";
+          if (daysLeft <= 0) {
+            status = "EXPIRED";
+            expired++;
+          } else if (daysLeft <= 15) {
+            status = "EXPIRING_SOON";
+            expiring15Days++;
+          } else if (daysLeft <= 30) {
+            status = "EXPIRING_SOON";
+            expiring30Days++;
+          }
+          documents.push({
+            _id: "lic_" + d._id,
+            type: "DRIVER",
+            entityName: d.name,
+            docType: "DRIVING_LICENCE",
+            expiryDate: d.licenseExpiry,
+            daysLeft,
+            status
+          });
+        }
+      });
       return ok(res, {
-        summary: { expired: 0, expiring15Days: 1, expiring30Days: 2 },
-        documents: [
-          { _id: "cmp_1", type: "VEHICLE", entityName: "MH12CD5678", docType: "INSURANCE", expiryDate: "2026-11-15", daysLeft: 17, status: "EXPIRING_SOON" },
-          { _id: "cmp_2", type: "VEHICLE", entityName: "GJ01AB1234", docType: "FITNESS", expiryDate: "2026-12-30", daysLeft: 62, status: "VALID" }
-        ]
+        summary: { expired, expiring15Days, expiring30Days },
+        documents
       });
     });
     router.get("/maintenance/stats", (req, res) => {
@@ -254434,21 +253264,16 @@ var require_mockRouter = __commonJS({
     });
     router.post("/maintenance", (req, res) => {
       const b = req.body || {};
-      const vehicle = mockStore2.vehicles.find((v) => v._id === b.vehicleId) || mockStore2.vehicles[0];
-      const costRupees = b.costRupees ? parseFloat(b.costRupees) : b.costPaise ? b.costPaise / 100 : 1e4;
+      const vehicle = mockStore2.vehicles.find((v) => v._id === b.vehicleId || v.plateNumber === b.vehiclePlate);
+      const vehicleObj = vehicle ? { _id: vehicle._id, plateNumber: vehicle.plateNumber, vehicleType: vehicle.vehicleType, make: vehicle.make, model: vehicle.model, status: vehicle.status } : { _id: b.vehicleId || "veh_direct", plateNumber: b.vehiclePlate || "Vehicle", vehicleType: "HCV" };
+      const vehiclePlate = vehicle?.plateNumber || b.vehiclePlate || "";
+      const costRupees = b.costRupees ? parseFloat(b.costRupees) : b.costPaise ? b.costPaise / 100 : 0;
       const newMaint = {
         _id: "maint_" + crypto4.randomBytes(6).toString("hex"),
         companyId: mockStore2.tenant._id,
         maintenanceNumber: "MAINT-2026-" + String(mockStore2.maintenance.length + 1).padStart(3, "0"),
-        vehicleId: {
-          _id: vehicle._id,
-          plateNumber: vehicle.plateNumber,
-          vehicleType: vehicle.vehicleType,
-          make: vehicle.make,
-          model: vehicle.model,
-          status: vehicle.status
-        },
-        vehiclePlate: vehicle.plateNumber,
+        vehicleId: vehicleObj,
+        vehiclePlate,
         serviceType: b.serviceType || "GENERAL_SERVICE",
         maintenanceType: b.serviceType || "GENERAL_SERVICE",
         priority: b.priority || "MEDIUM",
@@ -254482,16 +253307,10 @@ var require_mockRouter = __commonJS({
     });
     router.get("/maintenance/:id/job-card", async (req, res) => {
       try {
-        const m = mockStore2.maintenance.find((item) => item._id === req.params.id) || {
-          _id: req.params.id,
-          maintenanceNumber: "MAINT-2026-001",
-          vehiclePlate: "GJ01AB1234",
-          serviceType: "PREVENTIVE",
-          costPaise: 45e4,
-          serviceCenter: { name: "BTS Workshop Baroda", city: "Vadodara" },
-          description: "Periodic inspection and scheduled maintenance",
-          createdAt: /* @__PURE__ */ new Date()
-        };
+        const m = mockStore2.maintenance.find((item) => item._id === req.params.id);
+        if (!m) {
+          return res.status(404).json({ success: false, message: "Maintenance record not found" });
+        }
         const pdfBuffer = await pdfService.generateMaintenancePdf(m, mockStore2.tenant);
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", `inline; filename="BTS-JobCard-${req.params.id}.pdf"`);
@@ -254823,18 +253642,66 @@ ${jobId},${job.entityType || "bulk"},COMPLETED,${(/* @__PURE__ */ new Date()).to
       });
     });
     router.get("/reports/compliance", (req, res) => {
-      const docs = [
-        { _id: "cmp_1", type: "VEHICLE", entityName: "MH12CD5678", docType: "INSURANCE", expiryDate: "2026-11-15", daysLeft: 17, status: "EXPIRING_SOON" },
-        { _id: "cmp_2", type: "VEHICLE", entityName: "GJ01AB1234", docType: "FITNESS", expiryDate: "2026-12-30", daysLeft: 62, status: "VALID" },
-        { _id: "cmp_3", type: "DRIVER", entityName: "Ramesh Patel", docType: "DRIVING_LICENCE", expiryDate: "2035-05-14", daysLeft: 3098, status: "VALID" }
-      ];
+      const docs = [];
+      const now = Date.now();
+      let validDocs = 0;
+      let expiringDocs = 0;
+      let expiredDocs = 0;
+      mockStore2.vehicles.forEach((v) => {
+        (v.documents || []).forEach((doc) => {
+          const daysLeft = doc.expiryDate ? Math.ceil((new Date(doc.expiryDate).getTime() - now) / (1e3 * 60 * 60 * 24)) : 999;
+          let status = "VALID";
+          if (daysLeft <= 0) {
+            status = "EXPIRED";
+            expiredDocs++;
+          } else if (daysLeft <= 30) {
+            status = "EXPIRING_SOON";
+            expiringDocs++;
+          } else {
+            validDocs++;
+          }
+          docs.push({
+            _id: doc._id || "doc_" + Math.random().toString(36).slice(2, 8),
+            type: "VEHICLE",
+            entityName: v.plateNumber,
+            docType: doc.documentType || "RC",
+            expiryDate: doc.expiryDate,
+            daysLeft,
+            status
+          });
+        });
+      });
+      mockStore2.drivers.forEach((d) => {
+        if (d.licenseExpiry) {
+          const daysLeft = Math.ceil((new Date(d.licenseExpiry).getTime() - now) / (1e3 * 60 * 60 * 24));
+          let status = "VALID";
+          if (daysLeft <= 0) {
+            status = "EXPIRED";
+            expiredDocs++;
+          } else if (daysLeft <= 30) {
+            status = "EXPIRING_SOON";
+            expiringDocs++;
+          } else {
+            validDocs++;
+          }
+          docs.push({
+            _id: "lic_" + d._id,
+            type: "DRIVER",
+            entityName: d.name,
+            docType: "DRIVING_LICENCE",
+            expiryDate: d.licenseExpiry,
+            daysLeft,
+            status
+          });
+        }
+      });
       return ok(res, {
         data: docs,
         summary: {
           totalDocs: docs.length,
-          validDocs: 2,
-          expiringDocs: 1,
-          expiredDocs: 0
+          validDocs,
+          expiringDocs,
+          expiredDocs
         }
       });
     });
@@ -254920,94 +253787,55 @@ ${jobId},${job.entityType || "bulk"},COMPLETED,${(/* @__PURE__ */ new Date()).to
       next();
     });
     router.get(["/public/track", "/public/track/:trackingId"], (req, res) => {
-      const tid = (req.params.trackingId || req.query.q || req.query.lr || req.query.load || "TRP-2026-003").toUpperCase();
-      const trip = mockStore2.trips[1] || mockStore2.trips[0];
-      const load = mockStore2.loads[1] || mockStore2.loads[0];
+      const tid = (req.params.trackingId || req.query.q || req.query.lr || req.query.load || "").trim().toUpperCase();
+      if (!tid) {
+        return res.status(400).json({ success: false, message: "Please provide a valid tracking number (LR, Bilty, Load, or Trip #)" });
+      }
+      const trip = mockStore2.trips.find((t) => t.tripNumber === tid || t._id === tid);
+      const load = mockStore2.loads.find((l2) => l2.loadNumber === tid || l2._id === tid);
+      const bilty = mockStore2.bilties.find((b) => b.lrNumber === tid || b.biltyNumber === tid || b._id === tid);
+      if (!trip && !load && !bilty) {
+        return res.status(404).json({ success: false, message: `No active consignment found for tracking reference: ${tid}` });
+      }
+      const activeTrip = trip || (load?.tripId ? mockStore2.trips.find((t) => t._id === load.tripId._id) : null);
+      const activeLoad = load || (bilty?.loadNumber ? mockStore2.loads.find((l2) => l2.loadNumber === bilty.loadNumber) : null);
+      const activeBilty = bilty || (activeLoad?.loadNumber ? mockStore2.bilties.find((b) => b.loadNumber === activeLoad.loadNumber) : null);
       const trackingPayload = {
         trackingNumber: tid,
-        lrNumber: tid.startsWith("LR") ? tid : "LR-2026-00102",
-        biltyNumber: tid.startsWith("BL") ? tid : "BL-2026-00102",
-        loadNumber: load.loadNumber || "LD-2026-0002",
-        tripNumber: trip.tripNumber || "TRP-2026-002",
-        currentStatus: trip.status || "IN_TRANSIT",
-        statusLabel: trip.status === "CLOSED" || trip.status === "DELIVERED" ? "Delivered" : "In Transit",
-        materialType: load.cargoType || "Refined Industrial Bulk Consignment",
-        totalQuantity: load.totalQuantity || 140,
-        totalWeightMt: load.totalWeightMt || 28,
+        lrNumber: activeBilty?.lrNumber || tid,
+        biltyNumber: activeBilty?.biltyNumber || tid,
+        loadNumber: activeLoad?.loadNumber || tid,
+        tripNumber: activeTrip?.tripNumber || tid,
+        currentStatus: activeTrip?.status || activeLoad?.status || activeBilty?.status || "IN_TRANSIT",
+        statusLabel: activeTrip?.status === "CLOSED" || activeLoad?.status === "DELIVERED" ? "Delivered" : "In Transit",
+        materialType: activeLoad?.cargoType || activeLoad?.goodsDescription || activeBilty?.goodsDescription || "General Cargo",
+        totalQuantity: activeLoad?.totalQuantity || activeLoad?.packageCount || 0,
+        totalWeightMt: activeLoad?.totalWeightMt || activeLoad?.weightMt || activeBilty?.weightMt || 0,
         parties: {
-          consignor: load.consignorName || "Adani Wilmar Limited",
-          consignee: load.consigneeName || "UltraTech Cement Limited"
+          consignor: activeLoad?.consignorName || activeBilty?.consignor || "",
+          consignee: activeLoad?.consigneeName || activeBilty?.consignee || ""
         },
         vehicle: {
-          type: trip.vehicleId?.vehicleType || "Multi-Axle Truck",
-          maskedPlateNumber: trip.vehiclePlate || "MH12CD5678"
+          type: activeTrip?.vehicleId?.vehicleType || activeLoad?.vehicleType || "Truck",
+          maskedPlateNumber: activeTrip?.vehiclePlate || activeLoad?.vehiclePlate || activeBilty?.vehiclePlate || ""
         },
-        pickupDate: trip.startedAt || (/* @__PURE__ */ new Date()).toISOString(),
-        expectedDeliveryDate: new Date(Date.now() + 432e5).toISOString(),
+        pickupDate: activeTrip?.startedAt || activeLoad?.createdAt || (/* @__PURE__ */ new Date()).toISOString(),
+        expectedDeliveryDate: activeLoad?.expectedDeliveryDate || (/* @__PURE__ */ new Date()).toISOString(),
         milestones: [
           {
             code: "ORDER_PLACED",
             title: "Consignment Created",
-            description: "Load registered and scheduled for dispatch at Barkat Tempo Service",
+            description: "Load registered at Barkat Tempo Service",
             status: "COMPLETED",
-            timestamp: new Date(Date.now() - 864e5).toISOString()
-          },
-          {
-            code: "VEHICLE_ASSIGNED",
-            title: "Vehicle & Driver Assigned",
-            description: `Vehicle ${trip.vehiclePlate} and Driver ${trip.driverName} allocated`,
-            status: "COMPLETED",
-            timestamp: new Date(Date.now() - 54e6).toISOString()
-          },
-          {
-            code: "IN_TRANSIT",
-            title: "Outbound On-Road Transit",
-            description: "Consignment in transit across NH-48 commercial corridor",
-            status: "IN_PROGRESS",
-            timestamp: new Date(Date.now() - 216e5).toISOString()
-          },
-          {
-            code: "DELIVERED",
-            title: "Destination Delivery",
-            description: "Arrival at destination warehouse and POD stamp authentication",
-            status: trip.status === "CLOSED" ? "COMPLETED" : "PENDING",
-            timestamp: trip.status === "CLOSED" ? (/* @__PURE__ */ new Date()).toISOString() : null
+            timestamp: activeLoad?.createdAt || (/* @__PURE__ */ new Date()).toISOString()
           }
         ],
-        waypoints: [
-          {
-            sequence: 1,
-            name: "Mundra Port Logistics Terminal, Gujarat",
-            city: "Mundra",
-            state: "Gujarat",
-            stopType: "PICKUP",
-            status: "COMPLETED",
-            coordinates: { lat: 22.8398, lng: 69.7042 }
-          },
-          {
-            sequence: 2,
-            name: "Pune Chakan Auto Corridor Terminal, Maharashtra",
-            city: "Pune",
-            state: "Maharashtra",
-            stopType: "DELIVERY",
-            status: trip.status === "CLOSED" ? "COMPLETED" : "PENDING",
-            coordinates: { lat: 18.7512, lng: 73.8541 }
-          }
-        ],
-        podVerified: trip.status === "CLOSED",
-        podNumber: trip.status === "CLOSED" ? "POD-2026-0001" : null,
-        podReceiver: trip.status === "CLOSED" ? "Gaurav Mehta" : null,
-        telematics: {
-          isLiveGps: true,
-          locationSource: "TELEMATICS_GPS",
-          coordinates: { lat: 20.9467, lng: 72.952 },
-          speedKmph: 62,
-          lastSeenAt: (/* @__PURE__ */ new Date()).toISOString(),
-          disclaimer: "Live AIS-140 GPS telematics feed from vehicle on-board unit."
-        },
+        waypoints: [],
+        podVerified: activeTrip?.status === "CLOSED" || activeLoad?.status === "DELIVERED",
+        telematics: null,
         lastUpdated: (/* @__PURE__ */ new Date()).toISOString()
       };
-      return ok(res, trackingPayload);
+      return ok(res, trackingPayload, "Consignment tracking details retrieved");
     });
     router.get("/search", (req, res) => {
       const start = Date.now();
@@ -332208,18 +331036,18 @@ var require_masterImportExport_service = __commonJS({
             ];
             sampleRows = [
               {
-                name: "Adani Logistics Ltd",
-                code: "CUST-ADANI",
+                name: "Sample Logistics Client",
+                code: "CUST-001",
                 partyType: "CUSTOMER",
                 gstin: "24AAACA1234A1Z5",
                 pan: "AAACA1234A",
-                contactName: "Ramesh Patel",
+                contactName: "Operations Lead",
                 phone: "9876543210",
-                email: "logistics@adani.example.com",
-                street: "Mundra Port Complex",
-                city: "Mundra",
+                email: "operations@example.com",
+                street: "Industrial Complex",
+                city: "Vadodara",
                 state: "Gujarat",
-                pincode: "370421",
+                pincode: "390022",
                 paymentTermsDays: 30
               }
             ];
@@ -332266,17 +331094,17 @@ var require_masterImportExport_service = __commonJS({
             ];
             sampleRows = [
               {
-                plateNumber: "GJ01AB1234",
-                vehicleType: "Trailer 40ft",
+                plateNumber: "GJ06XX0000",
+                vehicleType: "Heavy Commercial Vehicle (HCV)",
                 category: "OWNED",
                 capacityTonnage: 35.5,
                 make: "Tata Motors",
-                model: "Signa 4825.TK",
-                yearOfManufacture: 2023,
+                model: "Signa",
+                yearOfManufacture: 2024,
                 chassisNumber: "MAT623000P1234567",
                 engineNumber: "CUMMINS250B1234",
-                ownerName: "Technofay Fleet Ops",
-                ownerPhone: "9898012345"
+                ownerName: "Barkat Tempo Service",
+                ownerPhone: "93776 10333"
               }
             ];
             break;
